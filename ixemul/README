@@ -1,0 +1,437 @@
+README for ixemul.library and ixnet.library version 48.0
+
+
+IMPORTANT
+=========
+
+Always read the NEWS file for information about new features! The NEWS file
+is part of the ixemul source archive.
+
+Also look at the ix.h header: ixemul-specific functions are documented in that
+header.
+
+Starting with ixemul.library version 42.0 the ssystem() function is no longer
+supported. The only two applications use this function are (to my knowledge)
+gcc and man. You should either upgrade to the latest gcc (2.7.2 or higher)
+or replace gcc by gccv (which is part of older gcc distributions). You can
+find a new 'man' version in Geek Gadgets.
+
+Starting with ixemul.library version 43.1 various networking functions have
+been moved to libc.a. See the NEWS file for details. It only concerns
+certain somewhat specialized functions, so 'normal' clients and daemons
+shouldn't be affected.
+
+This library is part of Geek Gadgets.  For more information see
+ftp.ninemoons.com, /pub/geekgadgets.
+
+
+
+INTRODUCTION
+============
+
+Originally created in 1991 or 1992 by Markus Wild, the ixemul.library has
+become the driving force behind the Geek Gadgets project.
+
+Essentially it is a BSD Unix kernel running under the Amiga OS.  The
+code for handling Unix signals is taken almost verbatim from the BSD kernel
+sources, for example.  Multitasking and file I/O is, of course, passed on
+to the Amiga OS.  Because the library resembles BSD Unix so closely, it has
+made it possible to port almost all Unix programs.
+
+However, because of the conformance to BSD, the library is not too
+conservative with resources or overly concerned with Amiga standards.  For
+example, command line expansion uses Unix semantics and doesn't use
+ReadArgs().  The purpose of ixemul.library is to emulate Unix as well as is
+technically possible.  So given a choice between Amiga behavior or Unix
+behavior, the last one is chosen.
+
+
+
+HISTORY
+=======
+
+As I mentioned, the library was originally created by Markus Wild.  It
+allowed him to port Unix programs, most notably gcc and a Unix shell
+(pdksh), which in turn gave him the opportunity to start porting NetBSD
+Unix.  At some point he stopped working on ixemul.library and continued
+with the real thing, NetBSD.
+
+Although Markus made some snapshots of his library available on Internet,
+he was about the only one who could actually compile it.  The snapshots
+where never complete and didn't use a standard Make tool.
+
+Rafael W. Luebbert managed around June 1994 to actually compile the
+library using bits and pieces from four different source releases.  Even
+then he had to write some missing code and had to debug a lot before he got
+it working.  Luebbert released versions 40.1 through 40.4.  Since this was
+the only version available that could actually be compiled, Fred Fish
+switched to version 40.4 for his FreshFish CDROM series.
+
+Leonard Norrgard also started working on 40.4, fixing a variety of
+problems.  So for a time there were two versions of the library, both
+derived from 40.4.  Around March 1995 I began contributing my own fixes for
+the library to Fred, including a fix for a horrible memory trashing bug
+which substantially improved the stability of the library.  Starting with
+version 42.0 I became the new maintainer of the library.  I merged
+Leonard's version of the library into 42.0, the whole source distribution
+was cleaned up and reorganized and many bugs were fixed.  Also new
+functionality was added such as timezone support.
+
+Thanks to Jeff Shepherd the support for network functions has been totally
+reorganized for version 43.0.  A new ixnet.library was introduced that
+contains all the network handling.  This new library supports both AS225
+and AmiTCP.  Furthermore, there is no longer any need to maintain two
+versions of an Internet client or daemon as ixnet.library will do the
+multiplexing for you.  The program itself is completely shielded from the
+actual networking package in use.  Also, should a new networking package
+appear for the Amiga, then it is relatively easy to add support for that
+package to ixnet.library.  All existing programs will automatically be able
+to work with the new package too.
+
+Version 43.0 also introduced support for automatic stack extension
+(provided you compiled your program with the -mstackextend flag).  This
+support was done by Matthias Fleischer.
+
+Last, but not least, I've added the ptrace() function, which was essential
+for porting the GNU debugger, GDB.  So it is now possible to use a decent
+debugger with gcc (and with the GNU C++, fortran and ADA compilers).
+
+Version 43.1 was a bug-fix release, which further improved stability.
+
+Version 44.0 made the library much more (Net)BSD compatible, making it even
+easier to port Unix programs. Also many bugs were fixed.
+
+Version 45.0 fixed a few bugs, improved stack extension (see the new ixstack
+utility) and further improved Ctrl-C handling by adding 'sessions', something
+that was needed for the Geek Gadgets X port.
+
+Version 45.1 was a bug-fix release, and also improved uid/gid handling.
+
+Version 46.0 adds shared memory (shm*) and basic p.OS support.
+
+Version 46.1 renames the __os variable to ix_os.
+
+Version 47.0 completes the p.OS support and adds Unix semaphore and message
+support. Also fixes several bugs.
+
+Version 47.1 fixes a minor but very irritating bug in the ixstack utility.
+
+Version 47.2 is a bug-fix release.
+
+Version 47.3 is a bug-fix release.
+
+Version 48.0 is a bug-fix release and removes the p.OS support. p.OS didn't
+become a success, so ixemul no longer supports it.
+
+
+USAGE
+=====
+
+The Aminet distribution of ixemul consists of several archives:  one for
+each flavor (CPU/FPU combination) of the library, one for the timezone
+support, an archive for documentation, an archive for various utilities and
+an SDK archive, containing headers, libraries and C-objects that provide
+the startup code.  There is also an ixemul source archive.  If you don't
+mind recompiling everything, and if you have a decent Geek Gadgets
+environment, then all you have to do is retrieve this archive, as all the
+other archives are generated from this source distribution.
+
+Besides the library itself, there are also some utilities and other
+goodies.  First of all, there is a special trace version of the library.
+Together with the ixtrace tool it allows you to see which library functions
+are called by the program you want to debug.  If you compile the library
+yourself you will also get, as part of the compile process, a debug version
+of the library.  If you get an Enforcer hit in the library, and if you have
+SegTracker installed, then you can track down in which source and at which
+line the hit took place using the gccfindhit tool (available from Aminet
+and Geek Gadgets) that is similar to the FindHit tool which is part of the
+Enforcer package.  I've used this with great success in the past.
+
+Various settings that influence the behavior of the library can be set
+using the ixprefs utility.  A small tool ixrun allowing you to run AmigaOS
+scripts from within the Unix shell is also provided.  An ixemul-specific
+pipe-handler allows you to set up a pipe between an AmigaOS utility and an
+Unix program.  A pipe between two Unix programs is handled by the
+ixemul.library itself, but since AmigaOS programs are not under the
+control of the library, this handler is used instead.
+
+A recent addition is the ixstack tool, which can list and set the minimum
+stack size an ixemul program needs.  It can also show the actual stack
+usage of ixemul programs if you start it with '-s'.
+
+Finally, the tools zic (for manipulating the timezone databases) and
+ixtimezone are also part of ixemul.  The ixtimezone tool can be used to
+automatically adjust the Amiga time based on the currently selected
+timezone.  The best way to use this tool is to install the timezone
+databases (in etc:zoneinfo), set the TZ environment variable correctly (in
+my case "Europe/Amsterdam"), add the line "ixtimezone -patch-resource
+>nil:" to your user-startup and set the Amiga clock to Greenwich Mean Time
+(or Universal Time, as it is now called).  Now you will never have to worry
+about things like Daylight Saving Time as each time ixtimezone is called,
+this tool checks the current timezone and will patch the Amiga clock to the
+right time.  This tool is also very useful if you also run NetBSD or Linux,
+as these OSes expect that the internal Amiga clock adheres to GMT.
+
+I advise that you set the ixemul "Network support" to the correct method
+using the ixprefs program. It will improve performance somewhat if ixemul
+doesn't have to guess which network library is available, if any.
+
+
+
+MEMORY REQUIREMENTS
+===================
+
+The library itself needs about 200 Kb, but if you want to do some useful
+work, such as compiling programs, I advise at least 4 Mb.  More importantly
+is the stack size:  set it to at least 50 Kb. If you have problems with
+certain programs try to increase the stack size.
+
+The reason for these large stacks is that the Unix operating system
+automatically extends the stack if it is too small. Therefore some Unix
+programs aren't exactly conservative with their stack space.
+
+We can do the same on AmigaOS, however, by compiling programs with the
+-mstackextend flag. Or you can set the minimum stack size of a program
+using the ixstack tool. If the current stack is too small, the program will
+automatically extend the stack on startup.
+
+
+
+PROGRAMMING WITH IXEMUL
+=======================
+
+There is really very little to do.  If you have a decent Geek Gadgets setup
+with the necessary compilers and tools, and if you have installed the
+ixemul SDK, then you are ready to go.  There is no need to do anything
+special, the communication between your program and ixemul.library is
+handled by the startup code (the *crt0.o files in the /gg/lib directory)
+and the standard C library (libc.a, also in /gg/lib) which are
+automatically linked with your program.  Note that ixemul.library together
+with the compile tools also provides profiling support (compile and link
+with -pg), and base-relative and resident support (compile with -fbaserel
+or -resident).  Compile and link with -g to add debug information so that
+you can debug your program with gdb.
+
+If you start gdb with the -enforcer option, then the program you are
+debugging will automatically stop and drop into the debugger as soon as an
+Enforcer hit occurs.  This is obviously very useful.
+
+The startup code will automatically expand the command-line for you (e.g.
+'echo *' will expand to 'echo <filenames in current directory>'). If you
+want to disable this in your program, then you should add the line:
+
+	int ix_expand_cmd_line = 0;
+
+to your source. This global variable will tell the system not to expand the
+command-line.
+
+Code like you would on a Unix system, so DON'T USE any information
+private to the library!
+
+
+
+PORTING UNIX PROGRAMS
+=====================
+
+Most programs compile out-of-the-box.  There are a few exceptions to this
+rule.  First of all, programs like linkers and the like that have to be
+able to read or write the standard Amiga hunk format obviously need a lot
+of work.
+
+Secondly, there is no virtual memory support, and therefore no real fork()
+function.  In most cases the fork() function is only used to spawn a new
+program, and in such cases it is possible to replace fork() by vfork(),
+which is a light-weight fork() replacement that was originally created for
+Unix to reduce the overhead a real fork() introduced.
+
+A vfork() doesn't create a copy of itself as fork() does, but uses the
+parent's code and data.  Since the child will quickly call execve() to
+spawn another program, this sharing of the code and data is no problem and
+saves a lot of time.
+
+There is one restriction, however: since the child process is running on
+the stack of the parent until an exit() or execve() call the child must be
+careful not to clobber the parent's stack. So this will fail:
+
+      main()
+      {
+        switch (vfork())
+        {
+          case -1:      // Error
+          case 0:       // Child
+            return 0;	// Return from main()
+
+          default:      // Parent
+            wait(0);
+            break;
+        }
+        
+        return 0;
+      }
+
+It fails because the child just returns, and this return will clobber the
+stack for when the parent returns. But this is correct:
+
+      main()
+      {
+        switch (vfork())
+        {
+          case -1:              // Error
+          case 0:               // Child
+            exit(0);            // Exit
+            break;
+
+          default:              // Parent
+            wait(0);
+            break;
+        }
+        
+        return 0;
+      }
+
+Here the child calls exit or execve and therefor leaves the underlying
+stack intact for the parent. This restriction can cause very hard to find
+bugs (I know, I spent quite a few hours researching this problem).
+
+In some cases, such as a Unix shell (pdksh for example), you really want to
+be able to port a program that uses a fork() that cannot be replaced with
+vfork().  There is a way to do this, although it is a lot of work.  First
+of all, the program has to be compiled with -resident.  Now you replace the
+fork() by a ix_vfork() call, and in the child code you call vfork_setup_child()
+(new for 44.0!  Replaces the ix_resident()/ix_get_vars2() pair) to copy the
+original data hunk to a new location.  Next you have to copy all the
+parent's data structures to the child.  In other words, you have to copy
+the complete state of the parent process to the child process.  This can be
+a lot of work.  Finally, you call vfork_resume() which unblocks the parent
+so that you now have two processes running separately from each other.
+
+It is important to realize that you should never exit() from the parent
+before all vfork()'ed children have died.  Since exiting from the parent
+causes the parents code and data segments to be deallocated, the child
+would find itself without code space to run on, and would probably cause a
+severe machine crash!
+
+So always call at least `wait(0)' before returning from the parent.
+
+For an example of how this works, see jobs.c from the pdksh source
+distribution.  It's a kind of poor-man's fork().
+
+The third case I've come across that couldn't easily be ported were
+programs that dump their state to a new file.  Emacs does this, as does GNU
+Common Lisp.  The idea is that such a program will read lots of packages,
+and then dump itself to a new file.  That new file can in turn be executed,
+and you will no longer have to load all those packages.  All this assumes
+that each time you load a program, all the code and data ends up at the same
+memory addresses as before.  Something that is true for Unix, but not for
+the Amiga due to the lack of virtual memory.
+
+However, if someone wants to do a port of such a program, please contact me
+as I have developed a technique to implement this.  At least, I've made
+this work with a small test program.  I've tried to use it with GNU Common
+Lisp, but time constraints prevented me from developing this further.
+
+The last problematic category I've seen is GNU Emacs.  This program assumes
+that all the data it allocates will always end up in a continuous memory
+block, and that the upper 8 bits of each memory address are always the
+same.  The Amiga, however, can have multiple memory blocks positioned at
+various places in memory.  While there is a GNU Emacs port, this port does
+assume this limitation and if you have an Amiga with many memory blocks (as
+I had) GNU Emacs may easily crash.  No easy solution exists.
+
+
+
+AMIGA PROGRAMMING & IXEMUL
+==========================
+
+If you use Amiga specific resources like Windows and Screens from
+Intuition, make sure to add an atexit() handler to close those resources,
+if the user should decide to interrupt your program.  Before the program is
+left, the chain of registered atexit-handlers is called in exit().  So
+PLEASE NEVER EVER call _exit() if you have registered any custom atexit()
+handlers.  It is a bad habit anyway, but normally you may call _exit()
+without resource lossage (stdio won't flush its buffers, but that's about
+all).
+
+Ixemul provides a new unique Amiga specific signal called SIGMSG.  If you
+set up a handler for this signal, then the default mapping from
+SIGBREAKB_CTRL_C into SIGINT will no longer occur, and your handler is
+called with the following arguments:
+
+  signal_handler(SIGMSG, new_exec_signal_mask)
+
+In this case, you have to deal with Exec signals yourself, so don't forget
+to clear those signals that you want to receive notification about again
+later.  Thus if you'd want to handle SIGBREAKB_CTRL_C yourself, don't
+forget to
+
+  SetSignal(0, SIGBREAKF_CTRL_C)
+
+at the end of the handler, or you'll never get notification about that
+signal again.
+
+Most of the original BSD signals are implemented.  SIGSTOP is currently not
+implemented, although it would be relatively easy to add.  The mechanisms
+are already in place.
+
+
+
+HANDLING OF UID/GID IN IXEMUL.LIBRARY
+=====================================
+
+The following information was provided by Norbert Pueschel:
+
+Here is a list of functions that are concerned with uid/gid management
+and access to user/group information:
+
+a) uid/gid management:
+   get(e)uid, set((r)e)uid, get(e)gid, set((r)e)gid, (init|set|get)groups
+
+b) access to user/group informations:
+   set(pass|group)ent, (set|get|end)pwent, get(pw|gr)nam, getpwuid, getgrgid,
+   (_)getlogin, setlogin
+
+c) other functions:
+   setsid, crypt
+
+
+Ixemul.library has several options how to implement these functions:
+
+1) When MultiUser is installed, ixemul.library will use it to implement the
+   functions named above.
+
+2) When MultiUser is _not_ installed, ixemul.library will use its own
+   uid/gid handling: uids and gids will be inherited by child processes
+   and files and directories created by ixemul using programs will have
+   the current user and group set as long as the filesystem supports that.
+   However, for file accesses only the setting of the flags for the file
+   owner is used (as for any other AmigaOS program).
+
+Processes that are not started by other ixemul using programs use
+environment variables to determine their (e)uid and (e)gid:
+
+They will first check the variables LOGNAME and USER for a valid user
+name. If they find this user in the passwd file, they will set up (e)uid
+and (e)gid respectively. Then the environment variables UID, EUID, GID and
+EGID will be queried, and, if present, their values will be used.
+
+If none of the above variables is found, the process will be owned by
+nobody/nogroup (uid/gid -2).
+
+
+Ixemul.library has three different methods to get user/group
+informations:
+
+a) If networking software (AmiTCP or Inet) is installed, it will use their
+   user/group databases.
+
+b) If no networking is available, it will try to read the files etc:passwd
+   and etc:group.
+
+c) If both a) and b) fails, it will use a builtin user/group database.
+   This database only knows the nobody/nogroup (uid/gid -2), root/wheel
+   (uid/gid 0) and a user/group combination described by the environment
+   variables LOGNAME or USER, GROUP, UID and GID.
+
+                      Hans Verkuil (hans@wyst.hobby.nl, July 14, 1998)
+
+(Parts of this README are from the original README by Markus Wild).

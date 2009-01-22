@@ -1,0 +1,19 @@
+
+Remaining issues:
+
+- traps are not handled yet.
+- ix_panic() does not work properly (varargs conversion needed).
+- 'man' crashes here. I've not investigated why yet.
+- programs that rely on low-level internal ixemul structs won't work.
+The only one I know doing that is 'gdb'. Recompiling it with some minor
+changes should take care of the problem.
+- ixtrace is not yet supported.
+- neither is profiling.
+- not compatible with the powerup bridge currently. That may or may
+not change.
+- DTYPE_MEM is broken, disabled for now.
+
+The stack size of the 68k emulation is set as usual, with the
+'stack' command. The size of the PPC stack is taken from the
+IXPPCSTACK environment variable.
+

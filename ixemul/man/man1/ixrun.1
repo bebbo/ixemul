@@ -1,0 +1,114 @@
+.de Sp
+.if n .sp
+.if t .sp 0.4
+..
+.TH IXRUN 1
+.SH NAME
+ixrun \- run AmigaOS scripts from within /bin/sh
+.SH SYNOPSIS
+.B ixrun
+[
+.B \-q
+|
+.B \-qv
+|
+.B \-n
+|
+.B \-nv
+] filename [ arguments... ]
+.br
+.SH DESCRIPTION
+.I Ixrun
+makes it possible to run AmigaOS scripts from /bin/sh or from other Unix programs.
+The
+.I ixemul.library
+uses the first line of a file to find out to which program it should feed the file.
+Normally this is
+.IR /bin/sh ,
+but you can use any program you want. Shell scripts usually start with
+.BR #!/bin/sh .
+Unfortunately, AmigaOS scripts use a semi-colon to start a comment, not the
+.BR # \-sign.
+However, the
+.I ixemul.library
+also accepts
+.BR ;! .
+So one would expect that starting a script with
+.B ;!/c/execute
+would work. But it doesn't. First of all,
+.I c:execute
+does some weird things that prevent us from using this possibility.
+Secondly, AmigaOS won't recognize the
+.B .key
+sequence unless it is at the beginning of the script. To work around
+this second problem, the
+.I ixemul.library
+skips the first line of the script if it starts with
+.BR .key .
+So you should put the
+.B ;!
+sequence at the second line instead. If you 
+.I don't
+use 
+.BR .key ,
+then you should put the
+.B ;!
+sequence at the beginning of the script as usual.
+.LP
+To work around the first problem I wrote
+.IR ixrun ,
+a small utility to replace
+.IR c:execute .
+Just start an AmigaOS script with
+.B ;!/bin/ixrun
+(possibly preceeded by the 
+.B .key
+line) and you can now run it from within
+.I /bin/sh
+or any other Unix program.
+.SH OPTIONS
+.TP
+.B \-n
+Don't put quotes around the arguments.
+.TP
+.B \-q
+Put quotes around every argument that you pass to your script. This is the default.
+.I ixrun
+builds a command line which starts with the filename of the script (the 
+.B filename
+argument) followed by the other arguments passed to
+.IR ixrun .
+This command line is executed by calling the
+.I dos.library
+function
+.IR Execute .
+That is,
+.B
+ixrun script "Hello world"
+will execute
+.B
+script "Hello
+.BR world" ,
+as one would expect. But
+.B
+ixrun -n script "Hello world"
+will execute
+.B
+script Hello
+.BR world .
+That is, the single argument
+.B "Hello world"
+has been split into two. So take care.
+.TP
+.B \-qv
+Debugging: show the command line that should be executed if the option
+.B \-q
+was used, without actually executing it.
+.TP
+.B \-nv
+Debugging: show the command line that should be executed if the option
+.B \-n
+was used, without actually executing it.
+.SH AUTHOR
+Hans Verkuil
+.RI ( hans@wyst.hobby.nl )

@@ -1,0 +1,27 @@
+.name
+ixemul
+.fullname
+Unix emulation environment
+.type
+Programmer Tool
+.short
+Unix emulation environment, Amiga lib.
+.description
+The ixemul.library provides a Unix emulation environment for the
+Amiga.  This makes porting of typical Unix applications very easy,
+with almost no changes required to the Unix source code.
+
+This archive contains several versions of the runtime dynamic library
+"ixemul.library" that is needed by Amiga binaries that have been
+compiled to use this environment, a pipe handler used when ixemul
+programs communicate via pipes to non-ixemul programs, several
+auxiliary programs (ixprefs, ixrun, ixtimezone, ixtrace), and timezone
+database files.
+.version
+48.0
+.author
+Markus Wild
+.distribution
+Copyrighted but Freely Redistributable
+.described-by
+Fred Fish (fnf@amigalib.com)

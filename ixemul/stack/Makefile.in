@@ -1,0 +1,85 @@
+#### Start of system configuration section. ####
+
+srcdir =        @srcdir@
+
+ifeq ($(srcdir),.)
+srcdir = ..
+endif
+
+VPATH :=        $(srcdir)
+
+# Common prefix for machine-independent installed files.
+prefix =        @prefix@
+
+# Common prefix for machine-dependent installed files.
+exec_prefix =   @exec_prefix@
+
+bindir =        $(exec_prefix)/bin
+libdir =        $(exec_prefix)/Sys/libs
+
+INSTALL =       @INSTALL@
+INSTALL_DATA =  @INSTALL_DATA@
+
+CC =            @CC@
+
+CFLAGS =        @CFLAGS@
+LDFLAGS =       @LDFLAGS@
+
+RANLIB =        @RANLIB@
+AR =            @AR@
+
+#### End system configuration section ####
+
+ifeq ($(BASE),baserel)
+DEFS = -DBASEREL
+endif
+
+ifeq ($(BASE),baserel32)
+DEFS = -DLBASEREL
+endif
+
+ifeq ($(BASE),morphos-rel)
+DEFS = -DBASEREL
+endif
+
+ifeq ($(BASE),morphos-rel32)
+DEFS = -DLBASEREL
+endif
+
+ifeq ($(BASE),morphos)
+FLAVOR_CFLAGS = -mcpu=$(FPU)
+else
+ifeq ($(BASE),morphos-rel)
+FLAVOR_CFLAGS = -mcpu=$(FPU) -mbaserel
+else
+ifeq ($(BASE),morphos-rel32)
+FLAVOR_CFLAGS = -mcpu=$(FPU) -mbaserel32
+else
+FLAVOR_CFLAGS = -m$(CPU) -m$(FPU) -f$(BASE)
+endif
+endif
+endif
+
+OTHER_CFLAGS =  -fomit-frame-pointer
+ALL_CFLAGS =    $(CFLAGS) $(FLAVOR_CFLAGS) $(OTHER_CFLAGS) $(INCS) $(DEFS) -DFOR_LIBC
+
+INCS =          -I$(srcdir) -I$(srcdir)/../library -I$(srcdir)/../include #-I/p
+LIB =           libstack.a
+
+.c.o:
+		$(CC) $(ALL_CFLAGS) -c $< -o $@
+
+SRC =           $(notdir $(wildcard $(srcdir)/*.c))
+
+OBJ =           $(SRC:.c=.o)
+
+$(LIB):         $(OBJ)
+		rm -f $@
+		$(AR) rc $@ $(OBJ)
+		$(RANLIB) $@
+
+clean:
+		rm -rf *baserel* morphos*
+
+clobber:        clean
+		rm -f Makefile

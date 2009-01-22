@@ -1,0 +1,9 @@
+/* $VER: IXPIPE 50.1 (15.3.2006)
+ *
+ * IXPipe-Handler mount entry
+ */
+
+Handler		=	MOSSYS:L/ixpipe-handler
+StackSize	=	4096
+Priority	=	5
+GlobVec		=	-1

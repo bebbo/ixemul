@@ -1,0 +1,69 @@
+This file documents bugs which have no obvious solution at the moment.
+If they did have an obvious solution, they would be in TODO instead.
+
+***	The date of a softlink is always Jan 1, 1970 and this is unlikely
+	to be fixed until a future version of AmigaOS includes a efficient
+	function to obtain the date of the softlink. The only way to
+        obtain the date would be by using Examine()/ExNext() on the
+        directory that contains the softlink.
+
+***	When calling ixemul's write() on nonblocking file descriptors the
+	library will block when the write cannot be performed (e.g. on
+	pipe:filename). Neither can the block be avoided by using select().
+	The problem is that there is no way to check beforehand if the
+	dos.library Write() will block.
+
+***	The environment (ENV:) is only reread if an environment setting was
+	added. Ixemul relies on notification of ENV: to know when to reread
+	the environment. Unfortunately, deleting a file or changing a file
+	doesn't cause a notification, only creating a file. This is a bug
+	in the OS.
+
+***	If you stat() a directory, then the st_size field is always 1024.
+	It should be the size of what you can read if you open() the
+	directory, but that would mean that ixemul will have to
+	Examine()/ExNext() the whole directory which is unacceptably slow.
+	So any program that uses the st_size field to preallocate enough
+	room for for either open() on a directory or opendir()/readdir()
+	pairs will have to be rewritten not to use st_size.
+
+***	Due to a bug probably in the emulation socket.library, the
+	dos.library isn't closed by this socket.library if an OpenLibrary
+	fails because the requested version is unavailable, but an older
+	version exists.  Ixemul tries to open socket.library version 3, but
+	the emulation library has version 1.2.  So each time you run an
+        ixemul program, the dos.library open count is increased by one, and
+        so is the count of socket.library.  The solution is to select
+	'No networking' or 'AmiTCP' using ixprefs.
+
+***	Opening a file a second time fails on an AFS volume if both times
+	the file was opened with mode READWRITE. This happens during
+	linking of a program if the TMPDIR setting points to an AFS volume.
+	This is a bug in AFS. I've notified the author of AFS about this,
+        so perhaps this is solved in a future AFS version.
+
+	The following test program illustrates the problem:
+
+		#include <proto/dos.h>
+
+		main(int argc, char **argv)
+		{
+		  if (argv[1])  
+		  {
+		    BPTR f1, f2;
+
+		    f1 = Open(argv[1], MODE_READWRITE);
+		    f2 = Open(argv[1], MODE_READWRITE);
+		    printf("%d, %d\n", f1, f2);
+		    if (f1) Close(f1);
+		    if (f2) Close(f2);
+		  }
+		}
+
+        Both Open calls succeed on a FFS volume, but on an AFS volume the
+        second fails.
+
+***     If you have installed MultiUser on one volume, but not on another,
+        then ixemul will still use the MultiUser protection bits and owner
+        for the FFS volumes. This can cause problems when trying to access
+        files that have the wrong owner and/or protection bits.

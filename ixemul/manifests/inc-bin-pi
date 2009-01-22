@@ -1,0 +1,16 @@
+.name
+ixemul
+.type
+Programmer Tool
+.short
+Include files for ixemul or libnix
+.description
+Include files used for compilations that use either ixemul or libnix.
+.version
+48.0
+.author
+Markus Wild
+.distribution
+Copyrighted but Freely Redistributable
+.described-by
+Fred Fish (fnf@fishpond.cygnus.com)

@@ -1,0 +1,9 @@
+/*
+**  Mountlist entry for IXPIPE:
+*/
+IXPIPE:
+    Handler = l:ixpipe-handler
+    Stacksize = 3000
+    Priority = 5
+    GlobVec = -1
+#

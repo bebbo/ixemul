@@ -1,0 +1,33 @@
+			COPYRIGHT restrictions
+
+The source code shipped with this library is subject to the GNU LIBRARY
+GENERAL PUBLIC LICENSE, please look at the file COPYING.LIB that comes with
+this distribution.  If not, write to the
+  Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+NOTE:   
+There are lots of files subject to other Copyrights, especially those
+Copyright by the Regents of the University of California.  In those cases,
+the specified Copyright restriction applies TO EACH SUCH SINGLE FILE, but
+not the arrangement of putting it in this library.  This restriction should
+enforce the consistency of this library.
+
+After reading the COPYING.LIB file, you'll notice, that a program that just
+uses the library by using OpenLibrary(), and calling functions in it, is to
+be considered as a `work that uses the Library', and 5.  of COPYING.LIB
+says for this case:  " Such a work, in isolation, is not a derivative work
+of the Library, and therefore falls outside the scope of this License."
+
+Since the glue functions created by compiling and running gen_glue.c (in
+glue) are declared to be in the Public Domain (thus not to be covered by
+any license), your compiled and linked executable will NOT become a
+derivative of the library, and will thus not be subject to this license.
+Thus, you may use the compiled version of the glue files and the other
+standard library functions, libc.a and crt0.o in a commercial product
+without making it a derivative of the library and thus make it subject to
+the library license.  However, you must tell your customers that
+ixemul.library and ixnet.library are free software according to this
+license, and where they can get a copy of its source code.  The easiest way
+to ensure that you remain in compliance with all licenses is to ship a copy
+of the ixemul source code with each copy of the binary ixemul.library and
+ixnet.library files.

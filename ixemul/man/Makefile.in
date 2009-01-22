@@ -1,0 +1,50 @@
+#### Start of system configuration section. ####
+
+srcdir =	@srcdir@
+VPATH =		@srcdir@
+
+# Common prefix for machine-independent installed files.
+prefix =	@prefix@
+
+# Common prefix for machine-dependent installed files.
+exec_prefix =	@exec_prefix@
+
+bindir =	$(exec_prefix)/bin
+libdir =	$(exec_prefix)/Sys/libs
+
+INSTALL =	@INSTALL@
+INSTALL_DATA =	@INSTALL_DATA@
+
+CC =		@CC@
+
+CFLAGS =	@CFLAGS@
+LDFLAGS =	@LDFLAGS@
+
+RANLIB =	@RANLIB@
+AR =		ar
+RM =		rm -f
+
+#### End system configuration section ####
+
+SHELL =		/bin/sh
+
+VPATH :=	$(wildcard $(srcdir)/man?)
+DIRS :=		$(VPATH:$(srcdir)/man%=cat%)
+SRC :=		$(wildcard $(srcdir)/man?/*.?)
+DOCS :=		$(addsuffix .0,$(basename $(SRC:$(srcdir)/man%=cat%)))
+
+all:		$(DIRS) $(DOCS)
+
+suf =		.$(subst /,,$(patsubst cat%,%,$(dir $@)))
+
+$(DOCS):
+		groff -Tascii -mandoc $(srcdir)/$(join $(patsubst cat%,man%,$(basename $@)),$(suf)) >$@
+
+$(DIRS):
+		mkdir $@
+
+clean:
+		rm -rf cat?
+
+clobber:	clean
+		rm -f Makefile

@@ -1,0 +1,84 @@
+#### Start of system configuration section. ####
+
+srcdir =        @srcdir@
+
+ifeq ($(srcdir),.)
+srcdir = ../../..
+endif
+
+VPATH :=        $(srcdir)
+
+# Common prefix for machine-independent installed files.
+prefix =        @prefix@
+
+# Common prefix for machine-dependent installed files.
+exec_prefix =   @exec_prefix@
+
+bindir =        $(exec_prefix)/bin
+libdir =        $(exec_prefix)/Sys/libs
+
+INSTALL =       @INSTALL@
+INSTALL_DATA =  @INSTALL_DATA@
+
+CC =            @CC@
+
+CFLAGS =        @CFLAGS@
+LDFLAGS =       @LDFLAGS@
+
+RANLIB =        @RANLIB@
+AR =            @AR@
+
+DO_CATENATE =   @DO_CATENATE@
+
+#### End system configuration section ####
+
+# I *love* GNU make!
+define catenate
+/bin/echo -n creating $@...
+/bin/echo "$(^:%=#include \"%\"\n)" >$@
+/bin/echo done
+endef
+
+ifeq ($(BASE), morphos)
+FLAVOR_CFLAGS = -mcpu=$(FPU)
+else
+FLAVOR_CFLAGS = -m$(CPU) -m$(FPU)
+endif
+
+INCS =          -I$(srcdir) -I$(srcdir)/../library -I$(srcdir)/../include
+
+ALL_CFLAGS =    $(CFLAGS) $(FLAVOR_CFLAGS) $(INCS) $(OTHER_CFLAGS)
+
+LIB =           libstring.a
+
+.c.o:
+		$(CC) $(ALL_CFLAGS) -c $< -o $@
+
+SRC =           $(notdir $(wildcard $(srcdir)/*.c))
+
+ifeq ($(DO_CATENATE), yes)
+
+$(LIB) :        all.o
+		rm -f $@
+		$(AR) rv $@ $^
+		$(RANLIB) $@
+
+all.c:          $(SRC)
+		@$(catenate)
+
+else
+
+OBJS= $(SRC:.c=.o)
+
+$(LIB):         $(OBJS)
+		rm -f $@
+		$(AR) rv $@ $^
+		$(RANLIB) $@
+
+endif
+
+clean:
+		rm -rf 680?0 notrap powerpc
+
+clobber:        clean
+		rm -f Makefile

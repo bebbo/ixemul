@@ -1,0 +1,182 @@
+
+		    IXEMUL  LIBRARY  INSTALLATION  NOTES
+
+			   (last updated 27-May-97)
+
+
+=====================
+DISTRIBUTION CONTENTS
+=====================
+
+The net ixemul library distribution consists of several archives:
+
+  ixemul-bin.lha	Utils for gg/bin, like ixtrace and ixprefs
+
+  ixemul-sdk.lha	Files needed to build applications that use
+			ixemul.library.
+
+  ixemul-doc.lha	Various documentation, such as this file
+
+  ixemul-src.tgz	Complete source code for ixemul library as
+			a gzip compressed tar archive.
+
+  ixemul-tz.lha		Pieces for doing TZ (timezone) management
+
+  ixemul-CCCF.lha	Specific flavors of the library, where 'CCC'
+			is one of 000, 020, or 040, for 68000, 68020,
+			and 68040 respectively, and 'F' is either
+			'f', 's', or 't' for FPU support or soft floating
+			point or a "trace" version (also soft float)
+			respectively.
+
+The ixemul-doc.lha archive contains various readme and copyright files that
+do not need to be installed anywhere.  The ixemul-src.tgz archive contains
+the source tree that can be installed anywhere.  The rest of the archives
+should simply be extracted relative to the gg: directory to put all the
+files in their standard location.
+
+========================
+INSTALLING RUNTIME FILES
+========================
+
+For the moment, you must manually install the files.  Eventually there will
+be an installer script available that you can use with the standard AmigaOS
+installer program to make installation more WorkBench friendly.
+
+First backup any files in gg: that will get overwritten during the install,
+if you wish to preserve them.  These files typically are:
+
+	gg:bin/ixprefs
+	gg:bin/ixtrace
+	gg:bin/ixstack
+	gg:lib/bcrt0.o
+	gg:lib/crt0.o
+	gg:lib/rcrt0.o
+	gg:lib/libc.a
+	gg:lib/libb/libc.a
+	gg:include		(lots of files, but probably not all)
+	gg:man			(lots of files, but probably not all)
+	gg:etc			(lots of files, but probably not all)
+	gg:Sys/libs/ixemul*	(all the old versions of the library)
+
+Change directory to gg: and extract the contents of ixemul-bin.lha,
+ixemul-sdk.lha (if you expect to be building any ixemul.library using
+applications), ixemul-tz.lha (optional) and any ixemul-XXXX.lha archives
+that you want, overwriting any existing copies of the files in your Geek
+Gadgets tree.  For example, to install the utils, sdk, and both the 68000
+68040+68881 versions of the library, do the following:
+
+	lha -mraxe x ixemul-bin.lha gg:
+	lha -mraxe x ixemul-sdk.lha gg:
+	lha -mraxe x ixemul-000.lha gg:
+	lha -mraxe x ixemul-040f.lha gg:
+
+Now you need to decide which version of the library to use, based on what
+sort of machine you have (68000, 68020 or 68030, 68040) and whether or not it
+has an FPU (68020+68881, 68030 with FPU, or 68040 with FPU).  Do something
+like the following:
+
+	cd gg:Sys/libs
+	copy ixemul040fpu.library ixemul.library clone
+
+Then either reboot or run a program to flush the existing ixemul.library (if
+any) from memory.  You should also review the NEWS file from the docs
+archive for changes made since the version from which you have upgraded.
+If you installed the ixemul-tz.lha archive you should read ixtimezone.doc
+from the docs archive and set your TZ environment variable appropriately.
+
+=======================
+INSTALLING SOURCE FILES
+=======================
+
+To extract the source code, simply cd to a directory where you would like
+the source code directory to be created, and extract the source archive
+there:
+
+	cd gg-src:
+	gzip -d ixemul-src.tgz
+	tar -xvf ixemul-src.tar
+	rm ixemul-src.tar
+
+Note that this will create the directory ixemul and populate it with all the
+source files.
+
+To rebuild the library, all that is needed is to run the configure script
+and then run make.  It is recommended that you use separate source and build
+directories so you can leave the source tree untouched:
+
+	cd gg-build:
+	makedir ixemul
+	cd ixemul
+	sh /gg-src/ixemul/configure --prefix=/gg
+
+This will create a Makefile and several subdirectories with other Makefiles.
+Note the section in the Makefile that looks like:
+
+###  CPU-FPU types.
+###
+###  The default thing to do is to make all reasonable combinations of the
+###  library.
+###
+###  Note that libsrc, which builds the runtime startup files and all
+###  versions of libc.a, and utils completely ignore the base/cpu/fpu variables,
+###  so these are handled in the all: target.
+###
+###  You can remove specific CPU/FPU combinations that you are not interested in.
+
+CPU-FPU-TYPES =	68000.soft-float \
+		68020.soft-float 68020.68881 \
+		68040.soft-float 68040.68881
+
+By default, all of the versions of ixemul.library are built by make.  This
+can take a relatively long time.  If you only want to build one particular
+version of the library and runtime files to test, just remove the lines
+you don't want.  I.E.  to build a 68040+68881 version, the above lines
+should be changed to:
+
+CPU-FPU-TYPES =	68040.68881
+
+Then just run "make" in the build directory:
+
+	cd gg-build:ixemul
+	make
+
+Note that you must have a version of GNU make that is newer than the ones
+distributed on the FreshFish CDs and on aminet.  Those makes had a patch for
+AmigaOS that nobody used but disabled an important feature that the current
+ixemul Makefiles use.  If you have problem compiling the ixemul library get
+the latest Geek Gadgets make from ftp.ninemoons.com:pub/geekgadgets or a
+mirror.
+
+You need at least version 2.6.0 of gas, the GNU assembler. Earlier
+versions didn't fully support the Motorola assembly syntax, but this one
+does. Again, you can get this from Geek Gadgets.
+
+You also need a gcc that accepts the -mrestore-a4 and the -resident32
+option (first released in November/December 1996), otherwise ixemul will
+not compile.
+
+Finally, if you have an older version of ixemul.library installed while you
+are compiling this new version, then you may run into trouble building the
+timezone files using the 'zic' utility. This utility requires the latest
+ixemul.library (which you have just compiled), but since you haven't
+installed it yet, zic complains that the ixemul.library is too old. The
+solution is to install the new ixemul.library first, and then continue
+compiling. You may have to use 'avail flush' or reboot after installing the
+new library to insure that the old library is really flushed from memory.
+
+=======
+IXPREFS
+=======
+
+Note that effective with ixemul.library 42.0, ixconfig can no longer be
+used.  Use ixprefs instead.
+
+==============
+REPORTING BUGS
+==============
+
+Please report problems or bugs to Hans Verkuil (hans@wyst.hobby.nl), who is
+the current ixemul library coordinator.  Even better than a bug report is a
+bug fix, which typically would be a context diff file for one or more ixemul
+source files.
