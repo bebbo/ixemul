@@ -1,0 +1,72 @@
+============================================================================
+
+Date: Tue, 30 Jan 96 20:16:56 EET
+From: kriton!kyrimis@achilles.noc.ntua.gr (Kriton Kyrimis)
+Subject: old enforcer hit problem fixed!
+
+Some time ago I reported that I was getting enforcer hits on ramlib whenever
+starting an ixemul client. Fred was not able to reproduce this problem using
+a software configuration similar to mine.
+
+It turns out that this is a known problem for the Fusion-Forty accelerator.
+The fix is to upgrade the Fusion-Forty's MoveMH utility to version 1.2. I just
+upgraded, and the problem has disappeared.
+-- 
+	Kriton	(UUCP:     pythia!theseas!kriton!kyrimis)
+	      	(INTERNET: kyrimis@theseas.softlab.ece.ntua.gr)
+	      	(WWW:      http://www.hpcl.cti.gr/~kyrimis
+-----
+"You don't just get up in the morning, eat your cornflakes, and go out and
+ change history."
+-----
+
+============================================================================
+
+Date: Thu, 11 Apr 1996 17:21:32 +0100 (BST)
+From: Lars Hecking <lhecking@nmrc.ucc.ie>
+Subject: ixemul 43.0 Makefile.in and trouble-shooting entry
+
+Hardware: A3000/25 Rev. 9.03, 37.175 ROM, 2+12MB, rev. 04 SCSI chip
+	  Quantum LPS240S (id 0), IBM DPES 31080 SCSI-II (id 1)
+Problem:  After installing the new IBM drive, ixemul clients cause serious
+	  trouble and don't work properly. Symptoms: gcc chokes on
+	  clean, compilable input files with unbalanced endif and similar
+	  errors. Diff "finds" differences between identical files. Tar barfs
+	  on intact archives.
+Possible explanation: ixemul.library uses Disable()/Enable() excessively.
+	  This may lead to a situation where the SCSI driver is slowed down
+	  and the drive has to reselect more often. Reselect is the main
+	  trouble source of the WDC33C93-04 chip.
+
+Solution: Disable reselect for the drive (eg. with RDBFlags from Aminet).
+Better solution: upgrade to AmigaOS 3.1 ;-)
+
+============================================================================
+
+If you use an ixemul.library compiled for the 68000 CPU on an Amiga with an
+68040 CPU and working FPU, then the IEEESPMul call from mathieeesingbas.library
+can cause an EMT trap.  This function is called indirectly if you multiply
+two floats.  The solution is provided below.  Of course, it is even better
+to just use the ixemul.library for an 68040 with FPU.
+
+Date: Tue, 7 May 1996 15:27:39 -0700 (MST)
+From: fnf@ninemoons.com (Fred Fish)
+Subject: Re: ixemul EMT trap problem revisited
+
+> > > crashes then I guess IEEESPMul contains a bug. I have mathieeesingbas.library
+> > > version 37.3.
+
+This triggered a faint memory of something I saw on aminet:
+
+   MathPatch.lha      util/boot    3K  63+Patch for 68040 bug in "mathieeesingbas.
+
+I installed that and it cured the problem.
+
+-Fred
+
+============================================================================
+
+If you get an "Abort" requester every time you start a Geek Gadgets
+program, then check for the presence of the multiuser.library on your
+system and remove it. Apparently this library can cause serious problems
+with ixemul if there are no volume around that actually use MuFS.

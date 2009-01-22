@@ -1,0 +1,187 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_INIT(libsrc/crt0.c)
+
+dnl ##### Optional features.
+BUILD_PPC="X"
+BUILD_M68K="X"
+TYPES=""
+DO_CATENATE="yes"
+AC_ARG_ENABLE(ppc,
+[  --enable-ppc     build ixemul for MorphOS],
+if test "$enableval" = yes; then
+    BUILD_PPC=yes
+fi)
+AC_ARG_ENABLE(ppc,
+[  --disable-ppc    don't build ixemul for MorphOS],
+if test "$enableval" = yes; then
+    BUILD_PPC=no
+fi)
+AC_ARG_ENABLE(m68k,
+[  --enable-m68k    build ixemul for AmigaOS],
+if test "$enableval" = yes; then
+    BUILD_M68K=yes
+fi)
+AC_ARG_ENABLE(m68k,
+[  --disable-m68k   don't build ixemul for AmigaOS],
+if test "$enableval" = yes; then
+    BUILD_M68K=no
+fi)
+AC_ARG_ENABLE(cat,
+[  --disable-cat    don't catenate sources before compiling],
+if test "$enableval" = no; then
+    DO_CATENATE=no
+fi)
+AC_ARG_WITH(cpu,
+[  --with-cpu=x            build the server for cpu x (x=68020.68881, 68000.soft-float, powerpc.604e, ...)],
+TYPES="$withval")
+
+AC_PROG_INSTALL
+AC_PROG_AWK
+AC_PROG_CC
+AC_CHECK_TOOL(RANLIB, ranlib, :)
+AC_CHECK_TOOL(AR, ar, :)
+AC_ARFLAGS
+
+dnl ##### Find the version(s) to build
+case "${host}" in
+	m68k*-*-amigaos*)
+	    if test "$BUILD_M68K"="X"; then
+		BUILD_M68K="yes"
+	    fi
+	    if test "$BUILD_PPC"="X"; then
+		BUILD_PPC="no"
+	    fi
+	    ;;
+	p*pc-*-morphos*)
+	    if test "$BUILD_M68K"="X"; then
+		BUILD_M68K="no"
+	    fi
+	    if test "$BUILD_PPC"="X"; then
+		BUILD_PPC="yes"
+	    fi
+	    ;;
+esac
+if test -z "$TYPES"; then
+    if test "$BUILD_68K"="yes"; then
+	TYPES="68000.soft-float notrap.soft-float 68020.soft-float"
+	TYPES="$TYPES 68020.68881 68040.soft-float 68040.68881"
+	TYPES="68060.68881 68060.soft-float"
+    fi
+    if test "$BUILD_PPC"="yes"; then
+	TYPES="$TYPES powerpc.604e powerpc.603e"
+    fi
+fi
+
+dnl ##### Find the prefix to use for tools.
+PREFIX_M68K_AMIGAOS="m68k-amigaos-"
+PREFIX_PPC_AMIGAOS="ppc-amigaos-"
+PREFIX_PPC_MORPHOS="ppc-morphos-"
+case "${build}" in
+	m68k*-*-amigaos*)
+	    PREFIX_M68K_AMIGAOS=""
+	    ;;
+	p*pc-*-morphos*)
+	    PREFIX_PPC_MORPHOS=""
+	    ;;
+esac
+
+dnl ##### Find the tools to use.
+tmpCC="$CCPPC"
+tmpAS="$ASPPC"
+tmpAR="$ARPPC"
+tmpRANLIB="$RANLIBPPC"
+tmpLD="$LDPPC"
+if test "$BUILD_PPC"="yes"; then
+    if test -z "$tmpCC"; then
+	tmpCC="${PREFIX_PPC_MORPHOS}gcc"
+    fi
+    if test -z "$tmpAS"; then
+	tmpAS="${PREFIX_PPC_MORPHOS}as"
+    fi
+    if test -z "$tmpRANLIB"; then
+	tmpRANLIB="${PREFIX_PPC_MORPHOS}ranlib"
+    fi
+    if test -z "$tmpAR"; then
+	tmpAR="${PREFIX_PPC_MORPHOS}ar"
+    fi
+    if test -z "$tmpLD"; then
+	tmpLD="${PREFIX_PPC_MORPHOS}ld"
+    fi
+fi
+CCPPC="$tmpCC"
+ASPPC="$tmpAS"
+ARPPC="$tmpAR"
+RANLIBPPC="$tmpRANLIB"
+LDPPC="$tmpLD"
+
+tmpCC="$CC68K"
+tmpAS="$AS68K"
+tmpAR="$AR68K"
+tmpRANLIB="$RANLIB68K"
+tmpLD="$LD68K"
+if test "$BUILD_M68K"="yes"; then
+    if test -z "$tmpCC"; then
+	tmpCC="${PREFIX_M68K_AMIGAOS}gcc"
+    fi
+    if test -z "$tmpAS"; then
+	tmpAS="${PREFIX_M68K_AMIGAOS}as"
+    fi
+    if test -z "$tmpRANLIB"; then
+	tmpRANLIB="${PREFIX_M68K_AMIGAOS}ranlib"
+    fi
+    if test -z "$tmpAR"; then
+	tmpAR="${PREFIX_M68K_AMIGAOS}ar"
+    fi
+    if test -z "$tmpLD"; then
+	tmpLD="${PREFIX_M68K_AMIGAOS}ld"
+    fi
+fi
+CC68K="$tmpCC"
+AS68K="$tmpAS"
+AR68K="$tmpAR"
+RANLIB68K="$tmpRANLIB"
+LD68K="$tmpLD"
+
+NATIVE_CC="$CC"
+NATIVE_CFLAGS="$CFLAGS"
+NATIVE_LDFLAGS="$LDFLAGS"
+
+
+AC_SUBST(DO_CATENATE)
+
+AC_SUBST(AS)
+AC_SUBST(COPTFLAGS)
+
+AC_SUBST(CCPPC)
+AC_SUBST(ASPPC)
+AC_SUBST(ARPPC)
+AC_SUBST(RANLIBPPC)
+AC_SUBST(LDPPC)
+AC_SUBST(CFLAGSPPC)
+AC_SUBST(LDFLAGSPPC)
+AC_SUBST(COPTFLAGSPPC)
+
+AC_SUBST(CC68K)
+AC_SUBST(AS68K)
+AC_SUBST(AR68K)
+AC_SUBST(RANLIB68K)
+AC_SUBST(LD68K)
+AC_SUBST(CFLAGS68K)
+AC_SUBST(LDFLAGS68K)
+AC_SUBST(COPTFLAGS68K)
+
+AC_SUBST(NATIVE_CC)
+AC_SUBST(NATIVE_CFLAGS)
+AC_SUBST(NATIVE_LDFLAGS)
+
+AC_SUBST(BUILD_PPC)
+AC_SUBST(BUILD_M68K)
+
+AC_SUBST(TYPES)
+
+AC_OUTPUT(Makefile general/Makefile library/Makefile libsrc/Makefile
+	  static/Makefile stdio/Makefile stdlib/Makefile string/Makefile wchar/Makefile
+	  ixnet/Makefile stack/Makefile net/Makefile db/Makefile glue/Makefile
+	  utils/Makefile man/Makefile)
+

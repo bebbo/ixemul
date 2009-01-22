@@ -1,0 +1,117 @@
+
+2005-03-29  Harry Sintonen  <sintonen@iki.fi>
+
+	* Fix static data in:
+	  library/getusershell.c
+	  library/sysv_msg.c
+	  library/ptrace.c (not important I guess)
+	  library/malloc.c/all_free()/errno_dymmy (harmless)
+	  library/ix_settings.c (not important?)
+	* Some static data appears to be handled by Forbid():
+	  library/sysv_sem.c
+	  library/sysv_msg.c
+	* Some static data appears to be handled by ix_lock_base():
+	  library/shm.c/shmget_allocate_segment()/seq
+
+
+2003-12-28  Harry Sintonen  <sintonen@iki.fi>
+
+	* MorphOS: Make setjmp/longjmp save (used? vrsave?) vector (altivec)
+	  registers. This must be dynamic, the same lib must work with no
+	  altivec!
+
+
+1999-09-03  David Zaroski  <zaroski@cronus.ninemoons.com>
+
+	* The following are in prioritized order
+	* Add seamless cross-compiling capabilities to the build process
+	* Fix lseek() bug reported by Rask
+	* Add? nanosleep()
+
+It appears that some of the following have already been taken care of,
+but was not removed from the list. :( Something else TODO. :-)
+
+
+
+***	Add support for serial line I/O, allowing a port of GNU (Taylor's)
+	UUCP.
+
+***	Add job control support. Partial support for stopping/resuming processes
+	is already in place but it needs to be generalized so that it can be
+	user for job control.
+
+***	The stat() function (and/or opendir() ) is slow. Is it possible to
+	speed this up?
+
+***	Improve the (currently only partially implemented) ix.h header.
+
+***     Document how to implement a fork() emulation
+
+***	Amiga<->Unix pathname handling scheme:
+
+	The following scheme might be feasible:
+	
+	Either through a function call or through a global variable, a program
+	tells ixemul that it can use Amiga pathnames. In that case ixemul will
+	translate all filenames to Unix pathnames internally. E.g., the open()
+	function will start with this code:
+	
+	  if (process_can_use_amiga_pathnames)
+	    pathname = a2u(pathname);
+	
+	Similar code is needed for fopen(), etc.
+	
+	With ixprefs you can state whether you want to accept these hints from
+	programs or not.
+	
+	This means that a program must be prepared to handle both kinds of
+	pathnames. This is only a problem if your program tries to parse the
+	pathname.
+	
+	I think a function 'int ix_can_use_amiga_pathnames(void)' that returns TRUE
+	if the user (through ixprefs) also accepts amiga pathnames would be the
+	best way to do this.
+	
+	Functions a2u() and u2a() for pathname conversion would also be exported
+	from ixemul (they are already available internally).
+
+***	#include <unistd.h>
+
+	main()
+	{
+	  char foo[1000];
+	  read(0,foo,999);
+	}
+
+	Run this program, press Ctrl-C and it looks as if nothing has
+	happened. You will have to actually press enter to see the
+	shell prompt.
+
+***	Open the math libraries on a per-task basis.
+
+***	The initial value of the frame pointer is not set to NULL (as
+	it should be). This makes backtracking the stack a bit more
+	complicated as the current frame pointer has to be checked for
+	being inside the current maximum stack frame (and it's almost
+	impossible to do that with stackextension enabled...).
+
+***	Implement socketpair().
+
+***	ixstack should be able to modify stack even if the file is write protected
+	(just like gzip).
+
+***	Add proper locale support.
+
+***	Improve math handling (especially math.h, ask Kriton for more info)
+
+***	At every ixemul open ixnet tries to open bsdsocket.library or
+	socket.library. If these are not present, it will do a disk access
+	in LIBS, which is a performance penalty. Can we find something more
+	elegant?
+
+***	Make it possible for a program to turn off the Unix path
+	translation of ixemul, so that it can use standard Amiga names.
+
+
+
+	

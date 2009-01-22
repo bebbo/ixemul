@@ -1,0 +1,170 @@
+.de Sp
+.if n .sp
+.if t .sp 0.4
+..
+.TH IXTIMEZONE 8
+.SH NAME
+ixtimezone \- allows Unix timezone-handling to be used with ixemul.library
+.SH SYNOPSIS
+.B ixtimezone
+option
+.br
+.SH DESCRIPTION
+.I Ixtimezone
+uses the
+.B TZ
+environment variable to determine the offset in seconds between Universal
+Coordinated Time (aka Greenwich Mean Time) and the local timezone. This
+offset is stored in a field in the ixemul library base. The offset is also
+written to the environment variable
+.BR IXGMTOFFSET .
+The 
+.I ixemul.library
+is now able to correctly determine the local time and
+GMT.
+.LP
+The
+.B TZ
+environment variable should contain the name of one of the files in the
+.B /etc/zoneinfo
+directory. For example, I live in the Netherlands, so my
+.B TZ
+is set to
+.BR Europe/Amsterdam .
+The
+.B TZ
+environment variable
+.I must
+be set before using
+.IR ixtimezone ,
+otherwise
+.I ixtimezone
+wouldn't know what the local timezone is, and therefore it wouldn't be able
+to compute the offset from GMT.
+.LP
+You should put
+.I ixtimezone
+in your
+.B startup-sequence
+to ensure that it is called every time you start your computer. After
+.I ixtimezone
+has been executed, you can set
+.B TZ
+to whatever value you want. For example, to see what time it is in Japan,
+set
+.B TZ
+to
+.B Japan
+and type
+.I ixtimezone
+.IR \-test .
+But don't use any other option, as the other options set the GMT offset based on the
+current
+.B TZ
+value, which is
+.BR Japan !
+.LP
+Note that you need to call this tool at least twice a year, when
+Daylight Saving Time comes in effect and when it ends.
+.SH OPTIONS
+.TP
+.B \-test
+Print the local time and GMT (according to 
+.IR ixemul.library )
+to standard output.
+Use this to test the current settings. It doesn't affect anything else.
+.TP
+.B \-get\-offset
+Calculate the difference between local time and GMT in seconds. The
+resulting offset is stored in the library base of
+.I ixemul.library
+and is also written to the global environment variable
+.BR IXGMTOFFSET .
+.Sp
+If the
+.B IXGMTOFFSET
+environment variable didn't exist or the offset stored in the original
+environment variable differed from the new offset (which happens when
+Daylight Saving Time starts or ends), then a copy of
+.B IXGMTOFFSET
+is written to the
+.B ENVARC:
+directory.
+.Sp
+Since
+.I ixemul.library
+reads the
+.B IXGMTOFFSET
+environment variable just after it is loaded into memory, it is
+sufficient to use
+.I ixtimezone
+only when Daylight Saving Time starts or ends. Provided, of course, that
+the contents of the
+.B ENVARC:
+directory is copied to 
+.B ENV:
+before
+.I ixemul.library
+is loaded.
+.TP
+.B \-check\-dst
+This option does the same as
+.BR \-get\-offset ,
+but it also detects if Daylight Saving Time has started or ended. If so, it
+automatically sets the Amiga clock to the correct time. So you no longer
+need to change the time manually twice a year.
+.TP
+.B \-patch\-resource
+This option does the same as
+.BR \-get\-offset ,
+but it also patches the
+.IR battclock.resource .
+This is most useful if you also run the Unix operating system on your Amiga
+(NetBSD or Linux, for example). Unix requires that the clock is set to
+Greenwich Mean Time, while the Amiga requires that the clock is set to
+local time. By patching the 
+.I battclock.resource
+one can set the Amiga clock, which is managed by the
+.IR battclock.resource ,
+to GMT time. The patch ensures that whenever the Amiga wants to
+obtain the time, the GMT time is converted into local time. There is also
+no longer any need to change the Amiga clock when Daylight Saving Time starts or
+ends, since the battery clock is set to GMT.
+.Sp
+.I ixtimezone
+detects if you try to patch the
+.I battclock.resource
+a second time. It won't patch the resource again, but it will check if the
+current GMT offset is still the same as when the patch was originally
+installed. If it has changed, the
+.I battclock.resource
+offset will also be changed.
+.TP
+.B \-remove\-patch
+Removes the 
+.I battclock.resource
+patch. It checks if the patch was really installed before removing it.
+This option doesn't do anything else.
+.SH FILE
+/etc/zoneinfo	standard directory used for created files
+.SH HISTORY
+The original idea for the 
+.B \-patch\-resource
+option came from the
+.I unixclock
+utility written by Geert Uytterhoeven.
+.I unixclock
+is available on Aminet.
+.SH "SEE ALSO"
+The time functions, the timezone databases and the
+.IR zic (8)
+utility for compiling the timezone files in the
+.B /etc/zoneinfo
+directory are available from
+.I elsie.nci.nih.gov
+in the
+.B /pub
+directory.
+.SH AUTHOR
+Hans Verkuil
+.RI ( hans@wyst.hobby.nl )

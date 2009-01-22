@@ -1,0 +1,336 @@
+2009-09-22 Bernd Rösch <nospamname@web.de>
+    * bump revision to 50.0 and use V48 signal handling,
+	  because on V49 Ports for 68k vfork, OWB, CTRL+c, end on stackoverflow 
+	  dont work with the new MOS signalhandling on 68k.
+	
+	* Use of seperate files with ending _68k and modified makefile so should not break MOS build
+    * updatet include files to help more programs easy porting
+    * added atan2 strtoll
+    * assert use the in newer GCC obsolete eeprintf func not. 
+
+    * add many functions as defines to math.h to get more programs working without changes
+	
+#define rint(x) (floor(x + 0.5))
+#define rintf(x) ((float)(floor(x + 0.5)))
+#define signbit(x) (x < 0)
+#define lroundf(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
+#define HAVE_CEILF
+#define ceilf(x) ((float)(ceil(x)))
+#define HAVE_FLOORF
+#define floorf(x) ((float)(floor(x)))
+#define HAVE_LROUND
+#define HAVE_ROUNDF
+#define roundf(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
+#define HAVE_ROUND
+#define round(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
+#define HAVE_frexpf
+#define frexpf(x,exp) ((float) frexp(x, exp)) 
+#define HAVE_LDEXPF 
+#define ldexpf(x,exp) ((float) ldexp(x, exp)) 
+#define powf(x,y) ((float) pow(x, y)) 
+#define HAVE_SINF
+#define sinf(x) ((float)sin(x))
+#define HAVE_COSF
+#define cosf(x) ((float)cos(x))
+#define HAVE_FMODF
+#define fmodf(x, y) ((float)fmod(x, y))
+#define HAVE_ATAN2F
+#define atan2f(x, y) ((float)atan2(x, y))
+#define HAVE_SQRTF
+#define sqrtf(x) ((float)sqrt(x))
+#define trunc(x) floor(x)
+#define truncf(x) ((float)floor(x))
+#define  cbrt(x)   (pow((x),1./3.))
+#define  cbrtf(x)  ((float) (pow((x),1./3.)))
+#define isfinite(val) (!isnan(val) && !isinf(val))
+#define NAN (0.0/0.0)
+#define INFINITY (1.0/0.0)
+	 
+    * faster file access thru 16 kb buffer, gcc compile 40-50% faster
+    * compile too with crosscompilers, because the generatet files are now
+      not need.The file ix_internals_backup.h contain this infos now.So you can change
+      here.
+    
+add atoll func to stdlib.h   
+
+2008-08-15  Harry Sintonen <sintonen@iki.fi>
+	* Fixed a race condition in global environment (ENV:) scanning.
+	* Bumped version to 49.26.
+
+2007-03-19  Harry Sintonen <sintonen@iki.fi>
+	* Fixed a silly bug in the "Ram Disk:" to "RAM:" conversion.
+	* Fixed __load_seg for root directory (/).
+
+2007-02-19  Harry Sintonen <sintonen@iki.fi>
+	* Internally convert any occurence of "Ram Disk:" to "RAM:". This
+	  workarounds some b0rken configure scripts.
+	* Bumped version to 49.25.
+
+2007-01-28  Harry Sintonen <sintonen@iki.fi>
+	* MorphOS: Fixed startup-code local ix_panic varargs.
+	* __ix_wb_parse: Free temporary memory allocated for the WINDOW
+	  tooltype.
+
+2007-01-12  Harry Sintonen <sintonen@iki.fi>
+	* Fixed widechar _ctype_ accesses (Marcin Kurek).
+
+2006-11-19  Harry Sintonen <sintonen@iki.fi>
+	* Fixed to restore tc_UserData at ix_close.
+	* Bumped version to 49.24.
+
+2006-11-01  Harry Sintonen <sintonen@iki.fi>
+	* Fixed ixemul and ixnet library open to check for AllocSignal()
+	  failures.
+	* Disabled SetExcept() optimization until GDB issue is sorted out.
+
+2006-08-20  Harry Sintonen <sintonen@iki.fi>
+	* Fixed getpagesize() to return the actual page size.
+	* Adjusted MorphOS ix_flush*() cache routines to invalidate/flush
+	  m68k (JIT) cache aswell as PPC. This way m68k ixemul apps won't
+	  break at least. No big deal, as far as I can tell these functions
+	  are pretty much unused.
+
+2006-08-16  Harry Sintonen <sintonen@iki.fi>
+	* Fixed vfork() PPCSPLower & PPCSPUpper alignment.
+	* Fixed execve() atexit-handler calling to make sure stdio
+	  file descriptors can't be close()d.
+	* Bumped version to 49.23.
+
+2006-04-05  Harry Sintonen <sintonen@iki.fi>
+	* Fixed pw_class to be "default" instead of NULL. NULL value made
+	  ssh barf (strlen(NULL)).
+	* Fixed AS225/INet225 pw_change to be time(NULL), not -1.
+	* Bumped version to 49.22.
+
+2006-03-11  Harry Sintonen <sintonen@iki.fi>
+	* Now clears possibly pending CTRL-E and CTRL-F signals.
+
+2006-03-10  Harry Sintonen <sintonen@iki.fi>
+	* Limited the SetExcept sigmask to ixemul allocated signals only.
+	  User allocated signals no longer cause exceptions (device I/O,
+	  or anything else using user signals directly/indirectly).
+
+2006-02-15  Harry Sintonen <sintonen@iki.fi>
+	* Fixed all printf family functions not to parse the format string
+	  as multibyte.
+	* Bumped version to 49.21.
+
+2006-02-09  Harry Sintonen <sintonen@iki.fi>
+	* Fixed getfsstat(), fstatfs() and statfs() to LockDosList()/
+	  NextDosList()/UnLockDosList() the doslist properly instead of
+	  Forbid() and direct list scanning.
+	* Fixed getfsstat(), fstatfs() and statfs() to make sure the device
+	  process hasn't disappeared before sending a dospacket.
+	* Removed use of custom __Close function, use dos Close instead.
+
+2005-10-29  Mark Olsen <bigfoot@private.dk>
+	* Mapped /dev/zero to zero: in __open.c
+
+2005-10-25  Harry Sintonen <sintonen@iki.fi>
+	* Fixed ix_to_ados with foo:./[///]bar and foo:/[///]bar. Some stuff
+	  appears to depend on this. Note that foo:../bar etc still works
+	  different to original routine. If something depends on that
+	  particular feature of the original routine, we're screwed.
+	* Added ftruncate() seek workaround for buggy filesystems (FFS2).
+	* Bumped version to 49.20.
+
+2005-06-26  Harry Sintonen <sintonen@iki.fi>
+	* Rewrote ix_to_ados path conversion routine, it was way too hairy
+	  and buggy (for example .// and ..// were interpreted wrong). Now
+	  it's a simple state-engine with exception for ix and abs-ados
+	  path concatenation (needed by ksh cd for example). Also, it no
+	  longer tries to optimize away parent elements in the path, as
+	  this could have led into problems with softlinks.
+
+2005-06-14  Jacek Piszczek <jacadcaps@poczta.onet.pl>
+	* Tweaked termios defaults to match those used on linux, enabled
+	  ISIG, stdin has output flags set as well as stdout now
+
+2005-05-25  Jacek Piszczek <jacadcaps@poczta.onet.pl>
+	* Fixed \n filter when IXTTY_ONLCR is disabled (uses INDEX now).
+	* Added IXTTY_SPECIAL for sshconsole
+
+2005-04-20  Harry Sintonen <sintonen@iki.fi>
+	* Disabled CTRL-F -> SIGWINCH translation code, it isn't used by
+	  anything anyway. It also broke ahi.device from ixemul apps.
+	  There's still the Ixemul semaphore to send signals from outside
+	  of ixemul.
+	* Fixed setnetent()/endnetent()/getnetent() to be reentrant.
+	* Fixed AS255 68k vsyslog() to actually print to the log instead
+	  of stdout.
+	* Fixed vsyslog()/AS225 68k vsyslog() to be reentrant.
+	* Fixed getpass() to be reentrant.
+	* MorphOS: Removed EmulCall68k in favor of EmulCallDirect68k.
+	* Updated inet_network() to 1993 edition.
+	* Fixed getnetent() wrong n_net value and alias parsing.
+	* Fixed fread LARGEREADS: It didn't handle writes or ungetc before
+	  large read.
+	* Rootdir (/) emulation lists assigns now, too. [Pavel Fedin]
+	* Bumped version to 49.19.
+
+2005-03-02  Harry Sintonen <sintonen@iki.fi>
+	* ixnet: fixed h_errno variable, it was never set before.
+	* Bumped version to 49.18.
+
+2005-02-18  Jacek Piszczek <jacadcaps@poczta.onet.pl>
+	* Added a possibility to disable IXTTY_ONLCR.
+	* Added a \n to ^D filter when IXTTY_ONLCR is disabled.
+	* TIOCSET* functions applied to stdin update stdout, etc to
+	  fix some compatibility issues.
+	* Bumped version to 49.17.
+
+2005-02-16  Harry Sintonen <sintonen@iki.fi>
+	* Fixed snprintf/vsnprintf(p,0,...) wrong return value. Both
+	  functions would always return -1 instead of the number of
+	  characters that would have been written (not counting \0).
+	* Bumped version to 49.16.
+
+2005-01-14  David Gerber <zapek@morphos.net>
+	* Fixed scandir() to return proper file types.
+
+2005-01-05  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Added a way to send unix signals to an ixemul process from a non
+	  ixemul process.
+	* Bumped version to 49.15.
+
+2004-10-04  Harry Sintonen <sintonen@iki.fi>
+	* nmap returned NULL instead of -1 for error in one case (report
+	  by jorge).
+
+2004-08-28  Harry Sintonen <sintonen@iki.fi>
+	* ixemul/ixnet LIB_Expunge: Don't reference already freed memory.
+	* Bumped version to 49.14.
+
+2004-07-05  Harry Sintonen <sintonen@iki.fi>
+	* Removed the global max file limit of 512. Currently the close()d
+	  filenodes don't get released, but are cached for reuse.
+	* Bumped version to 49.13.
+
+2004-06-17  Harry Sintonen <sintonen@iki.fi>
+	* Fixed ix_create_extio wrong message node type.
+
+2004-04-02  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Altivec stack alignment fixes.
+	* Bumped version to 49.12.
+
+2004-03-18  Sigbjørn Skjæret <cisc@broadpark.no>
+	* Fixed ENV: notification, you can actually use global envvars now.
+
+2003-12-27  Harry Sintonen <sintonen@iki.fi>
+	* Optimized bcopy(), bzero() and memset().
+	* Fixed bzero() trashing whole memory if called with odd
+	  address and 0 len.
+	* Bumped version to 49.11.
+
+2003-12-12  Harry Sintonen <sintonen@iki.fi>
+	* Fixed uname() to return sensible values under MorphOS.
+	* No longer relies on shared math libraries under MorphOS.
+	* Bumped version to 49.10.
+
+2003-10-15  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Fixed chdir("/") so that mkdir -p /ram/foo/bar works.
+	* Bumped version to 49.9.
+
+2003-08-24  Mark Olsen <bigfoot@private.dk>
+	* file fds no longer set exc fdset in select because there is data
+	  to read.
+
+2003-08-17  David Gerber <zapek@morphos.net>
+	* Added direct mapping of /dev/(random|urandom|srandom|prandom) to
+	  the RANDOM: device.
+	* Bumped version to 49.8.
+
+2003-08-06  Harry Sintonen <sintonen@iki.fi>
+	* Fixed getcwd() off-by-one buffer overflow if ix_translate_slash
+	  was enabled.
+	* Fixed getcwd() buffer overflows with buffer size of 1.
+	* Fixed getcwd() errno in error cases.
+	* Bumped version to 49.7.
+
+2003-07-19  Harry Sintonen <sintonen@iki.fi>
+	* Fixed open() not seeking to file end for O_APPEND.
+	* Bumped version to 49.6.
+
+2003-07-17  Harry Sintonen <sintonen@iki.fi>
+	* Fixed lstat() entering forever loop if called for multiassign
+	  where the first assign doesn't match.
+	* Bumped version to 49.5.
+
+2003-07-15  Harry Sintonen <sintonen@iki.fi>
+	* Fixed ftruncate() and truncate() wrong return value for success.
+	* Bumped version to 49.4.
+
+2003-07-07  Harry Sintonen <sintonen@iki.fi>
+	* Fixed getwd() and getcwd() to prefer NameFromLock() of
+	  pr_CurrentDir over buffersize limited GetCurrentDirName().
+	* Bumped version to 49.3.
+
+2002-11-30  David Gerber <zapek@morphos.net>
+	* Removed "Physical blocks build one logical block (for stdio)"
+	  option which is computed automatically depending on device
+	  blocksize now.
+
+2001-06-01  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Adapted the signal handling process to the new MorphOS
+	  scheduler. It seems to have fixed the CTRL-C crashes.
+	* Bumped version to 49.2.
+
+2001-03-28  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Fixed math functions for MorphOS
+
+2000-10-21  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Implemented cache manipulation functions, besides flush_cache().
+	* Fixed problems with executing non-ixemul programs.
+	* Bumped version to 49.1.
+
+2000-10-04  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* Fixed various problems with 68k ixemul programs
+	* Completed support for 68k stack management
+	* Improved configure/make
+	* Fixed some includes bugs
+	* Added support for ctors/dtors in crt0.o
+	* Added the missing _err/_warn
+	* Compiled the ixpipe: handler and some tools
+
+2000-09-17  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* fixed wb startup problems.
+	* fixed problem with stack extension of 68k program
+
+2000-08-30  Emmanuel Lesueur <lesueur@club-internet.fr>
+	* fixed siglongjmp()
+	* fixed a race condition in wait4()
+
+2000-06-20  Emmanuel Lesueur <lesueur@club-internet.fr>
+
+	* Added MorphOS support.
+	* bumped version from 48.1 to 49.0.
+
+2000-05-07  Emmanuel Lesueur <lesueur@club-internet.fr>
+
+	* replaced the signal handling by one based on exceptions.
+
+1999-07-12  David Zaroski  <zaroski@cronus.ninemoons.com>
+
+	* (library/lseek.c): fix error reporting in __extend_file()
+
+1999-06-13  Fred Fish  <fnf@ninemoons.com>
+
+	* version.in: Bump development version from 48.0 to 48.1 and
+	update the date fields.
+
+1999-03-06  David Zaroski  <zaroski@cronus.ninemoons.com>
+
+	* (configure.in): add support for cross compiling
+	* (Makefile.in) : ditto
+	* (man/Makefile.in): fix man page generation
+	* Regenerate configure
+
+Sat May 23 23:53:18 1998  Fred Fish  <fnf@ninemoons.com>
+
+	* Makefile.in (OS): Remove pos from default list of operating systems
+	to build for.
+
+1998-03-25  Fred Fish  <fnf@ninemoons.com>
+
+	* ChangeLog: New file
+	* Makefile.in (CPU-FPU-TYPES): Add 68060.68881

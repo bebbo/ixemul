@@ -1,0 +1,229 @@
+.TH IXTRACE 1
+.SH NAME
+ixtrace \- a tracer for ixemul.library
+.SH SYNOPSIS
+.B ixtrace
+[
+.B \-a
+] [
+.B \-i
+] [
+.B \-m
+] [
+.B \-l
+] [
+.B \-v
+] [
+.B \-w
+] [
+.B \-z
+] [
+.B \-c
+syscall name
+] [
+.B \-n
+N
+] [
+.B -o 
+logfile
+] [
+.B 
+-p 
+pid
+] [
+.B
+-s 
+syscall-number
+]
+.br
+.SH DESCRIPTION
+.I Ixtrace
+is a utility that reports every call that is made to the
+.IR ixemul.library .
+Since it scans every call made through the library base, it catches even 
+more calls than for example SnoopDOS.
+.PP
+Obviously, tracing support slows down
+.I all
+clients of the library (as each call is now routed through a trace
+function). For this reason there are two library
+versions.
+.I Ixemul.library
+itself doesn't contain tracing support. Using
+the tracer with this library gives a "Function not implemented"
+error. To use the
+.I ixtrace
+utility, you should use the
+.I ixemul.trace
+library instead of
+.IR ixemul.library .
+See
+.B USAGE
+for more detailed instructions.
+.PP
+The option most often used is
+.BR -m ,
+as the library uses
+.I sigsetmask()
+a lot internally, and mentioning this call again and again would just
+clutter the screen.
+.SH OPTIONS
+.TP
+.B \-a
+Print all calls, even those considered `not interesting': internal
+stdio-calls and 32 bit arithmetic emulation for 68000, for example.
+.TP
+.B \-i
+Normally, the tracer shows a function call
+when that function returns, to be able to
+display the return value (and
+.I errno
+in parenthesis). When 
+.B -i
+is specified, it always
+displays the function on entry, instead of on exit. 
+See
+.B BUGS
+for current problems if you invoke
+.I ixtrace
+without the
+.B -i
+option.
+.TP
+.B \-m
+Skip
+.I sigsetmask()
+calls. This function is used
+extensively inside the library, and will in
+most cases just clutter the tracer output.
+.TP
+.B \-l
+List
+.I all
+system calls to stdout. No more need to look up
+a call you want to trace in the include/sys/syscall.def
+file.
+.TP
+.B \-v
+Print the current 
+.I version
+number.
+.TP
+.B \-w
+Wipe out the syscalls you  
+.I DON'T
+want to trace.
+.TP
+.B \-z
+Allows the input of
+.I syscall names
+that the user wants to trace.
+.TP
+.B \-c
+Only print calls to a specific system call, by name. Differs
+from
+.I \-s
+, which expects a syscall number.
+.TP
+.B \-n
+Skip the first
+.I N 
+traces.
+.TP
+.B \-o
+Specify a logfile. If
+.B -o
+is omitted, output goes to
+.IR stdout .
+.TP
+.B \-p
+Only print output from a specific process. You
+have to provide the decimal address of the
+process. Default is to scan all current
+.I ixemul.library
+clients.
+.TP
+.B \-s
+Only print calls to a specific system call. You
+have to specify the system call number as found in
+.BR <sys/syscalls.def> .
+.SH USAGE
+Before you can use
+.IR ixtrace ,
+you will first have to flush the old
+.I ixemul.library
+out of the system. The Workbench option
+.B FlushLibs
+can do that for you,
+.B Avail FLUSH
+achieves the same from a shell. This assumes no currently running process
+is using the library.
+.PP
+Next make sure the system loads
+.I ixemul.trace
+instead of
+.I ixemul.library
+next time it starts a program that uses
+.I ixemul.library
+.
+.PP
+You can do that by replacing
+.I ixemul.library
+with
+.IR ixemul.trace .
+You can also use
+.B LoadLib
+.BR ixemul.trace .
+But
+.B LoadLib
+is not an official CLI command.
+.PP
+Now Start the tracer (probably in its own window).
+You should now see a log of all functions called from your program(s), 
+and some functions called as a consequence of your functions from inside
+the library. A typical output line is:
+.PP
+.B $7588790: <strcmp("foo", "-n")=57 (0)
+.PP
+.TP
+.B $7588790
+This is the process address.
+.TP
+.B <
+Type of log,
+.B <
+means on exit,
+.B >
+means on entry.
+.TP
+.B strcmp("foo", "-n")
+The function with the parameters.
+.TP
+.B =57
+The result of the function.
+.TP
+.B (0)
+The value of
+.IR errno .
+.SH BUGS
+There seems to be some race condition, that can result in deadlock when
+running without the
+.B -i
+flag.
+.PP
+Currently, if trace-on-exit is enabled, the function is called with
+16 arguments, no matter how many arguments you passed to it. This should
+be enough for 99% of all applications, but you may have more than 16 arguments
+to a
+.I printf()
+somewhere.
+.PP
+Functions returning more than a 4 byte result do
+.I not
+work unless you specify the 
+.B -i
+option!
+.SH HISTORY
+Adapted by David Zaroski from the original
+.B README
+written by Markus Wild.

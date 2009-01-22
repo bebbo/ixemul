@@ -1,0 +1,127 @@
+Wed Mar 15 19:55:49 2006  [ipcrm]       (sintonen@iki.fi)
+
+	* Fixed wrong format for warn(), %skey not %key.
+
+Wed Mar 15 19:19:27 2006  [ixstack]     (sintonen@iki.fi)
+
+	* Updated revision number to 1.2
+	* Fixed several race conditions from ixstack -s.
+
+Wed Feb  8 19:13:14 2006  [ixpipe-handler] (sintonen@iki.fi)
+
+	* Updated revision number to 1.2
+	* Fixed sm_Process to point to process pr_MsgPort and not the
+	  process itself.
+	* Fixed ACTION_READ_LINK to return proper error dp_Res1 (-1).
+
+Wed Jul  2 23:09:39 1997  [ixtrace]   	(cz253@cleveland.freenet.edu)
+
+	* Updated revision number to 1.470
+	* The following changes were made to ixtrace.h:
+	  Removed aselect.
+	  Removed CreatePort, CreateExtIO, CreateStdIO, CreateTask.
+	  Removed DeletePort, DeleteExtIO, DeleteStdIO, DeleteTask.
+	  Removed ix_get_vars.
+	  Removed _wb_parse, _cli_parse and _main.
+
+	  Renamed achmod to ix_chmod.
+	  Renamed ix_get_vars2 to ix_get_vars.
+	  Renamed vfork2 to ix_vfork.
+	  Renamed vfork_resume to ix_vfork_resume.
+	  Renamed __amiga_filehandle to ix_filehandle.
+	  Renamed tracecntl to ix_tracecntl.
+
+	  581: ix_req			(added)
+	  582: ix_select		(added)
+	  583: isascii			(added)
+	  584: isiso			(added)
+	  585: toascii			(added)
+	  586: toiso			(added)
+	  587: ix_get_first_segment	(added)
+	  588: ix_get_next_segment	(added)
+	  589: hstrerror		(added)
+	  590: ix_obtain_socket		(added)
+	  591: ix_release_socket	(added)
+	  592: __flush_cache		(added)
+	  593: ix_flush_insn_cache	(added)
+	  594: ix_flush_caches		(added)
+	  595: ix_get_long		(added)
+	  596: ix_set_long		(added)
+	  597: ix_flush_data_cache	(added)
+	  598: ix_mutex_lock		(added)
+	  599: ix_mutex_attempt_lock	(added)
+	  600: ix_mutex_unlock		(added)
+	  601: semop			(added)
+	  602: semctl			(added)
+	  603: semget			(added)
+	  604: msgget			(added)
+	  605: msgctl			(added)
+	  606: msgrcv			(added)
+	  607: msgsnd			(added)
+
+Fri Dec  6 20:11:05 1996  [ixtrace]     (cz253@cleveland.freenet.edu)
+
+	* Updated ixtrace revision number to 1.451 to reflect the current
+	  version of ixemul.library 
+	* The following changes were made in ixtrace.h
+		 36:__obsolete_div	(previously 'div')
+		 92:__obsolete_ldiv	(previously 'ldiv')
+		572:div			(added)
+		573:ldiv		(added)
+		574:inet_makeaddr	(added)
+		575:popen		(added)
+		576:pclose		(added)
+
+
+Mon Oct 14 23:12:59 1996  [ixtrace]	(cz253@cleveland.freenet.edu)
+
+	* Updated ixtrace.c revision number to 1.42
+
+	* Added to ixtrace.h		
+	  	571:__stkext_startup
+
+
+Tue Sep 24 00:35:00 GMT 1996  [ixtrace] (cz253@cleveland.freenet.edu)
+
+	*  Added '-w' option. Allows user to enter a list of syscalls
+	   that are to be ignored or ones they wish to Wipe out.
+
+
+Mon Aug 12 13:43:20 GMT 1996  [ixtrace] (cz253@cleveland.freenet.edu)
+
+	*  Updated the revision number of ixtrace to 1.4
+	*  The following were changed in ixtrace.h
+		287:__obsolete_ssystem	(name changed)
+		335:fgetln		(name changed)
+		483:__stkext_f		(added)
+		517:getprotobynumber	(name changed)
+		555:getdomainname	(added)
+		556:setlogin		(added)
+		557:isblank		(added)
+		558:mmap		(added)
+		559:munmap		(added)
+		560:mlock		(added)
+		561:munlock		(added)
+		562:madvise		(added)
+		563:mprotect		(added)
+		564:msync		(added)
+		565:setlocale		(added)
+		566:localeconv		(added)
+		567:strtoq		(added)
+		568:strtouq		(added)
+		569:setpgid		(added)
+		570:aselect		(added)
+
+	*  Added '-l' option to ixtrace, allows the printing of all
+	   system calls with corresponding numbers, to stdout. Don't 
+	   have to look in include/sys/syscall.def anymore. :)
+	*  Added additional error checking to '-s' option
+	*  Added define 'MAXCALLS' to ixtrace.h, this is the maximum
+	   number of calls that ixtrace understands
+	*  Updated man/man1/ixtrace.1 with additional information on the
+	   '-l','-c','-z','-v' option
+	*  Allow entering of system call name to be traced, instead
+	   of using a number. '-c'
+	*  Added ability to set precisely what calls you want traced 
+	   (NOT limited to just one call). '-z'
+

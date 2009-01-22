@@ -1,0 +1,141 @@
+srcdir =        @srcdir@
+VPATH =         @srcdir@
+
+prefix =        @prefix@
+exec_prefix =   @exec_prefix@
+
+bindir =        $(exec_prefix)/bin
+
+INSTALL =       @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA =  @INSTALL_DATA@
+
+SHELL =         /bin/sh
+CC =            @CC@
+AWK =           @AWK@
+RM =            rm
+DEFS =          @DEFS@
+LIBS =          @LIBS@
+CFLAGS =        @CFLAGS@
+LDFLAGS =       @LDFLAGS@
+
+#### End system configuration section ####
+
+INCLUDES =      -I$(srcdir) -I$(srcdir)/../include -I$(srcdir)/../library -I$(srcdir)/../static -I.
+DEFS =          -DHAVE_STRERROR -Dunix
+OUR_CFLAGS =    $(DEFS) $(INCLUDES) $(CFLAGS)
+OUR_LDFLAGS =   $(LDFLAGS) -B../libsrc/ -L../libsrc
+
+DATABASES =     africa antarctica asia australasia europe northamerica southamerica \
+		pacificnew etcetera backward systemv solar87 solar88 solar89
+
+IXPREFS_OBJ =   main.o cli.o amiga.o amiga_gui.o amiga_functions.o pos.o util.o
+
+TZDIR =         $(prefix)/etc/zoneinfo
+
+# Taken from the tzcode95g.tar.gz Makefile:
+#
+# If you want something other than Eastern United States time as a template
+# for handling POSIX-style time zone environment variables,
+# change the line below (after finding the zone you want in the
+# time zone files, or adding it to a time zone file).
+# (When a POSIX-style environment variable is handled, the rules in the template
+# file are used to determine "spring forward" and "fall back" days and
+# times; the environment variable itself specifies GMT offsets of standard and
+# summer time.)
+# Alternately, if you discover you've got the wrong time zone, you can just
+#       zic -p rightzone
+# to correct things.
+# If you want POSIX compatibility, use "America/New_York".
+
+POSIXRULES =    America/New_York
+
+.c.o:
+		$(CC) -c $(OUR_CFLAGS) $<
+
+all :           ixprefs ixrun ixstack ixpipe-handler \
+		ipcs ipcrm tzselect
+
+#ixtrace ixtimezone zoneinfo/GMT
+
+ixprefs :       $(IXPREFS_OBJ) getopt.o getopt1.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^
+
+amiga_functions.o util.o:       version.h
+
+amiga_gui.o:    amiga_gui.c
+		echo "#ifndef NO_AMIGAOS_SUPPORT" >tmp_amiga_gui.c
+		sed -e '/clib/d' \
+		    -e 's/pragmas/proto/' \
+		    -e 's/_pragmas//' \
+		    -e 's/      (TAG_DONE)/     (GTCB_Scaled), TRUE, (TAG_DONE)/' \
+		    -e 's/OpenDiskFont/OpenFont/' \
+		    -e 's/CreateMenus( ixprefsNewMenu, GTMN_FrontPen, 0L, TAG_DONE )/CreateMenusA( ixprefsNewMenu, NULL )/' \
+		    -e 's/LayoutMenus( ixprefsMenus, VisualInfo, TAG_DONE )/LayoutMenus( ixprefsMenus, VisualInfo, GTMN_NewLookMenus, TRUE, TAG_DONE )/' \
+		    -e 's/WA_PubScreenFallBack, TRUE/WA_PubScreenFallBack,      TRUE, WA_NewLookMenus,  TRUE/' \
+		    <$^ >>tmp_amiga_gui.c
+		echo "#endif /* NO AMIGAOS SUPPORT */" >>tmp_amiga_gui.c
+		$(CC) -c $(OUR_CFLAGS) -o $@ tmp_amiga_gui.c
+		rm -f tmp_amiga_gui.c
+
+ixtrace :       ixtrace.o getopt.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ixrun:          ixrun.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ixstack:        ixstack.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ixtimezone:     ixtimezone.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ixdebug:        ixdebug.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ixpipe-handler: ixpipe-handler.o
+		$(CC) $(OUR_LDFLAGS) -nostdlib -o $@ $? -lc
+
+ipcs:           ipcs.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+ipcrm:          ipcrm.o
+		$(CC) $(OUR_LDFLAGS) -o $@ $^ $(LIBS)
+
+zic:            zic.o ialloc.o scheck.o getopt.o
+		$(CC) -o $@ $^ $(LIBS)
+
+tzselect:       tzselect.ksh
+		sed \
+			-e 's|AWK=[^}]*|AWK=$(AWK)|g' \
+			-e 's|TZDIR=[^}]*|TZDIR=$(TZDIR)|' \
+			<$? >$@
+		chmod +x $@
+
+yearistype:     yearistype.sh
+		rm -f $@
+		cp $^ $@
+		chmod +x $@
+
+zoneinfo/GMT:   zic yearistype
+		rm -rf zoneinfo
+		mkdir zoneinfo
+		rootme=`pwd` ; cd $(srcdir)/databases ; \
+		$$rootme/zic -d $$rootme/zoneinfo -y "sh $$rootme/yearistype" -p $(POSIXRULES) $(DATABASES)
+
+version.h:      ../library/parse_version.c ../version.in
+		gcc -o parse_version $<
+		./parse_version $(srcdir) >$@
+		rm -f parse_version
+
+#
+#       Clean up the local directory.
+#
+
+clean :
+		rm -f *.o ixtrace ixprefs ixrun ixtimezone ixstack tzselect ipcs ipcrm
+		rm -f zic yearistype ixpipe-handler tmp_amiga_gui.c
+		rm -rf zoneinfo
+
+clobber :       clean
+		$(RM) -f Makefile version.h

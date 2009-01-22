@@ -1,0 +1,90 @@
+This is a registry of shared library IDs. Any publicly released shared
+library should be registered here. It is fatal if two different libraries
+would both use the same ID, so they will have to be registered officially.
+If you want to register your (port of a) library, then you should mail me
+(hans@wyst.hobby.nl), and I'll give you an unique ID.
+
+IDs
+
+0-19:	Reserved for your own private use
+
+20:	libX11.ixlibrary
+21:	libXt.ixlibrary
+22:	libICE.ixlibrary
+23:	libSM.ixlibrary
+24:	libXaw.ixlibrary
+25:	libtcl7.6.ixlibrary
+26:	libXext.ixlibrary
+27:	libXmu.ixlibrary
+28:	libXpm.ixlibrary
+29:	libtk4.2.ixlibrary
+30:	libtkstep4.1.ixlibrary
+31:	liboldX.ixlibrary
+32:	libPEX5.ixlibrary
+33:	libolgx.ixlibrary
+34:	libxview.ixlibrary
+35:	libXi.ixlibrary
+36:	libXIE.ixlibrary
+37:	libXtst.ixlibrary
+38:	libXm.ixlibrary
+39:	libMrm.ixlibrary
+40:	libjpeg.ixlibrary
+41:	libpng.ixlibrary
+42:	libz.ixlibrary
+43:	libYgl.ixlibrary
+44:	libXp.ixlibrary
+45:	libpq.ixlibrary
+46:	libMesaGL.ixlibrary
+47:	libMesaAUX.ixlibrary
+48:	libMesaTK.ixlibrary
+49:	libMesaGLU.ixlibrary
+50:	libGLUT.ixlibrary
+51:	libtcl8.0.ixlibrary
+52:	
+53:	
+54:	
+55:	
+56:	
+57:	
+58:	
+59:	
+60:	
+61:	
+62:	
+63:	
+64:	
+65:	
+66:	
+67:	
+68:	
+69:	
+70:	
+71:	
+72:	
+73:	
+74:	
+75:	
+76:	
+77:	
+78:	
+79:	
+80:	
+81:	
+82:	
+83:	
+84:	
+85:	
+86:	
+87:	
+88:	
+89:	
+90:	
+91:	
+92:	
+93:	
+94:	
+95:	
+96:	
+97:	
+98:	
+99:	
