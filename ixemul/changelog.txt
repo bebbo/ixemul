@@ -1,5 +1,8 @@
 2009-09-27 Bernd Rösch <nospamname@web.de>
 
+    * fix old Bug that when ixstack envvar is set the stack for the vfork process was always limit
+      to ixstack size.Now if the caller process of fvork have more stack, then this stacksize is used
+
     * change of the c99 funcs to use static inline in math.h
     * the have_xxx defines are now disable by default(need only enable on GCC build)
     

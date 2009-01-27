@@ -512,14 +512,14 @@ _vfork_resume (u_int *copy_from_sp)
 
 static int get_stack_size(struct Process *proc)
 {
-  int stack_size;
+  int stack_size = 0, stack_size2 =0;
   char *tmp;
   struct CommandLineInterface *CLI = BTOCPTR (proc->pr_CLI);
 
   if ((tmp = getenv (STACKNAME)))
-    stack_size = atoi (tmp);
-  else
+	  stack_size2 = atoi (tmp);
     stack_size = CLI ? CLI->cli_DefaultStack * 4 : proc->pr_StackSize;
+	if (stack_size2 > stack_size)stack_size = stack_size2;
   if (stack_size < STACKSIZE)
     return STACKSIZE;
   return stack_size;
