@@ -5,6 +5,8 @@
 #include <signal.h>
 #include <unistd.h>
 
+
+
 #include "kprintf.h"
 
 #ifdef TRACK_ALLOCS
@@ -107,7 +109,7 @@ void __stkovf68k(void);
 	REG_A5 = old_a5; \
 	REG_A6 = old_a6;
 
-static int get_68k_stack_size(struct Process *proc, int stack)
+static int get_68k_stack_size(struct Process *proc, int stack)//seem not use on 68k 
 {
   struct CommandLineInterface *CLI;
 
@@ -1571,11 +1573,17 @@ int stkext_f(struct StackSwapStruct sss, sigset_t old,
 	= &__stkrst_f; /* set returnaddress */
   return 1;
 }
-
+extern int __ixstack;
 static int get_stack_size(struct Process *proc, int stack)
 {
   struct CommandLineInterface *CLI;
-
+   
+  if (stack <= STACKSIZE)
+  {
+		if (__ixstack)stack = __ixstack;
+		else
+		stack = 512000;
+  }
   if (stack < STACKSIZE)
     stack = STACKSIZE;
 

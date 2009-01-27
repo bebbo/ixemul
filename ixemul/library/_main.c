@@ -53,10 +53,11 @@ char **get_global_environment(void)
   struct dirent *de;
   int num_env;
   char **cp, **env;
+  extern char __ixenvarc[12];
 
   /* now go for global variables */
-
-  dp = (DIR *)syscall (SYS_opendir, "ENV:");
+  
+  dp = (DIR *)syscall (SYS_opendir, __ixenvarc );
 
   if (dp == NULL)
     /* `panic!', no ENV: logical ! */

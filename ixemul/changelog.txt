@@ -1,12 +1,56 @@
+2009-09-27 Bernd Rösch <nospamname@web.de>
+
+    * change of the c99 funcs to use static inline in math.h
+    * the have_xxx defines are now disable by default(need only enable on GCC build)
+    
+    * if no int __stack variable is set in program a default stacksize from the envvar ixstack is use.
+      if no envarc:ixstack env var is find, the minimum stacksize is set to 512000 bytes.
+      If on shell or Icon more stack than the minimum is set, then this stack size is use.
+
+      Sound large, but Unix/Linux programs need lot stack.the value of 512 kb is a praxis value,
+      because i find no program currently that use more stack than 400 kb.but dont think 512 kb is far enough.
+      The cygwin Unix API give Unix/Linux tasks 2 MB of stack and also windows programs get on default
+      2,5 MB of stack.So if you have lots of ram and you want be on the safe side better set ixstack to 2000000
+      If you are low on amiga mem, you can lower the stack value upto 16384 same value as ixemul 48 or 49.
+
+      BUT BE SURE ALWAYS look how much stack a program need.there are not much programs out, that work with this
+      low stacksize correct.So you need carefully set the values in shell-startup or Icons by yourself to
+      usefull values
+      
+    * a env variable IXENVARC add, if set then ixemul read first the env varibles on dir 
+      envarc.This "Hack" help easy to get ixemul working when envhandler or happyenv is sued.
+	  Limits: when you create a new env variable only in env and not in envarc then this is not
+	          notice.So rule is, use always global env variables. 
+
+
 2009-09-22 Bernd Rösch <nospamname@web.de>
-    * bump revision to 50.0 and use V48 signal handling,
+    * bump revision to 50.0 use V48 signal handling, and MOS V49 additional functions
 	  because on V49 Ports for 68k vfork, OWB, CTRL+c, end on stackoverflow 
 	  dont work with the new MOS signalhandling on 68k.
+	  Use of seperate files with ending _68k and modified makefile so should not break MOS build
+	  
+	* read the enviroment vars from envarc: instead of env: because wehn use env tools
+	  as happyenv or envhandler envvars are not all copy to env:
 	
-	* Use of seperate files with ending _68k and modified makefile so should not break MOS build
+	* 
     * updatet include files to help more programs easy porting
     * added atan2 strtoll
     * assert use the in newer GCC obsolete eeprintf func not. 
+    
+    * faster file access thru 16 kb buffer, gcc compile 40-50% faster
+    
+    * compile too with crosscompilers, because the generatet files are now
+      not need.The file ix_internals_backup.h contain this infos now.So you can change
+      here.
+      WARNING: if you use this source and change lots in ixemul.h or user.h struct ,
+               better run the program library/68060/68881/Create_header that is build always new
+               on amigaos and verify if all offsets are correct in the ix_internals_backup.h files.
+    
+    * add atoll func to stdlib.h
+    
+    
+       
+           
 
     * add many functions as defines to math.h to get more programs working without changes
 	
@@ -46,13 +90,6 @@
 #define NAN (0.0/0.0)
 #define INFINITY (1.0/0.0)
 	 
-    * faster file access thru 16 kb buffer, gcc compile 40-50% faster
-    * compile too with crosscompilers, because the generatet files are now
-      not need.The file ix_internals_backup.h contain this infos now.So you can change
-      here.
-    
-add atoll func to stdlib.h   
-
 2008-08-15  Harry Sintonen <sintonen@iki.fi>
 	* Fixed a race condition in global environment (ENV:) scanning.
 	* Bumped version to 49.26.

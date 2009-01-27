@@ -43,6 +43,8 @@ struct MathIeeeDoubTransBase	*MathIeeeDoubTransBase = NULL;
 
 struct Library                  *muBase = NULL;
 void safe_psignal(struct Task *, int);
+int __ixstack;
+char __ixenvarc[12];
 static struct
 {
   void		**base;
@@ -147,6 +149,17 @@ struct ixemul_base *ix_init (struct ixemul_base *ixbase)
   /* Read the GMT offset. This environment variable is 5 bytes long. The
      first 4 form a long that contains the offset in seconds and the fifth
      byte is ignored. */
+  if (GetVar("IXSTACK", buf, 64, 0) > 0)
+	{
+	__ixstack = atoi (buf);
+	
+	}
+  if (GetVar("IXENVARC", buf, 64, 0) >= 0)
+	{
+		strcpy (__ixenvarc,"ENVARC:");
+	}
+  else strcpy (__ixenvarc,"ENV:");
+
   if (GetVar("IXGMTOFFSET", buf, 6, GVF_BINARY_VAR) == 5 && IoErr() == 5)
     ix_set_gmt_offset(*((long *)buf));
   else
