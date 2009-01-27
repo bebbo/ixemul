@@ -1,4 +1,4 @@
-/* contain the fixed data offsets */
+/* contain the fixed data offsets IXBASE_C_PRIVATE contain 100 bytes more than need*/
 
 /* The size of struct user is 10648 bytes. */
 #define IX_NAME         "ixemul.library"
@@ -25,7 +25,7 @@
 #define IXBASE_OPENCNT 32
 #define IXBASE_LIBRARY 34
 
-#define IXBASE_SIZEOF (IXBASE_C_PRIVATE + 700)  //contain 100 bytes more than need
+#define IXBASE_SIZEOF (IXBASE_C_PRIVATE + 700) 
 #define IXFAKEBASE_SIZE 0
 #define USERPTR_OFFSET 88
 #define IDNESTPTR_OFFSET 16

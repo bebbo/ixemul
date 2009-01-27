@@ -9,6 +9,26 @@ add func atoll to stdlib.h
 assert use the in newer GCC obsolete eeprintf func not.
 Use V48 signal method this get working CTRL+c, OWB, vfork on 68k again(was broken in V49 68k
 
+* if no int __stack variable is set in program source, a default stacksize from the envvar ixstack is use.
+      if no envarc:ixstack env var is find, the minimum stacksize is set to 512000 bytes.
+      If on shell or Icon more stack than the minimum is set, then this stack size is use.
+
+      Sound large, but Unix/Linux programs need lot stack.the value of 512 kb is a praxis value,
+      because i find no program currently that use more stack than 400 kb.but dont think 512 kb is far enough.
+      The cygwin Unix API give Unix/Linux tasks 2 MB of stack and also windows programs get on default
+      2,5 MB of stack.So if you have lots of ram and you want be on the safe side better set ixstack to 2000000
+      If you are low on amiga mem, you can lower the stack value upto 16384 same value as ixemul 48 or 49.
+
+      BUT BE SURE ALWAYS look how much stack a program need.there are not much programs out, that work with this
+      low stacksize correct.So you need carefully set the values in shell-startup or Icons by yourself to
+      usefull values
+      
+    * a env variable IXENVARC add, if set then ixemul read the env variables on dir 
+      envarc and not in env:.This "Hack" help easy to get ixemul working when envhandler or happyenv is used.
+	  Change a envarc that allready exist, work in env: and envarc 
+	  Limits: when you create a new env variable only in env: and not in envarc: then this is not
+	          notice.So rule is, add new env vars always in envarc.
+	          
 ============
 VERSION 49.0
 ============

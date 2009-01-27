@@ -1,4 +1,4 @@
-/* this contain the constant data */
+/* this contain the constant data IXNETBASE_C_PRIVATE + 1000 contain 100 bytes more than need*/
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
@@ -9,4 +9,4 @@
 #define IXNET_PRIORITY     0
 
 #endif
-#define IXNETBASE_SIZEOF (IXNETBASE_C_PRIVATE + 1000 ) //use 100 bytes more than need
+#define IXNETBASE_SIZEOF (IXNETBASE_C_PRIVATE + 1000 ) 
