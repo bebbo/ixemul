@@ -97,7 +97,7 @@ double	acosh __P((double));
 double	asinh __P((double));
 double	atanh __P((double));
 double	cabs();		/* we can't describe cabs()'s argument properly */
-double	cbrt __P((double));
+//double	cbrt __P((double));
 double	copysign __P((double, double));
 double	drem __P((double, double));
 double	erf __P((double));
@@ -114,7 +114,7 @@ double	jn __P((int, double));
 double	lgamma __P((double));
 double	log1p __P((double));
 double	logb __P((double));
-double	rint __P((double));
+//double	rint __P((double));
 double	scalb __P((double, int));
 double	y0 __P((double));
 double	y1 __P((double));
@@ -124,44 +124,128 @@ double	yn __P((int, double));
 __END_DECLS
 
 #endif /* __HAVE_68881__ */
-
+//define ENABLE_HAVE_XXX
+#ifdef ENABLE_HAVE_XXX
 #define HAVE_FUNC_ISINF 1
 #define HAVE_FUNC_ISNAN 1
-#define rint(x) (floor(x + 0.5))
-#define rintf(x) ((float)(floor(x + 0.5)))
-#define signbit(x) (x < 0)
-#define lroundf(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
 #define HAVE_CEILF
-#define ceilf(x) ((float)(ceil(x)))
 #define HAVE_FLOORF
-#define floorf(x) ((float)(floor(x)))
 #define HAVE_LROUND
-//#define lround(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
 #define HAVE_ROUNDF
-//#define roundf(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
-#define roundf(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
 #define HAVE_ROUND
-#define round(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
-//#define round(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
 #define HAVE_frexpf
-#define frexpf(x,exp) ((float) frexp(x, exp)) 
 #define HAVE_LDEXPF 
-#define ldexpf(x,exp) ((float) ldexp(x, exp)) 
-#define powf(x,y) ((float) pow(x, y)) 
 #define HAVE_SINF
-#define sinf(x) ((float)sin(x))
 #define HAVE_COSF
-#define cosf(x) ((float)cos(x))
 #define HAVE_FMODF
-#define fmodf(x, y) ((float)fmod(x, y))
 #define HAVE_ATAN2F
-#define atan2f(x, y) ((float)atan2(x, y))
 #define HAVE_SQRTF
-#define sqrtf(x) ((float)sqrt(x))
-#define trunc(x) floor(x)
-#define truncf(x) ((float)floor(x))
-#define  cbrt(x)   (pow((x),1./3.))
-#define  cbrtf(x)  ((float) (pow((x),1./3.)))
+#endif
+
+static __inline double rint(double x)
+{ return floor(x + 0.5);
+}
+
+static __inline float rintf(float x)
+{ return floor(x + 0.5);
+}
+
+static __inline float roundf(float x)
+{
+ if( x > 0.0 )return floor(x + 0.5);
+ return ceil(x - 0.5);
+}
+
+static __inline int lroundf(float x)
+{
+ if( x > 0.0 )return floor(x + 0.5);
+ return ceil(x - 0.5);
+}
+
+static __inline int lround(double x)
+{
+ if( x > 0.0 )return floor(x + 0.5);
+ return ceil(x - 0.5);
+}
+
+static __inline int round(double x)
+{
+ if( x > 0.0 )return floor(x + 0.5);
+ return ceil(x - 0.5);
+}
+
+static __inline float ceilf(float x)
+{
+ return ceil(x);
+}
+
+static __inline float floorf(float x)
+{
+ return floor(x);
+}
+
+static __inline float frexpf(float x,int * exp)
+{
+ return frexp(x,exp);
+}
+
+static __inline float ldexpf(float x,int exp)
+{
+ return ldexp(x,exp);
+}
+
+#define signbit(x) (x < 0)
+
+static __inline float powf(float x,float y)
+{
+ return pow(x,y);
+}
+
+static __inline float sinf(float x)
+{
+ return sin(x);
+}
+
+static __inline float cosf(float x)
+{
+ return cos(x);
+}
+
+static __inline float fmodf(float x,float y)
+{
+ return fmod(x,y);
+}
+
+static __inline float atan2f(float x,float y)
+{
+ return atan2(x,y);
+}
+
+static __inline float sqrtf(float x)
+{
+ return sqrt(x);
+}
+
+static __inline  double trunc(double x)
+{
+ return floor(x);
+}
+
+static __inline float truncf(float x)
+{
+ return floor(x);
+}
+
+static __inline double cbrt(double x)
+{
+ return pow((x),1./3.);
+}
+
+static __inline float cbrtf(float x)
+{
+ return pow((x),1./3.);
+}
+
 #define isfinite(val) (!isnan(val) && !isinf(val))
 //#define isfinite(val) (!isinf(val))
 #define NAN (0.0/0.0)
