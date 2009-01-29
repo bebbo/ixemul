@@ -58,6 +58,18 @@
 
 #include <sys/cdefs.h>
 
+#ifndef __math_decl
+/* Changed by Diego Casorran:
+   January 2009, added __math_decl usage to let the user decide whenever
+   to use static or extern inline, static should be somewhat faster at
+   the cost of code size... use -DLOCALMATHINLINE or -DSTMATH to enable it */
+# if !defined(LOCALMATHINLINE) && !defined(STMATH)
+#  define __math_decl extern __inline
+# else
+#  define __math_decl static __inline
+# endif
+#endif /* __math_decl */
+
 #if (defined(__GNUC__) || defined(__cplusplus)) && defined(__HAVE_68881__)
 #include <math-68881.h>
 #else
@@ -124,124 +136,136 @@ double	yn __P((int, double));
 __END_DECLS
 
 #endif /* __HAVE_68881__ */
+
+
+#ifndef MATH_STDIMPL
+
 //define ENABLE_HAVE_XXX
 #ifdef ENABLE_HAVE_XXX
-#define HAVE_FUNC_ISINF 1
-#define HAVE_FUNC_ISNAN 1
-#define HAVE_CEILF
-#define HAVE_FLOORF
-#define HAVE_LROUND
-#define HAVE_ROUNDF
-#define HAVE_ROUND
-#define HAVE_frexpf
-#define HAVE_LDEXPF 
-#define HAVE_SINF
-#define HAVE_COSF
-#define HAVE_FMODF
-#define HAVE_ATAN2F
-#define HAVE_SQRTF
+# define HAVE_FUNC_ISINF 1
+# define HAVE_FUNC_ISNAN 1
+# define HAVE_CEILF
+# define HAVE_FLOORF
+# define HAVE_LROUND
+# define HAVE_ROUNDF
+# define HAVE_ROUND
+# define HAVE_frexpf
+# define HAVE_LDEXPF 
+# define HAVE_SINF
+# define HAVE_COSF
+# define HAVE_FMODF
+# define HAVE_ATAN2F
+# define HAVE_SQRTF
 #endif
 
-static __inline double rint(double x)
-{ return floor(x + 0.5);
+#ifndef __HAVE_68881__
+__math_decl double rint(double x)
+{
+ return floor(x + 0.5);
+}
+#endif /* __HAVE_68881__ */
+
+__math_decl float rintf(float x)
+{
+#if !defined(LOCALMATHINLINE) && !defined(STMATH)
+ return floor(x + 0.5);
+#else
+ return((float)rint((double)x));
+#endif
 }
 
-static __inline float rintf(float x)
-{ return floor(x + 0.5);
-}
-
-static __inline float roundf(float x)
+__math_decl float roundf(float x)
 {
  if( x > 0.0 )return floor(x + 0.5);
  return ceil(x - 0.5);
 }
 
-static __inline int lroundf(float x)
+__math_decl int lroundf(float x)
 {
  if( x > 0.0 )return floor(x + 0.5);
  return ceil(x - 0.5);
 }
 
-static __inline int lround(double x)
+__math_decl int lround(double x)
 {
  if( x > 0.0 )return floor(x + 0.5);
  return ceil(x - 0.5);
 }
 
-static __inline int round(double x)
+__math_decl int round(double x)
 {
  if( x > 0.0 )return floor(x + 0.5);
  return ceil(x - 0.5);
 }
 
-static __inline float ceilf(float x)
+__math_decl float ceilf(float x)
 {
  return ceil(x);
 }
 
-static __inline float floorf(float x)
+__math_decl float floorf(float x)
 {
  return floor(x);
 }
 
-static __inline float frexpf(float x,int * exp)
+__math_decl float frexpf(float x,int * exp)
 {
  return frexp(x,exp);
 }
 
-static __inline float ldexpf(float x,int exp)
+__math_decl float ldexpf(float x,int exp)
 {
  return ldexp(x,exp);
 }
 
-#define signbit(x) (x < 0)
+#define signbit(x) ((x) < 0)
 
-static __inline float powf(float x,float y)
+__math_decl float powf(float x,float y)
 {
  return pow(x,y);
 }
 
-static __inline float sinf(float x)
+__math_decl float sinf(float x)
 {
  return sin(x);
 }
 
-static __inline float cosf(float x)
+__math_decl float cosf(float x)
 {
  return cos(x);
 }
 
-static __inline float fmodf(float x,float y)
+__math_decl float fmodf(float x,float y)
 {
  return fmod(x,y);
 }
 
-static __inline float atan2f(float x,float y)
+__math_decl float atan2f(float x,float y)
 {
  return atan2(x,y);
 }
 
-static __inline float sqrtf(float x)
+__math_decl float sqrtf(float x)
 {
  return sqrt(x);
 }
 
-static __inline  double trunc(double x)
+__math_decl  double trunc(double x)
 {
  return floor(x);
 }
 
-static __inline float truncf(float x)
+__math_decl float truncf(float x)
 {
  return floor(x);
 }
 
-static __inline double cbrt(double x)
+__math_decl double cbrt(double x)
 {
  return pow((x),1./3.);
 }
 
-static __inline float cbrtf(float x)
+__math_decl float cbrtf(float x)
 {
  return pow((x),1./3.);
 }
@@ -251,7 +275,7 @@ static __inline float cbrtf(float x)
 #define NAN (0.0/0.0)
 #define INFINITY (1.0/0.0)
 
-
+#endif /* MATH_STDIMPL */
 
 
 __BEGIN_DECLS
