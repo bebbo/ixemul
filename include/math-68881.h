@@ -189,6 +189,9 @@ atan2 (double y, double x)
 	  else
 	    {
 	      double value;
+#ifdef _KERNEL
+	      usetup;
+#endif
 
 	      errno = EDOM;
 	      __asm ("fmove%.d %#0x7fffffffffffffff,%0" 	/* quiet NaN */
@@ -328,6 +331,9 @@ pow (double x, double y)
       else
 	{
 	  double value;
+#ifdef _KERNEL
+	  usetup;
+#endif
 
 	  errno = EDOM;
 	  __asm ("fmove%.d %#0x7fffffffffffffff,%0"		/* quiet NaN */
@@ -355,6 +361,9 @@ pow (double x, double y)
       else
         {
 	  double value;
+#ifdef _KERNEL
+	  usetup;
+#endif
 
 	  errno = EDOM;
 	  __asm ("fmove%.d %#0x7fffffffffffffff,%0"		/* quiet NaN */
