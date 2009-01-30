@@ -43,7 +43,7 @@ struct MathIeeeDoubTransBase	*MathIeeeDoubTransBase = NULL;
 
 struct Library                  *muBase = NULL;
 void safe_psignal(struct Task *, int);
-int __ixstack;
+long __ixstack = 0;
 char __ixenvarc[12];
 static struct
 {
@@ -55,7 +55,7 @@ static struct
 ix_libs[] =
 {
   { (void **)&DOSBase, "dos.library", 37 },
-//#ifndef __HAVE_68881__
+//#ifndef __HAVE_68881__ /* Bernd!!! fix this!! __HAVE_68881__ MUST BE used!! */
   { (void **)&MathIeeeSingBasBase, "mathieeesingbas.library" },
   { (void **)&MathIeeeDoubBasBase, "mathieeedoubbas.library" },
   { (void **)&MathIeeeDoubTransBase, "mathieeedoubtrans.library" },
@@ -151,7 +151,8 @@ struct ixemul_base *ix_init (struct ixemul_base *ixbase)
      byte is ignored. */
   if (GetVar("IXSTACK", buf, 64, 0) > 0)
 	{
-	__ixstack = atoi (buf);
+	//__ixstack = atoi (buf);
+	StrToLong( buf, &__ixstack);
 	
 	}
   if (GetVar("IXENVARC", buf, 64, 0) >= 0)
