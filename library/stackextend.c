@@ -1573,7 +1573,7 @@ int stkext_f(struct StackSwapStruct sss, sigset_t old,
 	= &__stkrst_f; /* set returnaddress */
   return 1;
 }
-extern int __ixstack;
+extern long __ixstack;
 static int get_stack_size(struct Process *proc, int stack)
 {
   struct CommandLineInterface *CLI;
