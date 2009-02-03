@@ -51,7 +51,17 @@
  *
  */
 
-//#ifdef HACK_FPU /* Bernd should know what he is doing.... */
+//#ifdef HACK_FPU /* force to use the fpu asm code
+/* on 68040 and 68060 many of the FPU instructions need emulate and are slow 
+   so the Amiga OS mathlibs are used.this have best code for the installed CPU.
+   best is jump direct into mathlibs and not over ixemul. maybe change later
+   here are some better mathlibs
+
+http://aminet.net/package/util/libs/FastMath405
+
+http://aminet.net/package/util/libs/HSMathLibs_060
+
+ */
 #undef __HAVE_68881__
 //#endif
 
