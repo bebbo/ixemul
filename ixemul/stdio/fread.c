@@ -49,9 +49,9 @@ static char rcsid[] = "$NetBSD: fread.c,v 1.6 1995/02/02 02:09:34 jtc Exp $";
 #include <stdio.h>
 #include <string.h>
 
-#define LARGEREADS	1
+#define LARGEREADS	0
 
-#if LARGEREADS
+//#if LARGEREADS
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,7 +69,7 @@ lflush(fp)
 	return (0);
 }
 
-#endif
+//#endif
 
 size_t
 fread(buf, size, count, fp)
