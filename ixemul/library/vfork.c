@@ -95,7 +95,7 @@ launcher (void)
   struct user *u_ptr = getuser(me);
   struct vfork_msg *vm = NULL;
   int omask;
-
+  
   do
     {
       if (!vm) 
@@ -282,7 +282,9 @@ launcher (void)
               me->pr_Task.tc_SPLower = (void *)mu->p_vfork_msg->vm_clower;
               me->pr_Task.tc_SPUpper = (void *)mu->p_vfork_msg->vm_cupper;
             }
-
+		   
+            unsigned long tmp = (char *)(get_sp() - 256);  /* 256 bytes safety margin */
+          memset(me->pr_Task.tc_SPLower - 4, 0xdb, (u_long)tmp - (u_long)me->pr_Task.tc_SPLower - 4); 
 	  /* overkill? */
 	  vfork_own_malloc ();
 

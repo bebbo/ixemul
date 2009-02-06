@@ -74,8 +74,8 @@ ix_startup (char *aline, int alen,
   if (!proc->pr_CLI)
     {
       /* we have been started by Workbench. Get the StartupMsg */
-      WaitPort (&proc->pr_MsgPort);
-      wb_msg = (struct WBStartup *) GetMsg (&proc->pr_MsgPort);
+      //WaitPort (&proc->pr_MsgPort);
+      //wb_msg = (struct WBStartup *) GetMsg (&proc->pr_MsgPort);
       /* further processing in _main () */
     }
   else
@@ -120,7 +120,7 @@ ix_startup (char *aline, int alen,
       if (proc->pr_CLI)
         _main(aline, alen, main);
       else
-	_main(wb_msg, wb_default_window, main);
+	_main(u.u_wbmsg, wb_default_window, main);
       /* NORETURN */
     }
   /* in this case we came from a longjmp-call */
@@ -152,12 +152,12 @@ ix_startup (char *aline, int alen,
 
   /* if started from workbench, Forbid(), since on reply WB will deallocate
    * our task... */
-  if (!proc->pr_CLI)
-    {
-      Forbid ();
-      wb_msg = *&wb_msg;  // Work around compiler warning
-      ReplyMsg ((struct Message *) wb_msg);
-    }
+  //if (!proc->pr_CLI)
+  //  {
+  //    Forbid ();
+  //    wb_msg = *&wb_msg;  // Work around compiler warning
+  //    ReplyMsg ((struct Message *) wb_msg);
+  //  }
 
   return WEXITSTATUS(exit_val);
 }

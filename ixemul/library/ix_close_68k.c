@@ -64,6 +64,7 @@ void ix_stack_usage(void)
   if (ix.ix_flags & ix_show_stack_usage)
     {
       struct Task *me = FindTask(0);
+	
       BPTR lock = GetProgramDir();
       struct SUMessage sum;
       struct MsgPort *port, *reply;
@@ -74,7 +75,8 @@ void ix_stack_usage(void)
           bzero(&sum, sizeof(sum));
           if (lock)
             NameFromLock(lock, sum.name, sizeof(sum.name) - 40);
-          tmp = me->tc_SPLower;
+          tmp = me->tc_SPLower + 4; // 4 bytes need skip because Amiga OS add a cookie 0xBAD1BAD3 at beginning of stack
+		 
           while (*++tmp == 0xdb);
           if (lock)
             strcat(sum.name, "/");
@@ -110,7 +112,7 @@ ix_close (struct ixemul_base *ixbase)
   ixremove(&timer_task_list, &ix_u->u_user_node);
   Enable();
   RemIntServer (INTB_VERTB, &ix_u->u_itimerint);
-
+ 
   Forbid();
   semexit(me);
   Permit();
@@ -120,6 +122,7 @@ ix_close (struct ixemul_base *ixbase)
    * to loop infinitely if one of the following functions should crash */
   me->tc_TrapCode = ix_u->u_otrap_code;
 #endif
+  
   
   freestack();
   shmexit(ix_u);

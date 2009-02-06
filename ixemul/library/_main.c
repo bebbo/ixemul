@@ -1,7 +1,7 @@
 /*
  *  This file is part of ixemul.library for the Amiga.
  *  Copyright (C) 1991, 1992  Markus M. Wild
- * 
+ *  
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
  *  License as published by the Free Software Foundation; either

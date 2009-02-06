@@ -53,7 +53,7 @@
 #define _KERNEL
 #include "ixemul.h"
 #include "defs.h"
-#include "ix_internals.h"
+//#include "ix_internals.h"
 
 ENTRY(sigsetjmp)
 asm(" \n\
