@@ -69,7 +69,13 @@ ix_open (struct ixemul_base *ixbase)
   char *tmp;
   int a4_size = A4_POINTERS * 4;
 struct WBStartup *wb_msg = NULL;
-
+  if (!((struct Process *)me)->pr_CLI)
+    {
+      /* we have been started by Workbench. Get the StartupMsg */
+      WaitPort (&((struct Process *)me)->pr_MsgPort);
+      wb_msg = (struct WBStartup *) GetMsg (&((struct Process *)me)->pr_MsgPort);
+      /* further processing in _main () */
+    }
   
   tmp = (char *)kmalloc(sizeof(struct user) + a4_size);
   if (tmp)  
@@ -92,12 +98,12 @@ struct WBStartup *wb_msg = NULL;
       ix_u->u_mdp = &ix_u->u_md;
       
       ix_u->u_task = me;
-
-      if (ix.ix_flags & ix_show_stack_usage)      
-        {
-          tmp = (char *)(get_sp() - 64);  /* 64 bytes safety margin */
-          memset(me->tc_SPLower, 0xdb, (u_long)tmp - (u_long)me->tc_SPLower); 
-        }
+	  
+      me->tc_TrapData = ix_u; // need to get ixnet trapversion not crash
+     
+      
+		
+	   
 
       KPRINTF (("ix_open: ix_u = $%lx, ix_open @$lx\n", ix_u, ix_open));
 
@@ -112,6 +118,18 @@ struct WBStartup *wb_msg = NULL;
 #endif
 
       initstack();
+
+	  if ((ix.ix_flags & ix_show_stack_usage) && (((int)(me->tc_SPLower <= get_sp())) &&((int)(me->tc_SPUpper >= get_sp()))))      
+        {
+		  
+          tmp = (char *)(get_sp() - 256);  /* 256 bytes safety margin */
+          memset(me->tc_SPLower + 4, 0xdb, (u_long)tmp - (u_long)me->tc_SPLower - 4); 
+        }
+		else
+		{
+			kprintf("oh no TC_SPLower and TC_SPUpper not set correct %lx %lx %lx\n",me->tc_SPLower,get_sp(),me->tc_SPUpper);
+			
+		}
 
       /* setup the p_sigignore mask correctly */
       siginit (ix_u);
@@ -158,8 +176,8 @@ struct WBStartup *wb_msg = NULL;
        * scribbles over this to inherit the parents process group instead */
       ix_u->p_pgrp = (int) me;
       ix_u->p_pptr = (struct Process *) 1;		/* hi init ;-)) */
-      ix_u->p_cptr =
-        ix_u->p_osptr =
+      ix_u->p_cptr = 0; //New
+        ix_u->p_osptr = 0; 
           ix_u->p_ysptr = 0;			/* no children to start with */
       ix_u->p_vfork_msg = 0;
       ix_u->p_zombie_sig = AllocSignal (-1);
@@ -229,7 +247,12 @@ struct WBStartup *wb_msg = NULL;
 
       kfree (tmp);
     }
-
+  if (wb_msg)
+    {
+      /* crt0.o gets the wb message if opening ixemul fails, so
+	 let's put it back */
+      PutMsg(&((struct Process *)me)->pr_MsgPort, &wb_msg->sm_Message);
+    }
 
   return 0;
 }

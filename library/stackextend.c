@@ -1243,6 +1243,12 @@ static void popframes_ppc(struct stackframe *sf, struct StackSwapStruct *sss)
 #define stk_safezone    6144    /* into ixprefs? */
 #define stk_minframe    32768
 
+void clearstack() //68k use that
+{
+ struct Task *me = SysBase->ThisTask;
+ unsigned long tmp = (char *)(get_sp() - 256);  /* 256 bytes safety margin */
+ memset(me->tc_SPLower+4, 0xdb, ((u_long)tmp - (u_long)me->tc_SPLower)-4); 
+}
 
 static void popframes(struct stackframe *sf, struct StackSwapStruct *sss);
 static void pushframe(ULONG requiredstack, struct StackSwapStruct *sss, sigset_t *old, int startup);
@@ -1307,6 +1313,7 @@ ___stkext_startup: \n\
 	movel   _SysBase,a6 \n\
 	movel   sp,a0 \n\
 	jsr     a6@(-0x2dc) \n\
+	jsr _clearstack \n\
 ss_ret: \n\
 	jbsr    _atomic_off     | FIXME: Is this necessary/allowed that early? \n\
 	addqw   #4,sp \n\
@@ -1457,11 +1464,11 @@ void __stkovf(void)
  * and fill the StackSwapStruct structure.
  */
 static void pushframe(ULONG requiredstack, struct StackSwapStruct *sss, sigset_t *old, int startup)
-{
+{ // used for 68k 
   struct stackframe *sf;
   ULONG recommendedstack;
   usetup;
-
+  
   KPRINTF(("pushframe(%ld, %ld)\n", requiredstack, startup));
 
   if (!startup)
@@ -1574,10 +1581,10 @@ int stkext_f(struct StackSwapStruct sss, sigset_t old,
   return 1;
 }
 extern long __ixstack;
-static int get_stack_size(struct Process *proc, int stack)
+static int get_stack_size(struct Process *proc, int stack) // 68k use that
 {
   struct CommandLineInterface *CLI;
-   
+ 
   if (stack <= STACKSIZE)
   {
 		if (__ixstack)stack = __ixstack;
@@ -1599,6 +1606,8 @@ static int get_stack_size(struct Process *proc, int stack)
 }
 
 
+
+
 /*
  * Called at startup to set stack to a safe/reasonable value (which is
  * provided in d0). Check if there is a need for stack extension at startup,
@@ -1606,13 +1615,14 @@ static int get_stack_size(struct Process *proc, int stack)
  * as stkext_f.
  */
 int stkext_startup(struct StackSwapStruct sss, sigset_t old,
- long d0, long d1, long a0, long a1, long a6, long ret1)
+ long d0, long d1, long a0, long a1, long a6, long ret1) //68k use that
 {
   void *argtop, *callsp = &ret1 + 1;
   int cpsize, stack;
-  usetup;
 
-  if (!(stack = get_stack_size((struct Process*)SysBase->ThisTask, d0)))
+  usetup;
+  struct Task *me = SysBase->ThisTask;
+  if (!(stack = get_stack_size((struct Process*)me, d0)))
     return 0;
 
   argtop = (char *)callsp + u.u_stk_argbt;      /* Top of area with arguments */
@@ -1623,6 +1633,7 @@ int stkext_startup(struct StackSwapStruct sss, sigset_t old,
   pushframe(stack, &sss, &old, 1);
   *(char **)&sss.stk_Pointer -= cpsize;
   CopyMem(&old,sss.stk_Pointer, cpsize);
+ 
   u.u_stk_used->savesp = (char *)callsp; /* store sp */
   *(void **)((char *)sss.stk_Upper - ((char *)argtop - (char *)callsp))
 	= &__stkrst_f; /* set returnaddress */
@@ -1639,7 +1650,8 @@ static void popframes(struct stackframe *sf, struct StackSwapStruct *sss)
   usetup;
 
   KPRINTF(("popframes\n"));
-
+  
+    ix_stack_usage();
   if (sf->next != NULL)
   {
     sss->stk_Lower = sf->next + 1;
