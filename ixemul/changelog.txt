@@ -1,7 +1,21 @@
-2009-09-27 Bernd Rösch <nospamname@web.de>
+2009-02-06 Bernd_afa
+
+   * show the correct stack usage when run cli program ixstack -s and in ixprefs show stack usage is on
+     fill not the stack with cookie values if stack pointer is not in bound of sp_lower sp_upper
+     there seem some programs out, that change stack and dont set stack bounds correct.
+   * deactivate 
+   
+   * the requester wrong ixnet is now too show when program start from workbench by moving wbstartup
+     message code on same place as MOS on ix_open
+    
+2009-01-29 Diegocr
+
+    * a couple math#?.(c|h) fixes, updated math-68881.h, etc...
+
+2009-01-27 Bernd_afa
 
     * fix old Bug that when ixstack envvar is set the stack for the vfork process was always limit
-      to ixstack size.Now if the caller process of fvork have more stack, then this stacksize is used
+      to ixstack size.Now if the caller process of vfork have more stack, then this stacksize is used
 
     * change of the c99 funcs to use static inline in math.h
     * the have_xxx defines are now disable by default(need only enable on GCC build)
@@ -26,7 +40,7 @@
 	          notice.So rule is, use always global env variables. 
 
 
-2009-09-22 Bernd Rösch <nospamname@web.de>
+2009-01-22 Bernd_afa
     * bump revision to 50.0 use V48 signal handling, and MOS V49 additional functions
 	  because on V49 Ports for 68k vfork, OWB, CTRL+c, end on stackoverflow 
 	  dont work with the new MOS signalhandling on 68k.
@@ -51,48 +65,8 @@
     
     * add atoll func to stdlib.h
     
-    
-       
-           
-
-    * add many functions as defines to math.h to get more programs working without changes
-	
-#define rint(x) (floor(x + 0.5))
-#define rintf(x) ((float)(floor(x + 0.5)))
-#define signbit(x) (x < 0)
-#define lroundf(x) ((int)(x > 0 ? x + 0.5 : x - 0.5))
-#define HAVE_CEILF
-#define ceilf(x) ((float)(ceil(x)))
-#define HAVE_FLOORF
-#define floorf(x) ((float)(floor(x)))
-#define HAVE_LROUND
-#define HAVE_ROUNDF
-#define roundf(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
-#define HAVE_ROUND
-#define round(x) ((int)(x > 0) ? floor(x + 0.5) : ceil(x - 0.5)) 
-#define HAVE_frexpf
-#define frexpf(x,exp) ((float) frexp(x, exp)) 
-#define HAVE_LDEXPF 
-#define ldexpf(x,exp) ((float) ldexp(x, exp)) 
-#define powf(x,y) ((float) pow(x, y)) 
-#define HAVE_SINF
-#define sinf(x) ((float)sin(x))
-#define HAVE_COSF
-#define cosf(x) ((float)cos(x))
-#define HAVE_FMODF
-#define fmodf(x, y) ((float)fmod(x, y))
-#define HAVE_ATAN2F
-#define atan2f(x, y) ((float)atan2(x, y))
-#define HAVE_SQRTF
-#define sqrtf(x) ((float)sqrt(x))
-#define trunc(x) floor(x)
-#define truncf(x) ((float)floor(x))
-#define  cbrt(x)   (pow((x),1./3.))
-#define  cbrtf(x)  ((float) (pow((x),1./3.)))
-#define isfinite(val) (!isnan(val) && !isinf(val))
-#define NAN (0.0/0.0)
-#define INFINITY (1.0/0.0)
-	 
+    * add many functions to math.h to get more programs working without changes
+		 
 2008-08-15  Harry Sintonen <sintonen@iki.fi>
 	* Fixed a race condition in global environment (ENV:) scanning.
 	* Bumped version to 49.26.
