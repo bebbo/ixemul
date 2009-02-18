@@ -55,10 +55,19 @@ __ix_open_muFS (struct user *ix_u)
 
   return TRUE;
 }
-
+//#define STACKSWAP
 struct ixemul_base *
 ix_open (struct ixemul_base *ixbase)
 {
+#ifdef STACKSWAP
+   struct StackSwapStruct stackswap;
+   static unsigned int stack;
+   if (!stack)stack = AllocMem(6004,0);
+   stackswap.stk_Pointer=stack+6000-4;
+   stackswap.stk_Lower=stack;
+   stackswap.stk_Upper=stack+6000;
+   StackSwap(&stackswap);
+#endif  
   /* here we must initialize our `user' structure */
   struct user *ix_u;
   /* an errno for those that later don't set it in ix_startup() */
@@ -66,15 +75,20 @@ ix_open (struct ixemul_base *ixbase)
   /* an h_errno for those that later don't set it in ix_startup() */
   static int default_h_errno;
   struct Task *me = FindTask(0);
+  
   char *tmp;
   int a4_size = A4_POINTERS * 4;
 struct WBStartup *wb_msg = NULL;
+  
   if (!((struct Process *)me)->pr_CLI)
-    {
+    {  
+		if (((struct Process *)me)->pr_HomeDir)
+		{
       /* we have been started by Workbench. Get the StartupMsg */
       WaitPort (&((struct Process *)me)->pr_MsgPort);
       wb_msg = (struct WBStartup *) GetMsg (&((struct Process *)me)->pr_MsgPort);
       /* further processing in _main () */
+		}
     }
   
   tmp = (char *)kmalloc(sizeof(struct user) + a4_size);
@@ -119,7 +133,7 @@ struct WBStartup *wb_msg = NULL;
 
       initstack();
 
-	  if ((ix.ix_flags & ix_show_stack_usage) && (((int)(me->tc_SPLower <= get_sp())) &&((int)(me->tc_SPUpper >= get_sp()))))      
+	  if (((int)(me->tc_SPLower <= get_sp())) &&((int)(me->tc_SPUpper >= get_sp())))      
         {
 		  
           tmp = (char *)(get_sp() - 256);  /* 256 bytes safety margin */
@@ -127,10 +141,10 @@ struct WBStartup *wb_msg = NULL;
         }
 		else
 		{
-			kprintf("oh no TC_SPLower and TC_SPUpper not set correct %lx %lx %lx\n",me->tc_SPLower,get_sp(),me->tc_SPUpper);
-			
+			kprintf("oh no TC_SPLower and TC_SPUpper not set correct %lx %lx %lx in Task %lx\n",me->tc_SPLower,get_sp(),me->tc_SPUpper,FindTask(0));
+			//TRAP
 		}
-
+      
       /* setup the p_sigignore mask correctly */
       siginit (ix_u);
       me->tc_SigRecvd &= 0x0fff;
@@ -144,10 +158,10 @@ struct WBStartup *wb_msg = NULL;
       ix_u->u_ixbase = ixbase;
       ix_u->u_errno = &default_errno;
       ix_u->u_h_errno = &default_h_errno;
-
+      
       /* ixnet.library is loaded iff ixbase->ix_network_type != IX_NETWORK_NONE */
       if (ixbase->ix_network_type != IX_NETWORK_NONE)
-	ix_u->u_ixnetbase = OpenLibrary("ixnet.library", 44);  // Let ixnet check if the ixnet version matches ours
+	  ix_u->u_ixnetbase = OpenLibrary("ixnet.library", 44);  // Let ixnet check if the ixnet version matches ours
 
       me->tc_Launch    = launch_glue;
       me->tc_Switch    = switch_glue;
@@ -196,7 +210,9 @@ struct WBStartup *wb_msg = NULL;
         {
           ix_u->u_time_req = (struct timerequest *)
 	    ix_create_extio(ix_u->u_sync_mp, sizeof (struct timerequest));
-	  
+#ifdef STACKSWAP
+	  StackSwap(&stackswap);
+#endif
 	  if (ix_u->u_time_req)
 	    {
 	      if (!OpenDevice (TIMERNAME, UNIT_MICROHZ,

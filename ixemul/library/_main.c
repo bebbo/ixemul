@@ -317,7 +317,7 @@ _main(char *aline, int alen, int (*main)(int, char **, char **))
   char                  **argv, **env;
   int                   argc;
   int                   exitcode;
-
+ 
   KPRINTF (("entered __main()\n"));
   if (! me->pr_CLI)
     {
@@ -342,7 +342,7 @@ _main(char *aline, int alen, int (*main)(int, char **, char **))
       if (is_ixconfig(argv[0]))
 	return 10;
     }
-
+ 
   env = __ix_get_environ ();
 
   /* this is not really the right thing to do, the user should call
@@ -383,6 +383,7 @@ _main(char *aline, int alen, int (*main)(int, char **, char **))
   }
   else
 #endif
+    
     exitcode = main (argc, argv, env);
 
   KPRINTF(("main returned: %ld\n", exitcode));

@@ -73,6 +73,7 @@ ixnet_open (struct ixnet_base *ixbase)
     ix_u = getuser(me); /* already initialized by ixemul.library */
 
     /* need this here instead of ixnet_init.c */
+	
     ixemulbase = ix_u->u_ixbase;
 #ifdef NATIVE_MORPHOS
     _ixbasearray = ixemulbase->basearray;
