@@ -70,9 +70,10 @@ ix_startup (char *aline, int alen,
     resetfpu();
   /* first deal with WB messages, since those HAVE to be answered properly,
    * even if we should fail later (memory, whatever..) */
-
+ 
   if (!proc->pr_CLI)
     {
+		
       /* we have been started by Workbench. Get the StartupMsg */
       //WaitPort (&proc->pr_MsgPort);
       //wb_msg = (struct WBStartup *) GetMsg (&proc->pr_MsgPort);
@@ -82,7 +83,7 @@ ix_startup (char *aline, int alen,
     {
       struct CommandLineInterface *cli = (void *)BADDR(proc->pr_CLI);
       long segs;
-
+     
       /* for usage by sys_exit() for example */
       KPRINTF (("CLI command line '%s'\n", aline));
       u.u_argline = aline;
@@ -101,6 +102,7 @@ ix_startup (char *aline, int alen,
   /* put some AmiTCP and AS225 in here since it can't go into ix_open
    * I need a pointer to the REAL errno
    */
+ 
   if (real_errno)
    {
       u.u_errno = real_errno;
@@ -117,8 +119,13 @@ ix_startup (char *aline, int alen,
       syscall (SYS_sigsetmask, 0);
       /* the first time thru call the program */
       KPRINTF (("calling __main()\n"));
+	 
       if (proc->pr_CLI)
+	  {
+		
         _main(aline, alen, main);
+		
+	  }
       else
 	_main(u.u_wbmsg, wb_default_window, main);
       /* NORETURN */
