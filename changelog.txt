@@ -1,5 +1,7 @@
 2009-02-06 Bernd_afa
 
+   * lseek return now correct value when whence is not support (ffmpeg need this)
+
    * show the correct stack usage when run cli program ixstack -s and in ixprefs show stack usage is on
      fill not the stack with cookie values if stack pointer is not in bound of sp_lower sp_upper
      there seem some programs out, that change stack and dont set stack bounds correct.
