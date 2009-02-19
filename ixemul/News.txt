@@ -2,14 +2,17 @@
 VERSION 50.0
 ============
 
-Add atan2, strtoll func.Need link with new libc
-Over 25 Math C99 functions add in math.h
-add stdint.h and inttypes.h to includes.many programs need them
-add func atoll to stdlib.h
-assert use the in newer GCC obsolete eeprintf func not.
-Use V48 signal method this get working CTRL+c, OWB, vfork on 68k again(was broken in V49 68k
+*     Fix a bug in lseek, so ffmpeg work without changes
+*     Add atan2, strtoll func.Need link with new libc
+*     Over 25 Math C99 functions add in math.h
+*     add stdint.h and inttypes.h to includes.many programs need them
+*     add func atoll to stdlib.h
+*     autoconfig detect now correct that AOS have a vfork function and use this automatic
+      (help gcc, make build and i guess lots other without source changes)
+*     assert use the in newer GCC obsolete eeprintf func not.
+*     Use V48 signal method this get working CTRL+c, OWB, vfork on 68k again(was broken in V49 68k)
 
-* if no int __stack variable is set in program source, a default stacksize from the envvar ixstack is use.
+*     if no int __stack variable is set in program source, a default stacksize from the envvar ixstack is use.
       if no envarc:ixstack env var is find, the minimum stacksize is set to 512000 bytes.
       If on shell or Icon more stack than the minimum is set, then this stack size is use.
 
@@ -21,14 +24,23 @@ Use V48 signal method this get working CTRL+c, OWB, vfork on 68k again(was broke
 
       BUT BE SURE ALWAYS look how much stack a program need.there are not much programs out, that work with this
       low stacksize correct.So you need carefully set the values in shell-startup or Icons by yourself to
-      usefull values
+      usefull values.
+     
       
-    * a env variable IXENVARC add, if set then ixemul read the env variables on dir 
+*     a env variable IXENVARC add, if set then ixemul read the env variables on dir
       envarc and not in env:.This "Hack" help easy to get ixemul working when envhandler or happyenv is used.
 	  Change a envarc that allready exist, work in env: and envarc 
 	  Limits: when you create a new env variable only in env: and not in envarc: then this is not
-	          notice.So rule is, add new env vars always in envarc.
+      notice.So rule is, add new env vars always in envarc.
 	          
+*     stack usage can see when program end, work also on vfork tasks now
+      In ixprefs enable show stack usage and start program ixstack -s from shell.
+
+
+
+IMPORTANT: if you use cubicide or ixpipe set the stack size from ixpipe Mountlist to 4000, because on test some
+         installs are found that need more stack than 3000 bytes.
+
 ============
 VERSION 49.0
 ============

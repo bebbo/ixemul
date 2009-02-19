@@ -126,22 +126,22 @@ else
 all:            libc.a libc_p.a libbc.a libb32c.a crt0.o lcrt0.o bcrt0.o rcrt0.o \
 		mcrt0.o gcrt0.o scrt0.o
 
-bcrt0.o:        crt0.c version.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -fbaserel -DBASECRT0 $(INCS) -c $< -o $@
+bcrt0.o:        crt0_68k.c version.h
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -O0 -fbaserel -DBASECRT0 $(INCS) -c $< -o $@
 
-rcrt0.o:        crt0.c version.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -fbaserel -DBASECRT0 -DRCRT0 $(INCS) -c $< -o $@
+rcrt0.o:        crt0_68k.c version.h
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -O0 -fbaserel -DBASECRT0 -DRCRT0 $(INCS) -c $< -o $@
 
-lcrt0.o:        crt0.c version.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -m68020 -fbaserel32 -DBASECRT0 -DLBASE $(INCS) -c $< -o $@
+lcrt0.o:        crt0_68k.c version.h
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -O0 -m68020 -fbaserel32 -DBASECRT0 -DLBASE $(INCS) -c $< -o $@
 
-scrt0.o:        crt0.c version.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) -m68020 -fbaserel32 -DBASECRT0 -DRCRT0 -DLBASE $(INCS) -c $< -o $@
+scrt0.o:        crt0_68k.c version.h
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS)  -O0 -m68020 -fbaserel32 -DBASECRT0 -DRCRT0 -DLBASE $(INCS) -c $< -o $@
 
-crt0.o:         crt0.c version.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -DCRT0 $< -o $@
+crt0.o:         crt0_68k.c version.h
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -O0 -DCRT0 $< -o $@
 
-mcrt0.o:        crt0.c version.h gmon.c gmon.h
+mcrt0.o:        crt0_68k.c version.h gmon.c gmon.h
 		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -DMCRT0 -fno-omit-frame-pointer $< -o $@
 
 gcrt0.o:        mcrt0.o
