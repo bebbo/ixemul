@@ -39,7 +39,7 @@ RANLIB =        ranlib
 
 # Tools used to produce 68k executables.
 
-CC68K =         m68k-amigaos-gcc -V 3.4.0
+CC68K =         m68k-amigaos-gcc -V3.4.0
 AS68K =         m68k-amigaos-as
 AR68K =         m68k-amigaos-ar
 CFLAGS68K =     
@@ -246,7 +246,7 @@ all:    $(gcc-m68k-ok) $(m68k-base-targets) $(m68k-cpu-os-targets) $(m68k-cpu-fp
 	$(ppc-cpu-fpu-os-targets) $(ppc-base-cpu-fpu-targets)
 	@(cd libsrc && $(MAKE) $(FLAGS_TO_PASS) CC=m68k-amigaos-gcc) 
 	@(cd libsrc && $(MAKE) $(PPC_FLAGS_TO_PASS) "OTHER_CFLAGS=$(MORPHOS_CFLAGS)" "OS=$(os)")
-	@(cd utils && $(MAKE) $(FLAGS_TO_PASS) CC=ppc-morphos-gcc)
+	@(cd utils && $(MAKE) $(FLAGS_TO_PASS) CC=m68k-amigaos-gcc)
 #        @(cd man && $(MAKE) $(FLAGS_TO_PASS))
 
 

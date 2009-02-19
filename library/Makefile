@@ -23,7 +23,7 @@ INSTALL_DATA =  ${INSTALL} -m 644
 
 CC =            gcc
 
-CFLAGS =        -O0
+CFLAGS =        -O2
 LDFLAGS =       
 
 RANLIB =        ranlib
@@ -31,7 +31,7 @@ AR =            ar
 
 NATIVE_CC =     gcc
 
-NATIVE_CFLAGS = -O0
+NATIVE_CFLAGS = -O2
 NATIVE_LDFLAGS= 
 
 DO_CATENATE =   no
@@ -57,7 +57,7 @@ INCS = -I$(srcdir) -I$(srcdir)/../library -I$(srcdir)/../include -I.
 
 STD_CFLAGS = $(CFLAGS) $(INCS) $(OTHER_CFLAGS)
 
-ALL_CFLAGS = $(FLAVOR_CFLAGS) $(STD_CFLAGS) 
+ALL_CFLAGS = $(FLAVOR_CFLAGS) $(STD_CFLAGS)
 
 ifeq ($(OS),morphos)
 NATIVE_FLAGS = $(NATIVE_CFLAGS) $(OTHER_CFLAGS) $(filter -DDEBUG_VERSION -DNOTRAP, $(ALL_CFLAGS)) -DNATIVE_MORPHOS -DCPU_$(FPU)

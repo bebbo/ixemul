@@ -55,7 +55,7 @@
 #define MSTRING(x) STRING(x)
 #define STRING(x) #x
 
-//struct ixemul_base *ixemulbase; // Used by the glue functions
+struct ixemul_base *ixemulbase; // Used by the glue functions
 #ifdef NATIVE_MORPHOS
 int (**_ixbasearray)();
 int __amigappc__ = 1;

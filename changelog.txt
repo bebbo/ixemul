@@ -5,8 +5,7 @@
    * show the correct stack usage when run cli program ixstack -s and in ixprefs show stack usage is on
      fill not the stack with cookie values if stack pointer is not in bound of sp_lower sp_upper
      there seem some programs out, that change stack and dont set stack bounds correct.
-   
-   
+     
    * the requester wrong ixnet is now too show when program start from workbench by moving wbstartup
      message code on same place as MOS on ix_open
     
@@ -42,14 +41,10 @@
 	          notice.So rule is, use always global env variables. 
 
 
-2009-01-22 Bernd_afa
     * bump revision to 50.0 use V48 signal handling, and MOS V49 additional functions
 	  because on V49 Ports for 68k vfork, OWB, CTRL+c, end on stackoverflow 
 	  dont work with the new MOS signalhandling on 68k.
 	  Use of seperate files with ending _68k and modified makefile so should not break MOS build
-	  
-	* read the enviroment vars from envarc: instead of env: because wehn use env tools
-	  as happyenv or envhandler envvars are not all copy to env:
 	
 	* 
     * updatet include files to help more programs easy porting
@@ -67,7 +62,7 @@
     
     * add atoll func to stdlib.h
     
-    * add many functions to math.h to get more programs working without changes
+    * add many C99 functions to math.h to get more programs working without changes
 		 
 2008-08-15  Harry Sintonen <sintonen@iki.fi>
 	* Fixed a race condition in global environment (ENV:) scanning.

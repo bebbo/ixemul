@@ -37,13 +37,20 @@
 struct hostent *
 gethostbyname(const char *name)
 {
+	
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     register int network_protocol = p->u_networkprotocol;
-
+	static struct hostent * hostent_cache;
+    /*static st_name[255];
+	if (strcmp(&st_name,name)== 0){
+	return hostent_cache;
+	}
+	strcpy(&st_name,name); */
     switch (network_protocol) {
 	case IX_NETWORK_AMITCP:
-	    return TCP_GetHostByName(name);
+		hostent_cache = TCP_GetHostByName(name);
+	    return hostent_cache;
 
 	default: /*case IX_NETWORK_AS225:*/
 	    return SOCK_gethostbyname(name);
