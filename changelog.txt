@@ -1,4 +1,11 @@
 2009-02-06 Bernd_afa
+   Version 51.1
+   * add func log2 log2f lrint lrintf to math.h
+   * add func strtok_r to string.h
+   * mmap use now page size alligned memory that is need by programs(GCC) to work ok
+   * correct handling for extern inline in C99 Mode see http://gcc.gnu.org/ml/gcc/2007-03/msg01096.html
+
+2009-02-06 Bernd_afa
 
    * lseek return now correct value when whence is not support (ffmpeg need this)
 
