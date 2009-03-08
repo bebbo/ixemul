@@ -140,7 +140,7 @@ sethostname(char *name, int namelen)
 int
 getpagesize(void)
 {
-  return 2048;
+  return 4096;
 }
 
 void sync (void)

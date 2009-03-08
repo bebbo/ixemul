@@ -1,4 +1,11 @@
 ============
+Version 51.1
+============
+* add C99 func log2 log2f lrint lrintf to math.h (lrint is fastest way to convert a float in integer)
+* add C99 func strtok_r to string.h
+* mmap use now page size alligned memory that is need by programs(GCC) to work ok
+
+============
 VERSION 50.0
 ============
 

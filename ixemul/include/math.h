@@ -63,8 +63,13 @@
    January 2009, added __math_decl usage to let the user decide whenever
    to use static or extern inline, static should be somewhat faster at
    the cost of code size... use -DLOCALMATHINLINE or -DSTMATH to enable it */
+//#if (__STDC_VERSION__ != 199901L) 
 # if !defined(LOCALMATHINLINE) && !defined(STMATH)
-#  define __math_decl extern __inline
+     #ifdef  __GNUC_STDC_INLINE__  // c99 extern inline handle check.see here http://gcc.gnu.org/ml/gcc/2007-03/msg01096.html
+       #define __math_decl inline
+     #else
+      #define __math_decl extern inline
+     #endif
 # else
 #  define __math_decl static __inline
 # endif
@@ -165,6 +170,7 @@ __math_decl double rint(double x)
 }
 #endif /* __HAVE_68881__ */
 
+
 __math_decl float rintf(float x)
 {
 #if !defined(LOCALMATHINLINE) && !defined(STMATH)
@@ -172,6 +178,37 @@ __math_decl float rintf(float x)
 #else
  return((float)rint((double)x));
 #endif
+}
+
+
+static inline long lrintf(float x)
+{
+	long value;
+__asm ("fmove%.l %1,%0"		
+		 : "=d" (value)
+		 : "f" (x));
+	  return value;
+
+}
+
+static inline long lrint(double x)
+{
+	long value;
+__asm ("fmove%.l %1,%0"		
+		 : "=d" (value)
+		 : "f" (x));
+	  return value;
+
+}
+
+__math_decl double log2(double x)
+{
+ return (log(x) / M_LN2);
+}
+
+__math_decl float log2f(float x)
+{
+ return (log(x) / M_LN2);
 }
 
 __math_decl float roundf(float x)
