@@ -47,6 +47,7 @@ CPUDIR          = 68000
 FPUDIR          = soft-float
 FLAVOR_CFLAGS   =
 OTHER_CFLAGS    =  -fomit-frame-pointer
+RANLIB = m68k-amigaos-ranlib
 endif
 
 ALL_CFLAGS =    $(CFLAGS) $(FLAVOR_CFLAGS) $(OTHER_CFLAGS) $(INCS) $(DEFS)
@@ -158,7 +159,7 @@ define createlib
 	cp $< $@
 	@(cd tempobj; for i in $(filter-out $< $(OBJ),$^) ; do echo extracting library $$i ; $(AR) x ../$$i ; done)
 	(cd tempobj; $(AR) q ../$@ *.o)
-	$(RANLIB) $@
+	 m68k-amigaos-ranlib $@ 
 	$(RM) -r tempobj
 endef
 

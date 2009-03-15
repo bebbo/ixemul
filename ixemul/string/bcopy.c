@@ -358,6 +358,7 @@ void  bcopy(const void *s1, void *s2, size_t n)
  *      - longword align when possible (only on the 68020)
  *      - use nested DBcc instructions or use one and limit size to 64K
  */
+
 ENTRY(bcopy)
 asm(" \n\
 	movl    sp@(12),d1      /* check count */ \n\
@@ -419,4 +420,5 @@ bcbbloop: \n\
 	jne     bcbbloop        /* still more, keep going */ \n\
 	rts \n\
 ");
+
 #endif

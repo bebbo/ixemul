@@ -26,8 +26,13 @@ CC =            gcc
 CFLAGS =        -O2
 LDFLAGS =       
 
+ifeq ($(BASE), morphos)
 RANLIB =        ranlib
 AR =            ar
+else
+RANLIB =        m68k-amigaos-ranlib
+AR =            m68k-amigaos-ar
+endif
 
 #### End system configuration section ####
 
