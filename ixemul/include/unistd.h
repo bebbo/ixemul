@@ -41,6 +41,7 @@
 #include <sys/cdefs.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
+#include <stdio.h>
 
 #define STDIN_FILENO    0       /* standard input file descriptor */
 #define STDOUT_FILENO   1       /* standard output file descriptor */

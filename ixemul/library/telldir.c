@@ -37,5 +37,5 @@ telldir (const DIR *dp)
 {
   if (!dp || dp->dd_fd < 0) return -1;
 
-  return syscall (SYS_lseek, dp->dd_fd, 0, L_INCR);
+  return syscall (SYS_lseek, dp->dd_fd, 0, L_INCR,0);
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  *  This file is part of ixemul.library for the Amiga.
  *  Copyright (C) 1991, 1992  Markus M. Wild
  *
@@ -36,7 +36,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "multiuser.h"
-#include "unp.h"
 
 /* currently, links are quite buggy.. hope this get cleaned up RSN ;-) */
 
@@ -48,12 +47,12 @@ long fill_stat_mode(struct stat *stb, struct FileInfoBlock *fib)
      Since the Protection field seems to be random for volumes, we use
      our own flags (= everything readable & writable) */
   /* Unfortunately, not all filesystem actually set size !=.
-     So we use some more elaborate heuristics ... NP */
+     So we use some more elaborate heuristics ... NP */ 
 
   mode = ((long)(fib->fib_OwnerUID)) << 16 | (u_long)(fib->fib_OwnerGID);
 
-  if (fib->fib_DirEntryType > 0 &&
-      (fib->fib_Size != 0 ||
+  if (fib->fib_DirEntryType > 0 && 
+      (fib->fib_Size != 0 || 
        (mode == fib->fib_DiskKey + 1 && fib->fib_OwnerGID > 880)))
     {
       fib->fib_DirEntryType = ST_ROOT;
@@ -147,47 +146,45 @@ __stat(const char *fname, struct stat *stb, BPTR (*lock_func)())
   bzero (stb, sizeof(*stb));
 
   omask = syscall (SYS_sigsetmask, ~0);
-
+  
   if (!(lock = (*lock_func) (fname, ACCESS_READ)))
     {
       err = IoErr ();
 
       /* take special care of NIL:, /dev/null and friends ;-) */
       if (err == 4242)
-	{
-	  stb->st_dev = 0;
-	  stb->st_ino = 0;
-	  stb->st_uid = stb->st_gid = 0;
-	  stb->st_mode = S_IFCHR | 0777;
-	  stb->st_nlink = 1;
-	  stb->st_blksize = 512;
-	  stb->st_blocks = 0;
-	  goto rest_sigmask;
-	}
+        {
+          stb->st_uid = stb->st_gid = 0;
+          stb->st_mode = S_IFCHR | 0777;
+          stb->st_nlink = 1;
+          stb->st_blksize = ix.ix_fs_buf_factor * 512;
+          stb->st_blocks = 0;
+          goto rest_sigmask;
+        }
 
       /* take special care of /dev/ptyXX and /dev/ttyXX */
       if (err == 5252)
-	{
-	  stb->st_uid = (uid_t)syscall(SYS_geteuid);
-	  stb->st_gid = (gid_t)syscall(SYS_getegid);
-	  stb->st_mode = S_IFCHR | 0777;
-	  stb->st_nlink = 1;
-	  stb->st_blksize = 512;
-	  stb->st_blocks = 0;
-	  goto rest_sigmask;
-	}
+        {
+          stb->st_uid = (uid_t)syscall(SYS_geteuid);
+          stb->st_gid = (gid_t)syscall(SYS_getegid);
+          stb->st_mode = S_IFCHR | 0777;
+          stb->st_nlink = 1;
+          stb->st_blksize = ix.ix_fs_buf_factor * 512;
+          stb->st_blocks = 0;
+          goto rest_sigmask;
+        }
 
       /* root directory */
       if (err == 6262)
-	{
-	  stb->st_uid = stb->st_gid = 0;
-	  stb->st_mode = S_IFDIR | 0777;
-	  stb->st_nlink = 3;
-	  stb->st_size = 1024;
-	  stb->st_blksize = 512;
-	  stb->st_blocks = 0;
-	  goto rest_sigmask;
-	}
+        {
+          stb->st_uid = stb->st_gid = 0;
+          stb->st_mode = S_IFDIR | 0777;
+          stb->st_nlink = 3;
+          stb->st_size = 1024;
+          stb->st_blksize = ix.ix_fs_buf_factor * 512;
+          stb->st_blocks = 0;
+          goto rest_sigmask;
+        }
 
       KPRINTF (("__stat: lock %s failed, err = %ld.\n", fname, err));
       if (err == ERROR_IS_SOFT_LINK)
@@ -200,7 +197,7 @@ __stat(const char *fname, struct stat *stb, BPTR (*lock_func)())
 	  /* HELP! no way to reach the fib of this entry except when
 	   * scanning the parent directory, but this is NOT acceptable ! */
 	  stb->st_ino = 123;
-	  stb->st_uid = stb->st_gid = -2;
+          stb->st_uid = stb->st_gid = -2;
 	  /* this is the most important entry ;-) */
 	  stb->st_mode = S_IFLNK | 0777;
 	  stb->st_size = 1024; /* again, this should be available... */
@@ -210,7 +207,7 @@ __stat(const char *fname, struct stat *stb, BPTR (*lock_func)())
 	  stb->st_atime = stb->st_mtime = stb->st_ctime = 0;
 	  stb->st_blksize = stb->st_blocks = 0;
 	  goto rest_sigmask;
-	}
+        }
 error:
       syscall (SYS_sigsetmask, omask);
       errno = __ioerr_to_errno (err);
@@ -219,7 +216,7 @@ error:
     }
   KPRINTF (("__stat: lock %s ok.\n",fname));
 
-  /* alloca() returns stack memory, so it's guaranteed to be word
+  /* alloca() returns stack memory, so it's guaranteed to be word 
    * aligned (anything else would be deadly for the sp...) Since DOS needs
    * long aligned data, we'll allocate 1 word more and adjust as needed */
   fib = alloca (sizeof(*fib) + 2);
@@ -237,21 +234,20 @@ error:
     }
 
   stb->st_mode = fill_stat_mode(stb, fib);
-  KPRINTF(("__stat: mode $%lx type %d\n", stb->st_mode, fib->fib_DirEntryType));
 
   /* read the uid/gid data */
   stb->st_uid = __amiga2unixid(fib->fib_OwnerUID);
   stb->st_gid = __amiga2unixid(fib->fib_OwnerGID);
 
   /* some kind of a default-size for directories... */
-  stb->st_size = fib->fib_DirEntryType < 0 ? fib->fib_Size : 1024;
+  stb->st_size = fib->fib_DirEntryType < 0 ? fib->fib_Size : 1024; 
   stb->st_handler = (long)((struct FileLock *)((long)lock << 2))->fl_Task;
   stb->st_dev = (dev_t)stb->st_handler; /* trunc to 16 bit */
   stb->st_ino = get_unique_id(lock, NULL);
   stb->st_atime =
   stb->st_ctime =
   stb->st_mtime = OFFSET_FROM_1970 * 24 * 3600 +
-		  ix_get_gmt_offset() +
+                  ix_get_gmt_offset() +
 		  fib->fib_Date.ds_Days * 24 * 60 * 60 +
 		  fib->fib_Date.ds_Minute * 60 +
 		  fib->fib_Date.ds_Tick/TICKS_PER_SECOND;
@@ -259,7 +255,7 @@ error:
    * the fileheader. Note, that this is wrong for large files, where there
    * are some extension-blocks as well */
   stb->st_blocks = fib->fib_NumBlocks + 1;
-
+  
   bzero (info, sizeof (*info));
   stb->st_blksize = 0;
   if (S_ISREG(stb->st_mode) && Info(lock, (void *)info))
@@ -270,8 +266,8 @@ error:
        * compromise between "as high as possible" and not too restricitve
        * for people low on memory */
       if (info->id_BytesPerBlock)
-	bytesperblock = info->id_BytesPerBlock;
-      stb->st_blksize = bytesperblock;
+        bytesperblock = info->id_BytesPerBlock;
+      stb->st_blksize = bytesperblock * ix.ix_fs_buf_factor;
       stb->st_blocks = (stb->st_blocks * bytesperblock) / 512;
     }
 
@@ -282,7 +278,7 @@ error:
     {
       ix_lock_base();
       if (find_unix_name(fname))
-	stb->st_mode = (stb->st_mode & ~S_IFMT) | S_IFSOCK;
+        stb->st_mode = (stb->st_mode & ~S_IFMT) | S_IFSOCK;
       ix_unlock_base();
     }
 
@@ -296,14 +292,12 @@ rest_sigmask:
 int
 stat (const char *fname, struct stat *stb)
 {
-  KPRINTF(("stat(\"%s\")\n", fname));
   return __stat (fname, stb, __lock);
 }
 
 int
 lstat (const char *fname, struct stat *stb)
 {
-  KPRINTF(("lstat(\"%s\")\n", fname));
   return __stat (fname, stb, __llock);
 }
 
@@ -337,7 +331,7 @@ filenamecmp(const char *fname)
    * impossible to get the name of the link with Examine. Only
    * ExAll/ExNext can obtain the link name.
    */
-
+   
   if (Examine (lock, fib))
     result = strcmp(basename((char *)fname), fib->fib_FileName) &&
 	     !stricmp(basename((char *)fname), fib->fib_FileName);

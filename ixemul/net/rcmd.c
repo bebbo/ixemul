@@ -188,7 +188,7 @@ rcmd(ahost, rport, locuser, remuser, cmd, fd2p)
 	(void)write(s, locuser, strlen(locuser)+1);
 	(void)write(s, remuser, strlen(remuser)+1);
 	(void)write(s, cmd, strlen(cmd)+1);
-	if (read(s, &c, 1) != 1) {
+	if (read(s, &c, 1) != 1) { 
 		(void)fprintf(stderr,
 		    "rcmd: %s: %s\n", *ahost, strerror(errno));
 		goto bad2;

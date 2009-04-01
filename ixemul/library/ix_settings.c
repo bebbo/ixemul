@@ -22,7 +22,7 @@ struct ix_settings *ix_get_settings(void)
   settings.flags = ix.ix_flags;
   settings.membuf_limit = ix.ix_membuf_limit;
   settings.red_zone_size = 0; /* obsolete */
-  settings.fs_buf_factor = 1; /* obsolete */
+  settings.fs_buf_factor = 32;
   settings.network_type = ix.ix_network_type;
   return &settings;
 }
@@ -54,6 +54,8 @@ void ix_set_settings(struct ix_settings *settings)
   ix.ix_flags = settings->flags;
   if (settings->membuf_limit >= 0)
     ix.ix_membuf_limit = settings->membuf_limit;
+  if (settings->fs_buf_factor > 0)
+    ix.ix_fs_buf_factor = settings->fs_buf_factor;
   if (settings->network_type >= 0 && settings->network_type < IX_NETWORK_END_OF_ENUM)
     ix.ix_network_type = settings->network_type;
 }

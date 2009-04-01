@@ -56,7 +56,7 @@ DEFS =          -DTM_GMTOFF=tm_gmtoff -DTM_ZONE=tm_zone -DNOID
 INCS =          -I$(srcdir) -I$(srcdir)/../library -I$(srcdir)/../include
 
 .c.o:
-		$(CC) $(ALL_CFLAGS) -c $< -o $@
+		$(CC) $(ALL_CFLAGS) -m68020 -m68881 -c $< -o $@
 
 SRC =           $(wildcard $(srcdir)/*.c)
 

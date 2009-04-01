@@ -43,6 +43,7 @@
 #define PROT_WRITE      0x02    /* pages can be written */
 #define PROT_EXEC       0x04    /* pages can be executed */
 
+
 /*
  * Flags contain sharing type and options.
  * Sharing types; choose one.
@@ -50,7 +51,7 @@
 #define MAP_SHARED      0x0001  /* share changes */
 #define MAP_PRIVATE     0x0002  /* changes are private */
 #define MAP_COPY        0x0004  /* "copy" region at mmap time */
-
+#define MAP_FAILED ((void *)-1)
 /*
  * Other flags
  */

@@ -37,5 +37,5 @@ rewinddir (DIR *dp)
 {
   if (!dp || dp->dd_fd < 0) return;
 
-  syscall (SYS_lseek, dp->dd_fd, 0, L_SET);
+  syscall (SYS_lseek, dp->dd_fd, 0, L_SET,0);
 }

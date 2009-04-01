@@ -159,7 +159,7 @@ define createlib
 	cp $< $@
 	@(cd tempobj; for i in $(filter-out $< $(OBJ),$^) ; do echo extracting library $$i ; $(AR) x ../$$i ; done)
 	(cd tempobj; $(AR) q ../$@ *.o)
-	 m68k-amigaos-ranlib $@ 
+	$(RANLIB) $@
 	$(RM) -r tempobj
 endef
 

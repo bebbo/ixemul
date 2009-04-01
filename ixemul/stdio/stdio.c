@@ -64,7 +64,7 @@ __sread(cookie, buf, n)
 	register FILE *fp = cookie;
 	register int ret;
 	
-	ret = read(fp->_file, buf, n);
+	ret = read_fp(fp, buf, n);
 	/* if the read succeeded, update the current offset */
 	if (ret >= 0)
 		fp->_offset += ret;
@@ -96,7 +96,7 @@ __sseek(cookie, offset, whence)
 	register FILE *fp = cookie;
 	register off_t ret;
 	
-	ret = lseek(fp->_file, (off_t)offset, whence);
+	ret = lseek_fp(fp, (off_t)offset, whence);
 	if (ret == -1L)
 		fp->_flags &= ~__SOFF;
 	else {

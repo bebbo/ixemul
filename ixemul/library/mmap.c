@@ -61,7 +61,7 @@ caddr_t mmap (caddr_t addr, size_t len, int prot, int flags, int fd, off_t offse
     }
   if (!(flags & MAP_ANON))
     {
-      off_t curoff = lseek(fd, 0, SEEK_CUR);
+      off_t curoff = lseek(fd, 0, SEEK_CUR,0);
 
       lseek(fd, offset, SEEK_SET);
       read(fd, m->addr, len);

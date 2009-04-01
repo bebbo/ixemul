@@ -61,7 +61,7 @@ fopen(file, mode)
 	register FILE *fp;
 	register int f;
 	int flags, oflags;
-
+     usetup;
 	if ((flags = __sflags(mode, &oflags)) == 0)
 		return (NULL);
 	if ((fp = __sfp()) == NULL)
@@ -77,7 +77,8 @@ fopen(file, mode)
 	fp->_write = __swrite;
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
-
+	
+	fp->_file_struct = u.u_ofile[f];
 	/*
 	 * When opening in append mode, even though we use O_APPEND,
 	 * we need to seek to the end so that ftell() gets the right

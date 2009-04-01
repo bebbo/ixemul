@@ -126,6 +126,7 @@ typedef struct __sFILE {
 	/* Unix stdio files get aligned to block boundaries on fseek() */
 	int     _blksize;       /* stat.st_blksize (may be != _bf._size) */
 	int     _offset;        /* current lseek offset */
+	unsigned int _file_struct; /* contain the file strcucture so no userdata is need */
 } FILE;
 
 #if 0
@@ -173,7 +174,7 @@ __END_DECLS
 #define _IOLBF  1               /* setvbuf should set line buffered */
 #define _IONBF  2               /* setvbuf should set unbuffered */
 
-#define BUFSIZ  16384            /* size of buffer used by setbuf */
+#define BUFSIZ  8192            /* size of buffer used by setbuf */
 #define EOF     (-1)
 
 /*

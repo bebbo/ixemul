@@ -4,7 +4,7 @@ static char sccsid[] = "@(#)memcpy.c    1.0 (mw)";
 
 #define _KERNEL
 #include <ixemul.h>
-//#include <proto/exec.h>
+#include <inline/exec.h>
 //#include <string.h>
 #define COPY1LONG *(long *)s1=* (long *)s2; s1+=4;s2+=4;
 #define COPY1WORD *(short *)s1=*(short *)s2; s1+=2;s2+=2;
