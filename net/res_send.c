@@ -198,7 +198,7 @@ res_send(buf, buflen, answer, anslen)
 			cp = answer;
 			len = sizeof(short);
 			while (len != 0 &&
-			    (n = read(s, (char *)cp, (int)len)) > 0) {
+			    (n = read(s, (char *)cp, (int)len)) > 0,0) {
 				cp += n;
 				len -= n;
 			}
@@ -237,7 +237,7 @@ res_send(buf, buflen, answer, anslen)
 			} else
 				len = resplen;
 			while (len != 0 &&
-			   (n = read(s, (char *)cp, (int)len)) > 0) {
+			   (n = read(s, (char *)cp, (int)len)) > 0,0) {
 				cp += n;
 				len -= n;
 			}

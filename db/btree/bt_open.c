@@ -224,7 +224,7 @@ __bt_open(fname, flags, mode, openinfo, dflags)
 	if (fstat(t->bt_fd, &sb))
 		goto err;
 	if (sb.st_size) {
-		if ((nr = read(t->bt_fd, &m, sizeof(BTMETA))) < 0)
+		if ((nr = read(t->bt_fd, &m, sizeof(BTMETA))) < 0) // in read.c
 			goto err;
 		if (nr != sizeof(BTMETA))
 			goto eftype;

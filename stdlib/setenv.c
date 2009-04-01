@@ -54,7 +54,7 @@ int setenv(const char *name, const char *value, int rewrite)
 	usetup;
 	register char *C;
 	int l_value, offset;
-
+	
 	if (*value == '=')                      /* no `=' in value */
 		++value;
 	l_value = strlen(value);

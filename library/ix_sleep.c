@@ -80,13 +80,14 @@ KPRINTF(("tsleep(%s, %lx), p_sig = %lx, mask = %lx\n", wmesg, waitchan, u.p_sig,
   sm.sm_signal = u.u_sleep_sig;
 
   wait_sigs =  (1 << sm.sm_signal) | SIGBREAKF_CTRL_C;
-
-#if 0
+  //Delay(1);
+#if 1
   if (timo)
     {
       #warning "This looks all wrong. Apparently timo is always 0 though. - Piru"
-      __time_req->tr_time.tv_sec = timo % 60;
-      __time_req->tr_time.tv_usec = timo / 60;
+	
+      __time_req->tr_time.tv_sec = timo / 1000;
+      __time_req->tr_time.tv_usec = timo % 1000;
       __time_req->tr_node.io_Command = TR_ADDREQUEST;
       SetSignal (0, 1 << __tport->mp_SigBit);
       SendIO((struct IORequest *)__time_req);
@@ -121,7 +122,7 @@ KPRINTF(("... wait() = %08lx, TDNestCnt = %ld\n", res, SysBase->TDNestCnt));
 KPRINTF(("permit\n"));
   Permit();
 
-#if 0
+#if 1
   if (timo)
     {
       if (! CheckIO ((struct IORequest *)__time_req))

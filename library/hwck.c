@@ -36,6 +36,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <proto/intuition.h>
+#include <intuition/intuition.h>
 
 int has_fpu = 0;
 int has_68010_or_up = 0;

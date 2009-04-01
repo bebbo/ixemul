@@ -102,7 +102,7 @@ DIRS =          $(BASE) $(CPUOSONLY) $(CPUFPUOS) $(BASECPUFPU)
 ###  68060.68881 68060.soft-float
 ###  powerpc.604e powerpc.603e
 
-CPU-FPU-TYPES = 68060.68881 68060.soft-float powerpc.604e powerpc.603e
+CPU-FPU-TYPES = 68020.68881
 
 # Some additional options for OTHER_CFLAGS that may or may not be useful are:
 #

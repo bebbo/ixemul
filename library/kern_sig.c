@@ -414,7 +414,7 @@ KPRINTF("handling sigs 0. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCn
    *       tc_Launch has a chance to reset it ;-))
    */
 
-  //while (ix_sleep ((caddr_t)p, "sigsuspend") == 0);
+  while (ix_sleep ((caddr_t)p, "sigsuspend") == 0);
   Permit();
 //Delay(2);
 KPRINTF("handling sigs 1. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, SysBase->IDNestCnt);

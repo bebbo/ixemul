@@ -304,7 +304,7 @@ register struct state * const   sp;
 		int             ttisstdcnt;
 		int             ttisgmtcnt;
 
-		i = read(fid, buf, sizeof buf);
+		i = read(fid, buf, sizeof buf); 
 		if (close(fid) != 0)
 			return -1;
 		p = buf;

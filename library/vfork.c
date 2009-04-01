@@ -69,11 +69,11 @@ launcher (void)
   int omask;
 
   KPRINTF(("vforked: opening ixemul\n"));
-
+  //kprintf("%ld\n",me->pr_Task.tc_UserData);
   ixb = OpenLibrary ("ixemul.library", IX_VERSION);
 
   u_ptr = getuser(me);
-
+  //kprintf("%ld\n",me->pr_Task.tc_UserData);
   KPRINTF(("vforked: waiting for startup msg\n"));
 
 /*{int* p=(int*)get_sp();
@@ -941,7 +941,8 @@ _vfork (int own_malloc, struct reg_parms rp)
 #endif
     { NP_Name, (ULONG) "vfork()'d process" },   /* to be overridden by execve() */
     { NP_StackSize, stack_size },               /* same size we use */
-    { NP_Cli, (ULONG) (CLI ? -1 : 0) },         /* same thing we are */
+    { NP_Cli, TRUE },         /* same thing we are */
+	//{ NP_Cli, (ULONG) (CLI ? -1 : 0) },         /* same thing we are */
     { TAG_END, 0 }
   };
 

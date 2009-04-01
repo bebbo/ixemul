@@ -21,6 +21,7 @@
 #include <ixemul.h>
 #include <stdarg.h>
 #include <proto/intuition.h>
+#include <intuition/intuition.h>
 
 #ifdef __MORPHOS__
 #define GET_VA_ARRAY(x) __va_overflow(x)
