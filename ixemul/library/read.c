@@ -32,36 +32,38 @@
 #include "kprintf.h"
 #include <unistd.h>
 
-ssize_t read_fp(FILE *fp, void *buf, size_t len)
-{
- usetup;
-  struct file *f;
-  
-
-  /* if this is an open fd */
-  if (fp->_file_struct)
-  {
-	  f = fp->_file_struct;
-      if (f->f_read)return (*f->f_read)(f, buf, len);
-      else
-	{
-	  errno = EIO;
-	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	}
-  }
-  else
-    {  
-      errno = EBADF;
-      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-    }
-  return -1;
-}
+//ssize_t read_fp(FILE *fp, void *buf, size_t len)
+//{
+// usetup;
+//  struct file *f;
+//  
+//
+//  /* if this is an open fd */
+//  if (fp->_file_struct)
+//  {
+//	  f = fp->_file_struct;
+//      if (f->f_read)return (*f->f_read)(f, buf, len);
+//      else
+//	{
+//	  errno = EIO;
+//	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//	}
+//  }
+//  else
+//    {  
+//      errno = EBADF;
+//      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//    }
+//  return -1;
+//}
 
 ssize_t read(int fd, void *buf, size_t len)
 {
   usetup;
-  struct file *f = u.u_ofile[fd];
- 
+  struct file *f;
+  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
+  else f = u.u_ofile[fd];
+  //f = u.u_ofile[fd];
   /* if this is an open fd */
   if (fd >= 0 && fd < NOFILE && f)
       if (f->f_read)

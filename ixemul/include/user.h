@@ -429,7 +429,8 @@ struct user {
 	char                     u_getpass_buf[_PASSWORD_LEN + 1];
 	void 			        *u_wbmsg; 
 	APTR                     u_ouser; 
-	APTR                     u_parent;   // have the user struct a parent task(for fileio need)
+	APTR                     u_poolheader;
+	struct user *            u_parent_userdata;   
 };
 
 /* flag codes */

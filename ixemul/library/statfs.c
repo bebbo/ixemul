@@ -267,7 +267,9 @@ int
 fstatfs (int fd, struct statfs *buf)
 {
   usetup;
-  struct file *f = u.u_ofile[fd];
+  struct file *f;
+  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
+  else f = u.u_ofile[fd];
   #if !USE_LOCKDOSLIST
   struct DosLibrary *dl;
   struct RootNode *rn;

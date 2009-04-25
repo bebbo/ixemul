@@ -69,7 +69,10 @@ int
 ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeout, long *mask)
 {
   usetup;
+ 
   struct file *f;
+  struct user *pu = u_ptr;
+  if (u.u_parent_userdata)pu = u.u_parent_userdata;
   int i, waitin, waitout, waitexc, dotout;
   int result, ostat, sigio;
   u_int wait_sigs;
@@ -99,14 +102,14 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
 
   for (i = 0; i < nfd; i++)
     {
-      if (ifd && FD_ISSET(i, ifd) && (f = p->u_ofile[i]))
+      if (ifd && FD_ISSET(i, ifd) && (f = pu->u_ofile[i]))
 	{
 	  if (!f->f_read || !f->f_select)
 	    FD_CLR(i, ifd);
 	  else
 	    ++waitin;
 	}
-      if (ofd && FD_ISSET(i, ofd) && (f = p->u_ofile[i]))
+      if (ofd && FD_ISSET(i, ofd) && (f = pu->u_ofile[i]))
 	{
 	  if (!f->f_write || !f->f_select)
 	    FD_CLR(i, ofd);
@@ -114,7 +117,7 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
 	    ++waitout;
 	}
 
-      if (efd && FD_ISSET(i, efd) && (f = p->u_ofile[i]))
+      if (efd && FD_ISSET(i, efd) && (f = pu->u_ofile[i]))
 	{
 	  /* question: can an exceptional condition also occur on a 
 	   * write-only fd?? */
@@ -183,18 +186,18 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
 	  /* have all watched files get prepared for selecting */
 	  for (i = 0; i < nfd; i++)
 	    {
-	      if (ifd && FD_ISSET (i, ifd) && (f = p->u_ofile[i]))
+	      if (ifd && FD_ISSET (i, ifd) && (f = pu->u_ofile[i]))
 		wait_sigs |= f->f_select (f, SELCMD_PREPARE, SELMODE_IN, &netin, &net_nfds);
-	      if (ofd && FD_ISSET (i, ofd) && (f = p->u_ofile[i]))
+	      if (ofd && FD_ISSET (i, ofd) && (f = pu->u_ofile[i]))
 		wait_sigs |= f->f_select (f, SELCMD_PREPARE, SELMODE_OUT, &netout, &net_nfds);
-	      if (efd && FD_ISSET (i, efd) && (f = p->u_ofile[i]))
+	      if (efd && FD_ISSET (i, efd) && (f = pu->u_ofile[i]))
 		wait_sigs |= f->f_select (f, SELCMD_PREPARE, SELMODE_EXC, &netexc, &net_nfds);
 	    }
 	  if (!(u.p_sigignore & sigmask (SIGIO)))
 	    {
-	      struct file **f = u.u_ofile;
+	      struct file **f = pu->u_ofile;
 
-	      for (i = 0; i < u.u_lastfile; i++)
+	      for (i = 0; i < pu->u_lastfile; i++)
 		if (f[i] && (f[i]->f_flags & FASYNC) && !(ifd && FD_ISSET(i, ifd)))
 		  wait_sigs |= f[i]->f_select (f[i], SELCMD_PREPARE, SELMODE_IN, &netin, &net_nfds);
 	    }
@@ -234,19 +237,19 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
       /* collect information from the file descriptors */
       for (i = 0; i < nfd; i++)
 	{
-	  if (ifd && FD_ISSET (i, ifd) && (f = p->u_ofile[i])
+	  if (ifd && FD_ISSET (i, ifd) && (f = pu->u_ofile[i])
 	      && f->f_select (f, cmd, SELMODE_IN, &netin, NULL))
 	    {
 	      FD_SET (i, &readyin);
 	      ++ readydesc;
 	    }
-	  if (ofd && FD_ISSET (i, ofd) && (f = p->u_ofile[i])
+	  if (ofd && FD_ISSET (i, ofd) && (f = pu->u_ofile[i])
 	      && f->f_select (f, cmd, SELMODE_OUT, &netout, NULL))
 	    {
 	      FD_SET (i, &readyout);
 	      ++ readydesc;
 	    }
-	  if (efd && FD_ISSET (i, efd) && (f = p->u_ofile[i])
+	  if (efd && FD_ISSET (i, efd) && (f = pu->u_ofile[i])
 	      && f->f_select (f, cmd, SELMODE_EXC, &netexc, NULL))
 	    {
 	      FD_SET (i, &readyexc);

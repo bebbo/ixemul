@@ -78,7 +78,7 @@ fopen(file, mode)
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
 	
-	fp->_file_struct = u.u_ofile[f];
+	//fp->_file_struct = u.u_ofile[f];
 	/*
 	 * When opening in append mode, even though we use O_APPEND,
 	 * we need to seek to the end so that ftell() gets the right

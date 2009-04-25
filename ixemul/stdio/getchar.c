@@ -57,6 +57,6 @@ int
 getchar()
 {
 	usetup;
-
+    if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
 	return (getc(stdin));
 }

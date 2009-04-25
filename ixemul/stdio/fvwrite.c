@@ -68,7 +68,6 @@ __sfvwrite(fp, uio)
 	register int w, s;
 	char *nl;
 	int nlknown, nldist;
-
 	if ((len = uio->uio_resid) == 0)
 		return (0);
 	/* make sure we can write */

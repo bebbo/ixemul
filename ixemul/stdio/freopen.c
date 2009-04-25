@@ -157,6 +157,6 @@ freopen(file, mode, fp)
 	fp->_write = __swrite;
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
-	fp->_file_struct = u.u_ofile[f];
+	//fp->_file_struct = u.u_ofile[f];
 	return (fp);
 }

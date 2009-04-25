@@ -203,8 +203,8 @@ ix_close (struct ixemul_base *ixbase)
 
   if ((ix_u->p_flag & SUSAGE) == 0)
     ix_stack_usage();
-
-  all_free ();
+  
+  if (!ix_u->u_parent_userdata)all_free (); // only free all if parent is quit 
 
 #ifndef NOTRAP
   /* delay this until here, since the above called functions need access

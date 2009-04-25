@@ -45,6 +45,7 @@ static char rcsid[] = "$NetBSD: puts.c,v 1.4 1995/02/02 02:10:18 jtc Exp $";
 
 #define _KERNEL
 #include "ixemul.h"
+#include "user.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -61,7 +62,8 @@ puts(s)
 	struct __suio uio;
 	struct __siov iov[2];
 	usetup;
-
+	
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
 	iov[0].iov_base = (void *)s;
 	iov[0].iov_len = c;
 	iov[1].iov_base = "\n";

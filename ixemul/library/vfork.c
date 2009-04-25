@@ -128,6 +128,7 @@ KPRINTF(("a7=%lx: %08lx %08lx %08lx %08lx %08lx %08lx %08lx %08lx\n",
 
       /* our older sybling is the last recently created child of the parent */
       mu->p_osptr = pu->p_cptr;
+	  mu->u_parent_userdata = 0;
       /* we have no younger sybling */
       mu->p_ysptr = 0;
       /* if we have an older sybling, point its `younger sybling' field at us */

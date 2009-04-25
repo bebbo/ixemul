@@ -41,7 +41,9 @@ int
 ftruncate (int fd, off_t len)
 {
   usetup;
-  struct file *f = u.u_ofile[fd];
+  struct file *f;
+  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
+  else f = u.u_ofile[fd]; 
   int err, res;
   int omask;
 

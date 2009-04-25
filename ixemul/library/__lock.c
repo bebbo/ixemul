@@ -100,13 +100,16 @@ BPTR __lock (char *name, int mode)
   APTR win;
   char *buf = alloca(strlen(name) + 4);
   buf = ix_to_ados(buf, name);
+ 
   if (is_special_name(buf))
     return 0;
+   //kprintf ("%s %s\n",buf,name);
   win = ((struct Process *)SysBase->ThisTask)->pr_WindowPtr;
   ((struct Process *)SysBase->ThisTask)->pr_WindowPtr = (APTR)-1;
   lock = Lock(buf, mode);
   if (lock == 0)
     {
+	  //kprintf("lock cant get\n");
       LONG err = IoErr();
       if (err == ERROR_OBJECT_NOT_FOUND)
         {
@@ -134,7 +137,8 @@ BPTR __llock (char *name, int mode)
 {
   struct DevProc *dvp;
   char *buf = alloca(strlen(name) + 4);
-  char buf2[256] __attribute__((aligned(4)));
+  //char buf2[256] __attribute__((aligned(4)));
+  char *buf2 =AllocVec(257,0); 
   BPTR lock = 0;
   LONG error;
   const char *p;
@@ -159,6 +163,7 @@ BPTR __llock (char *name, int mode)
     }
 
     p = buf;
+
     q = buf2 + 1;
     len = 0;
 
@@ -167,26 +172,27 @@ BPTR __llock (char *name, int mode)
 
     if (!*p)
       p = buf;
-
+   
     while(*p && len < 256)
     {
+	  
       *q++ = *p++;
       ++len;
     }
-
+    
     buf2[0] = len;
 
     dvp = NULL;
 
     for (;;)
     {
+	  
       dvp = GetDeviceProc(buf, dvp);
 
       if (!dvp)
 	break;
-
+      
       lock = DoPkt3(dvp->dvp_Port, ACTION_LOCATE_OBJECT, dvp->dvp_Lock, MKBADDR(buf2), mode);
-
       if (lock)
 	break;
 
@@ -240,7 +246,7 @@ BPTR __llock (char *name, int mode)
     SetIoErr(last_err);
 
   ((struct Process *)SysBase->ThisTask)->pr_WindowPtr = win;
-
+  if (buf2)FreeVec(buf2);
   return lock;
 }
 

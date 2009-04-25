@@ -90,6 +90,6 @@ fdopen(fd, mode)
 	fp->_write = __swrite;
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
-	fp->_file_struct = u.u_ofile[fd];
+	//fp->_file_struct = u.u_ofile[fd];
 	return (fp);
 }

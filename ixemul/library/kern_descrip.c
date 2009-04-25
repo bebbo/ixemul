@@ -99,7 +99,7 @@ dup (unsigned i)
   struct file *fp;
   int fd, error;
   usetup;
-
+  //if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;TRAP;}
   if (i >= NOFILE || (fp = u.u_ofile[i]) == NULL)
     errno_return(EBADF, -1);
 
@@ -150,7 +150,7 @@ dup2 (unsigned i, unsigned j)
   register struct file *fp;
   int old_err;
   usetup;
-
+  //if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;TRAP;}
   if (i >= NOFILE || (fp = u.u_ofile[i]) == NULL)
     errno_return(EBADF, -1);
 
@@ -192,7 +192,7 @@ fcntl(int fdes, int cmd, int arg)
   register char *pop;
   int i, error;
   usetup;
-
+  if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;}
   /* F_INTERNALIZE doesn't need a valid descriptor. Check for this first */
   if (cmd == F_INTERNALIZE)
     {
@@ -283,8 +283,9 @@ fstat (int fdes, struct stat *sb)
 {
   struct file *fp;
   usetup;
-
-  if (fdes >= NOFILE || (fp = u.u_ofile[fdes]) == NULL)
+  if (u.u_parent_userdata)fp = u.u_parent_userdata->u_ofile[fdes];
+  else fp = u.u_ofile[fdes];
+  if (fdes >= NOFILE || (fp == NULL))
     {
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
       errno = EBADF;
@@ -312,7 +313,7 @@ int
 ufalloc(int want, int *result)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
   for (; want < NOFILE; want++) 
     {
       if (u.u_ofile[want] == NULL) 
@@ -339,7 +340,7 @@ falloc(struct file **resultfp, int *resultfd)
   register struct file *fp;
   int error, i;
   usetup;
-
+  if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
   if ((error = ufalloc(0, &i)))
     return (error);
 

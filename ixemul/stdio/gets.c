@@ -55,6 +55,7 @@ gets(buf)
 	char *buf;
 {
 	usetup;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
 	register int c;
 	register char *s;
 
