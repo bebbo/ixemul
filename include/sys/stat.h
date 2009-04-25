@@ -41,7 +41,7 @@
 
 /* ixemul needs 2 bytes alignment for compatibility, libnix doesn't. */
 #ifdef __ixemul__
-#pragma pack(2)
+//#pragma pack(2)
 #endif
 #if later
 struct stat
@@ -88,7 +88,7 @@ struct	stat
 };
 #endif
 #ifdef __ixemul__
-#pragma pack()
+//#pragma pack()
 #endif
 
 #ifdef __amigaos__

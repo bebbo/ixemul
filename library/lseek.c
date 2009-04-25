@@ -87,164 +87,164 @@ __extend_file (struct file *f, int add_to_eof, int *err)
   return res;
 }
 
-off_t
-lseek_fp (FILE *fp, off_t off, int dir)
-{
-  usetup;
-  struct file *f; 
-  int omask;
-  int err;
-  off_t res;
-  int previous_pos = 0, shouldbe_pos;
-  
-  /* if this is an open fd */
-  if (fp->_file_struct)
-    {
-	  f = fp->_file_struct; 
-      if (f->f_type == DTYPE_FILE)
-	{
-	  if (HANDLER_NIL(f))
-	    {
-	      /* This is always possible with /dev/null */
-	      if (off == 0)
-		return 0;
-	      errno = ESPIPE;
-	      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	      return -1;
-	    }
-
-	  omask = syscall (SYS_sigsetmask, ~0);
-	  __get_file (f);
-
-	  /* there's a subtle difference between Unix lseek() and AmigaOS
-	   * Seek(): lseek() returns the *current* position of the `pointer',
-	   * Seek() returns the *previous* position. So in some cases, we
-	   * have to do another Seek() to find out where we are.
-	   * Thanks Mike for pointing me at this! */
-
-	  switch (dir)
-	    {
-	    case SEEK_SET:
-	      /* previous doesn't matter, don't need to seek */
-	      previous_pos = 0;
-	      break;
-
-	    case SEEK_CUR:
-	      /* first find out current position */
-	      previous_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
-	      if (previous_pos == -1)
-		{
-		  err = __ioerr_to_errno(IoErr());
-		}
-	      break;
-	      
-	    case SEEK_END:
-	      /* first find out end position (have to do twice.. argl) */
-	      Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
-	      previous_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
-	      if (previous_pos == -1)
-		{
-		  err = __ioerr_to_errno(IoErr());
-		}
-	      break;
-	       default: 
-		   res = -1;
-	 	   __release_file (f);
-	      syscall (SYS_sigsetmask, omask);
-	      errno = EINVAL;
-		  return res;
-	    }
-	  
-	  shouldbe_pos = previous_pos + off;
-	  if (shouldbe_pos < 0)
-	    {
-	      /* that way we make sure that invalid seek errors later result
-		 from seeking past eof, so we can enlarge the file */
-
-	      err = EINVAL;
-	      res = -1;
-	    }
-	  else if (previous_pos >= 0)
-	    {
-	      res = Seek(CTOBPTR(f->f_fh), off, dir - 1);
-	      if (res == -1 && IoErr() == ERROR_SEEK_ERROR)
-			{
-		  /* in this case, assume the user wanted to seek past eof.
-		     Thus get the current eof position, so that we can
-		     tell __extend_file how much to enlarge the file */
-		  res = Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
-			}
-	  
-	      if (res == -1)
-			{
-		  err = __ioerr_to_errno(IoErr());
-			}
-	      else
-			{
-		  err = 0;
-
-		  		if (previous_pos != shouldbe_pos)
-		    	{
-		      	res = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
-		      		if (res == -1)
-					{
-			  		err = __ioerr_to_errno(IoErr());
-					}
-
-		      		if (res >= 0 && res < shouldbe_pos && (f->f_flags & FWRITE))
-					{
-			  		/* extend the file... */
-			  		res = __extend_file (f, shouldbe_pos - res, &err);
-					}
-		    	}
-		  	else
-		  		{
-		    	res = shouldbe_pos;
-				}
-			}
-	    }
-	  else
-	    res = -1;
-	  
-	  __release_file (f);
-	  syscall (SYS_sigsetmask, omask);
-	  errno = err;
-	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	  return res;
-	}
-      else if (f->f_type == DTYPE_MEM)
-	{
-	  int real_off;
-	  int old_off;
-
-	  omask = syscall (SYS_sigsetmask, ~0);
-	  __get_file (f);
-	  old_off = f->f_mf.mf_offset;
-	  
-	  real_off = (dir == L_SET ? off : 
-		      (dir == L_INCR ? 
-		       old_off + off : f->f_stb.st_size + off));
-	  if (real_off < 0) real_off = 0;
-	  else if (real_off > f->f_stb.st_size) real_off = f->f_stb.st_size;
-	  f->f_mf.mf_offset = real_off;
-	  __release_file (f);
-	  syscall (SYS_sigsetmask, omask);
-	  return old_off;
-	}
-      else
-	{
-	  errno = ESPIPE;
-	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	}
-    }
-  else
-    {
-      errno = EBADF;
-      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-    }
-
-  return -1;
-}
+//off_t
+//lseek_fp (FILE *fp, off_t off, int dir)
+//{
+//  usetup;
+//  struct file *f; 
+//  int omask;
+//  int err;
+//  off_t res;
+//  int previous_pos = 0, shouldbe_pos;
+//  
+//  /* if this is an open fd */
+//  if (fp->_file_struct)
+//    {
+//	  f = fp->_file_struct; 
+//      if (f->f_type == DTYPE_FILE)
+//	{
+//	  if (HANDLER_NIL(f))
+//	    {
+//	      /* This is always possible with /dev/null */
+//	      if (off == 0)
+//		return 0;
+//	      errno = ESPIPE;
+//	      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//	      return -1;
+//	    }
+//
+//	  omask = syscall (SYS_sigsetmask, ~0);
+//	  __get_file (f);
+//
+//	  /* there's a subtle difference between Unix lseek() and AmigaOS
+//	   * Seek(): lseek() returns the *current* position of the `pointer',
+//	   * Seek() returns the *previous* position. So in some cases, we
+//	   * have to do another Seek() to find out where we are.
+//	   * Thanks Mike for pointing me at this! */
+//
+//	  switch (dir)
+//	    {
+//	    case SEEK_SET:
+//	      /* previous doesn't matter, don't need to seek */
+//	      previous_pos = 0;
+//	      break;
+//
+//	    case SEEK_CUR:
+//	      /* first find out current position */
+//	      previous_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
+//	      if (previous_pos == -1)
+//		{
+//		  err = __ioerr_to_errno(IoErr());
+//		}
+//	      break;
+//	      
+//	    case SEEK_END:
+//	      /* first find out end position (have to do twice.. argl) */
+//	      Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
+//	      previous_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
+//	      if (previous_pos == -1)
+//		{
+//		  err = __ioerr_to_errno(IoErr());
+//		}
+//	      break;
+//	       default: 
+//		   res = -1;
+//	 	   __release_file (f);
+//	      syscall (SYS_sigsetmask, omask);
+//	      errno = EINVAL;
+//		  return res;
+//	    }
+//	  
+//	  shouldbe_pos = previous_pos + off;
+//	  if (shouldbe_pos < 0)
+//	    {
+//	      /* that way we make sure that invalid seek errors later result
+//		 from seeking past eof, so we can enlarge the file */
+//
+//	      err = EINVAL;
+//	      res = -1;
+//	    }
+//	  else if (previous_pos >= 0)
+//	    {
+//	      res = Seek(CTOBPTR(f->f_fh), off, dir - 1);
+//	      if (res == -1 && IoErr() == ERROR_SEEK_ERROR)
+//			{
+//		  /* in this case, assume the user wanted to seek past eof.
+//		     Thus get the current eof position, so that we can
+//		     tell __extend_file how much to enlarge the file */
+//		  res = Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
+//			}
+//	  
+//	      if (res == -1)
+//			{
+//		  err = __ioerr_to_errno(IoErr());
+//			}
+//	      else
+//			{
+//		  err = 0;
+//
+//		  		if (previous_pos != shouldbe_pos)
+//		    	{
+//		      	res = Seek(CTOBPTR(f->f_fh), 0, OFFSET_CURRENT);
+//		      		if (res == -1)
+//					{
+//			  		err = __ioerr_to_errno(IoErr());
+//					}
+//
+//		      		if (res >= 0 && res < shouldbe_pos && (f->f_flags & FWRITE))
+//					{
+//			  		/* extend the file... */
+//			  		res = __extend_file (f, shouldbe_pos - res, &err);
+//					}
+//		    	}
+//		  	else
+//		  		{
+//		    	res = shouldbe_pos;
+//				}
+//			}
+//	    }
+//	  else
+//	    res = -1;
+//	  
+//	  __release_file (f);
+//	  syscall (SYS_sigsetmask, omask);
+//	  errno = err;
+//	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//	  return res;
+//	}
+//      else if (f->f_type == DTYPE_MEM)
+//	{
+//	  int real_off;
+//	  int old_off;
+//
+//	  omask = syscall (SYS_sigsetmask, ~0);
+//	  __get_file (f);
+//	  old_off = f->f_mf.mf_offset;
+//	  
+//	  real_off = (dir == L_SET ? off : 
+//		      (dir == L_INCR ? 
+//		       old_off + off : f->f_stb.st_size + off));
+//	  if (real_off < 0) real_off = 0;
+//	  else if (real_off > f->f_stb.st_size) real_off = f->f_stb.st_size;
+//	  f->f_mf.mf_offset = real_off;
+//	  __release_file (f);
+//	  syscall (SYS_sigsetmask, omask);
+//	  return old_off;
+//	}
+//      else
+//	{
+//	  errno = ESPIPE;
+//	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//	}
+//    }
+//  else
+//    {
+//      errno = EBADF;
+//      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+//    }
+//
+//  return -1;
+//}
 
 
 
@@ -252,7 +252,9 @@ off_t
 lseek (int fd, off_t off, int dir)
 {
   usetup;
-  struct file *f = u.u_ofile[fd];
+  struct file *f;
+  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
+  else f = u.u_ofile[fd];
   int omask;
   int err;
   off_t res;

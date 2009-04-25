@@ -51,7 +51,7 @@ open(char *name, int mode, int perms)
   int ptyindex = 0;
   int amode = 0, i;
   usetup;
-
+ 
   D(dprintf("open: <%s> mode 0x%lx perms 0x%lx\n", name, mode, perms);)
 
   if (name == NULL)     /* sanity check */
@@ -62,6 +62,7 @@ open(char *name, int mode, int perms)
   omask = syscall (SYS_sigsetmask, ~0);
 
   error = falloc (&f, &fd);
+   if (u.u_parent_userdata){u.u_ofile[fd] = 0xdeadbeef;}
   if (error)
     {
       syscall (SYS_sigsetmask, omask);
@@ -193,7 +194,7 @@ open(char *name, int mode, int perms)
 
   do
   {
-#if 0
+#if 1
     if (!strcmp(name, "*") || !strcasecmp(name, "console:"))
       /* Temporary patch for KingCON 1.3, which seems to have problems with
 	 ACTION_FINDINPUT of "*"/"console:" when "dp_Port" of the packet is
@@ -202,6 +203,7 @@ open(char *name, int mode, int perms)
       fh = Open(name, amode);
     else
 #endif
+		
       fh = __open (name, amode);
 
     if (! fh)
@@ -312,8 +314,7 @@ error:
   // End of critical section
   ix_mutex_unlock(&open_sem);
 
-  /* free the file */
-  u.u_ofile[fd] = 0;
+  
   if (ptymask)
     {
       ix_lock_base();
@@ -326,5 +327,9 @@ error:
   syscall (SYS_sigsetmask, omask);
   errno = error;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+  if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;}
+  /* free the file */
+  u.u_ofile[fd] = 0;
+
   return -1;
 }

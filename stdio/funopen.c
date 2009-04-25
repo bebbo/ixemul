@@ -86,6 +86,5 @@ funopen(cookie, readfn, writefn, seekfn, closefn)
 	fp->_write = writefn;
 	fp->_seek = seekfn;
 	fp->_close = closefn;
-	fp->_file_struct = 0;
 	return (fp);
 }

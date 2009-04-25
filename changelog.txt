@@ -1,9 +1,22 @@
-2009-02-06 Bernd_afa
+2009-04-13 Bernd_afa
    Version 51.1
+   * 
    * add func log2 log2f lrint lrintf to math.h
    * add func strtok_r to string.h
+   * add func sqrtf/fmod to libc.
    * mmap use now page size alligned memory that is need by programs(GCC) to work ok
    * correct handling for extern inline in C99 Mode see http://gcc.gnu.org/ml/gcc/2007-03/msg01096.html
+   * additional poolmem memsystem add.this let bugs find more easy because AOS memtracker work.
+     POOLMEM define can switch between them.
+     need by many Unix programs that create tasks with SDL.(vfork work as before)
+   * ix_CreateChildData function add in libc.a.This create correct Userdata structure ixemul need
+     to store filehandles and used memlist of current task when a task is create with amiga OS create Task.
+     change to follow Unix spec(not used in vfork process) 
+     child tasks use mem list from parent task.poolmem enabled need
+     child tasks use same file handle as parent task
+       
+   * Bugfix: llock get now correct aligned mem for packet call.(wget resume work again) 
+   
 
 2009-02-06 Bernd_afa
 

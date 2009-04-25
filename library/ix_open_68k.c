@@ -154,7 +154,7 @@ struct WBStartup *wb_msg = NULL;
        * these calls simply have to succeed... I know I'm a lazy guy ;-) */
       ix_u->u_sleep_sig = AllocSignal (-1);
       ix_u->u_pipe_sig = AllocSignal (-1);
-
+      ix_u->u_poolheader = CreatePool(0,65536,65536);    
       ix_u->u_ixbase = ixbase;
       ix_u->u_errno = &default_errno;
       ix_u->u_h_errno = &default_h_errno;
@@ -260,7 +260,7 @@ struct WBStartup *wb_msg = NULL;
       me->tc_TrapCode = ix_u->u_otrap_code;
       getuser(me) = ix_u->u_otrap_data;
 #endif
-
+      if (ix_u->u_poolheader)DeletePool(ix_u->u_poolheader);    
       kfree (tmp);
     }
   if (wb_msg)

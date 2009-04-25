@@ -49,6 +49,7 @@
 #include <stddef.h>
 
 #define USE_PANIC_HIT 0
+#define POOLMEM // must activate that programs work that malloc in parent task and free in child task
 
 #define mem_list (u.u_mdp->md_list)
 #define mem_used (u.u_mdp->md_malloc_sbrk_used)
@@ -71,6 +72,8 @@ struct mem_block {
   /* realblock should really be [0], and at the end we'd have a magic2[1] */
 };
 
+
+
 struct memalign_ptr {
   u_char        magic;
   u_int         alignment:24;
@@ -79,7 +82,166 @@ struct memalign_ptr {
 #define MEMALIGN_MAGIC 0xdd
 
 /* perhaps important later ;-) */
-#define PAGESIZE 2048
+#define PAGESIZE 4096
+
+
+void *
+memalign (size_t alignment, size_t size)
+{
+  u_char *p = (u_char *) malloc (size + alignment + sizeof (struct memalign_ptr));
+  struct memalign_ptr *al_start;
+
+  if (! p)
+    return p;
+
+  /* if the block is already aligned right, just return it */
+  if (! ((u_int)p & (alignment - 1)))
+    return p;
+
+  /* else find the start of the aligned block in our larger block */
+  al_start = (struct memalign_ptr *)(((u_int)p + alignment - 1) & -alignment);
+
+  /* this could be problematic on 68000, when an odd alignment is requested,
+   * should I just don't allow odd alignments?? */
+  al_start[-1].magic = MEMALIGN_MAGIC;
+  al_start[-1].alignment = (u_char *)al_start - p;
+
+  return al_start;
+}
+
+void *
+valloc (size_t size)
+{
+  return (void *) memalign (PAGESIZE, size);
+}
+
+#ifdef POOLMEM
+
+void * malloc (size_t size)
+{
+  usetup;
+  unsigned long *res;
+  int omask;
+  struct user *udat;
+  unsigned long poolheader;
+  if (u.u_parent_userdata)
+  {
+  udat = u.u_parent_userdata;
+  poolheader = udat->u_poolheader;
+  }
+  else poolheader = u.u_poolheader;
+  
+  if ((signed long)size < 0)
+    return 0;
+  
+  
+  /* we don't want to be interrupted between the allocation and the tracking */
+  //omask = syscall (SYS_sigsetmask, ~0);
+  Forbid();
+  res = AllocPooled(poolheader,size+4);
+  Permit();
+  //syscall (SYS_sigsetmask, omask);
+  if (res){
+	       mem_used += size;
+		   *res++=size;
+		   return res;
+  }
+  return 0;
+}
+
+free (unsigned long *mem)
+{
+  int omask;
+  usetup;
+  struct user *udat;
+  unsigned long poolheader;
+  if (!mem)return; 
+  if (u.u_parent_userdata)
+  {
+  udat = u.u_parent_userdata;
+  poolheader = udat->u_poolheader;
+  }
+  else poolheader = u.u_poolheader;
+
+  //omask = syscall (SYS_sigsetmask, ~0);
+  Forbid();
+  if (((struct memalign_ptr *)mem - 1)->magic == MEMALIGN_MAGIC)
+    {
+      mem = (unsigned long  *)
+	      ((u_char *)mem - ((struct memalign_ptr *)mem - 1)->alignment);
+    }
+  FreePooled(poolheader,mem-1,*(mem-1)+4);
+  Permit();
+  //syscall (SYS_sigsetmask, omask);
+}
+void all_free (void)
+{
+  usetup;
+  if (u.u_poolheader)DeletePool(u.u_poolheader);
+  u.u_poolheader = 0;
+}
+
+realloc (unsigned long *mem, size_t size)
+{
+  unsigned long *memaddr,*res;
+  int omask;
+  usetup;
+  struct user *udat;
+  unsigned long poolheader;
+  
+  if (u.u_parent_userdata)
+  {
+  udat = u.u_parent_userdata;
+  poolheader = udat->u_poolheader;
+  }
+  else poolheader = u.u_poolheader;
+
+  if (!mem)
+    return (void *) malloc (size);
+
+  if (!size)
+  {
+    free(mem);
+    return NULL;
+  }
+   memaddr = mem;
+  if (((struct memalign_ptr *)mem - 1)->magic == MEMALIGN_MAGIC)
+    {
+	 
+      memaddr = (unsigned long *)
+	      ((u_char *)memaddr - ((struct memalign_ptr *)mem - 1)->alignment);
+	  if ((*(memaddr-1) - ((struct memalign_ptr *)mem - 1)->alignment) >= size + 16)
+	  {
+		  return mem;
+	  }
+    }
+
+  if (*(memaddr-1) >= size)
+    res = mem;
+  else
+    {
+      res = (unsigned long *) malloc (size);
+      if (res)
+			{
+			//omask = syscall (SYS_sigsetmask, ~0);
+			
+			CopyMem (mem, res, *(mem-1));
+
+			/* according to the manpage, the old buffer should only be
+			* freed, if the allocation of the new buffer was successful */
+			Forbid();
+			FreePooled(poolheader,mem-1,*(mem-1)+4);
+			Permit();
+			//syscall (SYS_sigsetmask, omask);
+			}
+    }
+
+  return res;
+
+
+}
+
+#else
 
 void *
 malloc (size_t size)
@@ -122,35 +284,6 @@ malloc (size_t size)
   return 0;
 }
 
-void *
-memalign (size_t alignment, size_t size)
-{
-  u_char *p = (u_char *) malloc (size + alignment + sizeof (struct memalign_ptr));
-  struct memalign_ptr *al_start;
-
-  if (! p)
-    return p;
-
-  /* if the block is already aligned right, just return it */
-  if (! ((u_int)p & (alignment - 1)))
-    return p;
-
-  /* else find the start of the aligned block in our larger block */
-  al_start = (struct memalign_ptr *)(((u_int)p + alignment - 1) & -alignment);
-
-  /* this could be problematic on 68000, when an odd alignment is requested,
-   * should I just don't allow odd alignments?? */
-  al_start[-1].magic = MEMALIGN_MAGIC;
-  al_start[-1].alignment = (u_char *)al_start - p;
-
-  return al_start;
-}
-
-void *
-valloc (size_t size)
-{
-  return (void *) memalign (PAGESIZE, size);
-}
 
 void
 free (void *mem)
@@ -307,3 +440,4 @@ realloc (void *mem, size_t size)
 
   return res;
 }
+#endif

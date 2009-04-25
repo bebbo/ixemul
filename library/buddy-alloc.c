@@ -369,13 +369,13 @@ b_alloc (int size, unsigned pool)
      semaphore there would possibly break a Forbid..
      Note: this is safe for use in GigaMem, as GigaMem only uses non-PUBLIC
 	   memory, if you don't fiddle with attribute masks.. */
-  if (pool == PRIVATE_POOL)
+  /*if (pool == PRIVATE_POOL)
   {
     ix_mutex_lock(&fl->sem);
     block = get_block (pool, bucket);
     ix_mutex_unlock(&fl->sem);
   }
-  else
+  else*/
   {
     Forbid();
     block = get_block (pool, bucket);
@@ -413,13 +413,13 @@ b_free (void *mem, int size)
   free_pool = fb->pool - 1;
   fl = free_list + free_pool;
 
-  if (free_pool == PRIVATE_POOL)
-  {
-    ix_mutex_lock(&fl->sem);
-    free_block (free_pool, bucket, fb);
-    ix_mutex_unlock(&fl->sem);
-  }
-  else
+	  /*if (free_pool == PRIVATE_POOL)
+	  {
+		ix_mutex_lock(&fl->sem);
+		free_block (free_pool, bucket, fb);
+		ix_mutex_unlock(&fl->sem);
+	  }
+	  else*/
   {
     Forbid();
     free_block (free_pool, bucket, fb);
