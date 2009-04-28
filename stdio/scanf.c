@@ -60,7 +60,7 @@ scanf(char const *fmt, ...)
 	int ret;
 	my_va_list ap;
 	usetup;
-
+    if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
 	my_va_start(ap, fmt);
 	ret = __svfscanf(stdin, fmt, ap);
 	my_va_end(ap);

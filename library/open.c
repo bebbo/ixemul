@@ -62,7 +62,7 @@ open(char *name, int mode, int perms)
   omask = syscall (SYS_sigsetmask, ~0);
 
   error = falloc (&f, &fd);
-   if (u.u_parent_userdata){u.u_ofile[fd] = 0xdeadbeef;}
+  
   if (error)
     {
       syscall (SYS_sigsetmask, omask);
@@ -73,7 +73,7 @@ open(char *name, int mode, int perms)
     }
   /* we now got the file, ie. since its count is > 0, no other process
    * will get it with falloc() */
-
+  if (u.u_parent_userdata){u.u_ofile[fd] = 0xdeadbeef;}
   late_stat = 0;
 
   // The code between the stat() and the actual open() is critical
