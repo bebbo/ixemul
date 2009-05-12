@@ -53,8 +53,9 @@ kmalloc (size_t size)
 
   /* always allocate a quantity of long words so we can CopyMemQuick() later */
   size = (size + 3) & ~3;
-
+  Forbid();
   res = (u_int *) b_alloc(size + 4, MEMF_PUBLIC);
+  Permit();
   if (res) *res++ = size;
 
   return res;
@@ -97,5 +98,7 @@ kfree (void *mem)
 
   res = mem;
   res--;
+  Forbid();
   b_free(res, *res + 4);
+  Permit();
 }

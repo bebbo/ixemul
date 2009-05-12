@@ -132,7 +132,7 @@ ix_startup (char *aline, int alen,
     }
   /* in this case we came from a longjmp-call */
   exit_val = u.p_xstat;
-
+ 
   __ix_remove_sigwinch ();
 
   /* had to move the closing of files out of ix_close(), as close() may 

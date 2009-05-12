@@ -3,8 +3,8 @@
 #define __VERSION_H__
 
 #define IXNET_NAME         "ixnet.library"
-#define IXNET_IDSTRING     "ixnet 51.1 [notrap, 68060, amigaos] (19.03.2009)"
-#define IXNET_VERSION      51
+#define IXNET_IDSTRING     "ixnet 61.1 [notrap, 68020 68881, amigaos] (19.03.2009)"
+#define IXNET_VERSION      61
 #define IXNET_REVISION     1
 #define IXNET_PRIORITY     0
 

@@ -49,7 +49,7 @@
 #include <stddef.h>
 
 #define USE_PANIC_HIT 0
-#define POOLMEM // must activate that programs work that malloc in parent task and free in child task
+#define POOLMEM // you can choose here between buddy allocater or amiga OS poolmem
 
 #define mem_list (u.u_mdp->md_list)
 #define mem_used (u.u_mdp->md_malloc_sbrk_used)
@@ -249,6 +249,10 @@ malloc (size_t size)
   usetup;
   struct mem_block *res;
   int omask;
+  if (u.u_parent_userdata)
+  {
+  u_ptr = u.u_parent_userdata;
+  }
 
   /* We increase SIZE below which could cause an dangerous (system
      crash) overflow. -bw/09-Jun-98 */
@@ -262,8 +266,9 @@ malloc (size_t size)
   omask = syscall (SYS_sigsetmask, ~0);
 
   /* include management information */
+  Forbid();
   res = (struct mem_block *) b_alloc(size + sizeof (struct mem_block), 0); /* not MEMF_PUBLIC ! */
-
+  Permit();
   if (res)
     {
       u_int *lp = &res->size;
@@ -292,6 +297,10 @@ free (void *mem)
   u_int *end_magic;
   int omask;
   usetup;
+  if (u.u_parent_userdata)
+  {
+  u_ptr = u.u_parent_userdata;
+  }
 
   /* this seems to be standard... don't like it though ! */
   if (! mem)
@@ -336,10 +345,10 @@ free (void *mem)
 
   Forbid ();
   ixremove ((struct ixlist *)&mem_list, (struct ixnode *) block);
-  Permit ();
 
   mem_used -= block->size;
   b_free(block, block->size + sizeof (struct mem_block));
+  Permit();
   syscall (SYS_sigsetmask, omask);
 }
 
@@ -349,7 +358,10 @@ void all_free (void)
   struct mem_block *b, *nb;
   static int errno_dummy;
   usetup;
-
+  if (u.u_parent_userdata)
+  {
+  u_ptr = u.u_parent_userdata;
+  }
   /* Since errno (= *u.u_errno) might still be used, we point it to our own
      temporary errno dummy variable. */
   u.u_errno = &errno_dummy;
@@ -374,7 +386,10 @@ realloc (void *mem, size_t size)
   u_int *end_magic;
   void *res;
   usetup;
-
+  if (u.u_parent_userdata)
+  {
+  u_ptr = u.u_parent_userdata;
+  }
   if (!mem)
     return (void *) malloc (size);
 
@@ -433,7 +448,9 @@ realloc (void *mem, size_t size)
 	  /* according to the manpage, the old buffer should only be
 	   * freed, if the allocation of the new buffer was successful */
 	  mem_used -= block->size;
+	  Forbid();
 	  b_free(block, block->size + sizeof (struct mem_block));
+	  Permit();
 	  syscall (SYS_sigsetmask, omask);
 	}
     }
