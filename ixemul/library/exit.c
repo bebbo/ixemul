@@ -55,6 +55,7 @@ void exit2(int retval)
 #ifndef NATIVE_MORPHOS
 	  if (u.u_a4)
 	    asm volatile ("movel %0, a4" : : "g" (u.u_a4));
+	
 	  __atexit->fns[--__atexit->ind] ();
 #else
 	  if (u.u_is_ppc && u.u_r13)
@@ -75,7 +76,7 @@ void exit2(int retval)
     }
 
   KPRINTF(("longjmp\n"));
-
+  
   u.p_xstat = retval;
   _longjmp (u.u_jmp_buf, 1);
 }

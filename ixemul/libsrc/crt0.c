@@ -496,12 +496,14 @@ ENTRY(void)
 /*
  * Set the limit variable to finish the initialization of the stackextend code.
  */
+	 
       __init_stk_limit(&__stk_limit,__stk_argbytes);
 
       res = extend_stack_ix_startup(aline, alen, ix_expand_cmd_line,
 				    ix_default_wb_window, (int)start_stdio, &errno);
 
       CloseLibrary((struct Library *)base);
+	 
     }
   else
     {
@@ -572,7 +574,7 @@ start_stdio(int argc, char **argv, char **env)
 #endif /* not BASECRT0 */
 
   if (argv[0])
-    if ((__progname = strrchr(argv[0], '/')))
+    if ((__progname = "" /*strrchr(argv[0], '/')*/))
       __progname++;
     else
       __progname = argv[0];

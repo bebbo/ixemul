@@ -3,11 +3,11 @@
 /* The size of struct user is 10648 bytes. */
 #define IX_NAME         "ixemul.library"
 #ifdef TRACE_LIBRARY
-#define IX_IDSTRING     "ixemul 51.1 [trace, notrap, 68060, fpu, amigaos] (19.3.2009)"
+#define IX_IDSTRING     "ixemul 61.1 [trace, notrap, 68020, 68881, amigaos] (19.3.2009)"
 #else
-#define IX_IDSTRING     "ixemul 51.1 [notrap, 68060, fpu, amigaos] (19.3.2009)"
+#define IX_IDSTRING     "ixemul 61.1 [notrap, 68020, 68881, amigaos] (19.3.2009)"
 #endif
-#define IX_VERSION      51
+#define IX_VERSION      61
 #define IX_REVISION     1
 #define IX_PRIORITY     0
 
