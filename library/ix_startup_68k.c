@@ -145,7 +145,7 @@ ix_startup (char *aline, int alen,
 
   /* if at all possible, free memory before entering Forbid ! (Semaphore
      problems..) */
-  if (u.u_parent_userdata)all_free (); // only free all if parent is quit 
+  if (!u.u_parent_userdata)all_free (); // only free all if parent is quit 
 
   /*
    * If we were traced by a debugger who got us through a ptrace 'attach',

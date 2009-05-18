@@ -314,10 +314,23 @@ double const log10(double parm)
   return IEEEDPLog10(parm);
 }
 
-double const floor(double parm)
+//double const floor(double parm)
+//{
+//  return IEEEDPFloor(parm);
+//}
+
+
+
+double floor (double x)
 {
-  return IEEEDPFloor(parm);
-}
+  double value;
+ 
+  __asm volatile ("fintrz%.x %1,%0"
+		  : "=f" (value)
+		  : "f" (x));
+  
+  return value;
+} 
 
 double const ceil(double parm)
 {

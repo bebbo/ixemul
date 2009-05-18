@@ -41,7 +41,11 @@
 void exit2(int retval)
 {
   usetup;
-
+  if (u.u_parent_userdata)
+  {
+	  ix_panic("cant exit Childtask.Task is stop forever");
+      Wait(0);
+  }
   KPRINTF(("exit2(%ld)\n", retval));
 
   /* ignore all signals from now on, as I don't think allowing signalling
@@ -76,7 +80,7 @@ void exit2(int retval)
     }
 
   KPRINTF(("longjmp\n"));
-  
+  Delay(25); // wait 0.5 sec soall tasks are quit
   u.p_xstat = retval;
   _longjmp (u.u_jmp_buf, 1);
 }
@@ -84,7 +88,7 @@ void exit2(int retval)
 void exit (int retval)
 {
   usetup;
-
+ 
   if (u.u_ixnetbase)
     netcall(NET_shutdown_inet_daemon);
   exit2(W_EXITCODE(retval, 0));

@@ -66,3 +66,5 @@ void ix_panic(const char *msg, ...)
   me->tc_Flags = old_flags;
   va_end(ap);
 }
+
+

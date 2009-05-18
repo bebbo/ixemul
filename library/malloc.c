@@ -45,7 +45,7 @@
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
-
+#include <exec/memory.h>
 #include <stddef.h>
 
 #define USE_PANIC_HIT 0
@@ -133,7 +133,17 @@ void * malloc (size_t size)
   
   if ((signed long)size < 0)
     return 0;
-  
+again_malloc:  if (size > 60000)
+  {
+   
+    unsigned long * avail = AvailMem(MEMF_ANY);
+    if (avail < size + 500000)
+	{
+		ix_req ("malloc:","Try Again","Try Again", "You get low on mem when you do that malloc.You need %ld kb please free some mem and try again",size/1000);
+
+		goto again_malloc;
+	}
+  }
   
   /* we don't want to be interrupted between the allocation and the tracking */
   //omask = syscall (SYS_sigsetmask, ~0);
@@ -146,7 +156,8 @@ void * malloc (size_t size)
 		   *res++=size;
 		   return res;
   }
-  return 0;
+  ix_req ("malloc:","Try Again","Try Again", "Too few mem to do that malloc.You need %ld kb please free some mem and try again",size/1000);
+  goto again_malloc;
 }
 
 free (unsigned long *mem)
@@ -264,6 +275,15 @@ malloc (size_t size)
 
   /* we don't want to be interrupted between the allocation and the tracking */
   omask = syscall (SYS_sigsetmask, ~0);
+  again_malloc:  if (size > 60000)
+  {
+    unsigned long * avail = AvailMem(MEMF_ANY);
+    if (avail < size + 500000)
+	{
+		ix_req ("malloc:","Try Again","Try Again", "You get low on mem when you do that malloc.You need %ld kb please free some mem and try again",size/1000);
+		goto again_malloc;
+	}
+  }
 
   /* include management information */
   Forbid();
@@ -286,7 +306,8 @@ malloc (size_t size)
       return &res->realblock;
     }
   syscall (SYS_sigsetmask, omask);
-  return 0;
+  ix_req ("malloc:","Try Again","Try Again", "Too few mem to do that malloc.You need %ld kb please free some mem and try again",size/1000);
+  goto again_malloc;
 }
 
 

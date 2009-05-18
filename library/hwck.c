@@ -119,7 +119,7 @@ void ix_warning(const char *msg, ...)
         
   va_start(ap, msg);
   if (!show_msg(NULL, msg, ap, "Continue|Abort"))
-    exit(20);
+    exit(0);
   va_end(ap);
 }
 
