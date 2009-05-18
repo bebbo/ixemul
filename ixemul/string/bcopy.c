@@ -359,6 +359,8 @@ void  bcopy(const void *s1, void *s2, size_t n)
  *      - use nested DBcc instructions or use one and limit size to 64K
  */
 
+
+
 ENTRY(bcopy)
 asm(" \n\
 	movl    sp@(12),d1      /* check count */ \n\

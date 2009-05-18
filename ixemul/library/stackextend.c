@@ -965,6 +965,7 @@ const struct EmulLibEntry _gate___init_stk_limit = {
  */
 void freestack(void)
 {
+ 
   struct stackframe *sf, *s2;
   usetup;
   KPRINTF(("freestack\n"));
@@ -1429,8 +1430,9 @@ void __init_stk_limit(void **limit, unsigned long argbytes)
 /*
  * Free all spare stackframes
  */
-void freestack(void)
+void freestack(void) // used in 68k
 {
+  
   struct stackframe *sf, *s2;
   usetup;
   KPRINTF(("freestack\n"));

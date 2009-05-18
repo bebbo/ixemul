@@ -194,7 +194,7 @@ open(char *name, int mode, int perms)
 
   do
   {
-#if 1
+#if 0
     if (!strcmp(name, "*") || !strcasecmp(name, "console:"))
       /* Temporary patch for KingCON 1.3, which seems to have problems with
 	 ACTION_FINDINPUT of "*"/"console:" when "dp_Port" of the packet is

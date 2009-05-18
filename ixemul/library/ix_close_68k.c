@@ -107,6 +107,7 @@ ix_close (struct ixemul_base *ixbase)
   struct Process	*child;
   struct user		*cu;
   struct ixnode		*dm;	/* really struct death_msg * */
+  struct Message	*wb_msg; 
   
   Disable();
   ixremove(&timer_task_list, &ix_u->u_user_node);
@@ -211,6 +212,22 @@ ix_close (struct ixemul_base *ixbase)
    * to the user area. */
   getuser(me) = ix_u->u_otrap_data;
 #endif
-
+  
   kfree (((char *)ix_u) - ix_u->u_a4_pointers_size * 4);
+  getuser(me) = ix_u->u_ouser;
+
+  wb_msg = ix_u->u_wbmsg;
+
+  /* Mask out any pending CTRL-x signals. ATM CTRL-E is used by setrun.
+   * CTRL-D should not be used by ixemul, and is reserved for aborting
+   * AmigaDOS scripts. CTRL-C is cleared by shell. - Piru */
+  SetSignal(0, SIGBREAKF_CTRL_E | SIGBREAKF_CTRL_F);
+
+  if (wb_msg)
+    {
+      Forbid();
+      ReplyMsg(wb_msg);
+    }
+
+  KPRINTF(("done.\n")); 
 }
