@@ -41,7 +41,7 @@
  * Initial revision
  *
  */
-
+#define OUTOFMEM "Out of memory. Please free up %ld KB of memory and try again."
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
@@ -131,15 +131,14 @@ void * malloc (size_t size)
   }
   else poolheader = u.u_poolheader;
   
-  if ((signed long)size < 0)
-    return 0;
+  if ((signed long)size <=0)return 0;
 again_malloc:  if (size > 60000)
   {
    
     unsigned long * avail = AvailMem(MEMF_ANY);
     if (avail < size + 500000)
 	{
-		ix_req ("malloc:","Try Again","Try Again", "You get low on mem when you do that malloc.You need %ld kb please free some mem and try again",size/1000);
+		ix_req ("ixemul Lib Message","Try Again","Try Again", OUTOFMEM,size/1000);
 
 		goto again_malloc;
 	}
@@ -156,7 +155,7 @@ again_malloc:  if (size > 60000)
 		   *res++=size;
 		   return res;
   }
-  ix_req ("malloc:","Try Again","Try Again", "Too few mem to do that malloc.You need %ld kb please free some mem and try again",size/1000);
+  ix_req ("ixemul Lib Message","Try Again","Try Again", OUTOFMEM,size/1000);
   goto again_malloc;
 }
 
@@ -267,8 +266,7 @@ malloc (size_t size)
 
   /* We increase SIZE below which could cause an dangerous (system
      crash) overflow. -bw/09-Jun-98 */
-  if ((signed long)size < 0)
-    return 0;
+  if ((signed long)size <= 0)return 0;
 
   /* guarantee long sizes (so we can use CopyMemQuick in realloc) */
   size = (size + 3) & ~3; /* next highest multiple of 4 */
@@ -280,7 +278,7 @@ malloc (size_t size)
     unsigned long * avail = AvailMem(MEMF_ANY);
     if (avail < size + 500000)
 	{
-		ix_req ("malloc:","Try Again","Try Again", "You get low on mem when you do that malloc.You need %ld kb please free some mem and try again",size/1000);
+		ix_req ("malloc:","Try Again","Try Again", OUTOFMEM,size/1000);
 		goto again_malloc;
 	}
   }
@@ -305,9 +303,10 @@ malloc (size_t size)
       mem_used += size;
       return &res->realblock;
     }
-  syscall (SYS_sigsetmask, omask);
-  ix_req ("malloc:","Try Again","Try Again", "Too few mem to do that malloc.You need %ld kb please free some mem and try again",size/1000);
+  ix_req ("malloc:","Try Again","Try Again", OUTOFMEM,size/1000);
   goto again_malloc;
+  syscall (SYS_sigsetmask, omask);
+  
 }
 
 
