@@ -36,6 +36,8 @@
 #ifndef	_MATH_H_
 #define	_MATH_H_
 
+#define ENABLE_HAVE_XXX //ffmpeg/gcc need it
+#define STMATH 1 
 #include <float.h>
 
 #ifndef BITS
@@ -75,8 +77,8 @@
 # endif
 #endif /* __math_decl */
 
-#if (defined(__GNUC__) || defined(__cplusplus)) && defined(__HAVE_68881__)
-#include <math-68881.h>
+#if (defined(__GNUC__) || defined(__cplusplus)) && defined(__HAVE_68881__) && (defined(mc68020) || defined(mc68030)) 
+#include <math-68881.h> 
 #else
 
 #define	HUGE_VAL	1e500			/* IEEE: positive infinity */
@@ -97,6 +99,7 @@ double	exp __P((double));
 double	fabs __P((double));
 double	floor __P((double));
 double	fmod __P((double, double));
+#define fmodl fmod
 double	frexp __P((double, int *));
 double	ldexp __P((double, int));
 double	log __P((double));
@@ -106,6 +109,7 @@ double	pow __P((double, double));
 double	sin __P((double));
 double	sinh __P((double));
 double	sqrt __P((double));
+float	sqrtf __P((float));
 double	tan __P((double));
 double	tanh __P((double));
 
@@ -131,7 +135,7 @@ double	jn __P((int, double));
 double	lgamma __P((double));
 double	log1p __P((double));
 double	logb __P((double));
-//double	rint __P((double));
+double	rint __P((double));
 double	scalb __P((double, int));
 double	y0 __P((double));
 double	y1 __P((double));
@@ -145,30 +149,33 @@ __END_DECLS
 
 #ifndef MATH_STDIMPL
 
-//define ENABLE_HAVE_XXX
+
 #ifdef ENABLE_HAVE_XXX
 # define HAVE_FUNC_ISINF 1
 # define HAVE_FUNC_ISNAN 1
-# define HAVE_CEILF
-# define HAVE_FLOORF
-# define HAVE_LROUND
-# define HAVE_ROUNDF
-# define HAVE_ROUND
-# define HAVE_frexpf
-# define HAVE_LDEXPF 
-# define HAVE_SINF
-# define HAVE_COSF
-# define HAVE_FMODF
-# define HAVE_ATAN2F
-# define HAVE_SQRTF
+# define HAVE_CEILF 1
+# define HAVE_FLOORF 1
+# define HAVE_LROUND 1
+# define HAVE_ROUNDF 1
+# define HAVE_ROUND 1
+# define HAVE_frexpf 1
+# define HAVE_LDEXPF 1
+# define HAVE_SINF 1
+# define HAVE_COSF 1
+# define HAVE_FMODF 1
+# define HAVE_ATAN2F 1
+# define HAVE_SQRTF 1
+# define HAVE_LRINT 1
+# define HAVE_LRINTF 1
+# define HAVE_RINT 1
 #endif
 
-#ifndef __HAVE_68881__
-__math_decl double rint(double x)
-{
- return floor(x + 0.5);
-}
-#endif /* __HAVE_68881__ */
+//#ifndef __HAVE_68881__
+//__math_decl double rint(double x)
+//{
+// return floor(x + 0.5);
+//}
+//#endif /* __HAVE_68881__ */
 
 
 __math_decl float rintf(float x)
@@ -181,10 +188,11 @@ __math_decl float rintf(float x)
 }
 
 
+
 static inline long lrintf(float x)
 {
 	long value;
-__asm ("fmove%.l %1,%0"		
+__asm ("fmove%.l %1,%0\n"		
 		 : "=d" (value)
 		 : "f" (x));
 	  return value;
@@ -194,7 +202,7 @@ __asm ("fmove%.l %1,%0"
 static inline long lrint(double x)
 {
 	long value;
-__asm ("fmove%.l %1,%0"		
+__asm ("fmove%.l %1,%0\n"		
 		 : "=d" (value)
 		 : "f" (x));
 	  return value;
@@ -282,10 +290,12 @@ __math_decl float atan2f(float x,float y)
  return atan2(x,y);
 }
 
-__math_decl float sqrtf(float x)
-{
- return sqrt(x);
-}
+//#define __builtin_sqrtf sqrtf //need or get linker error if not use real one
+//__math_decl float sqrtf(float x)
+//{
+// return sqrt(x);
+//}
+
 
 __math_decl  double trunc(double x)
 {

@@ -48,6 +48,7 @@ typedef _BSD_SIZE_T_    size_t;
 
 #include <sys/cdefs.h>
 
+
 __BEGIN_DECLS
 void    *memchr __P((const void *, int, size_t));
 int      memcmp __P((const void *, const void *, size_t));
