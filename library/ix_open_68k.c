@@ -25,6 +25,7 @@
 
 #include <hardware/intbits.h>
 #include <exec/memory.h>
+#include <exec/semaphores.h>
 #include <string.h>
 #include <workbench/startup.h>
 extern void launch_glue (), switch_glue ();
@@ -154,10 +155,26 @@ struct WBStartup *wb_msg = NULL;
        * these calls simply have to succeed... I know I'm a lazy guy ;-) */
       ix_u->u_sleep_sig = AllocSignal (-1);
       ix_u->u_pipe_sig = AllocSignal (-1);
-      ix_u->u_poolheader = CreatePool(0,65536,65536);    
       ix_u->u_ixbase = ixbase;
       ix_u->u_errno = &default_errno;
       ix_u->u_h_errno = &default_h_errno;
+      
+      if((ix_u->u_poolheader = CreatePool(MEMF_ANY,65536,65536)))
+      {
+          struct SignalSemaphore *poolsema;
+          poolsema = AllocPooled(ix_u->u_poolheader,sizeof(struct SignalSemaphore));
+          
+          if( poolsema )
+          {
+             InitSemaphore( poolsema );
+             ix_u->u_poolsema = (APTR) poolsema;
+          }
+          else
+          {
+             DeletePool( ix_u->u_poolheader );
+             ix_u->u_poolheader = NULL;
+          }
+      }
       
       /* ixnet.library is loaded iff ixbase->ix_network_type != IX_NETWORK_NONE */
       if (ixbase->ix_network_type != IX_NETWORK_NONE)
@@ -225,7 +242,7 @@ struct WBStartup *wb_msg = NULL;
 		   * generate a longjmp-botch using a not initialized jmpbuf! */
 		  syscall (SYS_sigsetmask, ~0);
 
-                  if (__ix_open_muFS (ix_u))
+                  if(__ix_open_muFS (ix_u) && ix_u->u_poolheader)
 		    return ixbase;
                   else
                     {
