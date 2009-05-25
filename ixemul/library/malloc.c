@@ -124,18 +124,24 @@ void * malloc (size_t size)
   int omask;
   struct user *udat;
   unsigned long poolheader;
+  unsigned long poolsema;
   if (u.u_parent_userdata)
   {
-  udat = u.u_parent_userdata;
-  poolheader = udat->u_poolheader;
+    udat = u.u_parent_userdata;
+    poolheader = udat->u_poolheader;
+    poolsema = udat->u_poolsema;
   }
-  else poolheader = u.u_poolheader;
+  else
+  {
+    poolheader = u.u_poolheader;
+    poolsema = u.u_poolsema
+  }
   
   if ((signed long)size <=0)return 0;
 again_malloc:  if (size > 60000)
   {
    
-    unsigned long * avail = AvailMem(MEMF_ANY);
+    unsigned long avail = AvailMem(MEMF_ANY);
     if (avail < size + 500000)
 	{
 		ix_req ("ixemul Lib Message","Try Again","Try Again", OUTOFMEM,size/1000);
@@ -146,9 +152,9 @@ again_malloc:  if (size > 60000)
   
   /* we don't want to be interrupted between the allocation and the tracking */
   //omask = syscall (SYS_sigsetmask, ~0);
-  Forbid();
+  ObtainSemaphore(poolsema);
   res = AllocPooled(poolheader,size+4);
-  Permit();
+  ReleaseSemaphore(poolsema);
   //syscall (SYS_sigsetmask, omask);
   if (res){
 	       mem_used += size;
@@ -159,52 +165,66 @@ again_malloc:  if (size > 60000)
   goto again_malloc;
 }
 
-free (unsigned long *mem)
+void free (unsigned long *mem)
 {
   int omask;
   usetup;
   struct user *udat;
   unsigned long poolheader;
+  unsigned long poolsema;
   if (!mem)return; 
   if (u.u_parent_userdata)
   {
-  udat = u.u_parent_userdata;
-  poolheader = udat->u_poolheader;
+    udat = u.u_parent_userdata;
+    poolheader = udat->u_poolheader;
+    poolsema = udat->u_poolsema;
   }
-  else poolheader = u.u_poolheader;
+  else
+  {
+    poolheader = u.u_poolheader;
+    poolsema = u.u_poolsema
+  }
 
   //omask = syscall (SYS_sigsetmask, ~0);
-  Forbid();
+  ObtainSemaphore(poolsema);
   if (((struct memalign_ptr *)mem - 1)->magic == MEMALIGN_MAGIC)
     {
       mem = (unsigned long  *)
 	      ((u_char *)mem - ((struct memalign_ptr *)mem - 1)->alignment);
     }
   FreePooled(poolheader,mem-1,*(mem-1)+4);
-  Permit();
+  ReleaseSemaphore(poolsema);
   //syscall (SYS_sigsetmask, omask);
 }
 void all_free (void)
 {
   usetup;
-  if (u.u_poolheader)DeletePool(u.u_poolheader);
-  u.u_poolheader = 0;
+  if(u.u_poolsema)ObtainSemaphore(u.u_poolsema);
+  if(u.u_poolheader)DeletePool(u.u_poolheader);
+  u.u_poolheader = NULL;
+  u.u_poolsema = NULL;
 }
 
-realloc (unsigned long *mem, size_t size)
+void *realloc (unsigned long *mem, size_t size)
 {
   unsigned long *memaddr,*res;
   int omask;
   usetup;
   struct user *udat;
   unsigned long poolheader;
+  unsigned long poolsema;
   
   if (u.u_parent_userdata)
   {
-  udat = u.u_parent_userdata;
-  poolheader = udat->u_poolheader;
+    udat = u.u_parent_userdata;
+    poolheader = udat->u_poolheader;
+    poolsema = udat->u_poolsema;
   }
-  else poolheader = u.u_poolheader;
+  else
+  {
+    poolheader = u.u_poolheader;
+    poolsema = u.u_poolsema
+  }
 
   if (!mem)
     return (void *) malloc (size);
@@ -239,16 +259,14 @@ realloc (unsigned long *mem, size_t size)
 
 			/* according to the manpage, the old buffer should only be
 			* freed, if the allocation of the new buffer was successful */
-			Forbid();
+			ObtainSemaphore(poolsema);
 			FreePooled(poolheader,mem-1,*(mem-1)+4);
-			Permit();
+			ReleaseSemaphore(poolsema);
 			//syscall (SYS_sigsetmask, omask);
 			}
     }
 
   return res;
-
-
 }
 
 #else

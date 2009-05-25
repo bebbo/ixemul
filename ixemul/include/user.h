@@ -430,7 +430,8 @@ struct user {
 	void 			        *u_wbmsg; 
 	APTR                     u_ouser; 
 	APTR                     u_poolheader;
-	struct user *            u_parent_userdata;   
+	APTR                     u_poolsema;
+	struct user *            u_parent_userdata;
 };
 
 /* flag codes */
