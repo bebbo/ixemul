@@ -1,3 +1,9 @@
+2009-05-29 Diegocr
+	* library/malloc.c: Poolmem allocation system now uses Semaphores
+	  rather than Forbid/Permit..   
+	* library/ix_open_68k.c: the memory pool was created without 
+	  checking if the allocation failed or not - Fixed.
+
 2009-05-13 Bernd_afa
    Version 61.1
    * 
