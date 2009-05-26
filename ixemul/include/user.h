@@ -428,10 +428,10 @@ struct user {
 	u_long                   u_oexcept_sigs;
 	char                     u_getpass_buf[_PASSWORD_LEN + 1];
 	void 			        *u_wbmsg; 
-	APTR                     u_ouser; 
+	APTR                     u_ouser;
 	APTR                     u_poolheader;
-	APTR                     u_poolsema;
 	struct user *            u_parent_userdata;
+	APTR                     u_poolsema;
 };
 
 /* flag codes */
