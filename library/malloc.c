@@ -134,7 +134,7 @@ void * malloc (size_t size)
   else
   {
     poolheader = u.u_poolheader;
-    poolsema = u.u_poolsema
+    poolsema = u.u_poolsema;
   }
   
   if ((signed long)size <=0)return 0;
@@ -182,7 +182,7 @@ void free (unsigned long *mem)
   else
   {
     poolheader = u.u_poolheader;
-    poolsema = u.u_poolsema
+    poolsema = u.u_poolsema;
   }
 
   //omask = syscall (SYS_sigsetmask, ~0);
@@ -223,7 +223,7 @@ void *realloc (unsigned long *mem, size_t size)
   else
   {
     poolheader = u.u_poolheader;
-    poolsema = u.u_poolsema
+    poolsema = u.u_poolsema;
   }
 
   if (!mem)
