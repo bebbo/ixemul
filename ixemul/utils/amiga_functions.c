@@ -232,4 +232,67 @@ int ixprefsCloseWindow( void )
   return NOT_RUNNING;
 }
 
+int watchAvailMemClicked( void )
+{
+	/* routine when gadget "Watch Available Memory" is clicked. */
+	watchAvailMem = selected(GDX_watchAvailMem);
+	return RUNNING;
+}
+
+int catchfailedallocsClicked( void )
+{
+	/* routine when gadget "Catch failed allocations" is clicked. */
+	catchfailedallocs = selected(GDX_catchfailedallocs);
+	return RUNNING;
+}
+
+int killappallocerrClicked( void )
+{
+	/* routine when gadget "Kill app on failed allocations (!)" is clicked. */
+	killappallocerr = selected(GDX_killappallocerr);
+	return RUNNING;
+}
+
+int blacklistClicked( void )
+{
+	/* routine when gadget "App's Blacklist" is clicked. */
+	
+	/**
+	 * First of all, make sure the external program exists..
+	 * NOTE: if someone would like to implement it on the GadTools
+	 * program as well it'll be nice!..
+	 */
+	BPTR lock;
+	UBYTE MUI_Prog[] = "SYS:Prefs/ixbl_MUI";
+	UBYTE Runner_WB[] = "C:WBRun";
+	UBYTE Runner_CLI[] = "C:Run <>NIL:";
+	
+	if(!(lock = Lock( MUI_Prog, SHARED_LOCK )))
+	{
+		ShowRequester("Couldn't found \"%s\"",(int)MUI_Prog,NULL);
+	}
+	else
+	{
+		char *runner, cmd[64];
+		
+		UnLock( lock );
+		
+		if(!(lock = Lock( Runner_WB, SHARED_LOCK )))
+		{
+			runner = Runner_CLI;
+		}
+		else
+		{
+			UnLock( lock );
+			runner = Runner_WB;
+		}
+		
+		sprintf( cmd, "%s \"%s\"", runner, MUI_Prog );
+		
+		Execute( cmd, NULL, NULL );
+	}
+	
+	return RUNNING;
+}
+
 #endif NO_AMIGAOS_SUPPORT

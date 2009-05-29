@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "ixemul.h"                                                  
+#include "ixemul.h"
 #include "version.h"
 #include "ixprefs.h"
 
@@ -10,8 +10,9 @@ About(void)
 {
   /* routine when (sub)item "About" is selected. */
   ShowRequester(
-    "Ixprefs v." IXPREFS_VERSION "--ixemul.library configuration program\n"
-    "Copyright \251 1995-1997 Kriton Kyrimis\n\n"
+    "Ixprefs " IXPREFS_VERSION " - Ixemul.library configuration program\n"
+    "Copyright \251 1995-1997 Kriton Kyrimis\n"
+    "Copyright \251 2009 Diego Casorran\n\n"
     "This program is free software; you can redistribute it\n"
     "and/or modify it under the terms of the GNU General\n"
     "Public License as published by the Free Software Foundation;\n"
@@ -37,6 +38,9 @@ ReadFromSettings(struct ix_settings *settings)
   blocks = settings->fs_buf_factor;
   networking = settings->network_type;
   profilemethod = (settings->flags >> 14) & 3;
+  watchAvailMem = (settings->flags & ix_watch_availmem) != 0;
+  catchfailedallocs = (settings->flags & ix_catch_failed_malloc) != 0;
+  killappallocerr = (settings->flags & ix_kill_app_on_failed_malloc) != 0;
 }
 
 void Defaults(void)
@@ -84,6 +88,9 @@ Use(void)
   | (stackusage ? ix_show_stack_usage : 0)
   | (enforcerhit ? ix_create_enforcer_hit : 0)
   | (mufs ? ix_support_mufs : 0)
+  | (watchAvailMem ? ix_watch_availmem : 0)
+  | (catchfailedallocs ? ix_catch_failed_malloc : 0)
+  | (killappallocerr ? ix_kill_app_on_failed_malloc : 0)
   | (profilemethod << 14);
   settings.version = IX_VERSION;
   settings.revision = IX_REVISION;
