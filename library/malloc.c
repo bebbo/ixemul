@@ -41,7 +41,14 @@
  * Initial revision
  *
  */
-#define OUTOFMEM "Out of memory. Please free up %ld KB of memory and try again."
+
+#define OUTOFMEM	\
+	"Out of memory. Please free up to %ld KB of memory and try again."
+#define OUTOFMEM2	\
+	"Your system is running nearly out of memory.\n" \
+	"Please try to free about half a megabyte,\n" \
+	"and try again..."
+
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
@@ -115,6 +122,8 @@ valloc (size_t size)
   return (void *) memalign (PAGESIZE, size);
 }
 
+extern unsigned long BlacklistedTaskFlags(void *task);
+
 #ifdef POOLMEM
 
 void * malloc (size_t size)
@@ -125,6 +134,8 @@ void * malloc (size_t size)
   struct user *udat;
   unsigned long poolheader;
   unsigned long poolsema;
+  register unsigned long bltf = 1;
+  register unsigned long flags = 0;
   if (u.u_parent_userdata)
   {
     udat = u.u_parent_userdata;
@@ -137,19 +148,19 @@ void * malloc (size_t size)
     poolsema = u.u_poolsema;
   }
   
-  if ((signed long)size <=0)return 0;
-again_malloc:  if (size > 60000)
+  if ((signed long)size < 1)
+  	return 0;
+  
+  if((ix.ix_flags & ix_watch_availmem) && (size > 60000))
   {
-   
-    unsigned long avail = AvailMem(MEMF_ANY);
-    if (avail < size + 500000)
-	{
-		ix_req ("ixemul Lib Message","Try Again","Try Again", OUTOFMEM,size/1000);
-
-		goto again_malloc;
-	}
+    while(AvailMem(MEMF_ANY) < size + 500000)
+    {
+      if(!ix_reqtry(OUTOFMEM2,size/1000))
+        break;
+    }
   }
   
+retry:
   /* we don't want to be interrupted between the allocation and the tracking */
   //omask = syscall (SYS_sigsetmask, ~0);
   ObtainSemaphore(poolsema);
@@ -161,8 +172,49 @@ again_malloc:  if (size > 60000)
 		   *res++=size;
 		   return res;
   }
-  ix_req ("ixemul Lib Message","Try Again","Try Again", OUTOFMEM,size/1000);
-  goto again_malloc;
+  
+  /**
+   * UN-OBTRUSIVE handy malloc() hack... please don't blame us, blame 
+   * the users who activated those options from ixprefs/blacklist ;-P
+   */
+  
+  if( bltf == 1 ) // don't go here again if we come from the goto..
+  {
+    bltf = BlacklistedTaskFlags(NULL);
+    
+    if(ix.ix_flags & ix_catch_failed_malloc)
+    	flags |= ix_catch_failed_malloc;
+    
+    if(ix.ix_flags & ix_kill_app_on_failed_malloc)
+    	flags |= ix_kill_app_on_failed_malloc;
+    
+    if( bltf != ~0 ) // this task is blacklisted?
+    {
+      if(bltf & ix_catch_failed_malloc)
+      	flags |= ix_catch_failed_malloc;
+      else if(flags & ix_catch_failed_malloc)
+      	flags &= ~(ix_catch_failed_malloc);
+      
+      if(bltf & ix_kill_app_on_failed_malloc)
+      	flags |= ix_kill_app_on_failed_malloc;
+      else if(flags & ix_kill_app_on_failed_malloc)
+      	flags &= ~(ix_kill_app_on_failed_malloc);
+    }
+  }
+  
+  if(flags & ix_catch_failed_malloc)
+  {
+    if(ix_reqtry(OUTOFMEM,size/1000))
+      goto retry;
+  }
+  
+  if(flags & ix_kill_app_on_failed_malloc)
+  {
+     // at your own risk (end-user, I mean)
+     abort ( ) ;
+  }
+  
+  return(NULL);
 }
 
 void free (unsigned long *mem)

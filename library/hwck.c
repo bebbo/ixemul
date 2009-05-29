@@ -123,6 +123,18 @@ void ix_warning(const char *msg, ...)
   va_end(ap);
 }
 
+int ix_reqtry(const char *msg, ...)
+{
+  va_list ap;
+  int rc;
+  
+  va_start(ap, msg);
+  rc = show_msg(NULL, msg, ap, "Try Again|Ignore");
+  va_end(ap);
+  
+  return(rc);
+}
+
 int ix_req(char *title, char *button1, char *button2, char *msg, ...)
 {
   va_list ap;

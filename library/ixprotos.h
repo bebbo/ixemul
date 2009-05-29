@@ -11,6 +11,7 @@ struct WBStartup;
 void	ix_panic(const char *msg, ...);
 void	panic(const char *msg, ...);
 void	ix_warning(const char *msg, ...);
+int	ix_reqtry(const char *msg, ...);
 BPTR   *__load_seg(char *name, char **args);
 void	__wait_sync_packet(struct StandardPacket *sp);
 void	__wait_select_packet(struct StandardPacket *sp);
@@ -120,5 +121,10 @@ void    ixaddhead(struct ixlist *list, struct ixnode *node);
 void    ixremove(struct ixlist *list, struct ixnode *node);
 void    ixinsert(struct ixlist *list, struct ixnode *node, struct ixnode *after);
 struct ixnode *ixremhead(struct ixlist *list);
+
+#define IsIxListEmpty(x) (((x)->head == NULL) && ((x)->tail == NULL))
+#define ITERATE_IXLIST( list, node )	\
+	for( node = (void *)((struct ixlist *)(list))->head ; \
+		node ; node = (void *)((struct ixnode *)(node))->next )
 
 #endif
