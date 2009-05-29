@@ -1,6 +1,7 @@
 /*
-    Ixprefs v.2.7--ixemul.library configuration program
+    Ixprefs v.2.8--ixemul.library configuration program
     Copyright © 1995,1996 Kriton Kyrimis
+    Copyright © 2009 Diego Casorran
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#define IXPREFS_VERSION "2.7"
+#define IXPREFS_VERSION "2.8"
 #define CONFIGFILE "ENVARC:" IX_ENV_SETTINGS
 #define ENVFILE "ENV:" IX_ENV_SETTINGS
 #define MIN_IXEMUL_VERSION_SUPPORTED 47
@@ -29,6 +30,7 @@ extern int translateslash, membuf, blocks, cases, suppress,
 	   amigawildcard, noflush, ignoreenv, networking, enforcerhit,
 	   profilemethod, stackusage, mufs;
 extern int advanced;
+extern int watchAvailMem, catchfailedallocs, killappallocerr;
 
 extern void ShowRequester(char *, int, char *);
 extern void About(void);

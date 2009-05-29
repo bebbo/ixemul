@@ -36,10 +36,13 @@ int translateslash, membuf, blocks, cases, suppress,
     profilemethod, stackusage, mufs;
 
 int advanced = FALSE;
+int watchAvailMem, catchfailedallocs, killappallocerr;
 
 static int in_wb = FALSE;
 
-char ixprefs_version[] = "$VER: ixprefs 2.7 (15.08.97)";
+/// keeping old version for Legacy reasons..we are updating 12 years later(!)
+//char ixprefs_version[] = "$VER: ixprefs 2.7 (15.08.97)";
+char ixprefs_version[] = "$VER: ixprefs 2.8 (29.05.2009)";
 
 int
 main(int argc, char *argv[])

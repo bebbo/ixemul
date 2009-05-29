@@ -141,6 +141,9 @@ DisplayPrefs(void)
   ShowChecked(GDX_mufs, mufs);
   ShowCycle(GDX_networking, networking);
   ShowCycle(GDX_profilemethod, profilemethod);
+  ShowChecked(GDX_watchAvailMem, watchAvailMem);
+  ShowChecked(GDX_catchfailedallocs, catchfailedallocs);
+  ShowChecked(GDX_killappallocerr, killappallocerr);
 }
 
 int
