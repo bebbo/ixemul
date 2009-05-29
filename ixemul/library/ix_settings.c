@@ -33,7 +33,8 @@ struct ix_settings *ix_get_default_settings(void)
   {
     IX_VERSION,
     IX_REVISION,
-    ix_translate_slash | ix_no_insert_disk_requester | ix_allow_amiga_wildcard,
+    ix_translate_slash | ix_no_insert_disk_requester
+    | ix_allow_amiga_wildcard | ix_watch_availmem,
     0,                  /* membuf_limit  */
     0,                  /* red_zone_size */
     64,                 /* fs_buf_factor */

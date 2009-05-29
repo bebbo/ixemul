@@ -139,6 +139,9 @@ extern ULONG timer_resolution;
 
 /* ix_flags defines */
 
+   #define ix_kill_app_on_failed_malloc                 0x00100000
+   #define ix_catch_failed_malloc                       0x00080000
+   #define ix_watch_availmem                            0x00040000
    #define ix_support_mufs                              0x00020000
    #define ix_show_stack_usage                          0x00010000
    #define ix_profile_method_mask                       0x0000C000
