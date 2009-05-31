@@ -24,15 +24,17 @@
  * ARISING  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ix_blacklist.c,v 0.1 2009/05/29 21:42:05 diegocr Exp $
+ * $Id: ix_blacklist.c,v 0.2 2009/05/31 14:00:36 diegocr Exp $
  * 
  */
 
+#define _KERNEL
 #include "ixemul.h"
-#include <stat.h>
+#include <sys/stat.h>
+#include <string.h>
 
 #define BLM_PARANOID
-#define BLM_FILENAME	"ENVARC:ixemul-blacklist.db";
+#define BLM_FILENAME	"ENVARC:ixemul-blacklist.db"
 #define BLM_VERSION	1
 #define BLM_IDENTIFIER	MAKE_ID('B','L','M',BLM_VERSION)
 
@@ -44,7 +46,7 @@ typedef struct BlackListManager
 	#endif
 	
 	void *mempool;
-	unsigned long mtime;
+	long mtime;
 	struct ix_mutex msem;
 	struct ixlist bltasks;
 	
@@ -70,7 +72,6 @@ static __inline void lEntryAdd(unsigned long flags,char *name,unsigned char len)
 {
 	BlackListTask *blt;
 	
-	ix_mutex_lock(&gblblm->msem);
 	if((blt = AllocPooled(gblblm->mempool,sizeof(*blt) + len + 2)))
 	{
 		blt->flags = flags;
@@ -78,7 +79,6 @@ static __inline void lEntryAdd(unsigned long flags,char *name,unsigned char len)
 		
 		ixaddtail( &gblblm->bltasks,(struct ixnode *)blt);
 	}
-	ix_mutex_unlock(&gblblm->msem);
 }
 
 static __inline int LoadDatabase_V1(BPTR fd)
@@ -124,7 +124,7 @@ static __inline int LoadDatabase( void )
 			switch( id )
 			{
 				case BLM_IDENTIFIER:
-					rc = LoadDatabase_V1(fd,data);
+					rc = LoadDatabase_V1(fd);
 					break;
 				
 				default:
@@ -166,7 +166,6 @@ static __inline int CreateBlackListManager( void )
 static __inline int blm_init( void )
 {
 	int rc = 0;
-	struct stat st;
 	
 	Forbid();
 	if( gblblm == NULL )
@@ -180,13 +179,6 @@ static __inline int blm_init( void )
 	if( gblblm->MagicID != BLMMID )
 		return -3;
 	#endif
-	
-	// Check if there were changes to the database..
-	if(!stat(BLM_FILENAME,&st) && gblblm->mtime != st.st_mtime)
-	{
-		LoadDatabase ( ) ;
-			gblblm->mtime = st.st_mtime;
-	}
 	
 	return(rc);
 }
@@ -220,31 +212,44 @@ static __inline char *taskname(struct Task *task)
 
 unsigned long BlacklistedTaskFlags(void *task)
 {
-	BlackListTask *blt;
-	char *tname;
-	unsigned long rc;
+	unsigned long rc = (~0); /* task not found */
 	
-	rc = blm_init();
-	if( rc != 0 || IsIxListEmpty(&gblblm->bltasks))
-		return(~0);
-	
-	if(task == NULL)
-		task = (void *)FindTask(NULL);
-	
-	tname = taskname(task);
-	
-	rc = ~0; // not found
-	ix_mutex_lock(&gblblm->msem);
-	ITERATE_IXLIST( &gblblm->bltasks, blt )
+	if( blm_init ( ) == 0 )
 	{
-		// TODO: allow amiga patterns (?)
-		if(strstr( tname, &blt->tname[0] ))
+		struct stat st;
+		
+		ix_mutex_lock(&gblblm->msem);
+		
+		// Check if there were changes to the database..
+		if(!stat(BLM_FILENAME,&st) && gblblm->mtime != st.st_mtime)
 		{
-			rc = blt->flags;
-			break;
+			LoadDatabase ( ) ;
+				gblblm->mtime = st.st_mtime;
 		}
+		
+		if( ! IsIxListEmpty ( &gblblm->bltasks ))
+		{
+			char *tname;
+			BlackListTask *blt;
+			
+			if(task == NULL)
+				task = (void *)FindTask(NULL);
+			
+			tname = taskname(task);
+			
+			ITERATE_IXLIST( &gblblm->bltasks, blt )
+			{
+				// TODO: allow amiga patterns (?)
+				if(strstr( tname, &blt->tname[0] ))
+				{
+					rc = blt->flags;
+					break;
+				}
+			}
+		}
+		
+		ix_mutex_unlock(&gblblm->msem);
 	}
-	ix_mutex_unlock(&gblblm->msem);
 	
 	return(rc);
 }
