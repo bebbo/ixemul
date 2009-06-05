@@ -83,6 +83,17 @@ int extend_stack_ix_startup(char *aline, int alen, int expand,
 void monstartup(char *lowpc, char *highpc);
 void __init_stk_limit(void **limit, unsigned long argbytes);
 
+/**
+ * May 2009, Diego Casorran: Ixemul is now able to be loaded dinamically
+ * depending which functions are used. That means, if you use V49 SDK and
+ * only V48 functions are used, the requested ixemul.library will be V48.
+ * Unfortunately, this only seems to work with no-baserel code.. Anyhow,
+ * thats the 90% of the software, i guess.
+ */
+#ifdef CRT0
+# define HANDLE_DINAMIC_IXEMUL_OPEN	1
+#endif
+
 /*
  * Have to take care.. I may not use any library functions in this file,
  * since they are exactly then used, when the library itself couldn't be
@@ -326,6 +337,63 @@ ix_resident(struct ixemul_base *base, int num, int a4)
 #endif
 #endif /* BASECRT0 */
 
+#if HANDLE_DINAMIC_IXEMUL_OPEN
+#define EXTLONG	extern unsigned long
+#define OR	,
+#define END	;
+#include "varjumbo_48.2.h"
+#include "varjumbo_49.17.h"
+#include "varjumbo_49.30.h"
+#undef END
+#undef OR
+#undef EXTLONG
+
+static __inline long RequiredIxemulLibrary(void *SysBase, struct ixemul_base *ibase)
+{
+	struct Library * l = (struct Library *) ibase;
+	long ixv = 48, ixr = 2, rc = 0;
+	
+	#define EXTLONG
+	#define OR ||
+	#define END
+	if ( 
+	#include "varjumbo_49.30.h"
+	) {
+		ixv = 49;
+		ixr = 30;
+	}
+	else if ( 
+	#include "varjumbo_49.17.h"
+	) {
+		ixv = 49;
+		ixr = 30;
+	}
+	/*if ( 
+	#include "varjumbo_48.2.h"
+	) {
+		
+	}*/
+	#undef END
+	#undef OR
+	#undef EXTLONG
+	
+	if((ixv > 48) && ((struct Library *)SysBase)->lib_Version > 49 && !FindResident("MorphOS"))
+	{
+		ix_panic(SysBase, "This Ixemul program cannot be run under AmigaOS 4.x");
+	}
+	else if((!l)||( l->lib_Version < ixv ) || (( l->lib_Version == ixv ) && ( l->lib_Revision < ixr )))
+	{
+		ix_panic(SysBase, "Need at least version %ld.%ld of " IX_NAME ".",ixv,ixr);
+	}
+	else
+	{
+		rc = 1;
+	}
+	
+	return(rc);
+}
+#endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
+
 static int
 exec_entry(struct ixemul_base *ixembase, int argc, char *argv[], char *env[], long os)
 {
@@ -357,12 +425,21 @@ exec_entry(struct ixemul_base *ixembase, int argc, char *argv[], char *env[], lo
 #endif
 
   SysBase = *(void **)4;
-
+  
+  #if HANDLE_DINAMIC_IXEMUL_OPEN
+  
+  if( ! RequiredIxemulLibrary( SysBase, ixembase ))
+  {
+  	return W_EXITCODE(20, 0);
+  }
+  #else /* HANDLE_DINAMIC_IXEMUL_OPEN */
+  
   if (ixembase->ix_lib.lib_Version < IX_VERSION)
   {
     ix_panic(SysBase, "Need at least version " MSTRING (IX_VERSION) " of " IX_NAME ".");
     return W_EXITCODE(20, 0);
   }
+  #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
 
   ix_os = os;
 
@@ -466,7 +543,19 @@ ENTRY(void)
 #undef EXEC_BASE_NAME
 #define EXEC_BASE_NAME *(void **)4
 
+  #if HANDLE_DINAMIC_IXEMUL_OPEN
+  
+  ibase = (struct ixemul_base *)OpenLibrary(IX_NAME,0);
+  if( ! RequiredIxemulLibrary(*(void **)4, ibase ))
+  {
+  	CloseLibrary((struct Library *) ibase );
+  	ibase = NULL;
+  }
+  #else /* HANDLE_DINAMIC_IXEMUL_OPEN */
+  
   ibase = (struct ixemul_base *)OpenLibrary(IX_NAME, IX_VERSION);
+  
+  #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
 
   if (ibase)
     {
@@ -509,7 +598,9 @@ ENTRY(void)
     {
       struct Process *me = (struct Process *)((*(struct ExecBase **)4)->ThisTask);
 
+    #if !HANDLE_DINAMIC_IXEMUL_OPEN
       ix_panic(SysBase, "Need at least version " MSTRING (IX_VERSION) " of " IX_NAME ".");
+    #endif
 
       /* quickly deal with the WB startup message, as the library couldn't do
        * this for us. Nothing at all is done that isn't necessary to just shutup
