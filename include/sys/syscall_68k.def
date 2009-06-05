@@ -16,6 +16,12 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+#ifndef SYSTEM_CALL_APIV
+# define SYSTEM_CALL_APIV(v,r)
+#endif
+
+SYSTEM_CALL_APIV( 0030, 2 ) /* 48.2, minimum ixemul required.. */
 SYSTEM_CALL (abort, 1)
 SYSTEM_CALL (abs, 2)
 SYSTEM_CALL (access, 3)
@@ -629,10 +635,12 @@ SYSTEM_CALL (__ix_wb_parse,610)
 SYSTEM_CALL (__ix_install_sigwinch,611)
 SYSTEM_CALL (__ix_remove_sigwinch,612)
 SYSTEM_CALL (__ix_init_ids,613)
+SYSTEM_CALL_APIV( 0031, 17 ) /* 49.17, or may lower - no matter.. */
 SYSTEM_CALL (all_free,614)
 SYSTEM_CALL (setjmp_mos,615)
 SYSTEM_CALL (sigsetjmp_mos,616)
 SYSTEM_CALL (_setjmp_mos,617)
+SYSTEM_CALL_APIV( 0031, 30 ) /* 49.30 */
 SYSTEM_CALL (btowc,618)
 SYSTEM_CALL (fgetwc, 619)
 SYSTEM_CALL (fgetws, 620)
@@ -693,3 +701,7 @@ SYSTEM_CALL (wctype, 674)
 SYSTEM_CALL (iswctype, 675)
 SYSTEM_CALL (atan2, 676)
 SYSTEM_CALL (strtoll, 677)
+SYSTEM_CALL_APIV( 0031, 31 ) /* 49.31 - IF you add new API functions,
+				define the ixemul version for them */
+
+#undef SYSTEM_CALL_APIV

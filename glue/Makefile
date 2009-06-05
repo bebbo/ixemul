@@ -97,7 +97,7 @@ $(LIB_P):       gen_glue
 		$(AR) r $@ *.o
 		rm -f *.o
 
-gen_glue:       $(srcdir)/gen_glue.c $(srcdir)/../include/sys/syscall.def
+gen_glue:       $(srcdir)/gen_glue.c $(srcdir)/../include/sys/syscall_68k.def
 		$(CC) $(ALL_CFLAGS) $< -o $@
 
 clean:
