@@ -9,8 +9,10 @@
  * only V48 functions are used, the requested ixemul.library will be V48.
  * Unfortunately, this only seems to work with no-baserel code.. Anyhow,
  * thats the 90% of the software, i guess.
+ * UPDATE: This does not seems to work properly under GCC 2.x without
+ * Weak Attribute support.. hence, disabled by default.. :(
  */
-#define HANDLE_DINAMIC_IXEMUL_OPEN	1
+#define HANDLE_DINAMIC_IXEMUL_OPEN	0
 
 #if HANDLE_DINAMIC_IXEMUL_OPEN
 # define SYSTEM_CALL_APIV( HEXVER, REV ) {(char *)(0xFFFF##HEXVER),REV},
