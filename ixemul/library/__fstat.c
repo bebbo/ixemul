@@ -72,7 +72,7 @@ __fstat(struct file *f)
     {
       st->st_mode = S_IFCHR | 0777;
       st->st_nlink = 1;
-      st->st_blksize = 512;
+      st->st_blksize = ix.ix_fs_buf_factor * 512;
       st->st_blocks = 0;
       goto end;
     }
@@ -190,6 +190,8 @@ __fstat(struct file *f)
   if (res && bytesperblock)
     {
       st->st_blksize = bytesperblock;
+  if (!is_interactive && S_ISREG(st->st_mode))
+	st->st_blksize *= ix.ix_fs_buf_factor;
       if (!st->st_blocks) 
 	st->st_blocks = ((st->st_size + bytesperblock - 1) / bytesperblock);
       else
