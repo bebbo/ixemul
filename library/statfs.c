@@ -172,7 +172,7 @@ internal_statfs (struct statfs *buf, struct InfoData *info, struct StandardPacke
 	buf->f_flags |= MNT_RDONLY;
 	
       buf->f_fsize  = info->id_BytesPerBlock;
-      buf->f_bsize  = info->id_BytesPerBlock;
+      buf->f_bsize  = info->id_BytesPerBlock * ix.ix_fs_buf_factor;
       buf->f_blocks = info->id_NumBlocks;
       buf->f_bfree =
 	buf->f_bavail = info->id_NumBlocks - info->id_NumBlocksUsed;

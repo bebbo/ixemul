@@ -105,7 +105,7 @@ int __write(struct file *f, char *buf, int len)
      the console output until the whole buffer was flushed to the console */
   /* also check the f->f_ttyflags */
 
-#define TTY_NLCR_ENABLE (/*IXTTY_RAW | */ IXTTY_OPOST | IXTTY_ONLCR)
+#define TTY_NLCR_ENABLE (IXTTY_RAW |  IXTTY_OPOST | IXTTY_ONLCR)
 
   for (p = buf, l = 0; l < len; p += bytes, l += bytes)
     {

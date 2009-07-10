@@ -172,7 +172,7 @@ __stat(const char *fname, struct stat *stb, BPTR (*lock_func)())
 	  stb->st_gid = (gid_t)syscall(SYS_getegid);
 	  stb->st_mode = S_IFCHR | 0777;
 	  stb->st_nlink = 1;
-	  stb->st_blksize = 512;
+	  stb->st_blksize = ix.ix_fs_buf_factor * 512;
 	  stb->st_blocks = 0;
 	  goto rest_sigmask;
 	}
@@ -184,7 +184,7 @@ __stat(const char *fname, struct stat *stb, BPTR (*lock_func)())
 	  stb->st_mode = S_IFDIR | 0777;
 	  stb->st_nlink = 3;
 	  stb->st_size = 1024;
-	  stb->st_blksize = 512;
+	  stb->st_blksize = ix.ix_fs_buf_factor * 512;
 	  stb->st_blocks = 0;
 	  goto rest_sigmask;
 	}
@@ -271,7 +271,7 @@ error:
        * for people low on memory */
       if (info->id_BytesPerBlock)
 	bytesperblock = info->id_BytesPerBlock;
-      stb->st_blksize = bytesperblock;
+      stb->st_blksize = bytesperblock * ix.ix_fs_buf_factor;
       stb->st_blocks = (stb->st_blocks * bytesperblock) / 512;
     }
 

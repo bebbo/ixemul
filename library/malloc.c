@@ -56,7 +56,7 @@
 #include <stddef.h>
 
 #define USE_PANIC_HIT 0
-#define POOLMEM // you can choose here between buddy allocater or amiga OS poolmem
+//#define POOLMEM // you can choose here between buddy allocater or amiga OS poolmem
 
 #define mem_list (u.u_mdp->md_list)
 #define mem_used (u.u_mdp->md_malloc_sbrk_used)
