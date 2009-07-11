@@ -124,33 +124,76 @@ valloc (size_t size)
 
 extern unsigned long BlacklistedTaskFlags(void *task);
 
+static __inline int blt_handler( unsigned long *bltf, unsigned long *flags )
+{
+  /**
+   * UN-OBTRUSIVE handy malloc() hack... please don't blame us, blame 
+   * the users who activated those options from ixprefs/blacklist ;-P
+   */
+  
+  if((*bltf) == 1 ) // don't go here again if we come from the goto..
+  {
+    (*bltf) = BlacklistedTaskFlags(NULL);
+    
+    if(ix.ix_flags & ix_catch_failed_malloc)
+    	(*flags) |= ix_catch_failed_malloc;
+    
+    if(ix.ix_flags & ix_kill_app_on_failed_malloc)
+    	(*flags) |= ix_kill_app_on_failed_malloc;
+    
+    if((*bltf) != ~0 ) // this task is blacklisted?
+    {
+      if((*bltf) & ix_catch_failed_malloc)
+      	(*flags) |= ix_catch_failed_malloc;
+      else if((*flags) & ix_catch_failed_malloc)
+      	(*flags) &= ~(ix_catch_failed_malloc);
+      
+      if((*bltf) & ix_kill_app_on_failed_malloc)
+      	(*flags) |= ix_kill_app_on_failed_malloc;
+      else if((*flags) & ix_kill_app_on_failed_malloc)
+      	(*flags) &= ~(ix_kill_app_on_failed_malloc);
+    }
+  }
+  
+  if((*flags) & ix_catch_failed_malloc)
+  {
+    if(ix_reqtry(OUTOFMEM,size/1000))
+      return 1;
+  }
+  
+  if((*flags) & ix_kill_app_on_failed_malloc)
+  {
+     // at your own risk (end-user, I mean)
+     abort ( ) ;
+  }
+  
+  return 0;
+}
+
+static __inline void free_poolmem( void )
+{
+  usetup;
+  if(u.u_poolsema)ObtainSemaphore(u.u_poolsema);
+  if(u.u_poolheader)DeletePool(u.u_poolheader);
+  u.u_poolheader = NULL;
+  u.u_poolsema = NULL;
+}
+
 #ifdef POOLMEM
 
 void * malloc (size_t size)
 {
   usetup;
-  unsigned long *res;
-  int omask;
-  struct user *udat;
-  unsigned long poolheader;
-  unsigned long poolsema;
-  register unsigned long bltf = 1;
-  register unsigned long flags = 0;
-  if (u.u_parent_userdata)
-  {
-    udat = u.u_parent_userdata;
-    poolheader = udat->u_poolheader;
-    poolsema = udat->u_poolsema;
-  }
-  else
-  {
-    poolheader = u.u_poolheader;
-    poolsema = u.u_poolsema;
-  }
+  register unsigned long *res;
+  register void *poolheader;
+  register void *poolsema;
+  unsigned long bltf = 1;
+  unsigned long flags = 0;
   
   if ((signed long)size < 1)
   	return 0;
   
+  size += sizeof(unsigned long);
   if((ix.ix_flags & ix_watch_availmem) && (size > 60000))
   {
     while(AvailMem(MEMF_ANY) < size + 500000)
@@ -160,76 +203,47 @@ void * malloc (size_t size)
     }
   }
   
+  if (u.u_parent_userdata)
+  {
+    poolheader = ((struct user *)(u.u_parent_userdata))->u_poolheader;
+    poolsema = ((struct user *)(u.u_parent_userdata))->u_poolsema;
+  }
+  else
+  {
+    poolheader = u.u_poolheader;
+    poolsema = u.u_poolsema;
+  }
+  
 retry:
-  /* we don't want to be interrupted between the allocation and the tracking */
-  //omask = syscall (SYS_sigsetmask, ~0);
   ObtainSemaphore(poolsema);
-  res = AllocPooled(poolheader,size+4);
+  res = AllocPooled(poolheader,size);
   ReleaseSemaphore(poolsema);
-  //syscall (SYS_sigsetmask, omask);
-  if (res){
-	       mem_used += size;
-		   *res++=size;
-		   return res;
-  }
   
-  /**
-   * UN-OBTRUSIVE handy malloc() hack... please don't blame us, blame 
-   * the users who activated those options from ixprefs/blacklist ;-P
-   */
-  
-  if( bltf == 1 ) // don't go here again if we come from the goto..
+  if( res )
   {
-    bltf = BlacklistedTaskFlags(NULL);
-    
-    if(ix.ix_flags & ix_catch_failed_malloc)
-    	flags |= ix_catch_failed_malloc;
-    
-    if(ix.ix_flags & ix_kill_app_on_failed_malloc)
-    	flags |= ix_kill_app_on_failed_malloc;
-    
-    if( bltf != ~0 ) // this task is blacklisted?
-    {
-      if(bltf & ix_catch_failed_malloc)
-      	flags |= ix_catch_failed_malloc;
-      else if(flags & ix_catch_failed_malloc)
-      	flags &= ~(ix_catch_failed_malloc);
-      
-      if(bltf & ix_kill_app_on_failed_malloc)
-      	flags |= ix_kill_app_on_failed_malloc;
-      else if(flags & ix_kill_app_on_failed_malloc)
-      	flags &= ~(ix_kill_app_on_failed_malloc);
-    }
+    mem_used += size;
+    *res++ = size;
   }
-  
-  if(flags & ix_catch_failed_malloc)
+  else
   {
-    if(ix_reqtry(OUTOFMEM,size/1000))
-      goto retry;
+    while(blt_handler( &bltf, &flags ))
+    	goto retry;
   }
   
-  if(flags & ix_kill_app_on_failed_malloc)
-  {
-     // at your own risk (end-user, I mean)
-     abort ( ) ;
-  }
-  
-  return(NULL);
+  return((void *)res);
 }
 
 void free (unsigned long *mem)
 {
-  int omask;
   usetup;
-  struct user *udat;
-  unsigned long poolheader;
-  unsigned long poolsema;
+  register void *poolheader;
+  register void *poolsema;
+  
   if (!mem)return; 
   if (u.u_parent_userdata)
   {
-    udat = u.u_parent_userdata;
-    poolheader = udat->u_poolheader;
-    poolsema = udat->u_poolsema;
+    poolheader = ((struct user *)(u.u_parent_userdata))->u_poolheader;
+    poolsema = ((struct user *)(u.u_parent_userdata))->u_poolsema;
   }
   else
   {
@@ -237,56 +251,49 @@ void free (unsigned long *mem)
     poolsema = u.u_poolsema;
   }
 
-  //omask = syscall (SYS_sigsetmask, ~0);
   ObtainSemaphore(poolsema);
   if (((struct memalign_ptr *)mem - 1)->magic == MEMALIGN_MAGIC)
     {
       mem = (unsigned long  *)
 	      ((u_char *)mem - ((struct memalign_ptr *)mem - 1)->alignment);
     }
-  FreePooled(poolheader,mem-1,*(mem-1)+4);
+  mem--;
+  FreePooled(poolheader,mem,*mem);
   ReleaseSemaphore(poolsema);
-  //syscall (SYS_sigsetmask, omask);
 }
 void all_free (void)
 {
-  usetup;
-  if(u.u_poolsema)ObtainSemaphore(u.u_poolsema);
-  if(u.u_poolheader)DeletePool(u.u_poolheader);
-  u.u_poolheader = NULL;
-  u.u_poolsema = NULL;
+  free_poolmem ( ) ;
 }
 
 void *realloc (unsigned long *mem, size_t size)
 {
-  unsigned long *memaddr,*res;
-  int omask;
   usetup;
-  struct user *udat;
-  unsigned long poolheader;
-  unsigned long poolsema;
+  register void *poolheader;
+  register void *poolsema;
+  register unsigned long *memaddr,*res;
+  
+  if (!mem)
+    return (void *) malloc (size);
+  
+  if((signed long)size < 1)
+  {
+    free(mem);
+    return NULL;
+  }
   
   if (u.u_parent_userdata)
   {
-    udat = u.u_parent_userdata;
-    poolheader = udat->u_poolheader;
-    poolsema = udat->u_poolsema;
+    poolheader = ((struct user *)(u.u_parent_userdata))->u_poolheader;
+    poolsema = ((struct user *)(u.u_parent_userdata))->u_poolsema;
   }
   else
   {
     poolheader = u.u_poolheader;
     poolsema = u.u_poolsema;
   }
-
-  if (!mem)
-    return (void *) malloc (size);
-
-  if (!size)
-  {
-    free(mem);
-    return NULL;
-  }
-   memaddr = mem;
+  
+  memaddr = mem;
   if (((struct memalign_ptr *)mem - 1)->magic == MEMALIGN_MAGIC)
     {
 	 
@@ -301,23 +308,20 @@ void *realloc (unsigned long *mem, size_t size)
   if (*(memaddr-1) >= size)
     res = mem;
   else
+  {
+    res = (unsigned long *) malloc (size);
+    if (res)
     {
-      res = (unsigned long *) malloc (size);
-      if (res)
-			{
-			//omask = syscall (SYS_sigsetmask, ~0);
-			
-			CopyMem (mem, res, *(mem-1));
-
-			/* according to the manpage, the old buffer should only be
-			* freed, if the allocation of the new buffer was successful */
-			ObtainSemaphore(poolsema);
-			FreePooled(poolheader,mem-1,*(mem-1)+4);
-			ReleaseSemaphore(poolsema);
-			//syscall (SYS_sigsetmask, omask);
-			}
+      CopyMem (mem, res, *(mem-1)-4);
+      
+      /* according to the manpage, the old buffer should only be
+      * freed, if the allocation of the new buffer was successful */
+      ObtainSemaphore(poolsema);mem--;
+      FreePooled(poolheader,mem,*mem);
+      ReleaseSemaphore(poolsema);
     }
-
+  }
+  
   return res;
 }
 
@@ -329,6 +333,8 @@ malloc (size_t size)
   usetup;
   struct mem_block *res;
   int omask;
+  unsigned long bltf = 1;
+  unsigned long flags = 0;
   if (u.u_parent_userdata)
   {
   u_ptr = u.u_parent_userdata;
@@ -343,20 +349,21 @@ malloc (size_t size)
 
   /* we don't want to be interrupted between the allocation and the tracking */
   omask = syscall (SYS_sigsetmask, ~0);
-  again_malloc:  if (size > 60000)
+  
+  if((ix.ix_flags & ix_watch_availmem) && (size > 60000))
   {
-    unsigned long * avail = AvailMem(MEMF_ANY);
-    if (avail < size + 500000)
-	{
-		ix_req ("malloc:","Try Again","Try Again", OUTOFMEM,size/1000);
-		goto again_malloc;
-	}
+    while(AvailMem(MEMF_ANY) < size + 500000)
+    {
+      if(!ix_reqtry(OUTOFMEM2,size/1000))
+        break;
+    }
   }
 
   /* include management information */
-  Forbid();
+retry:
+//  Forbid();
   res = (struct mem_block *) b_alloc(size + sizeof (struct mem_block), 0); /* not MEMF_PUBLIC ! */
-  Permit();
+//  Permit();
   if (res)
     {
       u_int *lp = &res->size;
@@ -373,10 +380,12 @@ malloc (size_t size)
       mem_used += size;
       return &res->realblock;
     }
-  ix_req ("malloc:","Try Again","Try Again", OUTOFMEM,size/1000);
-  goto again_malloc;
-  syscall (SYS_sigsetmask, omask);
   
+  while(blt_handler( &bltf, &flags ))
+  	goto retry;
+  
+  syscall (SYS_sigsetmask, omask);
+  return(NULL);
 }
 
 
@@ -467,6 +476,7 @@ void all_free (void)
 
   /* this makes it possible to call all_free() more than once */
   ixnewlist ((struct ixlist *)&own_mem_list);
+  free_poolmem ( ) ;
 }
 
 void *

@@ -159,7 +159,7 @@ struct WBStartup *wb_msg = NULL;
       ix_u->u_errno = &default_errno;
       ix_u->u_h_errno = &default_h_errno;
       
-      if((ix_u->u_poolheader = CreatePool(MEMF_ANY,65536,65536)))
+      if((ix_u->u_poolheader = CreatePool(MEMF_ANY,16384,1024)))
       {
           struct SignalSemaphore *poolsema;
           poolsema = AllocPooled(ix_u->u_poolheader,sizeof(struct SignalSemaphore));
