@@ -1,3 +1,19 @@
+2009-07-11 Diegocr
+	
+	* Added the task's blacklisting features to the buddy allocator.
+	* Improved poolmem to be somewhat faster...
+	* Removed a Forbid/Permit pair around malloc's b_alloc() call which
+	  does not seem to be needed.. (buddy allocator)
+	* Memory's Pool and Semaphore are created regardless of the allocator
+	  being used, but not freed on exit when using the buddy way - Fixed.
+	
+2009-07-01 Bernd_afa
+   * fixed a filesystem Bug introduce from MOS Version for programs that use AHI output (fopen("audio:..")).
+   *  sound is now play correct
+   * use now old buddy allocator again, because netsurf need very good memperformance 
+     but poolmem system do after some netsurf use lots slowdown (more than 3) because of mem fragmentation in 
+     poolmem 
+
 2009-05-29 Diegocr
 	* Updated IXPrefs to Version 2.8
 	  
@@ -26,6 +42,7 @@
 	  find additional info on the buble-helps from the ixbl_MUI program.
 
 2009-05-25 Diegocr
+   Version 61.2
 	* library/malloc.c: Poolmem allocation system now uses Semaphores
 	  rather than Forbid/Permit..   
 	* library/ix_open_68k.c: the memory pool was created without 
