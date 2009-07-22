@@ -124,7 +124,8 @@ valloc (size_t size)
 
 extern unsigned long BlacklistedTaskFlags(void *task);
 
-static __inline int blt_handler( unsigned long *bltf, unsigned long *flags )
+static __inline int blt_handler( unsigned long *bltf,
+	unsigned long *flags, unsigned long reqsize )
 {
   /**
    * UN-OBTRUSIVE handy malloc() hack... please don't blame us, blame 
@@ -157,7 +158,7 @@ static __inline int blt_handler( unsigned long *bltf, unsigned long *flags )
   
   if((*flags) & ix_catch_failed_malloc)
   {
-    if(ix_reqtry(OUTOFMEM,size/1000))
+    if(ix_reqtry(OUTOFMEM,reqsize/1000))
       return 1;
   }
   
@@ -193,7 +194,6 @@ void * malloc (size_t size)
   if ((signed long)size < 1)
   	return 0;
   
-  size += sizeof(unsigned long);
   if((ix.ix_flags & ix_watch_availmem) && (size > 60000))
   {
     while(AvailMem(MEMF_ANY) < size + 500000)
@@ -216,7 +216,7 @@ void * malloc (size_t size)
   
 retry:
   ObtainSemaphore(poolsema);
-  res = AllocPooled(poolheader,size);
+  res = AllocPooled(poolheader,size+4);
   ReleaseSemaphore(poolsema);
   
   if( res )
@@ -226,7 +226,7 @@ retry:
   }
   else
   {
-    while(blt_handler( &bltf, &flags ))
+    if(blt_handler( &bltf, &flags, size ))
     	goto retry;
   }
   
@@ -258,7 +258,7 @@ void free (unsigned long *mem)
 	      ((u_char *)mem - ((struct memalign_ptr *)mem - 1)->alignment);
     }
   mem--;
-  FreePooled(poolheader,mem,*mem);
+  FreePooled(poolheader,mem,(*mem)+4);
   ReleaseSemaphore(poolsema);
 }
 void all_free (void)
@@ -312,12 +312,12 @@ void *realloc (unsigned long *mem, size_t size)
     res = (unsigned long *) malloc (size);
     if (res)
     {
-      CopyMem (mem, res, *(mem-1)-4);
+      CopyMem (mem, res, *(mem-1));
       
       /* according to the manpage, the old buffer should only be
       * freed, if the allocation of the new buffer was successful */
       ObtainSemaphore(poolsema);mem--;
-      FreePooled(poolheader,mem,*mem);
+      FreePooled(poolheader,mem,(*mem)+4);
       ReleaseSemaphore(poolsema);
     }
   }
@@ -381,7 +381,7 @@ retry:
       return &res->realblock;
     }
   
-  while(blt_handler( &bltf, &flags ))
+  if(blt_handler( &bltf, &flags, size ))
   	goto retry;
   
   syscall (SYS_sigsetmask, omask);
