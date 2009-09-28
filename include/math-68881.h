@@ -62,7 +62,7 @@
 ({									\
   double huge_val;							\
 									\
-  __asm ("fmove%.d %#0x7ff0000000000000,%0"	/* Infinity */		\
+  __asm ("      fmove%.d %#0x7ff0000000000000,      %0\n\t"	/* Infinity */		\
 	 : "=f" (huge_val)						\
 	 : /* no inputs */);						\
   huge_val;								\
@@ -82,7 +82,7 @@ sin (double x)
 {
   double value;
 
-  __asm ("fsin%.x %1,%0"
+  __asm ("      fsin%.x %1,       %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -93,7 +93,7 @@ cos (double x)
 {
   double value;
 
-  __asm ("fcos%.x %1,%0"
+  __asm ("          fcos%.x %1,      %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -104,7 +104,7 @@ tan (double x)
 {
   double value;
 
-  __asm ("ftan%.x %1,%0"
+    __asm ("        ftan%.x %1,        %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -115,7 +115,7 @@ asin (double x)
 {
   double value;
 
-  __asm ("fasin%.x %1,%0"
+  __asm ("          fasin%.x %1,        %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -126,7 +126,7 @@ acos (double x)
 {
   double value;
 
-  __asm ("facos%.x %1,%0"
+  __asm ("            facos%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -137,7 +137,7 @@ atan (double x)
 {
   double value;
 
-  __asm ("fatan%.x %1,%0"
+  __asm ("          fatan%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -148,10 +148,10 @@ atan2 (double y, double x)
 {
   double pi, pi_over_2;
 
-  __asm ("fmovecr%.x %#0,%0"		/* extended precision pi */
+  __asm ("              fmovecr%.x %#0,      %0\n\t"		/* extended precision pi */
 	 : "=f" (pi)
 	 : /* no inputs */ );
-  __asm ("fscale%.b %#-1,%0"		/* no loss of accuracy */
+  __asm ("              fscale%.b %#-1,         %0\n\t"		/* no loss of accuracy */
 	 : "=f" (pi_over_2)
 	 : "0" (pi));
   if (x > 0)
@@ -194,7 +194,7 @@ atan2 (double y, double x)
 #endif
 
 	      errno = EDOM;
-	      __asm ("fmove%.d %#0x7fffffffffffffff,%0" 	/* quiet NaN */
+	      __asm ("             fmove%.d %#0x7fffffffffffffff,      %0\n\t" 	/* quiet NaN */
 		     : "=f" (value)
 		     : /* no inputs */);
 	      return value;
@@ -208,7 +208,7 @@ sinh (double x)
 {
   double value;
 
-  __asm ("fsinh%.x %1,%0"
+  __asm ("              fsinh%.x %1,        %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -219,7 +219,7 @@ cosh (double x)
 {
   double value;
 
-  __asm ("fcosh%.x %1,%0"
+  __asm ("      fcosh%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -230,7 +230,7 @@ tanh (double x)
 {
   double value;
 
-  __asm ("ftanh%.x %1,%0"
+  __asm ("              ftanh%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -241,7 +241,7 @@ atanh (double x)
 {
   double value;
 
-  __asm ("fatanh%.x %1,%0"
+  __asm ("      fatanh%.x %1,        %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -252,7 +252,7 @@ exp (double x)
 {
   double value;
 
-  __asm ("fetox%.x %1,%0"
+  __asm ("              fetox%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -263,7 +263,7 @@ expm1 (double x)
 {
   double value;
 
-  __asm ("fetoxm1%.x %1,%0"
+  __asm ("      fetoxm1%.x %1,       %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -274,7 +274,7 @@ log (double x)
 {
   double value;
 
-  __asm ("flogn%.x %1,%0"
+  __asm ("              flogn%.x %1,         %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -285,7 +285,7 @@ log1p (double x)
 {
   double value;
 
-  __asm ("flognp1%.x %1,%0"
+  __asm ("              flognp1%.x %1,       %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -296,7 +296,7 @@ log10 (double x)
 {
   double value;
 
-  __asm ("flog10%.x %1,%0"
+  __asm ("              flog10%.x %1,       %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -307,7 +307,7 @@ sqrt (double x)
 {
   double value;
 
-  __asm ("fsqrt%.x %1,%0"
+  __asm ("              fsqrt%.x %1,        %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -336,7 +336,7 @@ pow (double x, double y)
 #endif
 
 	  errno = EDOM;
-	  __asm ("fmove%.d %#0x7fffffffffffffff,%0"		/* quiet NaN */
+	  __asm ("             fmove%.d %#0x7fffffffffffffff,       %0\n\t"		/* quiet NaN */
 		 : "=f" (value)
 		 : /* no inputs */);
 	  return value;
@@ -346,7 +346,7 @@ pow (double x, double y)
     {
       double temp;
 
-      __asm ("fintrz%.x %1,%0"
+      __asm ("              fintrz%.x %1,       %0\n\t"
 	     : "=f" (temp)			/* integer-valued float */
 	     : "f" (y));
       if (y == temp)
@@ -366,7 +366,7 @@ pow (double x, double y)
 #endif
 
 	  errno = EDOM;
-	  __asm ("fmove%.d %#0x7fffffffffffffff,%0"		/* quiet NaN */
+	  __asm ("             fmove%.d %#0x7fffffffffffffff,       %0\n\t"		/* quiet NaN */
 		 : "=f" (value)
 		 : /* no inputs */);
 	  return value;
@@ -379,7 +379,7 @@ fabs (double x)
 {
   double value;
 
-  __asm ("fabs%.x %1,%0"
+  __asm ("              fabs%.x %1, %0\n\t"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
@@ -391,17 +391,17 @@ ceil (double x)
   int rounding_mode, round_up;
   double value;
 
-  __asm volatile ("fmove%.l %!,%0"
+  __asm volatile ("             fmove%.l %!,         %0\n\t"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_up = rounding_mode | 0x30;
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,        %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (round_up));
-  __asm volatile ("fint%.x %1,%0"
+  __asm volatile ("             fint%.x %1,      %0\n\t"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,         %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
@@ -413,18 +413,18 @@ floor (double x)
   int rounding_mode, round_down;
   double value;
 
-  __asm volatile ("fmove%.l %!,%0"
+  __asm volatile ("             fmove%.l %!,         %0\n\t"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_down = (rounding_mode & ~0x10)
 		| 0x20;
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,         %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (round_down));
-  __asm volatile ("fint%.x %1,%0"
+  __asm volatile ("             fint%.x %1,         %0\n\t"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,         %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
@@ -436,17 +436,17 @@ rint (double x)
   int rounding_mode, round_nearest;
   double value;
 
-  __asm volatile ("fmove%.l %!,%0"
+  __asm volatile ("             fmove%.l %!,         %0\n\t"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_nearest = rounding_mode & ~0x30;
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,         %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (round_nearest));
-  __asm volatile ("fint%.x %1,%0"
+  __asm volatile ("             fint%.x %1,         %0\n\t"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("fmove%.l %0,%!"
+  __asm volatile ("             fmove%.l %0,         %!\n\t"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
@@ -457,7 +457,7 @@ fmod (double x, double y)
 {
   double value;
 
-  __asm ("fmod%.x %2,%0"
+  __asm ("              fmod%.x %2,         %0\n\t"
 	 : "=f" (value)
 	 : "0" (x),
 	   "f" (y));
@@ -469,7 +469,7 @@ drem (double x, double y)
 {
   double value;
 
-  __asm ("frem%.x %2,%0"
+  __asm ("              frem%.x %2,         %0\n\t"
 	 : "=f" (value)
 	 : "0" (x),
 	   "f" (y));
@@ -481,19 +481,17 @@ scalb (double x, int n)
 {
   double value;
 
-  __asm ("fscale%.l %2,%0"
+  __asm ("              fscale%.l %2,        %0\n\t"
 	 : "=f" (value)
 	 : "0" (x),
 	   "dmi" (n));
   return value;
 }
 
-__math_decl double
-logb (double x)
+__math_decl double logb (double x)
 {
   double exponent;
-
-  __asm ("fgetexp%.x %1,%0"
+__asm ("                fgetexp%.x %1,      %0\n\t"
 	 : "=f" (exponent)
 	 : "f" (x));
   return exponent;
@@ -504,7 +502,7 @@ ldexp (double x, int n)
 {
   double value;
 
-  __asm ("fscale%.l %2,%0"
+  __asm ("              fscale%.l %2,        %0\n\t"
 	 : "=f" (value)
 	 : "0" (x),
 	   "dmi" (n));
@@ -518,16 +516,16 @@ frexp (double x, int *exp)
   int int_exponent;
   double mantissa;
 
-  __asm ("fgetexp%.x %1,%0"
+  __asm ("              fgetexp%.x %1,       %0\n\t"
 	 : "=f" (float_exponent) 	/* integer-valued float */
 	 : "f" (x));
   int_exponent = (int) float_exponent;
-  __asm ("fgetman%.x %1,%0"
+    __asm ("            fgetman%.x %1,        %0\n\t"
 	 : "=f" (mantissa)		/* 1.0 <= mantissa < 2.0 */
 	 : "f" (x));
   if (mantissa != 0)
     {
-      __asm ("fscale%.b %#-1,%0"
+      __asm ("              fscale%.b %#-1,         %0\n\t"
 	     : "=f" (mantissa)		/* mantissa /= 2.0 */
 	     : "0" (mantissa));
       int_exponent += 1;
@@ -541,7 +539,7 @@ modf (double x, double *ip)
 {
   double temp;
 
-  __asm ("fintrz%.x %1,%0"
+  __asm ("              fintrz%.x %1,       %0\n\t"
 	 : "=f" (temp)			/* integer-valued float */
 	 : "f" (x));
   *ip = temp;
