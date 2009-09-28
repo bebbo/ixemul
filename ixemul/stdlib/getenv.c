@@ -72,6 +72,7 @@ _findenv(char **env, const char *name, int *offset)
  * getenv --
  *      Returns ptr to value associated with name, if any, else NULL.
  */
+char progdir[]="PROGDIR:";
 char *
 getenv(const char *name)
 {
@@ -80,12 +81,12 @@ getenv(const char *name)
   int ret;
   if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
   char name2[256];
-  
   char * r = _findenv(*u.u_environ, name, &offset);
   
   strcpy (&name2[0],"env:"); // code so easy can see in snoopdos what env vars a ixemul program use.
   strncat (&name2[0],name,230);
   ret = Open(name2,MODE_OLDFILE);
+  if (!r)if(!strcmp(name,"HOME"))return progdir;   
   if (ret)Close(ret);
   return r;
   }

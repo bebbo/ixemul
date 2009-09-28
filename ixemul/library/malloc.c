@@ -54,8 +54,9 @@
 #include "kprintf.h"
 #include <exec/memory.h>
 #include <stddef.h>
-
+ 
 #define USE_PANIC_HIT 0
+
 //#define POOLMEM // you can choose here between buddy allocater or amiga OS poolmem
 
 #define mem_list (u.u_mdp->md_list)
@@ -190,7 +191,7 @@ void * malloc (size_t size)
   register void *poolsema;
   unsigned long bltf = 1;
   unsigned long flags = 0;
-  
+  if (!size)size=4; // most linux do that, see docu.
   if ((signed long)size < 1)
   	return 0;
   
@@ -340,10 +341,15 @@ malloc (size_t size)
   u_ptr = u.u_parent_userdata;
   }
 
+   if (!size)size=4; // most linux do that, see docu.
+    if ((signed long)size <= 0)return 0;
+
+
   /* We increase SIZE below which could cause an dangerous (system
      crash) overflow. -bw/09-Jun-98 */
-  if ((signed long)size <= 0)return 0;
 
+ 
+ 
   /* guarantee long sizes (so we can use CopyMemQuick in realloc) */
   size = (size + 3) & ~3; /* next highest multiple of 4 */
 

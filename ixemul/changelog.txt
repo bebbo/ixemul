@@ -1,3 +1,20 @@
+2009-09-01 Bernd_afa
+  Version 61.2
+   Linux return a address when call malloc(0), so there are some programs out
+   (all that use milkshape loaders)  that fail if
+   this is not do.now ixemul return too a address and this programs work.
+
+   when there is no HOME enviroment var set, then PROGDIR: is return from getenv.
+   before it return 0 and this let some programs crash, or do no prefs save.
+
+   This make complete remove of programs more easy
+   So there is no problem that HOME dir grow lots by saving all config files in 1 dir
+   and fit better in amiga enviroment.
+
+   If you dont like that config files are store in current dir and that it is called as HOME,
+   then create a env var HOME with path to dir you want.
+
+
 2009-07-11 Diegocr
 	
 	* Added the task's blacklisting features to the buddy allocator.
@@ -12,7 +29,7 @@
    *  sound is now play correct
    * use now old buddy allocator again, because netsurf need very good memperformance 
      but poolmem system do after some netsurf use lots slowdown (more than 3) because of mem fragmentation in 
-     poolmem 
+     poolmem.For using memtrackers, there is a poolmem version attached, named ixemul.library_poolmem.
 
 2009-05-29 Diegocr
 	* Updated IXPrefs to Version 2.8
