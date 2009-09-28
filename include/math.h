@@ -237,7 +237,7 @@ __math_decl int lround(double x)
  return ceil(x - 0.5);
 }
 
-__math_decl int round(double x)
+__math_decl double round(double x)
 {
  if( x > 0.0 )return floor(x + 0.5);
  return ceil(x - 0.5);
