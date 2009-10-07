@@ -36,7 +36,7 @@
 #ifndef	_MATH_H_
 #define	_MATH_H_
 
-#define ENABLE_HAVE_XXX //ffmpeg/gcc need it
+//#define ENABLE_HAVE_XXX 0 //gcc need it
 #define STMATH 1 
 #include <float.h>
 
@@ -44,7 +44,7 @@
 #define BITS(type)	(8 * (int)sizeof(type))
 #endif
 
-#define	M_E		2.7182818284590452354	/* e */
+#define	M_E		    2.7182818284590452354	/* e */
 #define	M_LOG2E		1.4426950408889634074	/* log 2e */
 #define	M_LOG10E	0.43429448190325182765	/* log 10e */
 #define	M_LN2		0.69314718055994530942	/* log e2 */
@@ -59,7 +59,7 @@
 #define	M_SQRT1_2	0.70710678118654752440	/* 1/sqrt(2) */
 
 #include <sys/cdefs.h>
-
+ 
 #ifndef __math_decl
 /* Changed by Diego Casorran:
    January 2009, added __math_decl usage to let the user decide whenever
@@ -76,8 +76,8 @@
 #  define __math_decl static __inline
 # endif
 #endif /* __math_decl */
-
-#if (defined(__GNUC__) || defined(__cplusplus)) && defined(__HAVE_68881__) && (defined(mc68020) || defined(mc68030)) 
+#if ((defined(__mc68020__) && defined(__HAVE_68881__)) || (defined(__mc68030__) && defined(__HAVE_68881__)))
+//#if (defined(__GNUC__) || defined(__cplusplus)) && defined(__HAVE_68881__) && (defined(mc68020) || defined(mc68030)) 
 #include <math-68881.h> 
 #else
 
@@ -140,6 +140,13 @@ double	scalb __P((double, int));
 double	y0 __P((double));
 double	y1 __P((double));
 double	yn __P((int, double));
+long lrintf __P((float));
+long lrint __P((double));
+float roundf __P((float));
+double round __P((double));
+double	log2 __P((double));
+float truncf __P((float));
+double trunc __P((double));
 #endif
 
 __END_DECLS
@@ -151,23 +158,23 @@ __END_DECLS
 
 
 #ifdef ENABLE_HAVE_XXX
-# define HAVE_FUNC_ISINF 1
-# define HAVE_FUNC_ISNAN 1
-# define HAVE_CEILF 1
-# define HAVE_FLOORF 1
-# define HAVE_LROUND 1
-# define HAVE_ROUNDF 1
-# define HAVE_ROUND 1
-# define HAVE_frexpf 1
-# define HAVE_LDEXPF 1
-# define HAVE_SINF 1
-# define HAVE_COSF 1
-# define HAVE_FMODF 1
-# define HAVE_ATAN2F 1
-# define HAVE_SQRTF 1
-# define HAVE_LRINT 1
-# define HAVE_LRINTF 1
-# define HAVE_RINT 1
+#define HAVE_FUNC_ISINF 1
+#define HAVE_FUNC_ISNAN 1
+#define HAVE_CEILF 1
+#define HAVE_FLOORF 1
+#define HAVE_LROUND 1
+//#define HAVE_ROUNDF 1
+//#define HAVE_ROUND 1
+#define HAVE_frexpf 1
+#define HAVE_LDEXPF 1
+#define HAVE_SINF 1
+#define HAVE_COSF 1
+#define HAVE_FMODF 1
+#define HAVE_ATAN2F 1
+//#define HAVE_SQRTF 1
+//#define HAVE_LRINT 1
+//#define HAVE_LRINTF 1
+//#define HAVE_RINT 1
 #endif
 
 //#ifndef __HAVE_68881__
@@ -181,50 +188,50 @@ __END_DECLS
 __math_decl float rintf(float x)
 {
 #if !defined(LOCALMATHINLINE) && !defined(STMATH)
- return floor(x + 0.5);
+return floor(x + 0.5);
 #else
  return((float)rint((double)x));
 #endif
 }
 
+//#if (defined(__mc68040__) || defined(__mc68060__) || defined(__HAVE_68881__)) 
+//static inline long lrintf(float x)
+//{
+//	long value;
+//__asm ("        fmove%.l %1,     %0\n\t"
+//		 : "=d" (value)
+//		 : "f" (x));
+//	  return value;
+//
+//}
+//
+//static inline long lrint(double x)
+//{
+//	long value;
+//__asm ("        fmove%.l %1,     %0\n\t"
+//		 : "=d" (value)
+//		 : "f" (x));
+//	  return value;
+//
+//}
+//#endif
 
-
-static inline long lrintf(float x)
-{
-	long value;
-__asm ("fmove%.l %1,%0\n"		
-		 : "=d" (value)
-		 : "f" (x));
-	  return value;
-
-}
-
-static inline long lrint(double x)
-{
-	long value;
-__asm ("fmove%.l %1,%0\n"		
-		 : "=d" (value)
-		 : "f" (x));
-	  return value;
-
-}
-
-__math_decl double log2(double x)
-{
- return (log(x) / M_LN2);
-}
+//__math_decl double log2(double x)
+//{
+// return (log(x) / M_LN2);
+//}
 
 __math_decl float log2f(float x)
 {
  return (log(x) / M_LN2);
 }
 
-__math_decl float roundf(float x)
-{
- if( x > 0.0 )return floor(x + 0.5);
- return ceil(x - 0.5);
-}
-
+//__math_decl float roundf(float x)
+//{
+// if( x > 0.0 )return floor(x + 0.5);
+// return ceil(x - 0.5);
+//}
+ 
 __math_decl int lroundf(float x)
 {
  if( x > 0.0 )return floor(x + 0.5);
@@ -237,11 +244,11 @@ __math_decl int lround(double x)
  return ceil(x - 0.5);
 }
 
-__math_decl double round(double x)
-{
- if( x > 0.0 )return floor(x + 0.5);
- return ceil(x - 0.5);
-}
+//__math_decl int round(double x)
+//{
+// if( x > 0.0 )return floor(x + 0.5);
+// return ceil(x - 0.5);
+//}
 
 __math_decl float ceilf(float x)
 {
@@ -290,6 +297,11 @@ __math_decl float atan2f(float x,float y)
  return atan2(x,y);
 }
 
+__math_decl float atanf(float x)
+{
+ return atan(x);
+}
+
 //#define __builtin_sqrtf sqrtf //need or get linker error if not use real one
 //__math_decl float sqrtf(float x)
 //{
@@ -297,15 +309,15 @@ __math_decl float atan2f(float x,float y)
 //}
 
 
-__math_decl  double trunc(double x)
-{
- return floor(x);
-}
+//__math_decl  double trunc(double x)
+//{
+// return floor(x);
+//}
 
-__math_decl float truncf(float x)
-{
- return floor(x);
-}
+//__math_decl float truncf(float x)
+//{
+// return floor(x);
+//}
 
 __math_decl double cbrt(double x)
 {
