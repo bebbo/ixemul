@@ -178,6 +178,32 @@ struct ixemul_base *ix_init (struct ixemul_base *ixbase)
   if (ixbase->ix_flags & ix_support_mufs)
     muBase = OpenLibrary("multiuser.library", 39);
 
+	if(GetVar("HOME", buf, sizeof(buf)-1, 0) < 0) {
+		
+		// Ensure a HOME enviroment variable exists (as requested by Bernd) 
+		// in such way bad-written programs will not fail..
+		
+		// Bernd wanted to use PROGDIR: which the equivalent for ixemul 
+		// should be a DOT...(even for prgs in PATH should be better, i guess)
+		CONST UBYTE __default_home_path[] = ".";
+		
+		if(!SetVar("HOME",__default_home_path,-1,GVF_GLOBAL_ONLY)) {
+			
+			// uh-oh.. WTF?
+			
+			BPTR fd;
+			
+			if((fd = Open("ENV:HOME",MODE_NEWFILE))) {
+				
+				FPuts(fd,__default_home_path);
+				Close(fd);
+			} else {
+				
+				ix_panic("Cannot set HOME enviroment variable!");
+			}
+		}
+	}
+
   /* initialize the list structures for the allocator */
   init_buddy ();
 
