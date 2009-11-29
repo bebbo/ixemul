@@ -124,7 +124,7 @@ struct vfork_msg {
  */
 
 /* default size */
-#define A4_POINTERS 100
+#define A4_POINTERS 1000
 
 /* NB: a list of pointers for shared libraries is allocated *before*
    the start of this struct! So the struct is actually larger, but
@@ -432,6 +432,8 @@ struct user {
 	APTR                     u_poolheader;
 	struct user *            u_parent_userdata;
 	APTR                     u_poolsema;
+	void *                   u_tc_userdata;
+	char                     u_use_amiga_paths;
 };
 
 /* flag codes */
@@ -460,7 +462,7 @@ struct user {
 #define	SSEL	0x0400000	/* selecting; wakeup/waiting danger */
 #define	SLOGIN	0x0800000	/* a login process (legit child of init) */
 #define SUSAGE  0x1000000	/* we already reported the stack usage */
-#define EXECVECLOSE     0x10000000      /* flag to handle execve() + atexit stdio */
+#define EXECVECLOSE     0x10000000      /* flag to handle execve() + atexit stdio 
 
 /* stat codes */
 #define	SSLEEP	1		/* awaiting an event */

@@ -134,6 +134,11 @@ char *
 ix_to_ados(char *buf, const char *name)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
+  if (u.u_use_amiga_paths){
+	  strcpy (buf,name);
+	  return buf;
+  }
   char *p;
   const char *q = name;
   int allowdot = 1;
