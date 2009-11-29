@@ -325,7 +325,7 @@ int main(int argc, char **argv)
       #if HANDLE_DINAMIC_IXEMUL_OPEN
       if( nobaserel )
       {
-        sprintf(name, "%s_ixv.o", sc->name);
+        sprintf(name, "aaa.%s_ixv.u", sc->name);
         
         if(!(fp = fopen (name, "w")))
         {
