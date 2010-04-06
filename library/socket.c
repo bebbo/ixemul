@@ -44,7 +44,7 @@ static int soo_close  (struct file *fp);
 static void socket_cleanup(int ostat)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (CURSIG (&u))
     SetSignal (0, SIGBREAKF_CTRL_C);
 
@@ -59,7 +59,7 @@ static void socket_cleanup(int ostat)
 static void socket_cleanup_epipe(int ostat)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (CURSIG (&u))
     SetSignal (0, SIGBREAKF_CTRL_C);
 
@@ -81,7 +81,8 @@ socket (int domain, int type, int protocol)
   struct file *fp;
   int fd, err, ostat, omask;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (domain == PF_UNIX)
     return unp_socket(domain, type, protocol, NULL);
 
@@ -100,7 +101,7 @@ socket (int domain, int type, int protocol)
     {
       if ((err = falloc (&fp, &fd)))
 	break;
-
+     
       fp->f_so = netcall(NET__socket, domain, type, protocol);
       err = (fp->f_so == -1) ? errno : 0;
 
@@ -130,7 +131,8 @@ bind (int s, const struct sockaddr *name, int namelen)
   struct file *fp = getsock (s);
   int ostat, error;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -150,7 +152,8 @@ listen (int s, int backlog)
   struct file *fp = getsock (s);
   int ostat, error;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -172,7 +175,8 @@ accept (int s, struct sockaddr *name, int *namelen)
   int err, fd2, ostat;
   int domain;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -216,7 +220,8 @@ connect (int s, const struct sockaddr *name, int namelen)
   struct file *fp = getsock (s);
   int ostat, error;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -235,6 +240,7 @@ int
 socketpair (int domain, int type, int protocol, int sv[2])
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   errno = EPFNOSUPPORT;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
   return -1;
@@ -247,7 +253,8 @@ sendto (int s, const void *buf, int len, int flags, const struct sockaddr *to, i
   int ostat;
   int rc;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp || fp->f_type == DTYPE_USOCKET)
     return -1;
 
@@ -267,7 +274,8 @@ send (int s, const void *buf, int len, int flags)
   int ostat;
   int rc;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -289,7 +297,8 @@ sendmsg (int s, const struct msghdr *msg, int flags)
   struct file *fp = getsock (s);
   int ostat, rc;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp || fp->f_type == DTYPE_USOCKET)
     return -1;
 
@@ -308,7 +317,8 @@ recvfrom (int s, void *buf, int len, int flags, struct sockaddr *from, int *from
   struct file *fp = getsock (s);
   int ostat, rc;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp || fp->f_type == DTYPE_USOCKET)
     return -1;
 
@@ -327,7 +337,8 @@ recv (int s, void *buf, int len, int flags)
   struct file *fp = getsock (s);
   int ostat, rc;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -349,7 +360,8 @@ recvmsg (int s, struct msghdr *msg, int flags)
   struct file *fp = getsock (s);
   int ostat, rc;
   usetup;
-
+ 
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp || fp->f_type == DTYPE_USOCKET)
     return -1;
 
@@ -368,7 +380,8 @@ shutdown (int s, int how)
   struct file *fp = getsock (s);
   int ostat, err;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -390,7 +403,8 @@ setsockopt (int s, int level, int name, const void *val, int valsize)
   struct file *fp = getsock (s);
   int ostat, err;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -412,7 +426,8 @@ getsockopt (int s, int level, int name, void *val, int *valsize)
   struct file *fp = getsock (s);
   int ostat, err;
   usetup;
-
+ 
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -437,7 +452,8 @@ getsockname (int fdes, struct sockaddr *asa, int *alen)
   struct file *fp = getsock (fdes);
   int ostat, err;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -461,7 +477,8 @@ getpeername (int fdes, struct sockaddr *asa, int *alen)
   struct file *fp = getsock (fdes);
   int ostat, err;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -483,7 +500,8 @@ ix_release_socket(int fdes)
   struct file *fp = getsock (fdes);
   int ostat, err = -1;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (!fp)
     return -1;
 
@@ -512,6 +530,8 @@ int
 ix_obtain_socket(long id, int inet, int stream, int protocol)
 {
   usetup;
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   int ostat, err;
   struct file *fp2;
   int fd2;
@@ -551,7 +571,7 @@ getsock (int fdes)
 {
   struct file *fp;
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if ((unsigned) fdes >= NOFILE)
     {
       errno = EBADF;
@@ -589,7 +609,8 @@ static int
 soo_read (struct file *fp, char *buf, int len)
 {
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   return netcall(NET__tcp_read, fp, buf, len);
 }
 
@@ -597,7 +618,8 @@ static int
 soo_write (struct file *fp, char *buf, int len)
 {
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   return netcall(NET__tcp_write, fp, buf, len);
 }
 
@@ -605,7 +627,8 @@ static int
 soo_ioctl (struct file *fp, int cmd, int inout, int arglen, caddr_t data)
 {
   usetup;
-
+ 
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   return netcall(NET__tcp_ioctl, fp, cmd, inout, arglen, data);
 }
 
@@ -615,7 +638,8 @@ soo_close (struct file *fp)
 {
   int err;
   usetup;
-
+  
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   ix_lock_base ();
   err = --fp->f_count;
   ix_unlock_base ();
@@ -636,7 +660,8 @@ soo_select(struct file *fp, int select_cmd, int io_mode,
 	   fd_set *ignored, u_long *also_ignored)
 {
   usetup;
-
+  APTR socketbase = u.u_ixnetbase;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   return netcall(NET__tcp_select, fp, select_cmd, io_mode, ignored, also_ignored);
 }
 
@@ -644,8 +669,8 @@ soo_select(struct file *fp, int select_cmd, int io_mode,
 void _set_socket_params(struct file *fp, int domain, int type, int protocol)
 {
   fp->f_stb.st_mode = 0666 | S_IFSOCK; /* not always, but.. */
-  fp->f_stb.st_size = 128;      /* sizeof mbuf. */
-  fp->f_stb.st_blksize = 128;
+  fp->f_stb.st_size = 256;      /* sizeof mbuf. */
+  fp->f_stb.st_blksize = 256;
   fp->f_flags = FREAD | FWRITE;
   fp->f_type = ((domain == AF_INET) ? DTYPE_SOCKET : DTYPE_USOCKET);
 

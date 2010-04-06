@@ -278,6 +278,8 @@ extern int (**ixnetarray)();
 #else
 #define netcall(vec, args...) \
   ({register int (*_sc)()=(void *)(&((char *)u.u_ixnetbase)[-((vec)+4)*6]); _sc(args);})
+#define netcall2(vec, args...) \
+  ({int (*_sc)()=(void *)(&((char *)socketbase)[-((vec)+4)*6]); _sc(args);})
 #endif
 #endif
 
@@ -339,6 +341,7 @@ extern char *ixfakebase;
 
 #ifdef NOTRAP
 #define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_UserData))
+//#define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_TrapData))
 #else
 #define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_TrapData))
 #endif

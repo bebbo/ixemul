@@ -34,6 +34,7 @@ int main(int argc, char **argv)
   printf ("#define IXFAKEBASE_SIZE %d\n", extra * 6);
 
 #ifdef NOTRAP
+  //printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_TrapData));
   printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_UserData));
 #else  
   printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_TrapData));

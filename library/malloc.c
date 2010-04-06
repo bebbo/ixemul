@@ -191,6 +191,7 @@ void * malloc (size_t size)
   register void *poolsema;
   unsigned long bltf = 1;
   unsigned long flags = 0;
+  
   if (!size)size=4; // most linux do that, see docu.
   if ((signed long)size < 1)
   	return 0;

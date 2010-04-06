@@ -114,7 +114,7 @@ int __write(struct file *f, char *buf, int len)
 	  bytes = 1;
 	  if ((f->f_ttyflags & TTY_NLCR_ENABLE) == TTY_NLCR_ENABLE)
 	    {
-	      tmp = __do_sync_write(f, "\n\r", 2);
+	      tmp = __do_sync_write(f, "\r\n", 2);
 	      if (tmp == -1)
 		return tmp;
 	      tmp = (tmp == 2 ? 1 : 0);
@@ -123,18 +123,18 @@ int __write(struct file *f, char *buf, int len)
 		return res;
 	      continue;
 	    }
-
-	  /* jDc: ONLCR unset = \n must not work like \n\r, replace it with INDEX instead */
-	  if ((!(f->f_ttyflags & IXTTY_SPECIAL)) && ((!(f->f_ttyflags & IXTTY_ONLCR)) || (!(f->f_ttyflags & IXTTY_OPOST))))
-	    {
-	      tmp = __do_sync_write(f, "\204", 1);
-	      if (tmp == -1)
-		return tmp;
-	      res += tmp;
-	      if (tmp != bytes)
-		return res;
-	      continue;
-	    }
+// gdb mplayer or other dotn do carriage return
+	 // /* jDc: ONLCR unset = \n must not work like \n\r, replace it with INDEX instead */
+//	  if ((!(f->f_ttyflags & IXTTY_SPECIAL)) && ((!(f->f_ttyflags & IXTTY_ONLCR)) || (!(f->f_ttyflags & IXTTY_OPOST))))
+//	    {
+//	      tmp = __do_sync_write(f, "\204", 1);
+//	      if (tmp == -1)
+//		return tmp;
+//	      res += tmp;
+//	      if (tmp != bytes)
+//		return res;
+//	      continue;
+//	    }
 
 	}
       else

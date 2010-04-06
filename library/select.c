@@ -72,6 +72,7 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
  
   struct file *f;
   struct user *pu = u_ptr;
+  APTR socketbase = u.u_ixnetbase;
   if (u.u_parent_userdata)pu = u.u_parent_userdata;
   int i, waitin, waitout, waitexc, dotout;
   int result, ostat, sigio;
@@ -205,7 +206,7 @@ ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, struct timeval *timeou
 	  /* now wait for all legally possible signals, this includes BSD
 	   * signals (but want at least one signal set!) */
 	  if (u.u_ixnetbase)
-	    recv_wait_sigs = netcall(NET_waitselect, wait_sigs,
+	    recv_wait_sigs = netcall2(NET_waitselect, wait_sigs,
 			 &netin, &netout, &netexc, net_nfds);
 	  else
 	    while (!(recv_wait_sigs = Wait (wait_sigs))) ;

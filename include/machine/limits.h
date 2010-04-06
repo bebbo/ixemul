@@ -61,6 +61,8 @@
 #define LONG_MIN        (-0x7fffffffL-1)        /* min value for a long */
 
 #define ULLONG_MAX      0xffffffffffffffffULL       /* max value for an unsigned long long */
+#define ULONG_LONG_MAX ULLONG_MAX
+
 #define LLONG_MAX       0x7fffffffffffffffLL        /* max value for a long long */
 #define LLONG_MIN       (-0x7fffffffffffffffLL-1)  /* min value for a long long */
 

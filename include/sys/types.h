@@ -177,6 +177,8 @@ struct  buf;
 struct  tty;
 struct  uio;
 #endif
-
+/* Amiga - 48.3: */
+typedef int socklen_t;
+typedef u_int16_t in_port_t; 
 #endif /* !_POSIX_SOURCE */
 #endif /* !_SYS_TYPES_H_ */

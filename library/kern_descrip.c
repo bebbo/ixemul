@@ -419,6 +419,116 @@ do_ret:
   return error;
 }
 
+int
+ufalloc2(int want, int *result)
+{
+  usetup;
+  //if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
+  for (; want < NOFILE; want++) 
+    {
+      if (u.u_ofile[want] == NULL) 
+	{
+	  u.u_pofile[want] = 0;
+	  if (want > u.u_lastfile) u.u_lastfile = want;
+			
+	  *result = want;
+	  return 0;
+	}
+    }
+  return EMFILE;
+}
+
+/*
+ * Allocate a user file descriptor
+ * and a file structure.
+ * Initialize the descriptor
+ * to point at the file structure.
+ */
+int
+falloc2(struct file **resultfp, int *resultfd)
+{
+  register struct file *fp;
+  int error, i;
+  usetup;
+  //if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
+  if ((error = ufalloc(0, &i)))
+    return (error);
+
+  ix_lock_base ();
+
+#if USE_DYNFILETAB
+
+  {
+    struct MinNode *node;
+    node = REMHEAD(&ix.ix_free_file_list);
+    if (node)
+    {
+      fp = (void *) (node + 1);
+      ADDHEAD(&ix.ix_used_file_list, node);
+      goto slot;
+    }
+
+    node = kmalloc(sizeof(struct MinNode) + sizeof(struct file));
+    if (node)
+    {
+      fp = (void *) (node + 1);
+      memset(fp, 0, sizeof(struct file));
+      ADDHEAD(&ix.ix_used_file_list, node);
+      goto slot;
+    }
+
+    //ix_warning("ixemul.library out of memory!");
+    error = ENOMEM;
+  }
+
+#else
+
+  if (ix.ix_lastf == 0)
+    ix.ix_lastf = ix.ix_file_tab;
+
+  for (fp = ix.ix_lastf; fp < ix.ix_fileNFILE; fp++)
+    if (fp->f_count == 0)
+      goto slot;
+
+  for (fp = ix.ix_file_tab; fp < ix.ix_lastf; fp++)
+    if (fp->f_count == 0)
+      goto slot;
+
+  /* YES I know.. it's not optimal, we should resize the table...
+   * unfortunately all code accessing file structures will then have
+   * to be changed as well, and this is a job for later improvement,
+   * first goal is to get this baby working... */
+
+  ix_warning("ixemul.library file table full!");
+  error = ENFILE;
+
+#endif
+
+  goto do_ret;
+
+slot:
+  u.u_ofile[i] = fp;
+  fp->f_stb_dirty = 0;
+  fp->f_name = 0;
+  fp->f_count = 1;
+  fp->f_type = 0;               /* inexistant type ;-) */
+  memset(&fp->f__fh, 0, sizeof(fp->f__fh));
+#if !USE_DYNFILETAB
+  ix.ix_lastf = fp + 1;
+#endif
+  if (resultfp)
+    *resultfp = fp;
+  if (resultfd)
+    *resultfd = i;
+
+  error = 0;
+
+do_ret:
+  ix_unlock_base();
+
+  return error;
+}
+
 
 void ffree(struct file *f)
 {

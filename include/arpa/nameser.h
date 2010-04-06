@@ -245,4 +245,17 @@ extern  u_int32_t       _getlong();
 	(cp) += sizeof(u_int32_t); \
 }
 
+/* Amiga  - 48.3: */
+#ifndef NS_INADDRSZ
+#define	NS_INADDRSZ	4
+#endif
+
+#ifndef NS_IN6ADDRSZ
+#define	NS_IN6ADDRSZ	16
+#endif
+
+#ifndef NS_INT16SZ
+#define	NS_INT16SZ	2
+#endif 
+
 #endif /* !_NAMESER_H_ */

@@ -146,7 +146,7 @@ debug_FreeMem(void *p, int size)
 #define MINSIZE         (1 << MINLOG2)
 
 /* this is the size the buddy system gets memory pieces from Exec */
-#define MAXLOG2         15      /* get 32K chunks */
+#define MAXLOG2         16      /* get 64K chunks */
 #define MAXSIZE         (1 << MAXLOG2)
 
 /* this is the limit for b_alloc to go straight to Exec */
