@@ -1,13 +1,38 @@
 2009-11-29 Bernd_afa
  Version 63.1
+
+ * I find functions that are not in MOS ixemul but in the 48.3 fork from megacz
+   and i add them now in this ixemul
+
+   realpath
+   inet_ntop
+   inet_pton
+   gai_strerror
+   freeaddrinfo
+   getaddrinfo
+   getnameinfo
  
- * Add in libc.a ix_UseAmigaPaths(mode) func.
+ * Add ix_UseAmigaPaths(mode) func.
    When mode = 1 then amiga Path Mode is used.
    For example when current dir is sys:wbstartup 
    ix_UseAmigaPaths(1);
    h = fopen("/tools.info","r");
 
    work
+ * Add C99 funcs
+   hypot
+   exp2
+   exp2f
+   log10f   
+   expf
+   
+ * revert change from jDc in __write.c to V48 because some programs do not correct line feeds in Shell Output(gdb ) with new Code
+   and for what the new Code is need i dont know
+   
+Add dummy libm.a that come in lib dir.It help some
+configure scripts that want link with libm to detect
+available math functions correct.
+
 2009-09-01 Bernd_afa
   Version 62.1
    fix a problem when more child threads use network access

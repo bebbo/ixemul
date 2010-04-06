@@ -69,7 +69,7 @@ int
 scandir(dirname, namelist, select, dcomp)
 	const char *dirname;
 	struct dirent ***namelist;
-	int (*select) __P((struct dirent *));
+	int (*select) __P((const struct dirent *));
 	int (*dcomp) __P((const void *, const void *));
 {
 	register struct dirent *d, *p, **names;

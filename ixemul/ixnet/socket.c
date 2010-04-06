@@ -60,7 +60,8 @@ int
 _socket (int domain, int type, int protocol)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = -1;
 
@@ -81,7 +82,8 @@ int
 _bind (struct file *fp, const struct sockaddr *name, int namelen)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1, oldlen;
 
@@ -105,6 +107,7 @@ _listen (struct file *fp, int backlog)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1;
 
@@ -125,6 +128,7 @@ _accept (struct file *fp, struct sockaddr *name, int *namelen)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = -1;
     switch (network_protocol) {
@@ -144,7 +148,8 @@ int
 _dup(struct file *fp)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1;
 
@@ -168,6 +173,7 @@ int release_socket(struct file *fp)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1;
     /* dup the socket first, since for AmiTCP, we can only release once */
@@ -193,6 +199,7 @@ int obtain_socket(long id, int inet, int stream, int protocol)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1;
 
@@ -213,6 +220,7 @@ _connect (struct file *fp, const struct sockaddr *name, int namelen)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int error = -1, oldlen;
 
@@ -236,6 +244,7 @@ _sendto (struct file *fp, const void *buf, int len, int flags, const struct sock
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1, oldlen;
 
@@ -262,6 +271,7 @@ _send (struct file *fp, const void *buf, int len, int flags)
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1 ;
 
@@ -284,7 +294,8 @@ int
 _sendmsg (struct file *fp, const struct msghdr *msg, int flags)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1;
 
@@ -308,6 +319,7 @@ _recvfrom (struct file *fp, void *buf, int len, int flags, struct sockaddr *from
 {
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1;
 
@@ -330,7 +342,8 @@ int
 _recv (struct file *fp, void *buf, int len, int flags)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1;
 
@@ -353,7 +366,8 @@ int
 _recvmsg (struct file *fp, struct msghdr *msg, int flags)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int rc = -1;
 
@@ -374,6 +388,7 @@ _recvmsg (struct file *fp, struct msghdr *msg, int flags)
 int _socketpair(int d, int type, int protocol, int sv[2])
 {
     usetup;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     errno = ENOSYS;
     return -1;
 }
@@ -382,7 +397,8 @@ int
 _shutdown (struct file *fp, int how)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = 0;
 
@@ -404,7 +420,8 @@ int
 _setsockopt (struct file *fp, int level, int name, const void *val, int valsize)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = 0;
 
@@ -426,7 +443,8 @@ int
 _getsockopt (struct file *fp, int level, int name, void *val, int *valsize)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = 0;
 
@@ -452,7 +470,8 @@ int
 _getsockname (struct file *fp, struct sockaddr *asa, int *alen)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = -1;
 
@@ -477,7 +496,8 @@ int
 _getpeername (struct file *fp, struct sockaddr *asa, int *alen)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = -1;
 
@@ -499,6 +519,7 @@ int
 _tcp_read (struct file *fp, char *buf, int len)
 {
     usetup;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     int ostat, rc;
     struct user *p = &u;
 
@@ -523,6 +544,7 @@ int
 _tcp_write (struct file *fp, char *buf, int len)
 {
     usetup;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     struct user *p = &u;
     int ostat, rc;
 
@@ -546,8 +568,11 @@ int
 _tcp_ioctl (struct file *fp, int cmd, int inout, int arglen, caddr_t data)
 {
     usetup;
-    register struct user *usr = &u;
-    register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	register struct user *usr = &u;
+	register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+    
+    
     register int network_protocol = p->u_networkprotocol;
     int ostat, err = 0;
 
@@ -623,7 +648,8 @@ int
 _tcp_close (struct file *fp)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     register int network_protocol = p->u_networkprotocol;
     int err = 0;
 
@@ -657,10 +683,12 @@ static int
 _tcp_poll(struct file *fp, int io_mode)
 {
     usetup;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
     int rc = -1;
     fd_set in, out, exc;
     struct timeval tv = {0, 0};
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+    
     register int network_protocol = p->u_networkprotocol;
 
     FD_ZERO(&in);
@@ -698,7 +726,7 @@ int
 _tcp_select (struct file *fp, int select_cmd, int io_mode, fd_set *set, u_long *nfds)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (select_cmd == SELCMD_PREPARE)
     {
       register struct ixnet *p = (struct ixnet *)u.u_ixnet;
@@ -719,7 +747,8 @@ u_long
 waitselect(long wait_sigs, fd_set *in, fd_set *out, fd_set *exc, u_long nfds)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;   
     int rc = -1;
 
     switch (p->u_networkprotocol) {
@@ -753,8 +782,10 @@ int
 init_inet_daemon(int *argc, char ***argv)
 {
     usetup;
-    register struct user *usr = &u;
-    register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	register struct user *usr = &u;  
+	register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+    
     struct file *fp;
     register int network_protocol = p->u_networkprotocol;
     int sock;
@@ -827,8 +858,11 @@ init_inet_daemon(int *argc, char ***argv)
 static int init_d(int *argc, char ***argv)
 {
     usetup;
-    struct user *usr = &u;
-    register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	struct user *usr = &u;
+	register struct ixnet *p = (struct ixnet *)usr->u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+   
+    
     int ostat;
     int err = 1;
     int fd = -1;
@@ -911,7 +945,8 @@ static int init_d(int *argc, char ***argv)
 void shutdown_inet_daemon(void)
 {
     usetup;
-    register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;  
     struct inetmsg inet_message;
     struct MsgPort *msgport, *replyport;
 

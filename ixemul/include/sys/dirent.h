@@ -45,7 +45,7 @@
  * byte boundary with null bytes.  All names are guaranteed null terminated.
  * The maximum length of a name in a directory is MAXNAMLEN.
  */
-
+#include <sys/types.h> 
 struct dirent {
 	u_int32_t d_fileno;             /* file number of entry */
 	u_int16_t d_reclen;             /* length of this record */

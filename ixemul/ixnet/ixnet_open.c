@@ -48,7 +48,7 @@
 #define _KERNEL
 #include "ixnet.h"
 #include "kprintf.h"
-
+ 
 #include <amitcp/socketbasetags.h>
 #include <amitcp/usergroup.h>
 #include <exec/memory.h>
@@ -97,6 +97,7 @@ ixnet_open (struct ixnet_base *ixbase)
     network_type = settings->network_type;
 
     if (p) {
+		
       p->u_networkprotocol = IX_NETWORK_NONE;
       switch (network_type) {
 	case IX_NETWORK_AUTO:

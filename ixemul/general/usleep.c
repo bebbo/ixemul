@@ -43,7 +43,7 @@ void usleep(u_int useconds)
 	struct sigvec vec, ovec;
 	long omask;
 	static void usleephandler(void);
-
+    //useconds+=3000;
 	itp = &itv;
 	if (!useconds)
 		return;
@@ -74,8 +74,11 @@ void usleep(u_int useconds)
 	u.u_ringring = 0;
 	syscall (SYS_setitimer, ITIMER_REAL, itp, (struct itimerval *)0);
 	while (!u.u_ringring)
+	{
 		syscall (SYS_sigpause, omask & ~sigmask(SIGALRM));
+	}
 	syscall (SYS_sigvec, SIGALRM, &ovec, (struct sigvec *)0);
 	syscall (SYS_sigsetmask, omask);
 	syscall (SYS_setitimer, ITIMER_REAL, &oitv, (struct itimerval *)0);
+
 }

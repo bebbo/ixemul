@@ -90,6 +90,7 @@ __sflush(fp)
 	fp->_w = t & (__SLBF|__SNBF) ? 0 : fp->_bf._size;
 
 	for (; n > 0; n -= t, p += t) {
+	
 		t = (*fp->_write)(fp->_cookie, (char *)p, n);
 		if (t <= 0) {
 			fp->_flags |= __SERR;

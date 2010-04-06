@@ -78,7 +78,7 @@ add_unix_name(const char *path, int queue_size)
 {
   struct ix_unix_name *un = kmalloc(sizeof(struct ix_unix_name));
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (un == NULL)
     errno_return(ENOMEM, NULL);
 
@@ -170,7 +170,7 @@ static void close_stream(struct file *f, int read_stream, int from_close)
   struct unix_socket *us = f->f_sock;
   int to_server;
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (us == NULL)
     return;
   to_server = (us->server != f) ? !read_stream : read_stream;
@@ -226,7 +226,7 @@ int unp_socket(int domain, int type, int protocol, struct unix_socket *sock)
   struct file *fp;
   struct unix_socket *us;
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (type != SOCK_STREAM || protocol != 0)
     errno_return(EPROTONOSUPPORT, -1);
 
@@ -265,6 +265,7 @@ int unp_socket(int domain, int type, int protocol, struct unix_socket *sock)
 int unp_bind(int s, const struct sockaddr *name, int namelen)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *fp = u.u_ofile[s];
   struct ix_unix_name *un;
   int tmp;
@@ -290,6 +291,7 @@ int unp_bind(int s, const struct sockaddr *name, int namelen)
 int unp_listen(int s, int backlog)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *fp = u.u_ofile[s];
   struct unix_socket *us = fp->f_sock;
 
@@ -305,6 +307,7 @@ int unp_listen(int s, int backlog)
 int unp_accept(int s, struct sockaddr *name, int *namelen)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct unix_socket *client = NULL;
   struct ix_unix_name *un = f->f_sock->unix_name;
@@ -374,6 +377,7 @@ error:
 int unp_connect(int s, const struct sockaddr *name, int namelen)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct unix_socket *us = f->f_sock;
   struct ix_unix_name *un;
@@ -440,6 +444,7 @@ int unp_connect(int s, const struct sockaddr *name, int namelen)
 int unp_send(int s, const void *buf, int len, int flags)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (flags)
     errno_return(EOPNOTSUPP, -1);
   return unp_write(u.u_ofile[s], buf, len);
@@ -448,6 +453,7 @@ int unp_send(int s, const void *buf, int len, int flags)
 int unp_recv(int s, void *buf, int len, int flags)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (flags)
     errno_return(EOPNOTSUPP, -1);
   return unp_read(u.u_ofile[s], buf, len);
@@ -456,6 +462,7 @@ int unp_recv(int s, void *buf, int len, int flags)
 int unp_shutdown(int s, int how)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
 
   ix_lock_base();
@@ -490,6 +497,7 @@ int unp_getsockopt(int s, int level, int name, void *val, int *valsize)
 int unp_getsockname(int s, struct sockaddr *asa, int *alen)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct sockaddr_un *un = (struct sockaddr_un *)asa;
 
@@ -508,6 +516,7 @@ int
 stream_read (struct file *f, char *buf, int len)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   int omask = syscall (SYS_sigsetmask, ~0);
   int err = errno;
   int really_read = 0;
@@ -598,7 +607,7 @@ stream_read (struct file *f, char *buf, int len)
 int unp_read(struct file *f, char *buf, int len)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (f->f_sock->state != UNS_ACCEPTED)
     errno_return(ENOTCONN, -1);
   return stream_read(f, buf, len);
@@ -608,6 +617,7 @@ int
 stream_write (struct file *f, const char *buf, int len)
 {
   usetup;
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   int omask = syscall (SYS_sigsetmask, ~0);
   int err = errno;
   int sleep_rc;
@@ -707,7 +717,7 @@ stream_write (struct file *f, const char *buf, int len)
 int unp_write(struct file *f, const char *buf, int len)
 {
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (f->f_sock->state != UNS_ACCEPTED)
     errno_return(ENOTCONN, -1);
   return stream_write(f, buf, len);
@@ -788,7 +798,7 @@ int unp_select(struct file *f, int select_cmd, int io_mode, fd_set *ignored, u_l
 {
   struct sock_stream *ss = find_stream(f, io_mode == SELMODE_IN);
   usetup;
-
+  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (f->f_type != DTYPE_PIPE && ss == NULL)
     {
       struct ix_unix_name *un = f->f_sock->unix_name;

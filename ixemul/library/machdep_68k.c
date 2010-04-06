@@ -46,6 +46,7 @@
 #include "kprintf.h"
 #define KPRINTF //kprintf 
 #include <string.h>
+#include <inline/exec.h>
 #include <exec/execbase.h>
  
 /* jump to pc in supervisor mode, usp is set to USP before */
@@ -554,6 +555,7 @@ setrun (struct Task *t)
    *       return from a kill() to yourself, before the signal handler had a
    *       chance to react accordingly to the signal..
    */
+/* 
   asm volatile (" \n\
     movel a5,a0 \n\
     lea	  L_get_sr,a5 \n\
@@ -567,7 +569,8 @@ L_get_sr: \n\
 L_skip: \n\
     movel a0,a5 \n\
 	" : "=g" (sr) : : "a0", "a1", "a6");
-
+*/
+  sr = SetSR(0,0);
   /* Don't force context switch if:
      o  running in Supervisor mode
      o  we setrun() some other process
@@ -685,6 +688,7 @@ const static int hwtraptable[256] = {
 void
 trap (void)
 {
+  
   u_int			format;
   void			*addr;
   struct reg		*regs;

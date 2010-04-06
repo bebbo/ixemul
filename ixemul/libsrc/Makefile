@@ -144,7 +144,7 @@ crt0.o:         crt0_68k.c version.h
 		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -O0 -DCRT0 $< -o $@
 
 mcrt0.o:        crt0_68k.c version.h gmon.c gmon.h
-		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -DMCRT0 -fno-omit-frame-pointer $< -o $@
+		$(CC) $(CFLAGS) $(OTHER_CFLAGS) $(INCS) -c -O0 -DMCRT0 -fno-omit-frame-pointer $< -o $@
 
 gcrt0.o:        mcrt0.o
 		cp $< $@

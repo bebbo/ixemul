@@ -72,7 +72,7 @@ _findenv(char **env, const char *name, int *offset)
  * getenv --
  *      Returns ptr to value associated with name, if any, else NULL.
  */
-char progdir[]="PROGDIR:";
+char progdir[]="./";
 char *
 getenv(const char *name)
 {
