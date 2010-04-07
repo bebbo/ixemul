@@ -128,7 +128,9 @@ int      strnicmp __P((const char *, const char *, size_t));
   * SUCH DAMAGE.
   */
  
- 
+/* Amiga - 48.3: */
+size_t strlcpy __P((char *, const char *, size_t));
+size_t strlcat __P((char *, const char *, size_t));  
  
  #ifndef HAVE_STRTOK_R
  #ifdef  __GNUC_STDC_INLINE__  // c99 extern inline handle check.see here http://gcc.gnu.org/ml/gcc/2007-03/msg01096.html
