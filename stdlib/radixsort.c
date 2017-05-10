@@ -99,6 +99,8 @@ typedef struct _stack {
 	indx = stackp->indx; \
 }
 
+static void shellsort();
+
 /*
  * A variant of MSD radix sorting; see Knuth Vol. 3, page 177, and 5.2.5,
  * Ex. 10 and 12.  Also, "Three Partition Refinement Algorithms, Paige
@@ -123,7 +125,6 @@ int radixsort(const unsigned char **l1, int nmemb, const unsigned char *tab,
 	CONTEXT *stack, *stackp;
 	int c[NBUCKETS + 1], max;
 	u_char ltab[NBUCKETS];
-	static void shellsort();
 
 	if (nmemb <= 1)
 		return(0);

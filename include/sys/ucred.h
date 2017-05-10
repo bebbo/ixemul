@@ -53,6 +53,6 @@ struct ucred {
 struct ucred *crget();
 struct ucred *crcopy();
 struct ucred *crdup();
-#endif _KERNEL
+#endif //_KERNEL
 
 #endif /* !_UCRED_H_ */

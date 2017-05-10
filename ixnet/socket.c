@@ -766,10 +766,10 @@ waitselect(long wait_sigs, fd_set *in, fd_set *out, fd_set *exc, u_long nfds)
 /*
  *      init_inet_daemon.c - obtain socket accepted by the inetd
  *
- *      Copyright © 1994 AmiTCP/IP Group,
+ *      Copyright ï¿½ 1994 AmiTCP/IP Group,
  *                       Network Solutions Development Inc.
  *                       All rights reserved.
- *      Portions Copyright © 1995 by Jeff Shepherd
+ *      Portions Copyright ï¿½ 1995 by Jeff Shepherd
  */
 
 /* AS225 inet daemon stuff */
@@ -777,6 +777,8 @@ struct inetmsg {
     struct Message  msg;
     ULONG   id;
 };
+
+static int init_d(int *, char ***);
 
 int
 init_inet_daemon(int *argc, char ***argv)
@@ -791,7 +793,6 @@ init_inet_daemon(int *argc, char ***argv)
     int sock;
 
     if (network_protocol == IX_NETWORK_AS225) {
-	static int init_d(int *, char ***);
 	return init_d(argc,argv);
     }
     else if (network_protocol == IX_NETWORK_AMITCP) {

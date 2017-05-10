@@ -32,7 +32,7 @@ mulu (unsigned long U, unsigned long V)
     addl        d2,d0" 
     : "=r" (result)
     : "g" (U), "g" (V)
-    : "d0", "d1", "d2", "d3");
+    : "d1", "d2", "d3");
   return result;
 }
 
@@ -80,7 +80,7 @@ mulu (unsigned long U, unsigned long V)
    5:"                                                  \
    : "=r" (rq), "=r" (rr)                               \
    : "g" (n), "g" (d)                                   \
-   : "d0", "d1", "d2", "d3");                           \
+   : "d2", "d3");                           \
    q = rq; r = rr;})
 
 #endif

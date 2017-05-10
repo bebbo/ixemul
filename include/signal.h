@@ -59,17 +59,15 @@ int     raise __P((int));
 #ifndef _ANSI_SOURCE
 int     kill __P((pid_t, int));
 int     sigaction __P((int, const struct sigaction *, struct sigaction *));
-int     sigaddset __P((sigset_t *, int));
-int     sigdelset __P((sigset_t *, int));
 int     sigemptyset __P((sigset_t *));
 int     sigfillset __P((sigset_t *));
-int     sigismember __P((const sigset_t *, int));
 int     sigpending __P((sigset_t *));
 int     sigprocmask __P((int, const sigset_t *, sigset_t *));
 int     sigsuspend __P((const sigset_t *));
 
 #if defined(__GNUC__) && defined(__STDC__)
-extern __inline int sigaddset(sigset_t *set, int signo) {
+#ifndef __NO_INLINE__
+inline int sigaddset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -80,7 +78,7 @@ extern __inline int sigaddset(sigset_t *set, int signo) {
 	return (0);
 }
 
-extern __inline int sigdelset(sigset_t *set, int signo) {
+inline int sigdelset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -91,7 +89,7 @@ extern __inline int sigdelset(sigset_t *set, int signo) {
 	return (0);
 }
 
-extern __inline int sigismember(const sigset_t *set, int signo) {
+inline int sigismember(const sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -100,6 +98,11 @@ extern __inline int sigismember(const sigset_t *set, int signo) {
 	}
 	return ((*set & (1 << ((signo)-1))) != 0);
 }
+#else
+int     sigaddset __P((sigset_t *, int));
+int     sigdelset __P((sigset_t *, int));
+int     sigismember __P((const sigset_t *, int));
+#endif // __NO_INLINE__
 #endif
 
 /* List definitions after function declarations, or Reiser cpp gets upset. */

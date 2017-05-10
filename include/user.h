@@ -462,7 +462,7 @@ struct user {
 #define	SSEL	0x0400000	/* selecting; wakeup/waiting danger */
 #define	SLOGIN	0x0800000	/* a login process (legit child of init) */
 #define SUSAGE  0x1000000	/* we already reported the stack usage */
-#define EXECVECLOSE     0x10000000      /* flag to handle execve() + atexit stdio 
+#define EXECVECLOSE     0x10000000      /* flag to handle execve() + atexit stdio */
 
 /* stat codes */
 #define	SSLEEP	1		/* awaiting an event */

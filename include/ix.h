@@ -102,7 +102,7 @@ void ix_vfork_resume(void);
  * Example: ix_req(NULL, "Abort", NULL, "%s only supports AmigaOS!", __progname);
  * choice = ix_req(NULL, "Abort", "Continue", "Cannot find file %s", filename);
  */
-int ix_req(char *title, char *button1, char *button2, char *fmt, ...) __attribute__((varargs68k));
+int ix_req(char *title, char *button1, char *button2, char *fmt, ...);
 
 
 /* Similar to chmod(), but obtains the original OS protection bits.

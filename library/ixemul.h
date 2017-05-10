@@ -340,10 +340,10 @@ extern struct ixemul_base *ixemulbase;
 extern char *ixfakebase;
 
 #ifdef NOTRAP
-#define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_UserData))
+#define getuser(p)        *((struct user **)&(((struct Process *)(p))->pr_Task.tc_UserData))
 //#define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_TrapData))
 #else
-#define getuser(p)        ((struct user *)(((struct Process *)(p))->pr_Task.tc_TrapData))
+#define getuser(p)        *((struct user **)&(((struct Process *)(p))->pr_Task.tc_TrapData))
 #endif
 
 struct user *safe_getuser(struct Process *);
