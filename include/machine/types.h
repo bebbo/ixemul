@@ -36,7 +36,8 @@
  */
 #ifndef _M68K_TYPES_H_
 #define _M68K_TYPES_H_
-#define TRAP __asm("trap #0 \n");  //for jump in debugger for postmortem put here so can use everywhere
+//for jump in debugger for postmortem put here so can use everywhere
+#define TRAP __asm__("trap #0\n");
 
 #include <sys/cdefs.h>
 

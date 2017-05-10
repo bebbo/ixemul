@@ -39,7 +39,7 @@ RANLIB =        @RANLIB@
 
 # Tools used to produce 68k executables.
 
-CC68K =         @CC68K@ -V3.4.0
+CC68K =         @CC68K@ 
 AS68K =         @AS68K@
 AR68K =         @AR68K@
 CFLAGS68K =     @CFLAGS68K@
