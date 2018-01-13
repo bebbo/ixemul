@@ -1,4 +1,4 @@
-/*      $NetBSD: stddef.h,v 1.4 1994/10/26 00:56:26 cgd Exp $   */
+/*	$NetBSD: stddef.h,v 1.4 1994/10/26 00:56:26 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990 The Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)stddef.h    5.5 (Berkeley) 4/3/91
+ *	@(#)stddef.h	5.5 (Berkeley) 4/3/91
  */
 
 #ifndef _STDDEF_H_
@@ -40,22 +40,25 @@
 
 #include <machine/ansi.h>
 
-typedef _BSD_PTRDIFF_T_ ptrdiff_t;
+typedef	_BSD_PTRDIFF_T_	ptrdiff_t;
 
-#ifdef  _BSD_SIZE_T_
-typedef _BSD_SIZE_T_    size_t;
-#undef  _BSD_SIZE_T_
+#ifdef	_BSD_SIZE_T_
+typedef	_BSD_SIZE_T_	size_t;
+#undef	_BSD_SIZE_T_
 #endif
 
-#ifdef  _BSD_WCHAR_T_
-typedef _BSD_WCHAR_T_   wchar_t;
-#undef  _BSD_WCHAR_T_
+#ifdef	_BSD_WCHAR_T_
+#ifndef _WCHAR_T_
+#define _WCHAR_T_
+typedef	_BSD_WCHAR_T_	wchar_t;
+#undef	_BSD_WCHAR_T_
+#endif
 #endif
 
-#ifndef NULL
-#define NULL    0
+#ifndef	NULL
+#define	NULL	0
 #endif
 
-#define offsetof(type, member)  ((size_t)(&((type *)0)->member))
+#define	offsetof(type, member)	((size_t)(&((type *)0)->member))
 
 #endif /* _STDDEF_H_ */

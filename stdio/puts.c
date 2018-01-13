@@ -1,8 +1,8 @@
-/*      $NetBSD: puts.c,v 1.4 1995/02/02 02:10:18 jtc Exp $     */
+/*	$NetBSD: puts.c,v 1.4 1995/02/02 02:10:18 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,14 +38,13 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)puts.c      8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)puts.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: puts.c,v 1.4 1995/02/02 02:10:18 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "user.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -62,8 +61,7 @@ puts(s)
 	struct __suio uio;
 	struct __siov iov[2];
 	usetup;
-	
-	if (u.u_parent_userdata)u_ptr=u.u_parent_userdata;
+
 	iov[0].iov_base = (void *)s;
 	iov[0].iov_len = c;
 	iov[1].iov_base = "\n";

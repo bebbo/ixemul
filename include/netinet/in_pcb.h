@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)in_pcb.h    7.3 (Berkeley) 6/29/88
+ *	@(#)in_pcb.h	7.3 (Berkeley) 6/29/88
  */
 
 /*
@@ -25,25 +25,25 @@
  * control block.
  */
 struct inpcb {
-	struct  inpcb *inp_next,*inp_prev;
+	struct	inpcb *inp_next,*inp_prev;
 					/* pointers to other pcb's */
-	struct  inpcb *inp_head;        /* pointer back to chain of inpcb's
+	struct	inpcb *inp_head;	/* pointer back to chain of inpcb's
 					   for this protocol */
-	struct  in_addr inp_faddr;      /* foreign host table entry */
-	u_short inp_fport;              /* foreign port */
-	struct  in_addr __ALIGN2__ inp_laddr;/* local host table entry */
-	u_short inp_lport;              /* local port */
-	struct  socket *__ALIGN2__ inp_socket;/* back pointer to socket */
-	caddr_t __ALIGN2__ inp_ppcb;    /* pointer to per-protocol pcb */
-	struct  route __ALIGN2__ inp_route;/* placeholder for routing entry */
-	struct  mbuf *__ALIGN2__ inp_options;/* IP options */
-} __PACKED__;
+	struct	in_addr inp_faddr;	/* foreign host table entry */
+	u_short	inp_fport;		/* foreign port */
+	struct	in_addr inp_laddr;	/* local host table entry */
+	u_short	inp_lport;		/* local port */
+	struct	socket *inp_socket;	/* back pointer to socket */
+	caddr_t	inp_ppcb;		/* pointer to per-protocol pcb */
+	struct	route inp_route;	/* placeholder for routing entry */
+	struct	mbuf *inp_options;	/* IP options */
+};
 
-#define INPLOOKUP_WILDCARD      1
-#define INPLOOKUP_SETLOCAL      2
+#define	INPLOOKUP_WILDCARD	1
+#define	INPLOOKUP_SETLOCAL	2
 
-#define sotoinpcb(so)   ((struct inpcb *)(so)->so_pcb)
+#define	sotoinpcb(so)	((struct inpcb *)(so)->so_pcb)
 
 #ifdef _KERNEL
-struct  inpcb *in_pcblookup();
+struct	inpcb *in_pcblookup();
 #endif

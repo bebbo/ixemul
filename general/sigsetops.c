@@ -16,11 +16,11 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)sigset.c    5.2 (Berkeley) 7/1/90
+ *	@(#)sigset.c	5.2 (Berkeley) 7/1/90
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sigset.c    5.2 (Berkeley) 7/1/90";
+static char sccsid[] = "@(#)sigset.c	5.2 (Berkeley) 7/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -31,10 +31,6 @@ static char sccsid[] = "@(#)sigset.c    5.2 (Berkeley) 7/1/90";
 #undef sigaddset
 #undef sigdelset
 #undef sigismember
-
-extern int     sigaddset __P((sigset_t *, int));
-extern int     sigdelset __P((sigset_t *, int));
-extern int     sigismember __P((const sigset_t *, int));
 
 int
 sigemptyset(sigset_t *set)
@@ -48,4 +44,24 @@ sigfillset(sigset_t *set)
 {
 	*set = ~(sigset_t)0;
 	return (0);
+}
+
+int
+sigaddset(sigset_t *set, int signo)
+{
+	*set |= sigmask(signo);
+	return (0);
+}
+
+int
+sigdelset(sigset_t *set, int signo)
+{
+	*set &= ~sigmask(signo);
+	return (0);
+}
+
+int
+sigismember(const sigset_t *set, int signo)
+{
+	return ((*set & sigmask(signo)) != 0);
 }

@@ -1,24 +1,17 @@
-#include <proto/exec.h>
 #define UTILITY_TAGITEM_H
 #define _SIZE_T
 #define __AMIGA_TYPES__
 
-#include <devices/timer.h>
-#include <ixemul.h>
 #include <sys/fcntl.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <ixemul.h>
 #include <ix.h>
+#include <proto/exec.h>
 
-char VERSION[] = "\000$VER: ixstack 1.2 (15.03.2006)";
-
-
-#define STACK_MAGIC_ID0 0x5374436B /* 'StCk' */
-#define STACK_MAGIC_ID1 0x7354634B /* 'sTcK' */
+char VERSION[] = "\000$VER: ixstack 1.1 (14.06.97)";
 
 void setstack(long size, char *filename)
 {
@@ -30,6 +23,7 @@ void setstack(long size, char *filename)
   
   if (stat(filename, &s) == -1 || !S_ISREG(s.st_mode))
   {
+    close(fd);
     return;
   }
   fd = open(filename, O_RDWR);
@@ -47,22 +41,21 @@ void setstack(long size, char *filename)
     return;
   }
   for (i = 0; i < len - 12; i += 2)
-    if (*(u_long *)(addr + i) == STACK_MAGIC_ID0 &&
-        *(u_long *)(addr + i + 8) == STACK_MAGIC_ID1)
+    if (*(long *)(addr + i) == 'StCk' && *(long *)(addr + i + 8) == 'sTcK')
     {
       if (size >= 0)
       {
-	lseek(fd, i + 4, SEEK_SET);
-	write(fd, &size, 4);
+        lseek(fd, i + 4, SEEK_SET);
+        write(fd, &size, 4);
       }
       else
       {
-	if (!printed_header)
-	{
-	  printed_header = 1;
-	  printf("stacksize  filename\n---------  --------\n");
-	}
-	printf("%9d  %s\n", *(int *)(addr + i + 4), filename);
+        if (!printed_header)
+        {
+          printed_header = 1;
+          printf("stacksize  filename\n---------  --------\n");
+        }
+        printf("%9d  %s\n", *(long *)(addr + i + 4), filename);
       }
       munmap(addr, len);
       close(fd);
@@ -86,29 +79,9 @@ static void show(void)
   struct SUMessage *msg;
   u_long portsig;
   int printed_header = 0;
-  const char portname[] = "ixstack port";
   
   signal(SIGINT, sigint);
-
-  /* Allow only one incarnation */
-  Forbid();
-  port = FindPort(portname);
-  if (port)
-  {
-    Permit();
-    fprintf(stderr, "ixstack show already running elsewhere\n");
-    exit(1);
-  }
-  port = CreateMsgPort();
-  if (port)
-  {
-    port->mp_Node.ln_Name = (STRPTR) portname;
-    port->mp_Node.ln_Pri  = 0;
-    AddPort(port);
-  }
-  Permit();
-
-  if (port)
+  if ((port = CreatePort("ixstack port", 0)))
   {
     while (!ctrlc)
     {
@@ -116,37 +89,32 @@ static void show(void)
       ix_wait(&portsig);
       if (portsig & (1 << port->mp_SigBit))
       {
-	while ((msg = (struct SUMessage *) GetMsg(port)))
-	{
-	  if (!printed_header)
-	  {
-	    printed_header = 1;
-	    printf("  Usage   Total Program\n\n");
-	  }
-	  printf("%7ld %7ld %s\n", msg->stack_usage, msg->stack_size, msg->name);
-	  ReplyMsg(&msg->msg);
-	}
+        while ((msg = (struct SUMessage *)GetMsg(port)))
+        {
+          if (!printed_header)
+          {
+            printed_header = 1;
+            printf("  Usage   Total Program\n\n");
+          }
+          printf("%7d %7d %s\n", msg->stack_usage, msg->stack_size, msg->name);
+          ReplyMsg((struct Message *)msg);
+        }
       }
       
       if (portsig & SIGBREAKF_CTRL_C)
       {
-	break;
+        while ((msg = (struct SUMessage *)GetMsg(port)))
+          ReplyMsg((struct Message *)msg);
+        break;
       }
     }
-
-    RemPort(port);
-
-    /* Flush any pending messages */
-    while ((msg = (struct SUMessage *) GetMsg(port)))
-      ReplyMsg(&msg->msg);
-
-    DeleteMsgPort(port);
+    DeletePort(port);
   }
   exit(0);
 }
 
 
-int main(int argc, char **argv)
+main(int argc, char **argv)
 {
   long size;
 
@@ -154,9 +122,9 @@ int main(int argc, char **argv)
     show();
   if (argc < 3)
   {
-    fprintf(stderr, "set stacksize:   ixstack <stacksize> <files ...>\n"
-                    "show stacksize:  ixstack -l <files ...>\n"
-                    "show stackusage: ixstack -s\n");
+    fprintf(stderr, "set stacksize:   ixstack <stacksize> <files ...>
+show stacksize:  ixstack -l <files ...>
+show stackusage: ixstack -s\n");
     exit(1);
   }
 
@@ -169,8 +137,8 @@ int main(int argc, char **argv)
     for (i = 0; argv[1][i]; i++)
       if (!isdigit(argv[1][i]))
       {
-	fprintf(stderr, "stacksize %s is not a number\n", argv[1]);
-	exit(1);
+        fprintf(stderr, "stacksize %s is not a number\n", argv[1]);
+        exit(1);
       }
     size = atol(argv[1]);
     if (size < 4000 && size)
@@ -187,5 +155,4 @@ int main(int argc, char **argv)
   argv += 2;
   while (*argv)
     setstack(size, *argv++);
-  return 0;
 }

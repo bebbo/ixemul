@@ -26,40 +26,40 @@
 
 struct trace_packet {
   struct Message tp_message;
-  struct MsgPort *tp_tracer_port;       /* set this up before INSTALL !! */
-  int            tp_flags;              /* currently ignored, *must* be 0 !! */
-  pid_t          tp_pid;                /* pid, or 0 to trace all but self */
-  enum _syscall_ tp_syscall;            /* sc, or 0 to trace all */
+  struct MsgPort *tp_tracer_port;	/* set this up before INSTALL !! */
+  int		 tp_flags;		/* currently ignored, *must* be 0 !! */
+  pid_t		 tp_pid;		/* pid, or 0 to trace all but self */
+  enum _syscall_ tp_syscall;		/* sc, or 0 to trace all */
   /* these are the arguments filled in on a trace message */
-  int            tp_is_entry;           /* true when entry, false when exit */
-  int            *tp_argv;              /* arguments of the function.
-					   argv[0] is always the syscall,
-					   argv[1] is the result if !tp_is_entry,
-					   now follows the return address in
-					   the program that did this call, then
+  int		 tp_is_entry;		/* true when entry, false when exit */
+  int		 *tp_argv;		/* arguments of the function.
+  					   argv[0] is always the syscall,
+  					   argv[1] is the result if !tp_is_entry,
+  					   now follows the return address in
+  					   the program that did this call, then
 					   the following elements are the 
 					   arguments to the function */
-  int            *tp_errno;             /* the address of the process errno */
+  int		 *tp_errno;		/* the address of the process errno */
   /* here you can specify actions to be performed when you reply to this msg */
-  int            tp_action;             /* available values see below */
+  int		 tp_action;		/* available values see below */
 };
 
-#define TRACE_ACTION_JSR        1       /* jsr into the syscall, and trace
+#define TRACE_ACTION_JSR	1	/* jsr into the syscall, and trace
 					   result (with tp_is_entry == 0) */
-#define TRACE_ACTION_JMP        0       /* jmp into the syscall, no result trace */
-#define TRACE_ACTION_RTS        -1      /* causes the syscall to return with
+#define TRACE_ACTION_JMP	0	/* jmp into the syscall, no result trace */
+#define TRACE_ACTION_RTS	-1	/* causes the syscall to return with
 					   the value in argv[0] without actually
 					   performing the call */
-#define TRACE_ACTION_ABORT      2       /* causes the process to call abort() */
+#define TRACE_ACTION_ABORT	2	/* causes the process to call abort() */
 
 
 /* these are the commands available in tracecntl (): */
 enum trace_cmd {
 	/* install a trace handling packet. for INSTALL_TRACE_HANDLER you
 	   have to initialize :
-	     tp_tracer_port     here's where the packet is sent
-	     tp_pid             get notice for this pid (0 for all)
-	     tp_syscall         get notice for this syscall (0 for all)
+	     tp_tracer_port	here's where the packet is sent
+	     tp_pid		get notice for this pid (0 for all)
+	     tp_syscall		get notice for this syscall (0 for all)
 	 */
   TRACE_INSTALL_HANDLER,
   

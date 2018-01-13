@@ -4,7 +4,7 @@
    before changing it!
 
    Copyright (C) 1987, 88, 89, 90, 91, 92, 93, 94
-	Free Software Foundation, Inc.
+   	Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -39,7 +39,6 @@
 #endif
 
 #include <stdio.h>
-#include <string.h>
 
 /* Comment out all this code if we are using the GNU C Library, and are not
    actually compiling the library itself.  This code is part of the GNU C
@@ -54,11 +53,11 @@
 
 /* This needs to come after some library #include
    to get __GNU_LIBRARY__ defined.  */
-#ifdef  __GNU_LIBRARY__
+#ifdef	__GNU_LIBRARY__
 /* Don't include stdlib.h for non-GNU C libraries because some of them
    contain conflicting prototypes for getopt.  */
 #include <stdlib.h>
-#endif  /* GNU C library.  */
+#endif	/* GNU C library.  */
 
 /* This is for other GNU distributions with internationalized messages.
    The GNU C Library itself does not yet support such messages.  */
@@ -164,13 +163,13 @@ static enum
 /* Value of POSIXLY_CORRECT environment variable.  */
 static char *posixly_correct;
 
-#ifdef  __GNU_LIBRARY__
+#ifdef	__GNU_LIBRARY__
 /* We want to avoid inclusion of string.h with non-GNU libraries
    because there are many ways it can cause trouble.
    On some systems, it contains special magic macros that don't work
    in GCC.  */
 #include <string.h>
-#define my_index        strchr
+#define	my_index	strchr
 #else
 
 /* Avoid depending on library functions or files
@@ -685,7 +684,7 @@ getopt (argc, argv, optstring)
 			   0);
 }
 
-#endif  /* _LIBC or not __GNU_LIBRARY__.  */
+#endif	/* _LIBC or not __GNU_LIBRARY__.  */
 
 #ifdef TEST
 

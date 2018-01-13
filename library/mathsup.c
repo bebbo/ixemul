@@ -1,4 +1,4 @@
-/* 
+/*
  *  This file is part of ixemul.library for the Amiga.
  *  Copyright (C) 1991, 1992  Markus M. Wild
  *  Portions Copyright (C) 1994 Rafael W. Luebbert
@@ -17,24 +17,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: mathsup.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id: mathsup.c,v 1.6 1994/06/25 12:15:02 rluebbert Exp $
  *
  *  $Log: mathsup.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.3  2003/12/12 14:21:41  piru
- *  No longer relies on shared math libraries under MorphOS.
- *
- *  Revision 1.2  2001/03/28 20:37:15  emm
- *  Fixed math functions.
- *
- *  Revision 1.1.1.1  2000/05/07 19:38:21  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:47:24  nobody
- *  Initial import
- *
  *  Revision 1.6  1994/06/25  12:15:02  rluebbert
  *  removed errno from pow. Probably not a good idea,
  *  but I'm tired of patching stuff right now.
@@ -51,181 +36,7 @@
  *
  */
 
-//#ifdef HACK_FPU /* force to use the fpu asm code
-/* on 68040 and 68060 many of the FPU instructions need emulate and are slow 
-   so the Amiga OS mathlibs are used.this have best code for the installed CPU.
-   best is jump direct into mathlibs and not over ixemul. maybe change later
-   here are some better mathlibs
-
-http://aminet.net/package/util/libs/FastMath405
-
-http://aminet.net/package/util/libs/HSMathLibs_060
-
- */
-#undef __HAVE_68881__
-//#endif
-
-#ifdef __MORPHOS__
-
-#include <ixemul.h>
-#include <ixmath.h>
-
-#if 1
-
-#include <math.h>
-
-/* NOTE: This is different than the GNU extension - Piru */
-
-double sincos(double* pf2, double parm)
-{
-    *pf2 = cos(parm);
-    return sin(parm);
-}
-
-#else
-
-double sincos(double* pf2, double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A0 = (LONG)pf2;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x36);
-    return *(double*)&REG_D0;
-}
-
-/* GRRRR Commodore does it the other way round... */
-double const pow(double arg, double exp)
-{
-    *(double*)&REG_D0 = arg;
-    *(double*)&REG_D2 = exp;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x5a);
-    return *(double*)&REG_D0;
-}
-
-double const atan(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x1e);
-    return *(double*)&REG_D0;
-}
-
-double const sin(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x24);
-    return *(double*)&REG_D0;
-}
-
-double const cos(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x2a);
-    return *(double*)&REG_D0;
-}
-
-double const tan(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x30);
-    return *(double*)&REG_D0;
-}
-
-double const sinh(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x3c);
-    return *(double*)&REG_D0;
-}
-
-double const cosh(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x42);
-    return *(double*)&REG_D0;
-}
-
-double const tanh(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x48);
-    return *(double*)&REG_D0;
-}
-
-double const exp(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x4e);
-    return *(double*)&REG_D0;
-}
-
-double const log(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x54);
-    return *(double*)&REG_D0;
-}
-
-double const sqrt(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x60);
-    return *(double*)&REG_D0;
-}
-
-double const asin(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x72);
-    return *(double*)&REG_D0;
-}
-
-double const acos(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x78);
-    return *(double*)&REG_D0;
-}
-
-double const log10(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubTransBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x7e);
-    return *(double*)&REG_D0;
-}
-
-double const floor(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubBasBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x5a);
-    return *(double*)&REG_D0;
-}
-
-double const ceil(double parm)
-{
-    *(double*)&REG_D0 = parm;
-    REG_A6 = (LONG)MathIeeeDoubBasBase;
-    REG_D0 = MyEmulHandle->EmulCallDirectOS(-0x60);
-    return *(double*)&REG_D0;
-}
-
-#endif
-
-#elif !defined(__HAVE_68881__)
+#ifndef __HAVE_68881__
 
 #include <ixemul.h>
 #include <ixmath.h>
@@ -244,14 +55,6 @@ double const pow(double arg, double exp)
 double const atan(double parm)
 {
   return IEEEDPAtan(parm);
-}
-
-#define PI 3.14159265358979323846
- 
-double atan2(double y,double x)
-{ return x>=y?(x>=-y?      IEEEDPAtan(y/x):     -PI/2-IEEEDPAtan(x/y)):
-              (x>=-y? PI/2-IEEEDPAtan(x/y):y>=0? PI  +IEEEDPAtan(y/x):
-                                          -PI  +IEEEDPAtan(y/x));
 }
 
 double const sin(double parm)
@@ -319,25 +122,216 @@ double const floor(double parm)
   return IEEEDPFloor(parm);
 }
 
-
-
-//double floor (double x)
-//{
-//  double value;
-// 
-//  __asm volatile ("fintrz%.x %1,%0 \n\t"
-//		  : "=f" (value)
-//		  : "f" (x));
-//  
-//  return value;
-//} 
-
 double const ceil(double parm)
 {
   return IEEEDPCeil(parm);
 }
 
 #else /* There is a 68881 or 68882 (__HAVE_68881__ is defined) */
-# define __math_decl const
-# include <math-68881.h>
+
+const double sin(double x)
+{
+  double value;
+
+  __asm ("fsin%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double cos(double x)
+{
+  double value;
+
+  __asm ("fcos%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+double sincos(double* pf2, double parm)
+{
+  *pf2 = cos(parm);
+  return sin(parm);
+}
+
+const double tan(double x)
+{
+  double value;
+
+  __asm ("ftan%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double asin(double x)
+{
+  double value;
+
+  __asm ("fasin%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double acos(double x)
+{
+  double value;
+
+  __asm ("facos%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double atan(double x)
+{
+  double value;
+
+  __asm ("fatan%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double sinh(double x)
+{
+  double value;
+
+  __asm ("fsinh%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double cosh(double x)
+{
+  double value;
+
+  __asm ("fcosh%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double tanh(double x)
+{
+  double value;
+
+  __asm ("ftanh%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double exp(double x)
+{
+  double value;
+
+  __asm ("fetox%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double log(double x)
+{
+  double value;
+
+  __asm ("flogn%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double log10(double x)
+{
+  double value;
+
+  __asm ("flog10%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+
+const double sqrt(double x)
+{
+  double value;
+
+  __asm ("fsqrt%.x %1,%0"
+	 : "=f" (value)
+	 : "f" (x));
+  return value;
+}
+const double ceil(double x)
+{
+  int rounding_mode, round_up;
+  double value;
+
+  __asm __volatile ("fmove%.l fpcr,%0"
+		  : "=dm" (rounding_mode)
+		  : /* no inputs */ );
+  round_up = rounding_mode | 0x30;
+  __asm __volatile ("fmove%.l %0,fpcr"
+		  : /* no outputs */
+		  : "dmi" (round_up));
+  __asm __volatile ("fint%.x %1,%0"
+		  : "=f" (value)
+		  : "f" (x));
+  __asm __volatile ("fmove%.l %0,fpcr"
+		  : /* no outputs */
+		  : "dmi" (rounding_mode));
+  return value;
+}
+
+const double floor(double x)
+{
+  int rounding_mode, round_down;
+  double value;
+
+  __asm __volatile ("fmove%.l fpcr,%0"
+		  : "=dm" (rounding_mode)
+		  : /* no inputs */ );
+  round_down = (rounding_mode & ~0x10)
+		| 0x20;
+  __asm __volatile ("fmove%.l %0,fpcr"
+		  : /* no outputs */
+		  : "dmi" (round_down));
+  __asm __volatile ("fint%.x %1,%0"
+		  : "=f" (value)
+		  : "f" (x));
+  __asm __volatile ("fmove%.l %0,fpcr"
+		  : /* no outputs */
+		  : "dmi" (rounding_mode));
+  return value;
+}
+
+#define NAN(value)   __asm ("fmoved %#0rnan,%0" : "=f" (value): )
+const double pow(double x, double y)
+{
+  register double value;
+
+  if (x > 0)
+    return exp(y * log(x));
+  
+  if (x == 0)
+    {
+      if (y == 0)
+	{
+	  NAN(value);
+	  return value;
+	}
+
+      return 0.0;
+    }
+
+   __asm ("fintrz%.x %1,%0"
+	   : "=f" (value)			/* integer-valued float */
+	   : "f" (y));
+
+   if (y != value)
+     {
+       NAN(value);
+       return value;
+     }
+   x = y * log(-x);
+   return (((int)y & 1) == 0) ? exp(x) : -exp(x);
+}
+
 #endif /* __HAVE_68881__ */

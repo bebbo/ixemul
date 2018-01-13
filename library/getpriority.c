@@ -50,7 +50,7 @@ getpriority (int which, int who)
 
   if (which == PRIO_USER || who == 0)
     {
-      struct Task *myself = (struct Task *)SysBase->ThisTask;
+      struct Task *myself = (struct Task *)FindTask (0);
       /* in this case I ignore the 'which' argument, and just return
        * my own Priority */
       return - myself->tc_Node.ln_Pri;
@@ -66,9 +66,9 @@ getpriority (int which, int who)
       struct Task *task = (struct Task *)who;
       /* it must have a node-type of either NT_PROCESS or NT_TASK */
       if (task->tc_Node.ln_Type == NT_PROCESS ||
-	  task->tc_Node.ln_Type == NT_TASK)
-	/* so we have to believe, this is really a task */
-	return - task->tc_Node.ln_Pri;
+          task->tc_Node.ln_Type == NT_TASK)
+        /* so we have to believe, this is really a task */
+        return - task->tc_Node.ln_Pri;
     }
   errno = ESRCH;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));

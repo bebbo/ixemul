@@ -15,8 +15,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)popen.c     5.15 (Berkeley) 2/23/91";
+static char sccsid[] = "@(#)popen.c	5.15 (Berkeley) 2/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -56,7 +56,7 @@ popen(program, type)
 	const char *program;
 	const char *type;
 {
-	usetup;
+        usetup;
 	FILE *iop;
 	int pdes[2], fds, pid;
 
@@ -73,12 +73,12 @@ popen(program, type)
 	if (pipe(pdes) < 0)
 		return (NULL);
 	switch (pid = vfork()) {
-	case -1:                        /* error */
+	case -1:			/* error */
 		(void) close(pdes[0]);
 		(void) close(pdes[1]);
 		return (NULL);
 		/* NOTREACHED */
-	case 0:                         /* child */
+	case 0:				/* child */
 		if (*type == 'r') {
 			if (pdes[1] != STDOUT_FILENO) {
 				(void) dup2(pdes[1], STDOUT_FILENO);
@@ -112,7 +112,7 @@ int
 pclose(iop)
 	FILE *iop;
 {
-	usetup;
+        usetup;
 	register int fdes;
 	int omask;
 	union wait pstat;

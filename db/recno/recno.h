@@ -1,8 +1,8 @@
-/*      $NetBSD: recno.h,v 1.5 1996/05/03 21:38:55 cgd Exp $    */
+/*	$NetBSD: recno.h,v 1.5 1996/05/03 21:38:55 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,10 +32,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)recno.h     8.1 (Berkeley) 6/4/93
+ *	@(#)recno.h	8.1 (Berkeley) 6/4/93
  */
 
-enum SRCHOP { SDELETE, SINSERT, SEARCH};        /* Rec_search operation. */
+enum SRCHOP { SDELETE, SINSERT, SEARCH};	/* Rec_search operation. */
 
 #include "../btree/btree.h"
 #include "extern.h"

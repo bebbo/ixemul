@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -34,9 +34,6 @@
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)inet_addr.c 5.10 (Berkeley) 2/24/91";
 #endif /* LIBC_SCCS and not lint */
-
-#define _KERNEL
-#include "ixemul.h"
 
 #include <sys/param.h>
 #include <netinet/in.h>
@@ -91,9 +88,9 @@ inet_aton(cp, addr)
 		if (*cp == '.') {
 			/*
 			 * Internet format:
-			 *      a.b.c.d
-			 *      a.b.c   (with c treated as 16-bits)
-			 *      a.b     (with b treated as 24 bits)
+			 *	a.b.c.d
+			 *	a.b.c	(with c treated as 16-bits)
+			 *	a.b	(with b treated as 24 bits)
 			 */
 			if (pp >= parts + 3 || val > 0xff)
 				return (0);
@@ -113,22 +110,22 @@ inet_aton(cp, addr)
 	n = pp - parts + 1;
 	switch (n) {
 
-	case 1:                         /* a -- 32 bits */
+	case 1: 			/* a -- 32 bits */
 		break;
 
-	case 2:                         /* a.b -- 8.24 bits */
+	case 2: 			/* a.b -- 8.24 bits */
 		if (val > 0xffffff)
 			return (0);
 		val |= parts[0] << 24;
 		break;
 
-	case 3:                         /* a.b.c -- 8.8.16 bits */
+	case 3: 			/* a.b.c -- 8.8.16 bits */
 		if (val > 0xffff)
 			return (0);
 		val |= (parts[0] << 24) | (parts[1] << 16);
 		break;
 
-	case 4:                         /* a.b.c.d -- 8.8.8.8 bits */
+	case 4: 			/* a.b.c.d -- 8.8.8.8 bits */
 		if (val > 0xff)
 			return (0);
 		val |= (parts[0] << 24) | (parts[1] << 16) | (parts[2] << 8);
@@ -212,10 +209,6 @@ inet_netof(in)
 	else
 		return (((i)&IN_CLASSC_NET) >> IN_CLASSC_NSHIFT);
 }
-
-#ifndef INADDR_NONE
-#define INADDR_NONE             __IPADDR(0xffffffff)    /* -1 return */
-#endif
 /*
  * Internet network address interpretation routine.
  * The library routines call this routine to interpret
@@ -223,61 +216,55 @@ inet_netof(in)
  */
 u_long
 inet_network(cp)
-        register const char *cp;
+	const char *cp;
 {
-        register u_long val, base, n, i;
-        register char c;
-        u_long parts[4], *pp = parts;
-        int digit;
+	register u_long val, base, n;
+	register char c;
+	u_long parts[4], *pp = parts;
+	register int i;
 
 again:
-        val = 0; base = 10; digit = 0;
-        if (*cp == '0')
-                digit = 1, base = 8, cp++;
-        if (*cp == 'x' || *cp == 'X')
-                base = 16, cp++;
-        while ((c = *cp) != 0) {
-                if (isdigit(c)) {
-                        if (base == 8 && (c == '8' || c == '9'))
-                                return (INADDR_NONE);
-                        val = (val * base) + (c - '0');
-                        cp++;
-                        digit = 1;
-                        continue;
-                }
-                if (base == 16 && isxdigit(c)) {
-                        val = (val << 4) + (c + 10 - (islower(c) ? 'a' : 'A'));
-                        cp++;
-                        digit = 1;
-                        continue;
-                }
-                break;
-        }
-        if (!digit)
-                return (INADDR_NONE);
-        if (*cp == '.') {
-                if (pp >= parts + 4 || val > 0xff)
-                        return (INADDR_NONE);
-                *pp++ = val, cp++;
-                goto again;
-        }
-        if (*cp && !isspace(*cp))
-                return (INADDR_NONE);
-        *pp++ = val;
-        n = pp - parts;
-        if (n > 4)
-                return (INADDR_NONE);
-        for (val = 0, i = 0; i < n; i++) {
-                val <<= 8;
-                val |= parts[i] & 0xff;
-        }
-        return (val);
+	val = 0; base = 10;
+	if (*cp == '0')
+		base = 8, cp++;
+	if (*cp == 'x' || *cp == 'X')
+		base = 16, cp++;
+	while ((c = *cp)) {
+		if (isdigit(c)) {
+			val = (val * base) + (c - '0');
+			cp++;
+			continue;
+		}
+		if (base == 16 && isxdigit(c)) {
+			val = (val << 4) + (c + 10 - (islower(c) ? 'a' : 'A'));
+			cp++;
+			continue;
+		}
+		break;
+	}
+	if (*cp == '.') {
+		if (pp >= parts + 4)
+			return (u_long)-1;
+		*pp++ = val, cp++;
+		goto again;
+	}
+	if (*cp && !isspace(*cp))
+		return (u_long)-1;
+	*pp++ = val;
+	n = pp - parts;
+	if (n > 4)
+		return (u_long)-1;
+	for (val = 0, i = 0; i < n; i++) {
+		val <<= 8;
+		val |= parts[i] & 0xff;
+	}
+	return (val);
 }
 char *
 inet_ntoa(in)
 	struct in_addr in;
 {
-	usetup;
+        usetup;
 	char *p = (char *)&in;
 
 #define UC(b)   (((int)b)&0xff)

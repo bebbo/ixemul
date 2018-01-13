@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,31 +30,31 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)ttydev.h    7.8 (Berkeley) 5/9/91
+ *	@(#)ttydev.h	7.8 (Berkeley) 5/9/91
  */
 
 /* COMPATABILITY HEADER FILE */
 
 #ifndef _TTYDEV_H_
-#define _TTYDEV_H_
+#define	_TTYDEV_H_
 
 #ifdef USE_OLD_TTY
-#define B0      0
-#define B50     1
-#define B75     2
-#define B110    3
-#define B134    4
-#define B150    5
-#define B200    6
-#define B300    7
-#define B600    8
-#define B1200   9
-#define B1800   10
-#define B2400   11
-#define B4800   12
-#define B9600   13
-#define EXTA    14
-#define EXTB    15
+#define B0	0
+#define B50	1
+#define B75	2
+#define B110	3
+#define B134	4
+#define B150	5
+#define B200	6
+#define B300	7
+#define B600	8
+#define B1200	9
+#define	B1800	10
+#define B2400	11
+#define B4800	12
+#define B9600	13
+#define EXTA	14
+#define EXTB	15
 #endif /* USE_OLD_TTY */
 
 #endif /* !_TTYDEV_H_ */

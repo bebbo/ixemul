@@ -21,30 +21,16 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifndef mc68000
-#include <string.h>
-
-size_t strlen(const char *string)
-{
-  const char *s=string;
-
-  while(*s++)
-    ;
-  return ~(string-s);
-}
-#else
 #include "defs.h"
 
 ENTRY(strlen)
-asm(" \n\
-	movl    sp@(4),a0       /* string */ \n\
-	movl    a0,d0 \n\
-	beq		ret \n\ 
-slloop: \n\
-	tstb    a0@+            /* null? */ \n\
-	jne     slloop          /* no, keep going */ \n\
-	subl    a0,d0 \n\
-	notl    d0 \n\
-ret:	rts \n\
+asm("
+	movl	sp@(4),a0	/* string */
+	movl	a0,d0
+slloop:
+	tstb	a0@+		/* null? */
+	jne	slloop		/* no, keep going */
+	subl	a0,d0
+	notl	d0
+	rts
 ");
-#endif

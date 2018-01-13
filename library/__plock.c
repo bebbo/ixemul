@@ -19,7 +19,7 @@
 
 /*
  * Lock() and LLock() emulation. Takes care of expanding paths that contain
- * symlinks.
+ * symlinks. 
  * Call __plock() if you need a lock to the parent directory as used in
  * other packets, that way you always get the "right" thing
  */
@@ -34,10 +34,8 @@
 #define NEW_NAME   1
 #define DONE       2
 
-#if 0
-
-static struct DevProc   *get_device_proc(char *, struct DevProc *, struct lockinfo *, void *);
-static void             unslashify(char *);
+static struct DevProc	*get_device_proc(char *, struct DevProc *, struct lockinfo *, void *);
+static void		unslashify(char *);
 static void             resolve_name(struct lockinfo *info, int (*last_func)(), void *last_arg);
 static int              get_component(struct lockinfo *info);
 static int              resolve_name_on_device(struct lockinfo *info, int (*last_func)(), void *last_arg);
@@ -61,17 +59,12 @@ static int readlink(struct lockinfo *info)
 {
   usetup;
   struct StandardPacket *sp = &info->sp;
-  char buf[256];
-
-  /* SFS doesn't like it if dp_Arg2==dp_Arg3. Copy the string */
-  strncpy(buf, info->str + 1, sizeof(buf) - 1);
-  buf[sizeof(buf) - 1] = '\0';
 
   sp->sp_Pkt.dp_Port = __srwport;
   sp->sp_Pkt.dp_Type = ACTION_READ_LINK;
   sp->sp_Pkt.dp_Arg1 = info->parent_lock;
-  sp->sp_Pkt.dp_Arg2 = (long)buf; /* read as cstr */
-  sp->sp_Pkt.dp_Arg3 = (long)info->str + 1; /* write as cstr */
+  sp->sp_Pkt.dp_Arg2 = (long)info->str + 1; /* read as cstr */
+  sp->sp_Pkt.dp_Arg3 = (long)info->str + 1; /* write as cstr, same place */
   sp->sp_Pkt.dp_Arg4 = 255; /* what a BSTR can address */
 
   PutPacket(info->handler, sp);
@@ -80,25 +73,21 @@ static int readlink(struct lockinfo *info)
   return sp->sp_Pkt.dp_Res1;
 }
 
-#endif
-
-int is_pseudoterminal(const char *name)
+int is_pseudoterminal(char *name)
 {
   int i = 1;
 
   if (!memcmp(name, "/dev/", 5) || !(i = memcmp(name, "dev:", 4)))
     {
       if (i)
-	name++;
+        name++;
       if ((name[4] == 'p' || name[4] == 't') && name[5] == 't'
-	  && name[6] == 'y' && name[7] >= 'p' && name[7] <= 'u'
-	  && strchr("0123456789abcdef", name[8]) && !name[9])
-	return i + 4;
+          && name[6] == 'y' && name[7] >= 'p' && name[7] <= 'u'
+          && strchr("0123456789abcdef", name[8]) && !name[9])
+        return i + 4;
     }
   return 0;
 }
-
-#if 0
 
 BPTR
 __plock (const char *file_name, int (*last_func)(), void *last_arg)
@@ -107,7 +96,7 @@ __plock (const char *file_name, int (*last_func)(), void *last_arg)
   struct lockinfo *info;
   int omask;
 
-  KPRINTF (("__plock: file_name = %s, last_func = $%lx\n",
+  KPRINTF (("__plock: file_name = %s, last_func = $%lx\n", 
 	    file_name ? file_name : "(none)", last_func));
 
   if (!file_name)
@@ -129,7 +118,7 @@ __plock (const char *file_name, int (*last_func)(), void *last_arg)
     info->name++;
   info->link_levels = 0;
   info->bstr = CTOBPTR(info->str);
-
+  
   // Turn the name into an AmigaOS name, except for . and ..
   if (ix.ix_flags & ix_translate_slash)
     unslashify(info->name);
@@ -161,24 +150,24 @@ static void resolve_name(struct lockinfo *info, int (*last_func)(), void *last_a
     if (!dp)
     {
       if (!strcasecmp(name, "nil:") || !strcasecmp(name, "/nil") ||
-	  !strcmp(name, "/dev/null") || !strcmp(name, "dev:null"))
-	{
-	  SetIoErr(4242); /* special special ;-) */
-	  return;
-	}
+          !strcmp(name, "/dev/null") || !strcmp(name, "dev:null"))
+        {
+          SetIoErr(4242); /* special special ;-) */
+          return;
+        }
       if (is_pseudoterminal(name))
-	{
-	  SetIoErr(5252);       /* special special ;-) */
-	  return;
-	}
+        {
+          SetIoErr(5252);	/* special special ;-) */
+          return;
+        }
       if (!strcmp(name, ":"))
-	{
-	  SetIoErr(6262); /* another special special (the root directory) */
-	  return;
-	}
-
+        {
+          SetIoErr(6262); /* another special special (the root directory) */
+          return;
+        }
+  
       if (!strcasecmp(name, "console:") || !strcasecmp(name, "/console") || !strcmp(name, "/dev/tty"))
-	name = "*";
+        name = "*";
       bzero(&PI, sizeof(PI));
     }
 
@@ -186,10 +175,10 @@ static void resolve_name(struct lockinfo *info, int (*last_func)(), void *last_a
 
     dp = get_device_proc(name, dp, info, &PI);
 
-    if (!info->handler)
+    if (!info->handler) 
       {
-	SetIoErr(ERROR_OBJECT_NOT_FOUND);
-	break;
+        SetIoErr(ERROR_OBJECT_NOT_FOUND);
+        break;
       }
 
     info->name = name;
@@ -197,14 +186,14 @@ static void resolve_name(struct lockinfo *info, int (*last_func)(), void *last_a
     switch (resolve_name_on_device(info, last_func, last_arg))
     {
       case NEW_NAME:
-	FreeDeviceProc(dp);
-	dp = NULL;
-	name = info->name;
-	break;
-
+        FreeDeviceProc(dp);
+        dp = NULL;
+        name = info->name;
+        break;
+        
       case DONE:
-	done = TRUE;
-	break;
+        done = TRUE;
+        break;
     }
     if (info->unlock_parent)
       UnLock(info->parent_lock);
@@ -221,13 +210,13 @@ static int get_component(struct lockinfo *info)
 
   if (info->is_fs)
   {
-    /* fetch the first part of "name", thus stopping at either a : or a /
+    /* fetch the first part of "name", thus stopping at either a : or a / 
      * next points at the start of the next directory component to be
      * processed in the next run
      */
 
     sep = index(name, ':');
-    if (sep)
+    if (sep) 
     {
       sep++; /* the : is part of the filename */
       next = sep;
@@ -235,30 +224,30 @@ static int get_component(struct lockinfo *info)
     else
     {
       sep = index(name, '/');
-
+	      
       /* map foo/bar/ into foo/bar, but keep foo/bar// */
       if (sep && sep[1] == 0)
       {
-	is_last = 1;
-	next = sep + 1;
+        is_last = 1;
+        next = sep + 1;
       }
       else if (!sep)
       {
-	sep = name + strlen(name);
-	next = sep;
-	is_last = 1;
+        sep = name + strlen(name);
+        next = sep;
+        is_last = 1;
       }
       else
       {
-	if (ix.ix_flags & ix_translate_slash)
+        if (ix.ix_flags & ix_translate_slash)
 	  for (next = sep + 1; *next == '/'; next++) ;
 	else
 	  next = sep + 1;
-
-	/* if the slash is the first character, it means "parent",
-	 * so we have to pass it literally to Lock() */
-	if (sep == name)
-	  sep = next;
+	
+        /* if the slash is the first character, it means "parent",
+         * so we have to pass it literally to Lock() */
+        if (sep == name)
+          sep = next;
       }
     }
   }
@@ -285,7 +274,7 @@ static int get_component(struct lockinfo *info)
   {
     str[0] = 0; str[1] = 0;
   }
-
+        
   info->name = next;
   return is_last;
 }
@@ -322,55 +311,55 @@ static int resolve_name_on_device(struct lockinfo *info, int (*last_func)(), voi
 
       if ((new_parent = lock(info)))
       {
-	if (info->unlock_parent)
-	{
-	  int err = IoErr();
+        if (info->unlock_parent)
+        {
+          int err = IoErr();
 
-	  UnLock(info->parent_lock);
-	  SetIoErr(err);
-	}
-	info->parent_lock = new_parent;
-	info->unlock_parent = TRUE;
+          UnLock(info->parent_lock);
+          SetIoErr(err);
+        }
+        info->parent_lock = new_parent;
+        info->unlock_parent = TRUE;
       }
       else
       {
-	error = TRUE;
-	res = 1;
+        error = TRUE;
+        res = 1;
       }
     }
     else
     {
       res = (*last_func)(info, last_arg, &error);
       if (error)
-	SetIoErr(info->sp.sp_Pkt.dp_Res2);
+        SetIoErr(info->sp.sp_Pkt.dp_Res2);
     }
 
     if (info->is_fs && IoErr() == ERROR_OBJECT_NOT_FOUND &&
-	((!*str && info->is_root) || !strcmp(str + 1, "/")))
+        ((!*str && info->is_root) || !strcmp(str + 1, "/")))
     {
       info->is_root = 1;
 
       while (!strncmp(info->name, "./", 2) || !strncmp(info->name, "../", 3))
       {
-	info->name = index(info->name, '/') + 1;
+        info->name = index(info->name, '/') + 1;
       }
       if (!strcmp(info->name, ".") || !strcmp(info->name, ".."))
       {
-	info->name = index(info->name, 0);
+        info->name = index(info->name, 0);
       }
 
       if (*info->name)
       {
 	sep = index(info->name, '/');
-	if (!sep)
-	{
+        if (!sep)
+        {
 	  sep = index(info->name, 0);
-	  sep[1] = 0;
-	}
-	*sep = ':';
+          sep[1] = 0;
+        }
+        *sep = ':';
       }
       else {
-	*--info->name = ':';
+        *--info->name = ':';
       }
       return NEW_NAME;
     }
@@ -399,19 +388,20 @@ static int resolve_name_on_device(struct lockinfo *info, int (*last_func)(), voi
     if (info->name)
     {
       char buf[1024], *p;
+      
       res = a2u(buf, str + 1);
       if (buf[res - 1] != '/')
-	strcat(buf, "/");
+        strcat(buf, "/");
       strcat(buf, info->name);
       if (buf[0] == '/')
       {
-	strcpy(info->buf, buf + 1);
-	if ((p = strchr(info->buf, '/')))
-	  *p = ':';
+        strcpy(info->buf, buf + 1);
+        if ((p = strchr(info->buf, '/')))
+          *p = ':';
       }
       else
       {
-	strcpy(info->buf, buf);
+        strcpy(info->buf, buf);
       }
     }
     else
@@ -444,11 +434,11 @@ get_device_proc (char *name, struct DevProc *prev, struct lockinfo *info, void *
 
   if (ix.ix_flags & ix_no_insert_disk_requester)
     {
-      this_proc = (struct Process *)SysBase->ThisTask;
+      this_proc = (struct Process *)FindTask (0);
       oldwin = this_proc->pr_WindowPtr;
       this_proc->pr_WindowPtr = (APTR)-1;
     }
-
+  
   p = strchr(name, ':');
   if (p)
   {
@@ -480,7 +470,7 @@ static void unslashify(char *name)
     return;
 
   while (oname[0] == '/' &&
-	 (oname[1] == '/' || !memcmp(oname + 1, "./", 2) || !memcmp(oname + 1, "../", 3)))
+         (oname[1] == '/' || !memcmp(oname + 1, "./", 2) || !memcmp(oname + 1, "../", 3)))
     while (*++oname == '.') ;
 
   if (!strcmp(oname, "/.") || !strcmp(oname, "/.."))
@@ -489,7 +479,7 @@ static void unslashify(char *name)
   /* don't (!) use strcpy () here, this is an overlapping copy ! */
   if (oname > name)
     bcopy(oname, name, strlen(oname) + 1);
-
+    
   /* root directory */
   if (name[0] == '/' && name[1] == 0)
     {
@@ -506,19 +496,19 @@ static void unslashify(char *name)
       /* if there is a separating (and not terminating) slash, shift a bit ;-) */
       if (cp)
 	while (*cp == '/')
-	  {
-	    shift++;
+          {
+            shift++;
 	    cp++;
 	  }
 
       /* is it a terminator (then discard it) or a separator ? */
       if (!cp || !*cp)
-	{
+        {
 	  /* terminator */
-	  cp = name + strlen(name);
-	  bcopy(name + 1, name, cp - name);
-	  cp[-1 - shift] = ':';
-	  cp[-shift] = 0;
+          cp = name + strlen(name);
+          bcopy(name + 1, name, cp - name);
+          cp[-1 - shift] = ':';
+          cp[-shift] = 0;
 	}
       else
 	{
@@ -530,6 +520,4 @@ static void unslashify(char *name)
 	}
     }
 }
-
-#endif
 

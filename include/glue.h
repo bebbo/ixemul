@@ -15,8 +15,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)glue.h      5.1 (Berkeley) 1/20/91
+ *	@(#)glue.h	5.1 (Berkeley) 1/20/91
  */
 
 #ifndef _GLUE_H
@@ -43,9 +43,9 @@
  * allocated and linked in via this glue structure.
  */
 struct glue {
-	struct  glue *next;
-	int     niobs;
-	struct __sFILE  *iobs;
+	struct	glue *next;
+	int	niobs;
+	struct __sFILE	*iobs;
 };
 #define __sglue (u.u_sglue)
 

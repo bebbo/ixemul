@@ -1,9 +1,9 @@
-/*      $NetBSD: regfree.c,v 1.4 1995/02/27 13:29:56 cgd Exp $  */
+/*	$NetBSD: regfree.c,v 1.4 1995/02/27 13:29:56 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1992, 1993, 1994 Henry Spencer.
  * Copyright (c) 1992, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Henry Spencer.
@@ -18,8 +18,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -36,12 +36,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)regfree.c   8.3 (Berkeley) 3/20/94
+ *	@(#)regfree.c	8.3 (Berkeley) 3/20/94
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)regfree.c   8.3 (Berkeley) 3/20/94";
+static char sccsid[] = "@(#)regfree.c	8.3 (Berkeley) 3/20/94";
 #else
 static char rcsid[] = "$NetBSD: regfree.c,v 1.4 1995/02/27 13:29:56 cgd Exp $";
 #endif
@@ -65,14 +65,14 @@ regex_t *preg;
 {
 	register struct re_guts *g;
 
-	if (preg->re_magic != MAGIC1)   /* oops */
-		return;                 /* nice to complain, but hard */
+	if (preg->re_magic != MAGIC1)	/* oops */
+		return;			/* nice to complain, but hard */
 
 	g = preg->re_g;
-	if (g == NULL || g->magic != MAGIC2)    /* oops again */
+	if (g == NULL || g->magic != MAGIC2)	/* oops again */
 		return;
-	preg->re_magic = 0;             /* mark it invalid */
-	g->magic = 0;                   /* mark it invalid */
+	preg->re_magic = 0;		/* mark it invalid */
+	g->magic = 0;			/* mark it invalid */
 
 	if (g->strip != NULL)
 		free((char *)g->strip);

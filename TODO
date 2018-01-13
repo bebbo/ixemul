@@ -1,25 +1,6 @@
+2000-08-31  David Zaroski  <dez@cronus.ninemoons.com>
 
-2005-03-29  Harry Sintonen  <sintonen@iki.fi>
-
-	* Fix static data in:
-	  library/getusershell.c
-	  library/sysv_msg.c
-	  library/ptrace.c (not important I guess)
-	  library/malloc.c/all_free()/errno_dymmy (harmless)
-	  library/ix_settings.c (not important?)
-	* Some static data appears to be handled by Forbid():
-	  library/sysv_sem.c
-	  library/sysv_msg.c
-	* Some static data appears to be handled by ix_lock_base():
-	  library/shm.c/shmget_allocate_segment()/seq
-
-
-2003-12-28  Harry Sintonen  <sintonen@iki.fi>
-
-	* MorphOS: Make setjmp/longjmp save (used? vrsave?) vector (altivec)
-	  registers. This must be dynamic, the same lib must work with no
-	  altivec!
-
+	* remove pOS support.
 
 1999-09-03  David Zaroski  <zaroski@cronus.ninemoons.com>
 

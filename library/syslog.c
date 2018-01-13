@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -37,7 +37,6 @@ static char sccsid[] = "@(#)syslog.c    5.34 (Berkeley) 6/26/91";
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/file.h>
@@ -46,6 +45,7 @@ static char sccsid[] = "@(#)syslog.c    5.34 (Berkeley) 6/26/91";
 #include <sys/errno.h>
 #include <netdb.h>
 #include <string.h>
+#include <stdarg.h>
 #include <time.h>
 #include <unistd.h>
 #include <paths.h>
@@ -57,20 +57,13 @@ static char sccsid[] = "@(#)syslog.c    5.34 (Berkeley) 6/26/91";
 #define LogFacility (u.u_LogFacility)
 #define LogMask (u.u_LogMask)
 
-#ifdef NATIVE_MORPHOS
-#define vsyslog my_vsyslog
-#define vsprintf my_vsprintf
-void vsyslog(int pri, const char *fmt, my_va_list ap);
-int vsprintf(char *, const char *fmt0, my_va_list ap);
-#endif
-
 /*
  * syslog, vsyslog --
- *      print message on log file; output is intended for syslogd(8).
+ *	print message on log file; output is intended for syslogd(8).
  */
 
 void
-vsyslog(int pri, const char *fmt, my_va_list ap)
+vsyslog(int pri, const char *fmt, va_list ap)
 {
     usetup;
     register int cnt;
@@ -123,11 +116,11 @@ vsyslog(int pri, const char *fmt, my_va_list ap)
 	    register char ch, *t1, *t2;
 	    char *strerror();
 
-	    for (t1 = fmt_cpy; (ch = *fmt); ++fmt)
+            for (t1 = fmt_cpy; (ch = *fmt); ++fmt)
 		if (ch == '%' && fmt[1] == 'm') {
 		    ++fmt;
 		    for (t2 = strerror(saved_errno);
-			(*t1 = *t2++); ++t1);
+                        (*t1 = *t2++); ++t1);
 		}
 		else
 		    *t1++ = ch;
@@ -172,88 +165,12 @@ vsyslog(int pri, const char *fmt, my_va_list ap)
 void
 syslog(int pri, const char *fmt, ...)
 {
-	my_va_list ap;
+	va_list ap;
 
-	my_va_start(ap, fmt);
+	va_start(ap, fmt);
 	vsyslog(pri, fmt, ap);
-	my_va_end(ap);
+	va_end(ap);
 }
-
-#ifdef NATIVE_MORPHOS
-
-void
-_varargs68k_syslog(int pri, const char *fmt, char *ap1)
-{
-	my_va_list ap;
-
-	my_va_init_68k(ap, ap1);
-	vsyslog(pri, fmt, ap);
-}
-
-#undef vsyslog
-
-void
-vsyslog(int pri, const char *fmt, va_list ap1)
-{
-	my_va_list ap;
-	my_va_init_ppc(ap, ap1);
-	my_vsyslog(pri, fmt, ap);
-}
-
-void
-_varargs68k_vsyslog(int pri, const char *fmt, char *ap1)
-{
-	my_va_list ap;
-	my_va_init_68k(ap, ap1);
-	my_vsyslog(pri, fmt, ap);
-}
-
-asm("	.section \".text\"
-	.type	_stk_syslog,@function
-	.globl	_stk_syslog
-_stk_syslog:
-	andi.	11,1,15
-	mr	12,1
-	bne-	.align_syslog
-	b	syslog
-.align_syslog:
-	addi	11,11,128
-	mflr	0
-	neg	11,11
-	stw	0,4(1)
-	stwux	1,1,11
-
-	stw	5,16(1)
-	stw	6,20(1)
-	stw	7,24(1)
-	stw	8,28(1)
-	stw	9,32(1)
-	stw	10,36(1)
-	bc	4,6,.nofloat_syslog
-	stfd	1,40(1)
-	stfd	2,48(1)
-	stfd	3,56(1)
-	stfd	4,64(1)
-	stfd	5,72(1)
-	stfd	6,80(1)
-	stfd	7,88(1)
-	stfd	8,96(1)
-.nofloat_syslog:
-
-	addi	5,1,104
-	lis	0,0x200
-	addi	12,12,8
-	addi	11,1,8
-	stw	0,0(5)
-	stw	12,4(5)
-	stw	11,8(5)
-	bl	vsyslog
-	lwz	1,0(1)
-	lwz	0,4(1)
-	mtlr	0
-	blr
-");
-#endif
 
 void
 openlog(const char *ident, int logstat, int logfac)

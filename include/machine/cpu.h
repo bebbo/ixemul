@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -37,7 +37,7 @@
  *
  * from: Utah $Hdr: cpu.h 1.16 91/03/25$
  *
- *      @(#)cpu.h       7.7 (Berkeley) 6/27/91
+ *	@(#)cpu.h	7.7 (Berkeley) 6/27/91
  */
 
 /*
@@ -48,20 +48,20 @@
  * definitions of cpu-dependent requirements
  * referenced in generic code
  */
-#define COPY_SIGCODE            /* copy sigcode above user stack in exec */
+#define	COPY_SIGCODE		/* copy sigcode above user stack in exec */
 
 /*
  * function vs. inline configuration;
  * these are defined to get generic functions
  * rather than inline or machine-dependent implementations
  */
-#define NEED_MINMAX             /* need {,i,l,ul}{min,max} functions */
-#undef  NEED_FFS                /* don't need ffs function */
-#undef  NEED_BCMP               /* don't need bcmp function */
-#undef  NEED_STRLEN             /* don't need strlen function */
+#define	NEED_MINMAX		/* need {,i,l,ul}{min,max} functions */
+#undef	NEED_FFS		/* don't need ffs function */
+#undef	NEED_BCMP		/* don't need bcmp function */
+#undef	NEED_STRLEN		/* don't need strlen function */
 
-#define cpu_exec(p)     /* nothing */
-#define cpu_wait(p)     /* nothing */
+#define	cpu_exec(p)	/* nothing */
+#define	cpu_wait(p)	/* nothing */
 
 /*
  * Arguments to hardclock, softclock and gatherstats
@@ -70,14 +70,14 @@
  * leaves on the stack (not documented, thus private !!!)
  */
 typedef struct intrframe {
-	int     __ALIGN2__ exec_regs[6];
-	u_short ps;
-	int     __ALIGN2__ pc;
-} __PACKED__ clockframe;
+	int	exec_regs[6];
+	u_short	ps;
+	int	pc;
+} clockframe;
 
-#define CLKF_USERMODE(framep)   (((framep)->ps & PSL_S) == 0)
-#define CLKF_BASEPRI(framep)    (((framep)->ps & PSL_IPL7) == 0)
-#define CLKF_PC(framep)         ((framep)->pc)
+#define	CLKF_USERMODE(framep)	(((framep)->ps & PSL_S) == 0)
+#define	CLKF_BASEPRI(framep)	(((framep)->ps & PSL_IPL7) == 0)
+#define	CLKF_PC(framep)		((framep)->pc)
 
 #ifdef _KERNEL
 
@@ -85,7 +85,7 @@ typedef struct intrframe {
  * Preempt the current process if in interrupt from user mode,
  * or after the current trap/syscall if in system mode.
  */
-/* #define      need_resched()  { want_resched++; aston(); } */
+/* #define	need_resched()	{ want_resched++; aston(); } */
 /* don't do anything on the Amiga, we don't use the BSD scheduler */
 #define need_resched() 
 
@@ -94,7 +94,7 @@ typedef struct intrframe {
  * interrupt.  On hp300, request an ast to send us through trap(),
  * marking the proc as needing a profiling tick.
  */
-/* #define      profile_tick(p, framep) { (p)->p_flag |= SOWEUPC; aston(); } */
+/* #define	profile_tick(p, framep)	{ (p)->p_flag |= SOWEUPC; aston(); } */
 static void inline 
 profile_tick (struct proc *p, clockframe *framep)
 {
@@ -122,13 +122,13 @@ signotify (struct proc *p)
     movel a5,a0
 FIXME: It is uncertain if the below line needs to have the +2 removed or not.
 FIXME: It is also uncertain if this file is even used.  If so, this will error out.
-    lea   Lget_sr-.+2,a5 | Never used
+    lea	  Lget_sr-.+2,a5 | Never used
     movel 4:w,a6
-    jsr   a6@(-0x1e)
+    jsr	  a6@(-0x1e)
     movel a1,%0
-    bra   Lskip
+    bra	  Lskip
 Lget_sr:
-    movew sp@,a1        | get sr register from the calling function
+    movew sp@,a1	| get sr register from the calling function
     rte
 Lskip:
     movel a0,a5
@@ -146,47 +146,47 @@ Lskip:
 
 
 /* what is this supposed to do? i.e. how is it different than startrtclock? */
-#define enablertclock()
+#define	enablertclock()
 
-#endif  /* _KERNEL */
+#endif	/* _KERNEL */
 
 /*
  * 68851 and 68030 MMU
  */
-#define PMMU_LVLMASK    0x0007
-#define PMMU_INV        0x0400
-#define PMMU_WP         0x0800
-#define PMMU_ALV        0x1000
-#define PMMU_SO         0x2000
-#define PMMU_LV         0x4000
-#define PMMU_BE         0x8000
-#define PMMU_FAULT      (PMMU_WP|PMMU_INV)
+#define	PMMU_LVLMASK	0x0007
+#define	PMMU_INV	0x0400
+#define	PMMU_WP		0x0800
+#define	PMMU_ALV	0x1000
+#define	PMMU_SO		0x2000
+#define	PMMU_LV		0x4000
+#define	PMMU_BE		0x8000
+#define	PMMU_FAULT	(PMMU_WP|PMMU_INV)
 
 /* 680X0 function codes */
-#define FC_USERD        1       /* user data space */
-#define FC_USERP        2       /* user program space */
-#define FC_PURGE        3       /* HPMMU: clear TLB entries */
-#define FC_SUPERD       5       /* supervisor data space */
-#define FC_SUPERP       6       /* supervisor program space */
-#define FC_CPU          7       /* CPU space */
+#define	FC_USERD	1	/* user data space */
+#define	FC_USERP	2	/* user program space */
+#define	FC_PURGE	3	/* HPMMU: clear TLB entries */
+#define	FC_SUPERD	5	/* supervisor data space */
+#define	FC_SUPERP	6	/* supervisor program space */
+#define	FC_CPU		7	/* CPU space */
 
 /* fields in the 68020 cache control register */
-#define IC_ENABLE       0x0001  /* enable instruction cache */
-#define IC_FREEZE       0x0002  /* freeze instruction cache */
-#define IC_CE           0x0004  /* clear instruction cache entry */
-#define IC_CLR          0x0008  /* clear entire instruction cache */
+#define	IC_ENABLE	0x0001	/* enable instruction cache */
+#define	IC_FREEZE	0x0002	/* freeze instruction cache */
+#define	IC_CE		0x0004	/* clear instruction cache entry */
+#define	IC_CLR		0x0008	/* clear entire instruction cache */
 
 /* additional fields in the 68030 cache control register */
-#define IC_BE           0x0010  /* instruction burst enable */
-#define DC_ENABLE       0x0100  /* data cache enable */
-#define DC_FREEZE       0x0200  /* data cache freeze */
-#define DC_CE           0x0400  /* clear data cache entry */
-#define DC_CLR          0x0800  /* clear entire data cache */
-#define DC_BE           0x1000  /* data burst enable */
-#define DC_WA           0x2000  /* write allocate */
+#define	IC_BE		0x0010	/* instruction burst enable */
+#define	DC_ENABLE	0x0100	/* data cache enable */
+#define	DC_FREEZE	0x0200	/* data cache freeze */
+#define	DC_CE		0x0400	/* clear data cache entry */
+#define	DC_CLR		0x0800	/* clear entire data cache */
+#define	DC_BE		0x1000	/* data burst enable */
+#define	DC_WA		0x2000	/* write allocate */
 
-#define CACHE_ON        (DC_WA|DC_BE|DC_CLR|DC_ENABLE|IC_BE|IC_CLR|IC_ENABLE)
-#define CACHE_OFF       (DC_CLR|IC_CLR)
-#define CACHE_CLR       (CACHE_ON)
-#define IC_CLEAR        (DC_WA|DC_BE|DC_ENABLE|IC_BE|IC_CLR|IC_ENABLE)
-#define DC_CLEAR        (DC_WA|DC_BE|DC_CLR|DC_ENABLE|IC_BE|IC_ENABLE)
+#define	CACHE_ON	(DC_WA|DC_BE|DC_CLR|DC_ENABLE|IC_BE|IC_CLR|IC_ENABLE)
+#define	CACHE_OFF	(DC_CLR|IC_CLR)
+#define	CACHE_CLR	(CACHE_ON)
+#define	IC_CLEAR	(DC_WA|DC_BE|DC_ENABLE|IC_BE|IC_CLR|IC_ENABLE)
+#define	DC_CLEAR	(DC_WA|DC_BE|DC_CLR|DC_ENABLE|IC_BE|IC_ENABLE)

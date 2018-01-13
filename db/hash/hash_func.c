@@ -1,8 +1,8 @@
-/*      $NetBSD: hash_func.c,v 1.6 1996/05/03 21:43:52 cgd Exp $        */
+/*	$NetBSD: hash_func.c,v 1.6 1996/05/03 21:43:52 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)hash_func.c 8.2 (Berkeley) 2/21/94";
+static char sccsid[] = "@(#)hash_func.c	8.2 (Berkeley) 2/21/94";
 #else
 static char rcsid[] = "$NetBSD: hash_func.c,v 1.6 1996/05/03 21:43:52 cgd Exp $";
 #endif
@@ -70,8 +70,8 @@ u_int32_t (*__default_hash) __P((const void *, size_t)) = hash4;
  * This came from ejb's hsearch.
  */
 
-#define PRIME1          37
-#define PRIME2          1048583
+#define PRIME1		37
+#define PRIME2		1048583
 
 #if 0
 static u_int32_t
@@ -92,7 +92,7 @@ hash1(keyarg, len)
 /*
  * Phong's linear congruential hash
  */
-#define dcharhash(h, c) ((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
+#define dcharhash(h, c)	((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
 
 static u_int32_t
 hash2(keyarg, len)

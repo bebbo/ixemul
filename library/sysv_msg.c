@@ -1,5 +1,5 @@
-/*      $NetBSD: sysv_msg.c,v 1.19 1996/02/09 19:00:18 christos Exp $   */
- 
+/*	$NetBSD: sysv_msg.c,v 1.19 1996/02/09 19:00:18 christos Exp $	*/
+
 /*
  * Implementation of SVID messages
  *
@@ -27,25 +27,25 @@
 #define MSG_DEBUG
 #undef MSG_DEBUG_OK
 
-static int nfree_msgmaps;               /* # of free map entries */
-static short free_msgmaps;              /* head of linked list of free map entries */
-static struct msg *free_msghdrs;        /* list of free msg headers */
+static int nfree_msgmaps;		/* # of free map entries */
+static short free_msgmaps;		/* head of linked list of free map entries */
+static struct msg *free_msghdrs;	/* list of free msg headers */
 
-static char msgpool[MSGMAX];            /* MSGMAX byte long msg buffer pool */
-static struct msgmap msgmaps[MSGSEG];   /* MSGSEG msgmap structures */
-static struct msg msghdrs[MSGTQL];      /* MSGTQL msg headers */
-static struct msqid_ds msqids[MSGMNI];  /* MSGMNI msqid_ds struct's */
+static char msgpool[MSGMAX];		/* MSGMAX byte long msg buffer pool */
+static struct msgmap msgmaps[MSGSEG];	/* MSGSEG msgmap structures */
+static struct msg msghdrs[MSGTQL];	/* MSGTQL msg headers */
+static struct msqid_ds msqids[MSGMNI];	/* MSGMNI msqid_ds struct's */
 
 static void msg_freehdr __P((struct msg *));
 
-static const struct msginfo msginfo = {
-	MSGMAX,         /* max chars in a message */
-	MSGMNI,         /* # of message queue identifiers */
-	MSGMNB,         /* max chars in a queue */
-	MSGTQL,         /* max messages in system */
-	MSGSSZ,         /* size of a message segment */
+static struct msginfo msginfo = {
+	MSGMAX,		/* max chars in a message */
+	MSGMNI,		/* # of message queue identifiers */
+	MSGMNB,		/* max chars in a queue */
+	MSGTQL,		/* max messages in system */
+	MSGSSZ,		/* size of a message segment */
 			/* (must be small power of 2 greater than 4) */
-	MSGSEG          /* number of message segments */
+	MSGSEG		/* number of message segments */
 };
 
 
@@ -63,7 +63,7 @@ msginit()
 	i = 8;
 	while (i < 1024 && i != msginfo.msgssz)
 		i <<= 1;
-	if (i != msginfo.msgssz) {
+    	if (i != msginfo.msgssz) {
 		panic("msginfo.msgssz=%d (0x%x) (not a small power of 2)", msginfo.msgssz,
 		    msginfo.msgssz);
 	}
@@ -75,7 +75,7 @@ msginit()
 	for (i = 0; i < msginfo.msgseg; i++) {
 		if (i > 0)
 			msgmaps[i-1].next = i;
-		msgmaps[i].next = -1;   /* implies entry is available */
+		msgmaps[i].next = -1;	/* implies entry is available */
 	}
 	free_msgmaps = 0;
 	nfree_msgmaps = msginfo.msgseg;
@@ -85,12 +85,12 @@ msginit()
 		if (i > 0)
 			msghdrs[i-1].msg_next = &msghdrs[i];
 		msghdrs[i].msg_next = NULL;
-	}
+    	}
 	free_msghdrs = &msghdrs[0];
 
 	for (i = 0; i < msginfo.msgmni; i++) {
-		msqids[i].msg_qbytes = 0;       /* implies entry is available */
-		msqids[i].msg_perm.seq = 0;     /* reset to a known value */
+		msqids[i].msg_qbytes = 0;	/* implies entry is available */
+		msqids[i].msg_perm.seq = 0;	/* reset to a known value */
 	}
 }
 
@@ -170,7 +170,7 @@ ix_msgctl(int msqid, int cmd, struct msqid_ds *user_msqptr)
 		if (msqptr->msg_qnum != 0)
 			panic("msg_qnum is screwed up");
 
-		msqptr->msg_qbytes = 0; /* Mark it as free */
+		msqptr->msg_qbytes = 0;	/* Mark it as free */
 
 		ix_wakeup((u_int)msqptr);
 	}
@@ -183,13 +183,13 @@ ix_msgctl(int msqid, int cmd, struct msqid_ds *user_msqptr)
 		if (user_msqptr->msg_qbytes > msqptr->msg_qbytes && cred.cr_uid != 0)
 			errno_return(EPERM, -1);
 		if (user_msqptr->msg_qbytes > msginfo.msgmnb) {
-			user_msqptr->msg_qbytes = msginfo.msgmnb;       /* silently restrict qbytes to system limit */
+			user_msqptr->msg_qbytes = msginfo.msgmnb;	/* silently restrict qbytes to system limit */
 		}
 		if (user_msqptr->msg_qbytes == 0) {
-			errno_return(EINVAL, -1);               /* non-standard errno! */
+			errno_return(EINVAL, -1);		/* non-standard errno! */
 		}
-		msqptr->msg_perm.uid = user_msqptr->msg_perm.uid;       /* change the owner */
-		msqptr->msg_perm.gid = user_msqptr->msg_perm.gid;       /* change the owner */
+		msqptr->msg_perm.uid = user_msqptr->msg_perm.uid;	/* change the owner */
+		msqptr->msg_perm.gid = user_msqptr->msg_perm.gid;	/* change the owner */
 		msqptr->msg_perm.mode = (msqptr->msg_perm.mode & ~0777) |
 		    (user_msqptr->msg_perm.mode & 0777);
 		msqptr->msg_qbytes = user_msqptr->msg_qbytes;
@@ -252,7 +252,7 @@ ix_msgget(key_t key, int msgflg)
 				break;
 		}
 		if (msqid == msginfo.msgmni) {
-			errno_return(ENOSPC, -1);       
+			errno_return(ENOSPC, -1);	
 		}
 		msqptr->msg_perm.key = key;
 		msqptr->msg_perm.cuid = cred.cr_uid;
@@ -438,7 +438,7 @@ ix_msgsnd(int msqid, void *user_msgp, size_t msgsz, int msgflg)
 	 * Copy in the message type
 	 */
 
-	memcpy(&msghdr->msg_type, user_msgp, sizeof(msghdr->msg_type));
+        memcpy(&msghdr->msg_type, user_msgp, sizeof(msghdr->msg_type));
 
 	user_msgp += sizeof(msghdr->msg_type);
 
@@ -688,7 +688,7 @@ ix_msgrcv(int msqid, void *user_msgp, size_t msgsz, long msgtyp, int msgflg)
 	 * Return the type to the user.
 	 */
 
-	memcpy(user_msgp, (caddr_t)&msghdr->msg_type, sizeof(msghdr->msg_type));
+   	memcpy(user_msgp, (caddr_t)&msghdr->msg_type, sizeof(msghdr->msg_type));
 	user_msgp += sizeof(msghdr->msg_type);
 
 	/*

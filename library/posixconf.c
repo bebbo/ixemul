@@ -103,7 +103,7 @@ fpathconf (int fd, int name)
       return MAX_INPUT;
       
     case _PC_NAME_MAX:
-      return NAME_MAX;  /* or 32 on AmigaOS? What about NFS ? */
+      return NAME_MAX;	/* or 32 on AmigaOS? What about NFS ? */
       
     case _PC_PATH_MAX:
       return PATH_MAX;

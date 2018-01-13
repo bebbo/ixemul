@@ -11,7 +11,6 @@ struct WBStartup;
 void	ix_panic(const char *msg, ...);
 void	panic(const char *msg, ...);
 void	ix_warning(const char *msg, ...);
-int	ix_reqtry(const char *msg, ...);
 BPTR   *__load_seg(char *name, char **args);
 void	__wait_sync_packet(struct StandardPacket *sp);
 void	__wait_select_packet(struct StandardPacket *sp);
@@ -93,7 +92,7 @@ int	getpriority(int, int);
 int	setpriority(int, int, int);
 void	__ix_close_muFS(struct user *ix_u);
 ino_t	retrieve_ino(BPTR lock, struct InfoData *info, struct FileInfoBlock *fib);
-int	is_pseudoterminal(const char *name);
+int	is_pseudoterminal(char *name);
 int	ioctl (int fd, unsigned long cmd, ...);
 char   *basename(char *tmp);
 int     filenamecmp(const char *fname);
@@ -121,10 +120,5 @@ void    ixaddhead(struct ixlist *list, struct ixnode *node);
 void    ixremove(struct ixlist *list, struct ixnode *node);
 void    ixinsert(struct ixlist *list, struct ixnode *node, struct ixnode *after);
 struct ixnode *ixremhead(struct ixlist *list);
-
-#define IsIxListEmpty(x) (((x)->head == NULL) && ((x)->tail == NULL))
-#define ITERATE_IXLIST( list, node )	\
-	for( node = (void *)((struct ixlist *)(list))->head ; \
-		node ; node = (void *)((struct ixnode *)(node))->next )
 
 #endif

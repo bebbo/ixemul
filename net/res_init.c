@@ -1,8 +1,8 @@
-/*      $NetBSD: res_init.c,v 1.8 1995/06/03 22:33:36 mycroft Exp $     */
+/*	$NetBSD: res_init.c,v 1.8 1995/06/03 22:33:36 mycroft Exp $	*/
 
 /*-
  * Copyright (c) 1985, 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_init.c  8.1 (Berkeley) 6/7/93";
+static char sccsid[] = "@(#)res_init.c	8.1 (Berkeley) 6/7/93";
 static char rcsid[] = "$Id: res_init.c,v 4.9.1.1 1993/05/02 22:43:03 vixie Rel ";
 #else
 static char rcsid[] = "$NetBSD: res_init.c,v 1.8 1995/06/03 22:33:36 mycroft Exp $";
@@ -157,7 +157,7 @@ int res_init()
 			continue;
 		/* read default domain name */
 		if (!strnicmp(buf, "domain", sizeof("domain") - 1)) {
-		    if (haveenv)        /* skip if have from environ */
+		    if (haveenv)	/* skip if have from environ */
 			    continue;
 		    cp = buf + sizeof("domain") - 1;
 		    while (*cp == ' ' || *cp == '\t')
@@ -178,7 +178,7 @@ int res_init()
 		    bzero(_res.lookups, sizeof _res.lookups);
 		    cp = buf + sizeof("lookup") - 1;
 		    for (n = 0;; cp++) {
-			    if (n == MAXDNSLUS)
+		    	    if (n == MAXDNSLUS)
 				    break;
 			    if ((*cp == '\0') || (*cp == '\n')) {
 				    if (sp) {
@@ -200,7 +200,7 @@ int res_init()
 		}
 		/* set search list */
 		if (!strnicmp(buf, "search", sizeof("search") - 1)) {
-		    if (haveenv)        /* skip if have from environ */
+		    if (haveenv)	/* skip if have from environ */
 			    continue;
 		    cp = buf + sizeof("search") - 1;
 		    while (*cp == ' ' || *cp == '\t')
@@ -370,7 +370,7 @@ res_setoptions(options, source)
 }
 
 static u_int32_t
-net_mask(in)            /* XXX - should really use system's version of this */
+net_mask(in)		/* XXX - should really use system's version of this */
 	struct in_addr in;
 {
 	register u_int32_t i = ntohl(in.s_addr);

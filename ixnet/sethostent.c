@@ -49,12 +49,12 @@ sethostent(stayopen)
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	SOCK_sethostent(stayopen);
-	return;
+        SOCK_sethostent(stayopen);
+        return;
     }
 
     if (stayopen && u.u_res)
-	u.u_res->options |= RES_STAYOPEN | RES_USEVC;
+        u.u_res->options |= RES_STAYOPEN | RES_USEVC;
 }
 
 void _res_close(void);
@@ -65,12 +65,12 @@ endhostent(void)
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	SOCK_endhostent();
-	return;
+        SOCK_endhostent();
+        return;
     }
     if (u.u_res)
       {
-	u.u_res->options &= ~(RES_STAYOPEN | RES_USEVC);
+        u.u_res->options &= ~(RES_STAYOPEN | RES_USEVC);
 	if (*u.u_res_socket != -1) {
 		extern int close(int);
 

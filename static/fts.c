@@ -1,8 +1,8 @@
-/*      $NetBSD: fts.c,v 1.12 1995/02/27 03:43:30 cgd Exp $     */
+/*	$NetBSD: fts.c,v 1.12 1995/02/27 03:43:30 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fts.c       8.4 (Berkeley) 4/16/94";
+static char sccsid[] = "@(#)fts.c	8.4 (Berkeley) 4/16/94";
 #else
 static char rcsid[] = "$NetBSD: fts.c,v 1.12 1995/02/27 03:43:30 cgd Exp $";
 #endif
@@ -52,29 +52,29 @@ static char rcsid[] = "$NetBSD: fts.c,v 1.12 1995/02/27 03:43:30 cgd Exp $";
 #include <string.h>
 #include <unistd.h>
 
-static FTSENT   *fts_alloc __P((FTS *, char *, int));
-static FTSENT   *fts_build __P((FTS *, int));
-static void      fts_lfree __P((FTSENT *));
-static void      fts_load __P((FTS *, FTSENT *));
-static size_t    fts_maxarglen __P((char * const *));
-static void      fts_padjust __P((FTS *, void *));
-static int       fts_palloc __P((FTS *, size_t));
-static FTSENT   *fts_sort __P((FTS *, FTSENT *, int));
-static u_short   fts_stat __P((FTS *, FTSENT *, int));
+static FTSENT	*fts_alloc __P((FTS *, char *, int));
+static FTSENT	*fts_build __P((FTS *, int));
+static void	 fts_lfree __P((FTSENT *));
+static void	 fts_load __P((FTS *, FTSENT *));
+static size_t	 fts_maxarglen __P((char * const *));
+static void	 fts_padjust __P((FTS *, void *));
+static int	 fts_palloc __P((FTS *, size_t));
+static FTSENT	*fts_sort __P((FTS *, FTSENT *, int));
+static u_short	 fts_stat __P((FTS *, FTSENT *, int));
 
-#define ISDOT(a)        (a[0] == '.' && (!a[1] || (a[1] == '.' && !a[2])))
+#define	ISDOT(a)	(a[0] == '.' && (!a[1] || (a[1] == '.' && !a[2])))
 
-#define CLR(opt)        (sp->fts_options &= ~(opt))
-#define ISSET(opt)      (sp->fts_options & (opt))
-#define SET(opt)        (sp->fts_options |= (opt))
+#define	CLR(opt)	(sp->fts_options &= ~(opt))
+#define	ISSET(opt)	(sp->fts_options & (opt))
+#define	SET(opt)	(sp->fts_options |= (opt))
 
-#define CHDIR(sp, path) (!ISSET(FTS_NOCHDIR) && chdir(path))
-#define FCHDIR(sp, fd)  (!ISSET(FTS_NOCHDIR) && fchdir(fd))
+#define	CHDIR(sp, path)	(!ISSET(FTS_NOCHDIR) && chdir(path))
+#define	FCHDIR(sp, fd)	(!ISSET(FTS_NOCHDIR) && fchdir(fd))
 
 /* fts_build flags */
-#define BCHILD          1               /* fts_children */
-#define BNAMES          2               /* fts_children, names only */
-#define BREAD           3               /* fts_read */
+#define	BCHILD		1		/* fts_children */
+#define	BNAMES		2		/* fts_children, names only */
+#define	BREAD		3		/* fts_read */
 
 FTS *
 fts_open(argv, options, compar)
@@ -177,10 +177,10 @@ fts_open(argv, options, compar)
 
 	return (sp);
 
-mem3:   fts_lfree(root);
+mem3:	fts_lfree(root);
 	free(parent);
-mem2:   free(sp->fts_path);
-mem1:   free(sp);
+mem2:	free(sp->fts_path);
+mem1:	free(sp);
 	return (NULL);
 }
 
@@ -259,8 +259,8 @@ fts_close(sp)
  * Special case a root of "/" so that slashes aren't appended which would
  * cause paths to be written as "//foo".
  */
-#define NAPPEND(p)                                                      \
-	(p->fts_level == FTS_ROOTLEVEL && p->fts_pathlen == 1 &&        \
+#define	NAPPEND(p)							\
+	(p->fts_level == FTS_ROOTLEVEL && p->fts_pathlen == 1 &&	\
 	    p->fts_path[0] == '/' ? 0 : p->fts_pathlen)
 
 FTSENT *
@@ -360,7 +360,7 @@ fts_read(sp)
 	}
 
 	/* Move to the next node on this level. */
-next:   tmp = p;
+next:	tmp = p;
 	if ((p = p->fts_link)) {
 		free(tmp);
 
@@ -396,7 +396,7 @@ next:   tmp = p;
 			p->fts_instr = FTS_NOINSTR;
 		}
 
-name:           t = sp->fts_path + NAPPEND(p->fts_parent);
+name:		t = sp->fts_path + NAPPEND(p->fts_parent);
 		*t++ = '/';
 		memmove(t, p->fts_name, p->fts_namelen + 1);
 		return (sp->fts_cur = p);
@@ -672,7 +672,7 @@ fts_build(sp, type)
 				 * errno, free up the current structure and the
 				 * structures already allocated.
 				 */
-mem1:                           saved_errno = errno;
+mem1:				saved_errno = errno;
 				if (p)
 					free(p);
 				fts_lfree(head);
@@ -827,7 +827,7 @@ fts_stat(sp, p, follow)
 		}
 	} else if (lstat(p->fts_accpath, sbp)) {
 		p->fts_errno = errno;
-err:            memset(sbp, 0, sizeof(struct stat));
+err:		memset(sbp, 0, sizeof(struct stat));
 		return (FTS_NS);
 	}
 
@@ -977,10 +977,10 @@ fts_padjust(sp, addr)
 {
 	FTSENT *p;
 
-#define ADJUST(p) {                                                     \
-	(p)->fts_accpath =                                              \
-	    (char *)addr + ((p)->fts_accpath - (p)->fts_path);          \
-	(p)->fts_path = addr;                                           \
+#define	ADJUST(p) {							\
+	(p)->fts_accpath =						\
+	    (char *)addr + ((p)->fts_accpath - (p)->fts_path);		\
+	(p)->fts_path = addr;						\
 }
 	/* Adjust the current set of children. */
 	for (p = sp->fts_child; p; p = p->fts_link)

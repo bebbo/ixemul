@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)random.c    5.7 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)random.c	5.7 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -26,7 +26,7 @@ static char sccsid[] = "@(#)random.c    5.7 (Berkeley) 6/1/90";
 
 /* ATTENTION: there are quite a few static variables in here that will
  *            during execution. But since this is a random-number generator,
- *            this can only make for better random-results ;-)) */
+ *	      this can only make for better random-results ;-)) */
 
 /*
  * random.c:
@@ -75,30 +75,30 @@ static char sccsid[] = "@(#)random.c    5.7 (Berkeley) 6/1/90";
  * the separation between the two lower order coefficients of the trinomial.
  */
 
-#define         TYPE_0          0               /* linear congruential */
-#define         BREAK_0         8
-#define         DEG_0           0
-#define         SEP_0           0
+#define		TYPE_0		0		/* linear congruential */
+#define		BREAK_0		8
+#define		DEG_0		0
+#define		SEP_0		0
 
-#define         TYPE_1          1               /* x**7 + x**3 + 1 */
-#define         BREAK_1         32
-#define         DEG_1           7
-#define         SEP_1           3
+#define		TYPE_1		1		/* x**7 + x**3 + 1 */
+#define		BREAK_1		32
+#define		DEG_1		7
+#define		SEP_1		3
 
-#define         TYPE_2          2               /* x**15 + x + 1 */
-#define         BREAK_2         64
-#define         DEG_2           15
-#define         SEP_2           1
+#define		TYPE_2		2		/* x**15 + x + 1 */
+#define		BREAK_2		64
+#define		DEG_2		15
+#define		SEP_2		1
 
-#define         TYPE_3          3               /* x**31 + x**3 + 1 */
-#define         BREAK_3         128
-#define         DEG_3           31
-#define         SEP_3           3
+#define		TYPE_3		3		/* x**31 + x**3 + 1 */
+#define		BREAK_3		128
+#define		DEG_3		31
+#define		SEP_3		3
 
-#define         TYPE_4          4               /* x**63 + x + 1 */
-#define         BREAK_4         256
-#define         DEG_4           63
-#define         SEP_4           1
+#define		TYPE_4		4		/* x**63 + x + 1 */
+#define		BREAK_4		256
+#define		DEG_4		63
+#define		SEP_4		1
 
 
 /*
@@ -106,28 +106,28 @@ static char sccsid[] = "@(#)random.c    5.7 (Berkeley) 6/1/90";
  * on fact that TYPE_i == i.
  */
 
-#define         MAX_TYPES       5               /* max number of types above */
+#define		MAX_TYPES	5		/* max number of types above */
 
-static  int             degrees[ MAX_TYPES ]    = { DEG_0, DEG_1, DEG_2,
+static  int		degrees[ MAX_TYPES ]	= { DEG_0, DEG_1, DEG_2,
 								DEG_3, DEG_4 };
 
-static  int             seps[ MAX_TYPES ]       = { SEP_0, SEP_1, SEP_2,
+static  int		seps[ MAX_TYPES ]	= { SEP_0, SEP_1, SEP_2,
 								SEP_3, SEP_4 };
 
 
 
 /*
  * Initially, everything is set up as if from :
- *              initstate( 1, &randtbl, 128 );
+ *		initstate( 1, &randtbl, 128 );
  * Note that this initialization takes advantage of the fact that srandom()
  * advances the front and rear pointers 10*rand_deg times, and hence the
  * rear pointer which starts at 0 will also end up at zero; thus the zeroeth
  * element of the state information, which contains info about the current
  * position of the rear pointer is just
- *      MAX_TYPES*(rptr - state) + TYPE_3 == TYPE_3.
+ *	MAX_TYPES*(rptr - state) + TYPE_3 == TYPE_3.
  */
 
-static  long            randtbl[ DEG_3 + 1 ]    = { TYPE_3,
+static  long		randtbl[ DEG_3 + 1 ]	= { TYPE_3,
 			    0x9a319039, 0x32d9c024, 0x9b663182, 0x5da1f342, 
 			    0xde3b81e0, 0xdf0a6fb5, 0xf103bc02, 0x48f340fb, 
 			    0x7449e56b, 0xbeb1dbb0, 0xab5c5918, 0x946554fd, 
@@ -143,14 +143,14 @@ static  long            randtbl[ DEG_3 + 1 ]    = { TYPE_3,
  * cyclically through the state information.  (Yes, this does mean we could get
  * away with just one pointer, but the code for random() is more efficient this
  * way).  The pointers are left positioned as they would be from the call
- *                      initstate( 1, randtbl, 128 )
+ *			initstate( 1, randtbl, 128 )
  * (The position of the rear pointer, rptr, is really 0 (as explained above
  * in the initialization of randtbl) because the state table pointer is set
  * to point to randtbl[1] (as explained below).
  */
 
-static  long            *fptr                   = &randtbl[ SEP_3 + 1 ];
-static  long            *rptr                   = &randtbl[ 1 ];
+static  long		*fptr			= &randtbl[ SEP_3 + 1 ];
+static  long		*rptr			= &randtbl[ 1 ];
 
 
 
@@ -166,13 +166,13 @@ static  long            *rptr                   = &randtbl[ 1 ];
  * the front and rear pointers have wrapped.
  */
 
-static  long            *state                  = &randtbl[ 1 ];
+static  long		*state			= &randtbl[ 1 ];
 
-static  int             rand_type               = TYPE_3;
-static  int             rand_deg                = DEG_3;
-static  int             rand_sep                = SEP_3;
+static  int		rand_type		= TYPE_3;
+static  int		rand_deg		= DEG_3;
+static  int		rand_sep		= SEP_3;
 
-static  long            *end_ptr                = &randtbl[ DEG_3 + 1 ];
+static  long		*end_ptr		= &randtbl[ DEG_3 + 1 ];
 
 
 
@@ -191,7 +191,7 @@ static  long            *end_ptr                = &randtbl[ DEG_3 + 1 ];
 
 void srandom(unsigned x)
 {
-	register  int           i, j;
+    	register  int		i, j;
 	long random();
 
 	if(  rand_type  ==  TYPE_0  )  {
@@ -230,11 +230,11 @@ void srandom(unsigned x)
 char  *
 initstate( seed, arg_state, n )
 
-    unsigned            seed;                   /* seed for R. N. G. */
-    char                *arg_state;             /* pointer to state array */
-    int                 n;                      /* # bytes of state info */
+    unsigned		seed;			/* seed for R. N. G. */
+    char		*arg_state;		/* pointer to state array */
+    int			n;			/* # bytes of state info */
 {
-	register  char          *ostate         = (char *)( &state[ -1 ] );
+	register  char		*ostate		= (char *)( &state[ -1 ] );
 
 	if(  rand_type  ==  TYPE_0  )  state[ -1 ] = rand_type;
 	else  state[ -1 ] = MAX_TYPES*(rptr - state) + rand_type;
@@ -273,8 +273,8 @@ initstate( seed, arg_state, n )
 		}
 	    }
 	}
-	state = &(  ( (long *)arg_state )[1]  );        /* first location */
-	end_ptr = &state[ rand_deg ];   /* must set end_ptr before srandom */
+	state = &(  ( (long *)arg_state )[1]  );	/* first location */
+	end_ptr = &state[ rand_deg ];	/* must set end_ptr before srandom */
 	srandom( seed );
 	if(  rand_type  ==  TYPE_0  )  state[ -1 ] = rand_type;
 	else  state[ -1 ] = MAX_TYPES*(rptr - state) + rand_type;
@@ -298,12 +298,12 @@ initstate( seed, arg_state, n )
 char  *
 setstate( arg_state )
 
-    char                *arg_state;
+    char		*arg_state;
 {
-	register  long          *new_state      = (long *)arg_state;
-	register  int           type            = new_state[0]%MAX_TYPES;
-	register  int           rear            = new_state[0]/MAX_TYPES;
-	char                    *ostate         = (char *)( &state[ -1 ] );
+	register  long		*new_state	= (long *)arg_state;
+	register  int		type		= new_state[0]%MAX_TYPES;
+	register  int		rear		= new_state[0]/MAX_TYPES;
+	char			*ostate		= (char *)( &state[ -1 ] );
 
 	if(  rand_type  ==  TYPE_0  )  state[ -1 ] = rand_type;
 	else  state[ -1 ] = MAX_TYPES*(rptr - state) + rand_type;
@@ -326,7 +326,7 @@ setstate( arg_state )
 	    rptr = &state[ rear ];
 	    fptr = &state[ (rear + rand_sep)%rand_deg ];
 	}
-	end_ptr = &state[ rand_deg ];           /* set end_ptr too */
+	end_ptr = &state[ rand_deg ];		/* set end_ptr too */
 	return( ostate );
 }
 
@@ -350,14 +350,14 @@ setstate( arg_state )
 long
 random()
 {
-	long            i;
+	long		i;
 	
 	if(  rand_type  ==  TYPE_0  )  {
 	    i = state[0] = ( state[0]*1103515245 + 12345 )&0x7fffffff;
 	}
 	else  {
 	    *fptr += *rptr;
-	    i = (*fptr >> 1)&0x7fffffff;        /* chucking least random bit */
+	    i = (*fptr >> 1)&0x7fffffff;	/* chucking least random bit */
 	    if(  ++fptr  >=  end_ptr  )  {
 		fptr = state;
 		++rptr;

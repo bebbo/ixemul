@@ -1,9 +1,9 @@
-/*      $NetBSD: utils.h,v 1.5 1995/02/27 13:29:59 cgd Exp $    */
+/*	$NetBSD: utils.h,v 1.5 1995/02/27 13:29:59 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1992, 1993, 1994 Henry Spencer.
  * Copyright (c) 1992, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Henry Spencer.
@@ -18,8 +18,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -36,24 +36,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)utils.h     8.3 (Berkeley) 3/20/94
+ *	@(#)utils.h	8.3 (Berkeley) 3/20/94
  */
 
 /* utility definitions */
-#define DUPMAX          _POSIX2_RE_DUP_MAX      /* xxx is this right? */
-#define INFINITY        (DUPMAX + 1)
-#define NC              (CHAR_MAX - CHAR_MIN + 1)
+#define	DUPMAX		_POSIX2_RE_DUP_MAX	/* xxx is this right? */
+#define	INFINITY	(DUPMAX + 1)
+#define	NC		(CHAR_MAX - CHAR_MIN + 1)
 typedef unsigned char uch;
 
 /* switch off assertions (if not already off) if no REDEBUG */
 #ifndef REDEBUG
 #ifndef NDEBUG
-#define NDEBUG  /* no assertions please */
+#define	NDEBUG	/* no assertions please */
 #endif
 #endif
 #include <assert.h>
 
 /* for old systems with bcopy() but no memmove() */
 #ifdef USEBCOPY
-#define memmove(d, s, c)        bcopy(s, d, c)
+#define	memmove(d, s, c)	bcopy(s, d, c)
 #endif

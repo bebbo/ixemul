@@ -93,11 +93,11 @@ static int _shmget(key_t key, int size, int shmflg)
       int error;
 
       if ((error = ipcperm(&cred, &ds->shm_perm, shmflg)) != 0)
-	errno_return(error, -1);
+        errno_return(error, -1);
       if (size && size > ds->shm_segsz)
-	errno_return(EINVAL, -1);
+        errno_return(EINVAL, -1);
       if ((shmflg & (IPC_CREAT | IPC_EXCL)) == (IPC_CREAT | IPC_EXCL))
-	errno_return(EEXIST, -1);
+        errno_return(EEXIST, -1);
       return IPC_SHMID(ds->shm_perm);
     }
   }
@@ -130,7 +130,7 @@ static void *_shmat(int shmid, char *shmaddr, int shmflg)
   if (shmaddr && shmaddr != ds->shm_internal)
     errno_return(EINVAL, (void *)-1);
   if ((error = ipcperm(&cred, &ds->shm_perm,
-		       (shmflg & SHM_RDONLY) ? IPC_R : IPC_R|IPC_W)))
+                       (shmflg & SHM_RDONLY) ? IPC_R : IPC_R|IPC_W)))
     errno_return(error, (void *)-1);
   ds->shm_lpid = getpid();
   ds->shm_atime = time(NULL);
@@ -225,23 +225,23 @@ static int _shmctl(int shmid, int cmd, struct shmid_ds *buf)
   {
     case IPC_STAT:
       if ((error = ipcperm(&cred, &ds->shm_perm, IPC_R)) != 0)
-	errno_return(error, -1);
+        errno_return(error, -1);
       *buf = *ds;
       return 0;
 
     case IPC_SET:
       if ((error = ipcperm(&cred, &ds->shm_perm, IPC_M)) != 0)
-	errno_return(error, -1);
+        errno_return(error, -1);
       ds->shm_perm.uid = buf->shm_perm.uid;
       ds->shm_perm.gid = buf->shm_perm.gid;
       ds->shm_perm.mode = (ds->shm_perm.mode & ~ACCESSPERMS) |
-		 (buf->shm_perm.mode & ACCESSPERMS);
+                 (buf->shm_perm.mode & ACCESSPERMS);
       ds->shm_ctime = time(NULL);
       return 0;
 
     case IPC_RMID:
       if ((error = ipcperm(&cred, &ds->shm_perm, IPC_M)) != 0)
-	errno_return(error, -1);
+        errno_return(error, -1);
       ds->shm_perm.key = IPC_PRIVATE;
       ds->shm_perm.mode |= SHMSEG_REMOVED;
       if (ds->shm_nattch <= 0)

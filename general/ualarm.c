@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)ualarm.c    5.4 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)ualarm.c	5.4 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -26,7 +26,7 @@ static char sccsid[] = "@(#)ualarm.c    5.4 (Berkeley) 6/1/90";
 
 #include <sys/time.h>
 
-#define USPS    1000000         /* # of microseconds in a second */
+#define	USPS	1000000		/* # of microseconds in a second */
 
 /*
  * Generate a SIGALRM signal in ``usecs'' microseconds.

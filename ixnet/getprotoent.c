@@ -54,15 +54,15 @@ setprotoent(int f)
     register int network_protocol = p->u_networkprotocol;
 
     if (network_protocol == IX_NETWORK_AMITCP) {
-	if (u.u_proto_fp == NULL)
-	    u.u_proto_fp = fopen(_TCP_PATH_PROTOCOLS, "r" );
-	else
-	    rewind(u.u_proto_fp);
-	u.u_proto_stayopen |= f;
+        if (u.u_proto_fp == NULL)
+            u.u_proto_fp = fopen(_TCP_PATH_PROTOCOLS, "r" );
+        else
+            rewind(u.u_proto_fp);
+        u.u_proto_stayopen |= f;
     }
     else /*if (network_protocol == IX_NETWORK_AS225) */ {
-	SOCK_setprotoent(f);
-	return;
+        SOCK_setprotoent(f);
+        return;
     }
 }
 
@@ -73,15 +73,15 @@ endprotoent(void)
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	SOCK_endprotoent();
-	return;
+        SOCK_endprotoent();
+        return;
     }
     else {
-	if (u.u_proto_fp) {
-	    fclose(u.u_proto_fp);
-	    u.u_proto_fp = NULL;
-	}
-	u.u_proto_stayopen = 0;
+        if (u.u_proto_fp) {
+            fclose(u.u_proto_fp);
+            u.u_proto_fp = NULL;
+        }
+        u.u_proto_stayopen = 0;
     }
 }
 
@@ -94,64 +94,64 @@ getprotoent(void)
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	return SOCK_getprotoent();
+        return SOCK_getprotoent();
     }
     else/* if (p->u_networkprotocol == IX_NETWORK_AMITCP)*/ {
-	if (u.u_proto_line == NULL)
-	  u.u_proto_line = malloc(BUFSIZ + 1);
-	if (u.u_proto_aliases == NULL)
-	  u.u_proto_aliases = malloc(MAXALIASES * sizeof(char *));
-	if (u.u_proto_line == NULL || u.u_proto_aliases == NULL)
-	  {
-	    errno = ENOMEM;
-	    return NULL;
-	  }
-	if (u.u_proto_fp == NULL && (u.u_proto_fp = fopen(_TCP_PATH_PROTOCOLS, "r" )) == NULL)
-	    return (NULL);
+        if (u.u_proto_line == NULL)
+          u.u_proto_line = malloc(BUFSIZ + 1);
+        if (u.u_proto_aliases == NULL)
+          u.u_proto_aliases = malloc(MAXALIASES * sizeof(char *));
+        if (u.u_proto_line == NULL || u.u_proto_aliases == NULL)
+          {
+            errno = ENOMEM;
+            return NULL;
+          }
+        if (u.u_proto_fp == NULL && (u.u_proto_fp = fopen(_TCP_PATH_PROTOCOLS, "r" )) == NULL)
+        return (NULL);
 again:
 
-	if ((s = fgets(u.u_proto_line, BUFSIZ, u.u_proto_fp)) == NULL)
-	    return (NULL);
+        if ((s = fgets(u.u_proto_line, BUFSIZ, u.u_proto_fp)) == NULL)
+            return (NULL);
 
-	if (*s == '#')
-	    goto again;
+        if (*s == '#')
+            goto again;
 
-	cp = strpbrk(s, "#\n");
-	if (cp == NULL)
-	    goto again;
+        cp = strpbrk(s, "#\n");
+        if (cp == NULL)
+            goto again;
 
-	*cp = '\0';
-	u.u_proto.p_name = s;
-	cp = strpbrk(s, " \t");
-	if (cp == NULL)
-	    goto again;
+        *cp = '\0';
+        u.u_proto.p_name = s;
+        cp = strpbrk(s, " \t");
+        if (cp == NULL)
+            goto again;
 
-	*cp++ = '\0';
-	while (*cp == ' ' || *cp == '\t')
-	    cp++;
+        *cp++ = '\0';
+        while (*cp == ' ' || *cp == '\t')
+            cp++;
 
-	s = strpbrk(cp, " \t");
-	if (s != NULL)
-	    *s++ = '\0';
+        s = strpbrk(cp, " \t");
+        if (s != NULL)
+            *s++ = '\0';
 
-	u.u_proto.p_proto = atoi(cp);
-	q = u.u_proto.p_aliases = u.u_proto_aliases;
-	if (s != NULL) {
-	    cp = s;
-	    while (cp && *cp) {
-		if (*cp == ' ' || *cp == '\t') {
-		    cp++;
-		    continue;
-		}
-		if (q < &u.u_proto_aliases[MAXALIASES - 1])
-		    *q++ = cp;
+        u.u_proto.p_proto = atoi(cp);
+        q = u.u_proto.p_aliases = u.u_proto_aliases;
+        if (s != NULL) {
+            cp = s;
+            while (cp && *cp) {
+                if (*cp == ' ' || *cp == '\t') {
+                    cp++;
+                    continue;
+                }
+                if (q < &u.u_proto_aliases[MAXALIASES - 1])
+                    *q++ = cp;
 
-		cp = strpbrk(cp, " \t");
-		if (cp != NULL)
-		    *cp++ = '\0';
-	    }
-	}
-	*q = NULL;
-	return (&u.u_proto);
+                cp = strpbrk(cp, " \t");
+                if (cp != NULL)
+                    *cp++ = '\0';
+            }
+        }
+        *q = NULL;
+        return (&u.u_proto);
     }
 }

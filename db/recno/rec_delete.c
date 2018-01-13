@@ -1,8 +1,8 @@
-/*      $NetBSD: rec_delete.c,v 1.8 1996/05/03 21:38:46 cgd Exp $       */
+/*	$NetBSD: rec_delete.c,v 1.8 1996/05/03 21:38:46 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rec_delete.c        8.7 (Berkeley) 7/14/94";
+static char sccsid[] = "@(#)rec_delete.c	8.7 (Berkeley) 7/14/94";
 #else
 static char rcsid[] = "$NetBSD: rec_delete.c,v 1.8 1996/05/03 21:38:46 cgd Exp $";
 #endif
@@ -59,12 +59,12 @@ static int rec_rdelete __P((BTREE *, recno_t));
  * __REC_DELETE -- Delete the item(s) referenced by a key.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key to delete
- *      flags:  R_CURSOR if deleting what the cursor references
+ *	dbp:	pointer to access method
+ *	key:	key to delete
+ *	flags:	R_CURSOR if deleting what the cursor references
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
  */
 int
 __rec_delete(dbp, key, flags)
@@ -103,7 +103,7 @@ __rec_delete(dbp, key, flags)
 			--t->bt_cursor.rcursor;
 		break;
 	default:
-einval:         errno = EINVAL;
+einval:		errno = EINVAL;
 		return (RET_ERROR);
 	}
 
@@ -116,11 +116,11 @@ einval:         errno = EINVAL;
  * REC_RDELETE -- Delete the data matching the specified key.
  *
  * Parameters:
- *      tree:   tree
- *      nrec:   record to delete
+ *	tree:	tree
+ *	nrec:	record to delete
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
  */
 static int
 rec_rdelete(t, nrec)
@@ -150,11 +150,11 @@ rec_rdelete(t, nrec)
  * __REC_DLEAF -- Delete a single record from a recno leaf page.
  *
  * Parameters:
- *      t:      tree
- *      index:  index on current page to delete
+ *	t:	tree
+ *	index:	index on current page to delete
  *
  * Returns:
- *      RET_SUCCESS, RET_ERROR.
+ *	RET_SUCCESS, RET_ERROR.
  */
 int
 __rec_dleaf(t, h, index)

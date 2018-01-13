@@ -1,8 +1,8 @@
-/*      $NetBSD: search.h,v 1.6 1996/05/03 21:44:01 cgd Exp $   */
+/*	$NetBSD: search.h,v 1.6 1996/05/03 21:44:01 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)search.h    8.1 (Berkeley) 6/4/93
+ *	@(#)search.h	8.1 (Berkeley) 6/4/93
  */
 
 /* Backward compatibility to hsearch interface. */
@@ -48,6 +48,6 @@ typedef enum {
 	FIND, ENTER
 } ACTION;
 
-int      hcreate __P((unsigned int));
-void     hdestroy __P((void));
-ENTRY   *hsearch __P((ENTRY, ACTION));
+int	 hcreate __P((unsigned int));
+void	 hdestroy __P((void));
+ENTRY	*hsearch __P((ENTRY, ACTION));

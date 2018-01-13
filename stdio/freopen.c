@@ -1,8 +1,8 @@
-/*      $NetBSD: freopen.c,v 1.4 1995/02/02 02:09:36 jtc Exp $  */
+/*	$NetBSD: freopen.c,v 1.4 1995/02/02 02:09:36 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)freopen.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)freopen.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: freopen.c,v 1.4 1995/02/02 02:09:36 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -83,7 +83,7 @@ freopen(file, mode, fp)
 	 * should work.  This is unnecessary if it was not a Unix file.
 	 */
 	if (fp->_flags == 0) {
-		fp->_flags = __SEOF;    /* hold on to it */
+		fp->_flags = __SEOF;	/* hold on to it */
 		isopen = 0;
 		wantfd = -1;
 	} else {
@@ -132,9 +132,9 @@ freopen(file, mode, fp)
 		FREELB(fp);
 	fp->_lb._size = 0;
 
-	if (f < 0) {                    /* did not get it after all */
-		fp->_flags = 0;         /* set it free */
-		errno = sverrno;        /* restore in case _close clobbered */
+	if (f < 0) {			/* did not get it after all */
+		fp->_flags = 0;		/* set it free */
+		errno = sverrno;	/* restore in case _close clobbered */
 		return (NULL);
 	}
 
@@ -157,6 +157,5 @@ freopen(file, mode, fp)
 	fp->_write = __swrite;
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
-	//fp->_file_struct = u.u_ofile[f];
 	return (fp);
 }

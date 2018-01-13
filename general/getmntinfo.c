@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getmntinfo.c        6.4 (Berkeley) 2/23/91";
+static char sccsid[] = "@(#)getmntinfo.c	6.4 (Berkeley) 2/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -54,7 +54,7 @@ getmntinfo(mntbufp, flags)
 	struct statfs **mntbufp;
 	int flags;
 {
-	usetup;
+        usetup;
 
 	if (mntsize <= 0 && (mntsize = syscall(SYS_getfsstat, 0, 0, MNT_NOWAIT)) < 0)
 		return (0);

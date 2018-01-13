@@ -1,30 +1,18 @@
-Fri May 29 21:46:58 2009  [ixprefs]      (diegocr[at]users.sf.net)
+2001-04-26  David Zaroski  <dez@gg.geekgadgets.org>
 
-	* Updated to version 2.8
-	* Added options which control how malloc() should react when 
-	  running out of memory.
-	* Added a button which launches a external program to the
-	  Task's Blacklisting management, it's currently made using MUI,
-	  and loaded from SYS:Prefs/ixbl_MUI (either via WBRun if it's 
-	  found, or falling back to 'C:Run <>NIL:')
+	* Added the following changes made by Kriton Kyrimis:
+	* Changed the text of the "Check stack usage" button to
+	  "Show stack usage", to agree with the command line version of
+	  the
+	  option and the actual function of the option.
+	* Added the desription of the "Show stack usage option" in the
+	  documentation.
 
-Wed Mar 15 19:55:49 2006  [ipcrm]       (sintonen[at]iki.fi)
+2001-03-31  David Zaroski  <dez@gg.geekgadgets.org>
 
-	* Fixed wrong format for warn(), %skey not %key.
+	* pos.c: Removed
 
-Wed Mar 15 19:19:27 2006  [ixstack]     (sintonen[at]iki.fi)
-
-	* Updated revision number to 1.2
-	* Fixed several race conditions from ixstack -s.
-
-Wed Feb  8 19:13:14 2006  [ixpipe-handler] (sintonen[at]iki.fi)
-
-	* Updated revision number to 1.2
-	* Fixed sm_Process to point to process pr_MsgPort and not the
-	  process itself.
-	* Fixed ACTION_READ_LINK to return proper error dp_Res1 (-1).
-
-Wed Jul  2 23:09:39 1997  [ixtrace]   	(cz253[at]cleveland.freenet.edu)
+Wed Jul  2 23:09:39 1997  [ixtrace]   	(cz253@cleveland.freenet.edu)
 
 	* Updated revision number to 1.470
 	* The following changes were made to ixtrace.h:
@@ -69,7 +57,7 @@ Wed Jul  2 23:09:39 1997  [ixtrace]   	(cz253[at]cleveland.freenet.edu)
 	  606: msgrcv			(added)
 	  607: msgsnd			(added)
 
-Fri Dec  6 20:11:05 1996  [ixtrace]     (cz253[at]cleveland.freenet.edu)
+Fri Dec  6 20:11:05 1996  [ixtrace]     (cz253@cleveland.freenet.edu)
 
 	* Updated ixtrace revision number to 1.451 to reflect the current
 	  version of ixemul.library 
@@ -83,7 +71,7 @@ Fri Dec  6 20:11:05 1996  [ixtrace]     (cz253[at]cleveland.freenet.edu)
 		576:pclose		(added)
 
 
-Mon Oct 14 23:12:59 1996  [ixtrace]	(cz253[at]cleveland.freenet.edu)
+Mon Oct 14 23:12:59 1996  [ixtrace]	(cz253@cleveland.freenet.edu)
 
 	* Updated ixtrace.c revision number to 1.42
 
@@ -91,13 +79,13 @@ Mon Oct 14 23:12:59 1996  [ixtrace]	(cz253[at]cleveland.freenet.edu)
 	  	571:__stkext_startup
 
 
-Tue Sep 24 00:35:00 GMT 1996  [ixtrace] (cz253[at]cleveland.freenet.edu)
+Tue Sep 24 00:35:00 GMT 1996  [ixtrace] (cz253@cleveland.freenet.edu)
 
 	*  Added '-w' option. Allows user to enter a list of syscalls
 	   that are to be ignored or ones they wish to Wipe out.
 
 
-Mon Aug 12 13:43:20 GMT 1996  [ixtrace] (cz253[at]cleveland.freenet.edu)
+Mon Aug 12 13:43:20 GMT 1996  [ixtrace] (cz253@cleveland.freenet.edu)
 
 	*  Updated the revision number of ixtrace to 1.4
 	*  The following were changed in ixtrace.h

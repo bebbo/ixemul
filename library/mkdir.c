@@ -15,13 +15,22 @@
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  mkdir.c,v 1.1.1.1 1994/04/04 04:30:30 amiga Exp
+ *
+ *  mkdir.c,v
+ * Revision 1.1.1.1  1994/04/04  04:30:30  amiga
+ * Initial CVS check in.
+ *
+ *  Revision 1.1  1992/05/14  19:55:40  mwild
+ *  Initial revision
+ *
  */
 
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
 
-#if 0
 static int
 __mkdir_func (struct lockinfo *info, void *dummy, int *error)
 {
@@ -36,7 +45,7 @@ __mkdir_func (struct lockinfo *info, void *dummy, int *error)
   info->result = sp->sp_Pkt.dp_Res1;
 
   *error = info->result == 0;
-
+    
   /* continue if we failed because of symlink - reference */
   return 1;
 }
@@ -49,9 +58,9 @@ mkdir (const char *path, mode_t perm)
   int result = -1;
   int omask;
   usetup;
-
+ 
   /* protect the obtained lock, we have to free it later */
-  omask = syscall (SYS_sigsetmask, ~0);
+  omask = syscall (SYS_sigsetmask, ~0);  
   lock = __plock (path, __mkdir_func, 0);
 
   if (lock)
@@ -60,13 +69,13 @@ mkdir (const char *path, mode_t perm)
       result = syscall (SYS_chmod, path, (int)(perm & ~u.u_cmask));
 
       if (!muBase)
-	{
-	  uid_t uid = geteuid();
-	  gid_t gid = getegid();
+        {
+          uid_t uid = geteuid();
+          gid_t gid = getegid();
 
-	  if (uid != (uid_t)(-2) || gid != (gid_t)(-2))
-	    syscall (SYS_chown, path, uid, gid);
-	}
+          if (uid != (uid_t)(-2) || gid != (gid_t)(-2))
+            syscall (SYS_chown, path, uid, gid);
+        }
     }
   syscall (SYS_sigsetmask, omask);
 
@@ -74,62 +83,3 @@ mkdir (const char *path, mode_t perm)
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
   return result;
 }
-
-#else
-
-char *ix_to_ados(char *, const char *);
-char *check_root(char *);
-
-int
-mkdir (const char *path, mode_t perm)
-{
-  BPTR lock;
-  int result = -1;
-  int omask;
-  usetup;
-  char *buf = alloca(strlen(path) + 4);
-  LONG err;
-
-  buf = ix_to_ados(buf, path);
-
-  /* protect the obtained lock, we have to free it later */
-  omask = syscall (SYS_sigsetmask, ~0);
-  lock = CreateDir (buf);
-
-  if (!lock)
-    {
-      err = IoErr();
-      if (err == ERROR_OBJECT_NOT_FOUND)
-	{
-	  buf = check_root(buf);
-	  if (buf && *buf)
-	    {
-	      lock = CreateDir (buf);
-	      if (!lock)
-		err = IoErr();
-	    }
-	}
-    }
-
-  if (lock)
-    {
-      UnLock (lock);
-      result = syscall (SYS_chmod, path, (int)(perm & ~u.u_cmask));
-
-      if (!muBase)
-	{
-	  uid_t uid = geteuid();
-	  gid_t gid = getegid();
-
-	  if (uid != (uid_t)(-2) || gid != (gid_t)(-2))
-	    syscall (SYS_chown, path, uid, gid);
-	}
-    }
-  syscall (SYS_sigsetmask, omask);
-
-  errno = __ioerr_to_errno (err);
-  KPRINTF (("mkdir(%s): &errno = %lx, errno = %ld\n", path, &errno, errno));
-  return result;
-}
-
-#endif

@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_delete.c,v 1.7 1996/05/03 21:50:44 cgd Exp $        */
+/*	$NetBSD: bt_delete.c,v 1.7 1996/05/03 21:50:44 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_delete.c 8.13 (Berkeley) 7/28/94";
+static char sccsid[] = "@(#)bt_delete.c	8.13 (Berkeley) 7/28/94";
 #else
 static char rcsid[] = "$NetBSD: bt_delete.c,v 1.7 1996/05/03 21:50:44 cgd Exp $";
 #endif
@@ -61,7 +61,7 @@ static int __bt_stkacq __P((BTREE *, PAGE **, CURSOR *));
 
 /*
  * __bt_delete
- *      Delete the item(s) referenced by a key.
+ *	Delete the item(s) referenced by a key.
  *
  * Return RET_SPECIAL if the key is not found.
  */
@@ -136,15 +136,15 @@ __bt_delete(dbp, key, flags)
 
 /*
  * __bt_stkacq --
- *      Acquire a stack so we can delete a cursor entry.
+ *	Acquire a stack so we can delete a cursor entry.
  *
  * Parameters:
- *        t:    tree
- *       hp:    pointer to current, pinned PAGE pointer
- *        c:    pointer to the cursor
+ *	  t:	tree
+ *	 hp:	pointer to current, pinned PAGE pointer
+ *	  c:	pointer to the cursor
  *
  * Returns:
- *      0 on success, 1 on failure
+ *	0 on success, 1 on failure
  */
 static int
 __bt_stkacq(t, hp, c)
@@ -278,20 +278,20 @@ __bt_stkacq(t, hp, c)
 	}
 	
 
-ret:    mpool_put(t->bt_mp, h, 0);
+ret:	mpool_put(t->bt_mp, h, 0);
 	return ((*hp = mpool_get(t->bt_mp, c->pg.pgno, 0)) == NULL);
 }
 
 /*
  * __bt_bdelete --
- *      Delete all key/data pairs matching the specified key.
+ *	Delete all key/data pairs matching the specified key.
  *
  * Parameters:
- *        t:    tree
- *      key:    key to delete
+ *	  t:	tree
+ *	key:	key to delete
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
  */
 static int
 __bt_bdelete(t, key)
@@ -305,7 +305,7 @@ __bt_bdelete(t, key)
 	deleted = 0;
 
 	/* Find any matching record; __bt_search pins the page. */
-loop:   if ((e = __bt_search(t, key, &exact)) == NULL)
+loop:	if ((e = __bt_search(t, key, &exact)) == NULL)
 		return (deleted ? RET_SUCCESS : RET_ERROR);
 	if (!exact) {
 		mpool_put(t->bt_mp, e->page, 0);
@@ -368,17 +368,17 @@ loop:   if ((e = __bt_search(t, key, &exact)) == NULL)
 
 /*
  * __bt_pdelete --
- *      Delete a single page from the tree.
+ *	Delete a single page from the tree.
  *
  * Parameters:
- *      t:      tree
- *      h:      leaf page
+ *	t:	tree
+ *	h:	leaf page
  *
  * Returns:
- *      RET_SUCCESS, RET_ERROR.
+ *	RET_SUCCESS, RET_ERROR.
  *
  * Side-effects:
- *      mpool_put's the page
+ *	mpool_put's the page
  */
 static int
 __bt_pdelete(t, h)
@@ -465,16 +465,16 @@ __bt_pdelete(t, h)
 
 /*
  * __bt_dleaf --
- *      Delete a single record from a leaf page.
+ *	Delete a single record from a leaf page.
  *
  * Parameters:
- *      t:      tree
- *    key:      referenced key
- *      h:      page
- *      index:  index on page to delete
+ *	t:	tree
+ *    key:	referenced key
+ *	h:	page
+ *	index:	index on page to delete
  *
  * Returns:
- *      RET_SUCCESS, RET_ERROR.
+ *	RET_SUCCESS, RET_ERROR.
  */
 int
 __bt_dleaf(t, key, h, index)
@@ -530,16 +530,16 @@ __bt_dleaf(t, key, h, index)
 
 /*
  * __bt_curdel --
- *      Delete the cursor.
+ *	Delete the cursor.
  *
  * Parameters:
- *      t:      tree
- *    key:      referenced key (or NULL)
- *      h:      page
- *  index:      index on page to delete
+ *	t:	tree
+ *    key:	referenced key (or NULL)
+ *	h:	page
+ *  index:	index on page to delete
  *
  * Returns:
- *      RET_SUCCESS, RET_ERROR.
+ *	RET_SUCCESS, RET_ERROR.
  */
 static int
 __bt_curdel(t, key, h, index)
@@ -614,8 +614,8 @@ __bt_curdel(t, key, h, index)
 			e.index = 0;
 			if (__bt_cmp(t, key, &e) == 0) {
 				F_SET(c, CURS_AFTER);
-dup1:                           mpool_put(t->bt_mp, pg, 0);
-dup2:                           c->pg.pgno = e.page->pgno;
+dup1:				mpool_put(t->bt_mp, pg, 0);
+dup2:				c->pg.pgno = e.page->pgno;
 				c->pg.index = e.index;
 				return (RET_SUCCESS);
 			}
@@ -634,11 +634,11 @@ dup2:                           c->pg.pgno = e.page->pgno;
 
 /*
  * __bt_relink --
- *      Link around a deleted page.
+ *	Link around a deleted page.
  *
  * Parameters:
- *      t:      tree
- *      h:      page to be deleted
+ *	t:	tree
+ *	h:	page to be deleted
  */
 static int
 __bt_relink(t, h)

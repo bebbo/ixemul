@@ -17,7 +17,7 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/* Written and Copyright by Ray Burr.
+/* Written and Copyright by Ray Burr. 
  * Put under the GNU Library General Public License.
  * Thanks Ray !
  */
@@ -89,7 +89,7 @@ _GetPathFromLock (BPTR lock, char *buffer, int buffer_length)
 	}
       else
 	{
-	  p = buffer + buffer_length - 1;       /* fix 20-jan-92 ## mw */
+	  p = buffer + buffer_length - 1;	/* fix 20-jan-92 ## mw */
 	  *p = '\0';
 	  if (next_fl == 0L)
 	    *--p = ':';
@@ -100,9 +100,6 @@ _GetPathFromLock (BPTR lock, char *buffer, int buffer_length)
 	{
 	  if (next_fl != 0L)
 	    UnLock (next_fl);
-
-	  /* Remember to set errno! - Piru */
-	  errno = ERANGE;
 	  goto ret;
 	}
       bcopy (fib->fib_FileName, p, length);
@@ -131,90 +128,48 @@ _get_pwd (char *buffer, int buffer_length)
 
   if (u.u_is_root)
     {
-      if (buffer_length < 2)
-	{
-	  errno = ERANGE;
-	  return 0L;
-	}
-
       strcpy(buffer, "/");
       return buffer;
     }
 
-  proc = (struct Process *) SysBase->ThisTask;
+  proc = (struct Process *) FindTask (0L);
 
   /* Just return an empty string if this is not a process. */
 
   if (proc == 0L || proc->pr_Task.tc_Node.ln_Type != NT_PROCESS)
     {
-      if (buffer_length < 2)
-	{
-	  errno = ERANGE;
-	  return 0L;
-	}
-
       buffer[0] = '\0';
       return buffer;
     }
 
   /* make room for slash */
   if (ix.ix_flags & ix_translate_slash)
-    {
-      if (buffer_length < 1)
-	{
-	  errno = ERANGE;
-	  return 0L;
-	}
+    buffer++;
 
-      buffer++;
-
-      /* 6-Aug-2003 bugfix: MUST sub the size by one, too, or else we
-       * could trash innocent memory. - Piru
-       */
-      buffer_length--;
-    }
-
-  /* try NameFromLock first as GetCurrentDirName is limited by
-     CommandLineInterface size. - Piru */
-  if (NameFromLock(proc->pr_CurrentDir, buffer, buffer_length) ||
-      GetCurrentDirName (buffer, buffer_length))
+  if (GetCurrentDirName (buffer, buffer_length) ||
+      NameFromLock((BPTR)proc->pr_CurrentDir, buffer, buffer_length))
     {
       result = buffer;
+      goto returnit;
     }
-  else
-    {
-      /* and as the last chance resort to the 1.3 algorithm */
+  /* and as the last chance resort to the 1.3 algorithm */
 
-      result = _GetPathFromLock(proc->pr_CurrentDir, buffer, buffer_length);
-    }
+  result = _GetPathFromLock((BPTR)proc->pr_CurrentDir, buffer, buffer_length);
 
-#if 1
-  /* hack, convert "Ram Disk:" -> "RAM:" */
-  if (result && !strncasecmp(result, "Ram Disk:", 9))
-    {
-      memcpy(result, "RAM:", 4);
-      bcopy(result + 9, result + 4, strlen(result + 9) + 1);
-    }
-#endif
-
+returnit:
   if ((ix.ix_flags & ix_translate_slash) && result)
     {
       colon = index (result, ':');
       if (colon)
-	{
+        {
 	  *colon = '/';
-	  result--;
-	  result[0] = '/';
+          result--;
+          result[0] = '/';
 	  return result;
-	}
+        }
 
        bcopy (result, result - 1, strlen (result) + 1);
        return result - 1;
-    }
-
-  if (!result && IoErr() == ERROR_LINE_TOO_LONG)
-    {
-      errno = ERANGE;
     }
 
   return result;
@@ -246,26 +201,10 @@ getcwd (char *buffer, size_t buffer_length)
 
   if (buffer == 0L)
     {
-      if (buffer_length == 0)
-	{
-	  /* Lame implementation of this extension, feel free to improve. */
-	  buffer_length = 254;
-	}
-
-      /* Could be  buffer_length as is IMO - Piru */
       buffer = (char *) syscall (SYS_malloc, buffer_length + 2);
       if (buffer == 0L)
 	{
 	  errno = ENOMEM;
-	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	  return 0L;
-	}
-    }
-  else
-    {
-      if (buffer_length == 0)
-	{
-	  errno = EINVAL;
 	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 	  return 0L;
 	}

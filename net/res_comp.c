@@ -1,8 +1,8 @@
-/*      $NetBSD: res_comp.c,v 1.6 1995/02/25 06:20:55 cgd Exp $ */
+/*	$NetBSD: res_comp.c,v 1.6 1995/02/25 06:20:55 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1985, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_comp.c  8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)res_comp.c	8.1 (Berkeley) 6/4/93";
 static char rcsid[] = "$Id: res_comp.c,v 4.9.1.1 1993/05/02 22:43:03 vixie Rel ";
 #else
 static char rcsid[] = "$NetBSD: res_comp.c,v 1.6 1995/02/25 06:20:55 cgd Exp $";
@@ -115,7 +115,7 @@ dn_expand(msg, eomorig, comp_dn, exp_dn, length)
 					*dn++ = '\\';
 				}
 				*dn++ = c;
-				if (cp >= eomorig)      /* out of range */
+				if (cp >= eomorig)	/* out of range */
 					return(-1);
 			}
 			break;
@@ -124,7 +124,7 @@ dn_expand(msg, eomorig, comp_dn, exp_dn, length)
 			if (len < 0)
 				len = cp - comp_dn + 1;
 			cp = (u_char *)msg + (((n & 0x3f) << 8) | (*cp & 0xff));
-			if (cp < msg || cp >= eomorig)  /* out of range */
+			if (cp < msg || cp >= eomorig)	/* out of range */
 				return(-1);
 			checked += 2;
 			/*
@@ -137,7 +137,7 @@ dn_expand(msg, eomorig, comp_dn, exp_dn, length)
 			break;
 
 		default:
-			return (-1);                    /* flag error */
+			return (-1);			/* flag error */
 		}
 	}
 	*dn = '\0';
@@ -176,7 +176,7 @@ dn_comp(exp_dn, comp_dn, length, dnptrs, lastdnptr)
 		if ((msg = *dnptrs++) != NULL) {
 			for (cpp = dnptrs; *cpp != NULL; cpp++)
 				;
-			lpp = cpp;      /* end of list to search */
+			lpp = cpp;	/* end of list to search */
 		}
 	} else
 		msg = NULL;
@@ -196,7 +196,7 @@ dn_comp(exp_dn, comp_dn, length, dnptrs, lastdnptr)
 				*cpp = NULL;
 			}
 		}
-		sp = cp++;      /* save ptr to length byte */
+		sp = cp++;	/* save ptr to length byte */
 		do {
 			if (c == '.') {
 				c = *dn++;
@@ -250,13 +250,13 @@ __dn_skipname(comp_dn, eom)
 		 * check for indirection
 		 */
 		switch (n & INDIR_MASK) {
-		case 0:                 /* normal case, n == len */
+		case 0:			/* normal case, n == len */
 			cp += n;
 			continue;
-		case INDIR_MASK:        /* indirection */
+		case INDIR_MASK:	/* indirection */
 			cp++;
 			break;
-		default:                /* illegal type */
+		default:		/* illegal type */
 			return (-1);
 		}
 		break;
@@ -289,7 +289,7 @@ dn_find(exp_dn, msg, dnptrs, lastdnptr)
 			 * check for indirection
 			 */
 			switch (n & INDIR_MASK) {
-			case 0:         /* normal case, n == len */
+			case 0:		/* normal case, n == len */
 				while (--n >= 0) {
 					if (*dn == '.')
 						goto next;
@@ -304,16 +304,16 @@ dn_find(exp_dn, msg, dnptrs, lastdnptr)
 					continue;
 				goto next;
 
-			default:        /* illegal type */
+			default:	/* illegal type */
 				return (-1);
 
-			case INDIR_MASK:        /* indirection */
+			case INDIR_MASK:	/* indirection */
 				cp = msg + (((n & 0x3f) << 8) | *cp);
 			}
 		}
 		if (*dn == '\0')
 			return (sp - msg);
-	next:   ;
+	next:	;
 	}
 	return (-1);
 }

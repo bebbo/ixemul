@@ -3,14 +3,14 @@
  * (Modifications made here may easily be lost!)
  *
  * Created from the file:
- *      NetBSD: vnode_if.src,v 1.10 1996/05/11 18:26:27 mycroft Exp 
+ *	NetBSD: vnode_if.src,v 1.10 1996/05/11 18:26:27 mycroft Exp 
  * by the script:
- *      NetBSD: vnode_if.sh,v 1.9 1996/02/29 20:58:22 cgd Exp 
+ *	NetBSD: vnode_if.sh,v 1.9 1996/02/29 20:58:22 cgd Exp 
  */
 
 /*
  * Copyright (c) 1992, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -22,8 +22,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.

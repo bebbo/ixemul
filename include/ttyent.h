@@ -1,4 +1,4 @@
-/*      $NetBSD: ttyent.h,v 1.5 1994/10/26 00:56:36 cgd Exp $   */
+/*	$NetBSD: ttyent.h,v 1.5 1994/10/26 00:56:36 cgd Exp $	*/
 
 /*
  * Copyright (c) 1989 The Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,36 +32,36 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)ttyent.h    5.7 (Berkeley) 4/3/91
+ *	@(#)ttyent.h	5.7 (Berkeley) 4/3/91
  */
 
-#ifndef _TTYENT_H_
-#define _TTYENT_H_
+#ifndef	_TTYENT_H_
+#define	_TTYENT_H_
 
-#define _PATH_TTYS      "/etc/ttys"
+#define	_PATH_TTYS	"/etc/ttys"
 
-#define _TTYS_OFF       "off"
-#define _TTYS_ON        "on"
-#define _TTYS_SECURE    "secure"
-#define _TTYS_WINDOW    "window"
-#define _TTYS_LOCAL     "local"
-#define _TTYS_RTSCTS    "rtscts"
-#define _TTYS_SOFTCAR   "softcar"
-#define _TTYS_MDMBUF    "mdmbuf"
+#define	_TTYS_OFF	"off"
+#define	_TTYS_ON	"on"
+#define	_TTYS_SECURE	"secure"
+#define	_TTYS_WINDOW	"window"
+#define	_TTYS_LOCAL	"local"
+#define	_TTYS_RTSCTS	"rtscts"
+#define	_TTYS_SOFTCAR	"softcar"
+#define	_TTYS_MDMBUF	"mdmbuf"
 
 struct ttyent {
-	char    *ty_name;       /* terminal device name */
-	char    *ty_getty;      /* command to execute, usually getty */
-	char    *ty_type;       /* terminal type for termcap */
-#define TTY_ON          0x01    /* enable logins (start ty_getty program) */
-#define TTY_SECURE      0x02    /* allow uid of 0 to login */
-#define TTY_LOCAL       0x04    /* set 'CLOCAL' on open (dev. specific) */
-#define TTY_RTSCTS      0x08    /* set 'CRTSCTS' on open (dev. specific) */
-#define TTY_SOFTCAR     0x10    /* ignore hardware carrier (dev. spec.) */
-#define TTY_MDMBUF      0x20    /* set 'MDMBUF' on open (dev. specific) */
-	int     ty_status;      /* status flags */
-	char    *ty_window;     /* command to start up window manager */
-	char    *ty_comment;    /* comment field */
+	char	*ty_name;	/* terminal device name */
+	char	*ty_getty;	/* command to execute, usually getty */
+	char	*ty_type;	/* terminal type for termcap */
+#define	TTY_ON		0x01	/* enable logins (start ty_getty program) */
+#define	TTY_SECURE	0x02	/* allow uid of 0 to login */
+#define	TTY_LOCAL	0x04	/* set 'CLOCAL' on open (dev. specific) */
+#define	TTY_RTSCTS	0x08	/* set 'CRTSCTS' on open (dev. specific) */
+#define	TTY_SOFTCAR	0x10	/* ignore hardware carrier (dev. spec.) */
+#define	TTY_MDMBUF	0x20	/* set 'MDMBUF' on open (dev. specific) */
+	int	ty_status;	/* status flags */
+	char 	*ty_window;	/* command to start up window manager */
+	char	*ty_comment;	/* comment field */
 };
 
 #include <sys/cdefs.h>

@@ -1,8 +1,8 @@
-/*      $NetBSD: pwcache.c,v 1.5 1995/05/13 06:58:23 jtc Exp $  */
+/*	$NetBSD: pwcache.c,v 1.5 1995/05/13 06:58:23 jtc Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)pwcache.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)pwcache.c	8.1 (Berkeley) 6/4/93";
 #else
 static char rcsid[] = "$NetBSD: pwcache.c,v 1.5 1995/05/13 06:58:23 jtc Exp $";
 #endif
@@ -49,8 +49,8 @@ static char rcsid[] = "$NetBSD: pwcache.c,v 1.5 1995/05/13 06:58:23 jtc Exp $";
 #include <string.h>
 #include <utmp.h>
 
-#define NCACHE  64                      /* power of 2 */
-#define MASK    NCACHE - 1              /* bits to store with */
+#define	NCACHE	64			/* power of 2 */
+#define	MASK	NCACHE - 1		/* bits to store with */
 
 char *
 user_from_uid(uid, nouser)
@@ -58,11 +58,11 @@ user_from_uid(uid, nouser)
 	int nouser;
 {
 	static struct ncache {
-		uid_t   uid;
-		char    name[UT_NAMESIZE + 1];
+		uid_t	uid;
+		char	name[UT_NAMESIZE + 1];
 	} c_uid[NCACHE];
 	static int pwopen;
-	static char nbuf[15];           /* 32 bits == 10 digits */
+	static char nbuf[15];		/* 32 bits == 10 digits */
 	register struct passwd *pw;
 	register struct ncache *cp;
 
@@ -91,11 +91,11 @@ group_from_gid(gid, nogroup)
 	int nogroup;
 {
 	static struct ncache {
-		gid_t   gid;
-		char    name[UT_NAMESIZE + 1];
+		gid_t	gid;
+		char	name[UT_NAMESIZE + 1];
 	} c_gid[NCACHE];
 	static int gropen;
-	static char nbuf[15];           /* 32 bits == 10 digits */
+	static char nbuf[15];		/* 32 bits == 10 digits */
 	struct group *gr;
 	struct ncache *cp;
 

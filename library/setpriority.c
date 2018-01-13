@@ -51,7 +51,7 @@ setpriority(int which, int who, int prio)
 
   if (which == PRIO_USER || who == 0)
     {
-      struct Task *myself = (struct Task *)SysBase->ThisTask;
+      struct Task *myself = (struct Task *)FindTask(0);
       /* in this case I ignore the 'which' argument, and just set
        * my own Priority */
       SetTaskPri(myself, -prio);
@@ -68,7 +68,7 @@ setpriority(int which, int who, int prio)
       struct Task *task = (struct Task *)who;
       /* it must have a node-type of either NT_PROCESS or NT_TASK */
       if (task->tc_Node.ln_Type == NT_PROCESS ||
-	  task->tc_Node.ln_Type == NT_TASK)
+          task->tc_Node.ln_Type == NT_TASK)
 	{
 	  /* so we have to believe, this is really a task */
 	  SetTaskPri(task, -prio);

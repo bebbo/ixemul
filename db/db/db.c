@@ -1,8 +1,8 @@
-/*      $NetBSD: db.c,v 1.7 1995/02/27 13:21:27 cgd Exp $       */
+/*	$NetBSD: db.c,v 1.7 1995/02/27 13:21:27 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)db.c        8.4 (Berkeley) 2/21/94";
+static char sccsid[] = "@(#)db.c	8.4 (Berkeley) 2/21/94";
 #else
 static char rcsid[] = "$NetBSD: db.c,v 1.7 1995/02/27 13:21:27 cgd Exp $";
 #endif
@@ -58,9 +58,9 @@ dbopen(fname, flags, mode, type, openinfo)
 	const void *openinfo;
 {
 
-#define DB_FLAGS        (DB_LOCK | DB_SHMEM | DB_TXN)
-#define USE_OPEN_FLAGS                                                  \
-	(O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK | O_RDONLY |          \
+#define	DB_FLAGS	(DB_LOCK | DB_SHMEM | DB_TXN)
+#define	USE_OPEN_FLAGS							\
+	(O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK | O_RDONLY |		\
 	 O_RDWR | O_SHLOCK | O_TRUNC)
 
 	if ((flags & ~(USE_OPEN_FLAGS | DB_FLAGS)) == 0)
@@ -89,7 +89,7 @@ __dberr()
  * __DBPANIC -- Stop.
  *
  * Parameters:
- *      dbp:    pointer to the DB structure.
+ *	dbp:	pointer to the DB structure.
  */
 void
 __dbpanic(dbp)

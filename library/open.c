@@ -17,7 +17,18 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: open.c,v 1.2 2006/02/09 09:56:49 piru Exp $
+ *  $Id: open.c,v 1.4 1994/06/19 15:14:07 rluebbert Exp $
+ *
+ *  $Log: open.c,v $
+ *  Revision 1.4  1994/06/19  15:14:07  rluebbert
+ *  *** empty log message ***
+ *
+ *  Revision 1.2  1992/07/28  00:32:04  mwild
+ *  pass convert_dir the original signal mask, to check for pending signals
+ *
+ *  Revision 1.1  1992/05/14  19:55:40  mwild
+ *  Initial revision
+ *
  */
 
 #define _KERNEL
@@ -37,8 +48,6 @@ extern int __mread(), __mclose(), __mselect();
 
 static struct ix_mutex open_sem;
 
-#define D(x)
-
 int
 open(char *name, int mode, int perms)
 {
@@ -51,29 +60,25 @@ open(char *name, int mode, int perms)
   int ptyindex = 0;
   int amode = 0, i;
   usetup;
- 
-  D(dprintf("open: <%s> mode 0x%lx perms 0x%lx\n", name, mode, perms);)
 
   if (name == NULL)     /* sanity check */
-	return EACCES;
+    return EACCES;
   mode = FFLAGS(mode);
 
   /* inhibit signals */
   omask = syscall (SYS_sigsetmask, ~0);
 
   error = falloc (&f, &fd);
-  
   if (error)
     {
       syscall (SYS_sigsetmask, omask);
       errno = error;
-      D(dprintf("open: falloc failed\n");)
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
       return -1;
     }
   /* we now got the file, ie. since its count is > 0, no other process
    * will get it with falloc() */
-  if (u.u_parent_userdata){u.u_ofile[fd] = 0xdeadbeef;}
+
   late_stat = 0;
 
   // The code between the stat() and the actual open() is critical
@@ -81,8 +86,6 @@ open(char *name, int mode, int perms)
 
   if (stat(name, &f->f_stb) < 0)
     {
-      D(dprintf("open: stat failed\n");)
-
       /* there can mainly be two reasons for stat() to fail. Either the
        * file really doesn't exist (ENOENT), or then the filesystem/handler
        * doesn't support file locks. */
@@ -99,14 +102,14 @@ open(char *name, int mode, int perms)
 	  f->f_stb.st_mode = (perms & ~u.u_cmask);
 	  f->f_stb_dirty |= FSDF_MODE;
 
-	  if (!muBase)
-	    {
-	      f->f_stb.st_uid = geteuid();
-	      f->f_stb.st_gid = getegid();
-	      if (f->f_stb.st_uid != (uid_t)(-2) ||
-		  f->f_stb.st_gid != (gid_t)(-2))
-		f->f_stb_dirty |= FSDF_OWNER;
-	    }
+          if (!muBase)
+            {
+              f->f_stb.st_uid = geteuid();
+              f->f_stb.st_gid = getegid();
+              if (f->f_stb.st_uid != (uid_t)(-2) ||
+                  f->f_stb.st_gid != (gid_t)(-2))
+                f->f_stb_dirty |= FSDF_OWNER;
+            }
 	}
     }
 
@@ -121,11 +124,10 @@ open(char *name, int mode, int perms)
 
   /* check for case-sensitive filename */
   if ((mode & O_CASE) && !late_stat && !strchr(name, ':') && filenamecmp(name))
-	{
-          D(dprintf("open: case sensitive failed\n");)
-	  error = ENOENT;
-	  goto error;
-	}
+    {
+      error = ENOENT;
+      goto error;
+    }
 
   /* ok, so lets try to open the file... */
 
@@ -133,13 +135,12 @@ open(char *name, int mode, int perms)
   if (!late_stat && S_ISDIR (f->f_stb.st_mode) && !(mode & FWRITE))
     {
       if (convert_dir (f, name, omask))
-	{
-	  ix_mutex_unlock(&open_sem);
-	  goto ret_ok;
-	}
+        {
+          ix_mutex_unlock(&open_sem);
+          goto ret_ok;
+        }
       else
-	{
-          D(dprintf("open: convert dir failed\n");)
+        {
 	  goto error;
 	}
     }
@@ -147,22 +148,20 @@ open(char *name, int mode, int perms)
   /* filter invalid modes */
   switch (mode & (O_CREAT|O_TRUNC|O_EXCL))
     {
-      case O_EXCL:
-      case O_EXCL|O_TRUNC:
-	/* can never succeed ! */
-        D(dprintf("open: O_EXCL failed\n");)
-	error = EINVAL;
-	goto error;
+    case O_EXCL:
+    case O_EXCL|O_TRUNC:
+      /* can never succeed ! */
+      error = EINVAL;
+      goto error;
 
-      case O_CREAT|O_EXCL:
-      case O_CREAT|O_EXCL|O_TRUNC:
-	if (! late_stat)
-	  {
-            D(dprintf("open: O_CREAT|O_EXCL|O_TRUNC: late_stat failed\n");)
-	    error = EEXIST;
-	    goto error;
-	  }
-	break;
+    case O_CREAT|O_EXCL:
+    case O_CREAT|O_EXCL|O_TRUNC:
+      if (! late_stat)
+        {
+	  error = EEXIST;
+	  goto error;
+	}
+      break;
     }
 
   amode = (mode & O_CREAT) ? MODE_READWRITE : MODE_OLDFILE;
@@ -181,12 +180,11 @@ open(char *name, int mode, int perms)
       ptyindex = (name[9] - 'p') * 16 + name[10] - (name[10] >= 'a' ? 'a' - 10 : '0');
       ix_lock_base();
       if (ix.ix_ptys[ptyindex] & mask)
-	{
-	  ix_unlock_base();
-	  error = EIO;
-          D(dprintf("open: pty mask EIO failed\n");)
-	  goto error;
-	}
+        {
+          ix_unlock_base();
+          error = EIO;
+          goto error;
+        }
       ptymask = mask;
       ix.ix_ptys[ptyindex] |= (mask & IX_PTY_OPEN); /* mark pty in use */
       ix_unlock_base();
@@ -194,7 +192,6 @@ open(char *name, int mode, int perms)
 
   do
   {
-#if 0
     if (!strcmp(name, "*") || !strcasecmp(name, "console:"))
       /* Temporary patch for KingCON 1.3, which seems to have problems with
 	 ACTION_FINDINPUT of "*"/"console:" when "dp_Port" of the packet is
@@ -202,37 +199,24 @@ open(char *name, int mode, int perms)
 	 clients' startup during initialization of "stderr". */
       fh = Open(name, amode);
     else
-#endif
-		
       fh = __open (name, amode);
 
     if (! fh)
       {
-	int err = IoErr();
+        int err = IoErr();
 
-        D(dprintf("open: __open failed ioerr %ld\n", err);)
-
-	/* For those handlers that do not understand MODE_READWRITE (e.g. PAR: ) */
-	if (err == ERROR_ACTION_NOT_KNOWN && amode == MODE_READWRITE)
-	  {
-	    amode = MODE_NEWFILE;
-	  }
-	else
-	  {
-	    error = __ioerr_to_errno (err);
-	    goto error;
-	  }
+        /* For those handlers that do not understand MODE_READWRITE (e.g. PAR: ) */
+        if (err == ERROR_ACTION_NOT_KNOWN && amode == MODE_READWRITE)
+        {
+          amode = MODE_NEWFILE;
+        }
+        else
+        {
+          error = __ioerr_to_errno (err);
+          goto error;
+        }
       }
   } while (!fh);
-
-  /* 19-Jul-2003 bugfix: Seek to end of the file for O_APPEND - Piru */
-#if 1
-  if (mode & O_APPEND)
-  {
-    (void) Seek(fh, 0, OFFSET_END);
-  }
-#endif
-
 
   // End of critical section
   ix_mutex_unlock(&open_sem);
@@ -252,7 +236,7 @@ open(char *name, int mode, int perms)
 
   /*
    * have to use kmalloc() instead of malloc(), because this is no task-private
-   * data, it could (in the future) be shared by other tasks
+   * data, it could (in the future) be shared by other tasks 
    */
   f->f_name = (void *) kmalloc (strlen (name) + 1);
   if (f->f_name)
@@ -262,42 +246,35 @@ ret_ok:
   /* ok, we're almost done. If desired, init the stat buffer to the
    * information we can get from an open file descriptor */
   if (late_stat) __fstat (f);
-
+  
   /* if the file qualifies, try to change it into a DTYPE_MEM file */
-#if 0 /* XXX: DTYPE_MEM is broken. Disabled for now */
-  if (!late_stat && f->f_type == DTYPE_FILE
+  if (!late_stat && f->f_type == DTYPE_FILE 
       && f->f_stb.st_size < ix.ix_membuf_limit && mode == FREAD)
     {
       void *buf;
-
+      
       /* try to obtain the needed memory */
       buf = (void *) kmalloc (f->f_stb.st_size);
       if (buf)
 	if (syscall (SYS_read, fd, buf, f->f_stb.st_size) == f->f_stb.st_size)
 	  {
-	    #if 1
-	    Close (CTOBPTR (f->f_fh));
-	    #else
 	    __Close (CTOBPTR (f->f_fh));
-	    #endif
-	    f->f_type           = DTYPE_MEM;
-	    f->f_mf.mf_offset   = 0;
-	    f->f_mf.mf_buffer   = buf;
-	    f->f_read           = __mread;
-	    f->f_close          = __mclose;
-	    f->f_ioctl          = 0;
-	    f->f_select         = __mselect;
+	    f->f_type 		= DTYPE_MEM;
+	    f->f_mf.mf_offset 	= 0;
+	    f->f_mf.mf_buffer 	= buf;
+	    f->f_read		= __mread;
+	    f->f_close 		= __mclose;
+	    f->f_ioctl		= 0;
+	    f->f_select		= __mselect;
 	  }
 	else
 	  kfree (buf);
     }
-#endif
 
   syscall (SYS_sigsetmask, omask);
 
   if (error)
     {
-      D(dprintf("open: error %ld\n", error);)
       errno = error;
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
     }
@@ -314,7 +291,8 @@ error:
   // End of critical section
   ix_mutex_unlock(&open_sem);
 
-  
+  /* free the file */
+  u.u_ofile[fd] = 0;
   if (ptymask)
     {
       ix_lock_base();
@@ -322,14 +300,8 @@ error:
       ix_unlock_base();
     }
   f->f_count--;
-  if (f->f_count == 0)
-    ffree(f);
   syscall (SYS_sigsetmask, omask);
   errno = error;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-  if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;}
-  /* free the file */
-  u.u_ofile[fd] = 0;
-
   return -1;
 }

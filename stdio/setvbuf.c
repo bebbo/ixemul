@@ -1,8 +1,8 @@
-/*      $NetBSD: setvbuf.c,v 1.7 1995/02/02 02:10:34 jtc Exp $  */
+/*	$NetBSD: setvbuf.c,v 1.7 1995/02/02 02:10:34 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)setvbuf.c   8.2 (Berkeley) 11/16/93";
+static char sccsid[] = "@(#)setvbuf.c	8.2 (Berkeley) 11/16/93";
 #endif
 static char rcsid[] = "$NetBSD: setvbuf.c,v 1.7 1995/02/02 02:10:34 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -101,7 +101,7 @@ setvbuf(fp, buf, mode, size)
 	 */
 	flags |= __swhatbuf(fp, &iosize, &ttyflag);
 	if (size == 0) {
-		buf = NULL;     /* force local allocation */
+		buf = NULL;	/* force local allocation */
 		size = iosize;
 	}
 

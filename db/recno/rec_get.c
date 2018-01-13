@@ -1,8 +1,8 @@
-/*      $NetBSD: rec_get.c,v 1.8 1996/05/03 21:38:48 cgd Exp $  */
+/*	$NetBSD: rec_get.c,v 1.8 1996/05/03 21:38:48 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rec_get.c   8.9 (Berkeley) 8/18/94";
+static char sccsid[] = "@(#)rec_get.c	8.9 (Berkeley) 8/18/94";
 #else
 static char rcsid[] = "$NetBSD: rec_get.c,v 1.8 1996/05/03 21:38:48 cgd Exp $";
 #endif
@@ -57,13 +57,13 @@ static char rcsid[] = "$NetBSD: rec_get.c,v 1.8 1996/05/03 21:38:48 cgd Exp $";
  * __REC_GET -- Get a record from the btree.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key to find
- *      data:   data to return
- *      flag:   currently unused
+ *	dbp:	pointer to access method
+ *	key:	key to find
+ *	data:	data to return
+ *	flag:	currently unused
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key not found.
  */
 int
 __rec_get(dbp, key, data, flags)
@@ -118,11 +118,11 @@ __rec_get(dbp, key, data, flags)
  * __REC_FPIPE -- Get fixed length records from a pipe.
  *
  * Parameters:
- *      t:      tree
- *      cnt:    records to read
+ *	t:	tree
+ *	cnt:	records to read
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __rec_fpipe(t, top)
@@ -174,11 +174,11 @@ __rec_fpipe(t, top)
  * __REC_VPIPE -- Get variable length records from a pipe.
  *
  * Parameters:
- *      t:      tree
- *      cnt:    records to read
+ *	t:	tree
+ *	cnt:	records to read
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __rec_vpipe(t, top)
@@ -231,11 +231,11 @@ __rec_vpipe(t, top)
  * __REC_FMAP -- Get fixed length records from a file.
  *
  * Parameters:
- *      t:      tree
- *      cnt:    records to read
+ *	t:	tree
+ *	cnt:	records to read
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __rec_fmap(t, top)
@@ -281,11 +281,11 @@ __rec_fmap(t, top)
  * __REC_VMAP -- Get variable length records from a file.
  *
  * Parameters:
- *      t:      tree
- *      cnt:    records to read
+ *	t:	tree
+ *	cnt:	records to read
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __rec_vmap(t, top)

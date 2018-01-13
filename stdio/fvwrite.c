@@ -1,8 +1,8 @@
-/*      $NetBSD: fvwrite.c,v 1.4 1995/02/02 02:09:45 jtc Exp $  */
+/*	$NetBSD: fvwrite.c,v 1.4 1995/02/02 02:09:45 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fvwrite.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)fvwrite.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: fvwrite.c,v 1.4 1995/02/02 02:09:45 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -68,6 +68,7 @@ __sfvwrite(fp, uio)
 	register int w, s;
 	char *nl;
 	int nlknown, nldist;
+
 	if ((len = uio->uio_resid) == 0)
 		return (0);
 	/* make sure we can write */
@@ -75,9 +76,9 @@ __sfvwrite(fp, uio)
 		return (EOF);
 
 #ifndef MIN
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define	MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
-#define COPY(n)   (void)memcpy((void *)fp->_p, (void *)p, (size_t)(n))
+#define	COPY(n)	  (void)memcpy((void *)fp->_p, (void *)p, (size_t)(n))
 
 	iov = uio->uio_iov;
 	p = iov->iov_base;
@@ -120,10 +121,10 @@ __sfvwrite(fp, uio)
 			if (fp->_flags & __SSTR) {
 				if (len < w)
 					w = len;
-				COPY(w);        /* copy MIN(fp->_w,len), */
+				COPY(w);	/* copy MIN(fp->_w,len), */
 				fp->_w -= w;
 				fp->_p += w;
-				w = len;        /* but pretend copied all */
+				w = len;	/* but pretend copied all */
 			} else if (fp->_p > fp->_bf._base && len > w) {
 				/* fill and flush */
 				COPY(w);
@@ -155,7 +156,7 @@ __sfvwrite(fp, uio)
 		 * that the amount to write is MIN(len,nldist).
 		 */
 		nlknown = 0;
-		nldist = 0;     /* XXX just to keep gcc happy */
+		nldist = 0;	/* XXX just to keep gcc happy */
 		do {
 			GETIOV(nlknown = 0);
 			if (!nlknown) {
@@ -174,7 +175,7 @@ __sfvwrite(fp, uio)
 			} else if (s >= (w = fp->_bf._size)) {
 				w = (*fp->_write)(fp->_cookie, p, w);
 				if (w <= 0)
-					goto err;
+				 	goto err;
 			} else {
 				w = s;
 				COPY(w);

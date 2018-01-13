@@ -1,8 +1,8 @@
-/*      $NetBSD: page.h,v 1.6 1996/05/03 21:43:59 cgd Exp $     */
+/*	$NetBSD: page.h,v 1.6 1996/05/03 21:43:59 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)page.h      8.2 (Berkeley) 5/31/94
+ *	@(#)page.h	8.2 (Berkeley) 5/31/94
  */
 
 /*
@@ -46,17 +46,17 @@
  * routines dealing with a data page
  *
  * page format:
- *      +------------------------------+
- * p    | n | keyoff | datoff | keyoff |
- *      +------------+--------+--------+
- *      | datoff | free  |  ptr  | --> |
- *      +--------+---------------------+
- *      |        F R E E A R E A       |
- *      +--------------+---------------+
- *      |  <---- - - - | data          |
- *      +--------+-----+----+----------+
- *      |  key   | data     | key      |
- *      +--------+----------+----------+
+ *	+------------------------------+
+ * p	| n | keyoff | datoff | keyoff |
+ * 	+------------+--------+--------+
+ *	| datoff | free  |  ptr  | --> |
+ *	+--------+---------------------+
+ *	|	 F R E E A R E A       |
+ *	+--------------+---------------+
+ *	|  <---- - - - | data          |
+ *	+--------+-----+----+----------+
+ *	|  key   | data     | key      |
+ *	+--------+----------+----------+
  *
  * Pointer to the free space is always:  p[p[0] + 2]
  * Amount of free space on the page is:  p[p[0] + 1]
@@ -64,8 +64,8 @@
 
 /*
  * How many bytes required for this pair?
- *      2 shorts in the table at the top of the page + room for the
- *      key and room for the data
+ *	2 shorts in the table at the top of the page + room for the
+ *	key and room for the data
  *
  * We prohibit entering a pair on a page unless there is also room to append
  * an overflow page. The reason for this it that you can get in a situation
@@ -75,16 +75,16 @@
  * You might as well do this up front.
  */
 
-#define PAIRSIZE(K,D)   (2*sizeof(u_int16_t) + (K)->size + (D)->size)
-#define BIGOVERHEAD     (4*sizeof(u_int16_t))
-#define KEYSIZE(K)      (4*sizeof(u_int16_t) + (K)->size);
-#define OVFLSIZE        (2*sizeof(u_int16_t))
-#define FREESPACE(P)    ((P)[(P)[0]+1])
-#define OFFSET(P)       ((P)[(P)[0]+2])
+#define	PAIRSIZE(K,D)	(2*sizeof(u_int16_t) + (K)->size + (D)->size)
+#define BIGOVERHEAD	(4*sizeof(u_int16_t))
+#define KEYSIZE(K)	(4*sizeof(u_int16_t) + (K)->size);
+#define OVFLSIZE	(2*sizeof(u_int16_t))
+#define FREESPACE(P)	((P)[(P)[0]+1])
+#define	OFFSET(P)	((P)[(P)[0]+2])
 #define PAIRFITS(P,K,D) \
 	(((P)[2] >= REAL_KEY) && \
 	    (PAIRSIZE((K),(D)) + OVFLSIZE) <= FREESPACE((P)))
-#define PAGE_META(N)    (((N)+3) * sizeof(u_int16_t))
+#define PAGE_META(N)	(((N)+3) * sizeof(u_int16_t))
 
 typedef struct {
 	BUFHEAD *newp;

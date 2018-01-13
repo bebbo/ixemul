@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef NOID
-static char     elsieid[] = "@(#)ialloc.c       8.29";
+static char	elsieid[] = "@(#)ialloc.c	8.29";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
@@ -8,19 +8,19 @@ static char     elsieid[] = "@(#)ialloc.c       8.29";
 
 #include "private.h"
 
-#define nonzero(n)      (((n) == 0) ? 1 : (n))
+#define nonzero(n)	(((n) == 0) ? 1 : (n))
 
 char *
 imalloc(n)
-const int       n;
+const int	n;
 {
 	return malloc((size_t) nonzero(n));
 }
 
 char *
 icalloc(nelem, elsize)
-int     nelem;
-int     elsize;
+int	nelem;
+int	elsize;
 {
 	if (nelem == 0 || elsize == 0)
 		nelem = elsize = 1;
@@ -29,8 +29,8 @@ int     elsize;
 
 void *
 irealloc(pointer, size)
-void * const    pointer;
-const int       size;
+void * const	pointer;
+const int	size;
 {
 	if (pointer == NULL)
 		return imalloc(size);
@@ -39,18 +39,18 @@ const int       size;
 
 char *
 icatalloc(old, new)
-char * const            old;
-const char * const      new;
+char * const		old;
+const char * const	new;
 {
-	register char * result;
-	register int    oldsize, newsize;
+	register char *	result;
+	register int	oldsize, newsize;
 
 	newsize = (new == NULL) ? 0 : strlen(new);
 	if (old == NULL)
 		oldsize = 0;
 	else if (newsize == 0)
 		return old;
-	else    oldsize = strlen(old);
+	else	oldsize = strlen(old);
 	if ((result = irealloc(old, oldsize + newsize + 1)) != NULL)
 		if (new != NULL)
 			(void) strcpy(result + oldsize, new);
@@ -59,14 +59,14 @@ const char * const      new;
 
 char *
 icpyalloc(string)
-const char * const      string;
+const char * const	string;
 {
 	return icatalloc((char *) NULL, string);
 }
 
 void
 ifree(p)
-char * const    p;
+char * const	p;
 {
 	if (p != NULL)
 		(void) free(p);
@@ -74,7 +74,7 @@ char * const    p;
 
 void
 icfree(p)
-char * const    p;
+char * const	p;
 {
 	if (p != NULL)
 		(void) free(p);

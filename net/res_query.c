@@ -1,8 +1,8 @@
-/*      $NetBSD: res_query.c,v 1.9 1995/02/25 06:58:58 cgd Exp $        */
+/*	$NetBSD: res_query.c,v 1.9 1995/02/25 06:58:58 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1988, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_query.c 8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)res_query.c	8.1 (Berkeley) 6/4/93";
 static char rcsid[] = "$Id: res_query.c,v 1.1 1993/06/01 09:42:14 vixie Exp vixie ";
 #else
 static char rcsid[] = "$NetBSD: res_query.c,v 1.9 1995/02/25 06:58:58 cgd Exp $";
@@ -75,9 +75,9 @@ static char rcsid[] = "$NetBSD: res_query.c,v 1.9 1995/02/25 06:58:58 cgd Exp $"
 #include <string.h>
 
 #if PACKETSZ > 1024
-#define MAXPACKET       PACKETSZ
+#define MAXPACKET	PACKETSZ
 #else
-#define MAXPACKET       1024
+#define MAXPACKET	1024
 #endif
 
 char *__hostalias __P((const char *));
@@ -95,10 +95,10 @@ int h_errno;
  */
 int
 res_query(name, class, type, answer, anslen)
-	char *name;             /* domain name */
-	int class, type;        /* class and type of query */
-	u_char *answer;         /* buffer to put answer */
-	int anslen;             /* size of answer buffer */
+	char *name;		/* domain name */
+	int class, type;	/* class and type of query */
+	u_char *answer;		/* buffer to put answer */
+	int anslen;		/* size of answer buffer */
 {
 	char buf[MAXPACKET];
 	HEADER *hp;
@@ -170,10 +170,10 @@ res_query(name, class, type, answer, anslen)
  */
 int
 res_search(name, class, type, answer, anslen)
-	const char *name;       /* domain name */
-	int class, type;        /* class and type of query */
-	u_char *answer;         /* buffer to put answer */
-	int anslen;             /* size of answer */
+	const char *name;	/* domain name */
+	int class, type;	/* class and type of query */
+	u_char *answer;		/* buffer to put answer */
+	int anslen;		/* size of answer */
 {
 	register char *cp, **domain;
 	int dots, trailing_dot, ret, got_nodata, saved_herrno, tried_as_is;
@@ -183,7 +183,7 @@ res_search(name, class, type, answer, anslen)
 
 	got_nodata = 0;
 	errno = 0;
-	h_errno = HOST_NOT_FOUND;       /* default, if we never query */
+	h_errno = HOST_NOT_FOUND;	/* default, if we never query */
 	dots = 0;
 	for (cp = (char *)name; *cp; cp++) {
 		if (*cp == '.')
@@ -215,9 +215,9 @@ res_search(name, class, type, answer, anslen)
 
 	/*
 	 * We do at least one level of search if
-	 *      - there is no dot and RES_DEFNAME is set, or
-	 *      - there is at least one dot, there is no trailing dot,
-	 *        and RES_DNSRCH is set.
+	 *	- there is no dot and RES_DEFNAME is set, or
+	 *	- there is at least one dot, there is no trailing dot,
+	 *	  and RES_DNSRCH is set.
 	 */
 	if ((!dots && (_res.options & RES_DEFNAMES)) ||
 	    (dots && !trailing_dot && (_res.options & RES_DNSRCH))) {
@@ -262,7 +262,7 @@ res_search(name, class, type, answer, anslen)
 			 * we only wanted one iteration of the loop, so stop.
 			 */
 			if (!(_res.options & RES_DNSRCH))
-				done++;
+			        done++;
 
 			if (done)
 				break;
@@ -304,9 +304,9 @@ int
 res_querydomain(name, domain, class, type, answer, anslen)
 	const char *name;
 	char *domain;
-	int class, type;        /* class and type of query */
-	u_char *answer;         /* buffer to put answer */
-	int anslen;             /* size of answer */
+	int class, type;	/* class and type of query */
+	u_char *answer;		/* buffer to put answer */
+	int anslen;		/* size of answer */
 {
 	char nbuf[2*MAXDNAME+2];
 	char *longname = nbuf;

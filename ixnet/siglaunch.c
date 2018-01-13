@@ -16,21 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: siglaunch.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: siglaunch.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.2  2000/06/20 22:17:11  emm
- *  First attempt at a native MorphOS ixemul
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:46  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:44:44  nobody
- *  Initial import
- *
+ *  $Log:$
  *
  */
 
@@ -49,12 +37,12 @@ extern struct ExecBase *SysBase;
 /* called from ixemul.library's siglaunch() */
 void _siglaunch(sigset_t newsigs)
 {
-    struct Task *me = SysBase->ThisTask;
+    struct Task *me = FindTask(0);
     struct user *u_ptr = getuser(me);
     struct ixnet *p = u.u_ixnet;
 
     int urgmask = 1 << p->u_sigurg;
-    int iomask  = 1 << p->u_sigio;
+    int iomask	= 1 << p->u_sigio;
 
     if (newsigs & urgmask) {
 	if (! (u.p_sigignore & sigmask (SIGURG)))

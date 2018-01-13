@@ -1,8 +1,8 @@
-/*      $NetBSD: getdomainname.c,v 1.3 1995/06/16 07:36:03 jtc Exp $    */
+/*	$NetBSD: getdomainname.c,v 1.3 1995/06/16 07:36:03 jtc Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)gethostname.c       8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)gethostname.c	8.1 (Berkeley) 6/4/93";
 #else
 static char rcsid[] = "$NetBSD: getdomainname.c,v 1.3 1995/06/16 07:36:03 jtc Exp $";
 #endif
@@ -59,9 +59,9 @@ static int tcp_getdomainname(char *domainname, int dsize)
     gethostname(hname, MAXHOSTNAMELEN);
 
     if ((dn = strchr(hname, '.')) != NULL) {
-	strncpy(domainname, dn+1, dsize-1);
+        strncpy(domainname, dn+1, dsize-1);
     } else {
-	strncpy(domainname, hname, dsize-1);
+        strncpy(domainname, hname, dsize-1);
     }
     domainname[dsize-1] = '\0';
     return 0;
@@ -76,10 +76,10 @@ getdomainname(name, namelen)
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     switch (p->u_networkprotocol) {
-	case IX_NETWORK_AMITCP:
-	    return tcp_getdomainname(name, namelen);
+        case IX_NETWORK_AMITCP:
+            return tcp_getdomainname(name, namelen);
 
-	default: /*case IX_NETWORK_AS225:*/
-	    return SOCK_getdomainname(name, namelen);
+        default: /*case IX_NETWORK_AS225:*/
+            return SOCK_getdomainname(name, namelen);
     }
 }

@@ -16,24 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: ixnet.h,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: ixnet.h,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.2  2000/06/20 22:17:10  emm
- *  First attempt at a native MorphOS ixemul
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:45  emm
- *  Imported sources
- *
- *  Revision 1.2  2000/05/07 20:59:25  nobody
- *  Included Zapek fixes.
- *
- *  Revision 1.1.1.1  2000/04/29 00:45:11  nobody
- *  Initial import
- *
+ *  $Log:$
  */
 
 #ifndef _IXNET_H_
@@ -48,55 +33,52 @@
 /* amazingly works, contains only defines ;-)) */
 #include <exec/alerts.h>
 
-#ifndef _KERNEL
-#define _LVOOpenLibrary         -0x228
-#define _LVOCloseLibrary        -0x19e
-#define _LVOAlert               -0x6c
-#define _LVOFreeMem             -0xd2
-#define _LVORemove              -0xfc
+#define _LVOOpenLibrary 	-0x228
+#define _LVOCloseLibrary	-0x19e
+#define _LVOAlert		-0x6c
+#define _LVOFreeMem		-0xd2
+#define _LVORemove		-0xfc
 
-#define RTC_MATCHWORD   0x4afc
-#define RTF_AUTOINIT    (1<<7)
+#define RTC_MATCHWORD	0x4afc
+#define RTF_AUTOINIT	(1<<7)
 
-#define LIBF_CHANGED    (1<<1)
-#define LIBF_SUMUSED    (1<<2)
+#define LIBF_CHANGED	(1<<1)
+#define LIBF_SUMUSED	(1<<2)
 /* seems there is an assembler bug in expression evaluation here.. */
 #define LIBF_CHANGED_SUMUSED 0x6
-#define LIBF_DELEXP     (1<<3)
-#define LIBB_DELEXP     3
+#define LIBF_DELEXP	(1<<3)
+#define LIBB_DELEXP	3
 
-#define LN_TYPE         8
-#define LN_NAME         10
-#define NT_LIBRARY      9
-#define MP_FLAGS        14
-#define PA_IGNORE       2
+#define LN_TYPE 	8
+#define LN_NAME 	10
+#define NT_LIBRARY	9
+#define MP_FLAGS	14
+#define PA_IGNORE	2
 
 #define INITBYTE(field,val)     .word 0xe000; .word (field); .byte (val); .byte 0
 #define INITWORD(field,val)     .word 0xd000; .word (field); .word (val)
 #define INITLONG(field,val)     .word 0xc000; .word (field); .long (val)
-
-#endif
 
 /*
  * our library base..
  */
 
 /* struct library */
-#define IXNETBASE_NODE     0
+#define IXNETBASE_NODE	   0
 #define IXNETBASE_FLAGS    14
 #define IXNETBASE_NEGSIZE  16
 #define IXNETBASE_POSSIZE  18
 #define IXNETBASE_VERSION  20
 #define IXNETBASE_REVISION 22
 #define IXNETBASE_IDSTRING 24
-#define IXNETBASE_SUM      28
+#define IXNETBASE_SUM	   28
 #define IXNETBASE_OPENCNT  32
 #define IXNETBASE_LIBRARY  34  /* size of library */
 
 /* custom part */
-#define IXNETBASE_MYFLAGS          (IXNETBASE_LIBRARY + 0)
-#define IXNETBASE_SEGLIST          (IXNETBASE_MYFLAGS + 2)
-#define IXNETBASE_C_PRIVATE        (IXNETBASE_SEGLIST + 4)
+#define IXNETBASE_MYFLAGS	   (IXNETBASE_LIBRARY + 0)
+#define IXNETBASE_SEGLIST	   (IXNETBASE_MYFLAGS + 2)
+#define IXNETBASE_C_PRIVATE	   (IXNETBASE_SEGLIST + 4)
 
 
 #else  /* C-part */
@@ -107,15 +89,12 @@
 
 struct ixnet_base {
     struct Library     ixnet_lib;
-#ifdef NATIVE_MORPHOS
-  int               (**basearray)();
-#endif
 #ifdef _KERNEL
     unsigned char      ix_myflags;     /* used by start.s */
-    unsigned char      ix_debug_flag;
-    BPTR               ix_seg_list;    /* used by start.s */
+    unsigned char      ix_pad;
+    BPTR	       ix_seg_list;    /* used by start.s */
 
-    LONG               dummy;
+    LONG	       dummy;
 #endif
 };
 
@@ -123,16 +102,16 @@ struct ixnet_base {
  * ixnet.library stuff -  don't peek into this structure yourself
  */
 struct ixnet {
-	void                    *u_InetBase;
-	void                    *u_SockBase;
-	void                    *u_TCPBase;
-	void                    *u_UserGroupBase;
-	int                     u_sigurg;
-	int                     u_sigio;
-	int                     u_networkprotocol;
-	int                     sock_id;     /* used for AS225 to reply to inetd message */
-	short                   u_daemon;    /* 1 if started from inetd */
-	char                    *u_progname; /* useful pointer */
+	void			*u_InetBase;
+	void			*u_SockBase;
+	void			*u_TCPBase;
+	void			*u_UserGroupBase;
+	int			u_sigurg;
+	int			u_sigio;
+	int			u_networkprotocol;
+	int			sock_id;     /* used for AS225 to reply to inetd message */
+	short			u_daemon;    /* 1 if started from inetd */
+	char			*u_progname; /* useful pointer */
 };
 
 extern struct ixnet_base *ixnetbase;
@@ -147,9 +126,9 @@ extern struct ixnet_base *ixnetbase;
 #undef stdin
 #undef stdout
 #undef stderr
-#define stdin   (u.u_sF[0])
-#define stdout  (u.u_sF[1])
-#define stderr  (u.u_sF[2])
+#define stdin	(u.u_sF[0])
+#define stdout	(u.u_sF[1])
+#define stderr	(u.u_sF[2])
 #endif
 
 #include "usergroup.h"
@@ -159,8 +138,8 @@ extern struct ixnet_base *ixnetbase;
 /* I need these prototypes but <sys/file.h> includes <fcntl.h>
  * with _KERNEL defined hence not including these
  */
-int     open __P((const char *, int, ...));
-int     fcntl __P((int, int, ...));
+int	open __P((const char *, int, ...));
+int	fcntl __P((int, int, ...));
 
 #endif /* START */
 #endif /* IXNET_H */

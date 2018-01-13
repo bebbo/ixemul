@@ -1,8 +1,8 @@
-/*      $NetBSD: vsprintf.c,v 1.5 1995/02/02 02:10:56 jtc Exp $ */
+/*	$NetBSD: vsprintf.c,v 1.5 1995/02/02 02:10:56 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,27 +38,22 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vsprintf.c  8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vsprintf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vsprintf.c,v 1.5 1995/02/02 02:10:56 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
 #include <limits.h>
 
-#ifdef NATIVE_MORPHOS
-#define vsprintf my_vsprintf
-#define vfprintf my_vfprintf
-int vfprintf(FILE *fp, const char *fmt0, my_va_list ap);
-int vsprintf(char *str, const char *fmt, my_va_list ap);
-#endif
-
 int
-vsprintf(char *str, const char *fmt, my_va_list ap)
+vsprintf(str, fmt, ap)
+	char *str;
+	const char *fmt;
+	_BSD_VA_LIST_ ap;
 {
 	int ret;
 	FILE f;
@@ -70,26 +65,3 @@ vsprintf(char *str, const char *fmt, my_va_list ap)
 	*f._p = 0;
 	return (ret);
 }
-
-#ifdef NATIVE_MORPHOS
-#undef vfprintf
-#undef vsprintf
-
-int
-vsprintf(char *str, const char *fmt, va_list ap)
-{
-    my_va_list ap1;
-    my_va_init_ppc(ap1, ap);
-    return my_vsprintf(str, fmt, ap1);
-}
-
-int
-_varargs68k_vsprintf(char *str, const char *fmt, char *ap)
-{
-    my_va_list ap1;
-    my_va_init_68k(ap1, ap);
-    return my_vsprintf(str, fmt, ap1);
-}
-
-#endif
-

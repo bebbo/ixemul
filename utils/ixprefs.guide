@@ -1,10 +1,10 @@
 @database "ixprefs"
 @author "Kriton Kyrimis"
 @(c) "Copyright © 1995-1997 Kriton Kyrimis"
-@$VER: ixprefs 2.7 (15.08.97)
+@$VER: ixprefs 2.8 (15.08.97)
 
-Ixprefs v.2.7--ixemul.library configuration program
-Copyright © 1995-1997 Kriton Kyrimis
+Ixprefs v.2.8--ixemul.library configuration program
+Copyright © 1995-2001 Kriton Kyrimis
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ GUI designed using GadToolsBox 2.0c by Jan van den Baard
 @Node Main "ixprefs user's guide"
                                IXPREFS
            A configuration program for ixemul.library v.47+
-                             Version 2.7
+                             Version 2.8
 
  @{"Introduction" link introduction}
  @{"Distribution" link distribution}
@@ -99,7 +99,7 @@ the templates for the new functions and paste them to amiga_functions.c.
 @font topaz.font 11
  @{"   " link amigawildcard} Allow Amiga wildcards	@{"   " link case} Case sensitive pattern matching
  @{"   " link slash} Translate /		@{"   " link noflush} Do not flush library
- 				@{"   " link ignoreenv} Ignore global environment (ENV:)
+ @{"   " link showstack} Show stack usage		@{"   " link ignoreenv} Ignore global environment (ENV:)
  @{"   " link suppress} Suppress the "Insert volume in drive" requester
  @{"       " link blocks} Physical blocks build one logical block (for stdio)
  @{"       " link membuf} Membuf size		@{"   " link enforcer} Create Enforcer hit on trap
@@ -142,6 +142,18 @@ the library is loaded only once.
 When this option is not set, then it will be possible to flush ixemul.library
 when no programs use it (e.g., by typing "avail flush" at the CLI prompt or by
 selecting the Debug->flushlibs item from the workbench menu).
+@endnode
+@node showstack "Show stack usage"
+When this option is set, whenever a program exits, ixemul.library sends a
+message to the "ixstack port" port, reporting the stack usage of the program
+that just exited. When run with the -s option, the @{"ixstack" Link "GG:man/man1/ixstack.1/Main"} program will
+monitor these messages and print the stack usage and the total stack size of
+each program that exits.
+
+When this option is not set, no such messages are sent.
+
+You can use this option to estimate the stack requirements of a program, and
+then use @{"ixstack" Link "GG:man/man1/ixstack.1/Main"} to set the program's minimum stack size.
 @endnode
 @node ignoreenv "Ignore global environment"
 If this option is set, the getenv() function returns local environment
@@ -299,6 +311,10 @@ The following CLI options are available:
   @{"suppress the `Insert volume in drive' requester" link suppress}
 -v 1, --noinsert-disk-requester
   @{"do not suppress the `Insert volume in drive' requester" link suppress}
+-u 0, --no-stack-usage
+  @{"do not show the stack usage" link showstack}
+-u 1, --stack-usage
+  @{"show the stack usage" link showstack}
 -f 0, --flush-library
   @{"prevent ixemul.library from being flushed from memory" link noflush}
 -f 1, --no-flush-library
@@ -506,6 +522,13 @@ Version 2.6	June 21, 1997
 Version 2.7	August 15, 1997
 * Added "Enable advanced ixprefs options" checkbox, to selectively
   enable/disable some "dangerous" ixemul opytions from the GUI.
+
+Version 2.8	April 24, 2001
+* Changed the text of the "Check stack usage" button to
+  "Show stack usage", to agree with the command line version of the
+  option and the actual function of the option.
+* Added the desription of the "Show stack usage option" in the
+  documentation.
 
 @endnode
 @node author "Author"

@@ -19,24 +19,15 @@
 #include <proto/dos.h>
 #include <proto/battclock.h>
 
-#define LVOReadBattClock        (-12)
-#define LVOWriteBattClock       (-18)
-
-#ifdef __MORPHOS__
-#define NewReadBattClock 	_NewReadBattClock
-#define NewWriteBattClock 	_NewWriteBattClock
-#define OldReadBattClock 	_OldReadBattClock
-#define OldWriteBattClock 	_OldWriteBattClock
-#define EndOfPatch 		_EndOfPatch
-#define GMTOffset 		_GMTOffset
-#endif
+#define LVOReadBattClock	(-12)
+#define LVOWriteBattClock	(-18)
 
 /* Flags. Currently only bit 0 is used to tell whether Daylight Saving Time
    is in effect or not. However, ixtimezone only sets this flag, but it doesn't
    test it. And neither does ixemul.library. In fact, the library completely
    ignores the flag field. */
 
-#define DST_ON  0x01
+#define DST_ON	0x01
 
 typedef struct
 {
@@ -44,7 +35,7 @@ typedef struct
   unsigned char flags;
 } ixtime;
 
-struct Node *BattClockBase;
+struct Library *BattClockBase;
 
 char VERSION[] = "\000$VER: ixtimezone 1.0 (10.11.95)";
 
@@ -59,39 +50,39 @@ asm("
 	.globl _EndOfPatch
 
 _NewReadBattClock:
-	.int    0x207a0014, 0x4e9090ba, 0x00164e75
+	.int	0x207a0014, 0x4e9090ba, 0x00164e75
 
-/*      Since the GNU assembler is currently unable to properly compile
+/*	Since the GNU assembler is currently unable to properly compile
 	PC-relative code, I'm using the hex-code directly. As soon as the
 	assembler can handle PC-relative code, the line above should be
 	replaced by:
 
-	move.l          _OldReadBattClock(pc),a0
-	jsr             (a0)
-	sub.l           _GMTOffset(pc),d0
+	move.l		_OldReadBattClock(pc),a0
+	jsr		(a0)
+	sub.l		_GMTOffset(pc),d0
 	rts
 */
 
 _NewWriteBattClock:
-	.int    0xd0ba0010, 0x207a0008
-	.short  0x4ed0
+	.int	0xd0ba0010, 0x207a0008
+	.short	0x4ed0
 
-/*      Since the GNU assembler is currently unable to properly compile
+/*	Since the GNU assembler is currently unable to properly compile
 	PC-relative code, I'm using the hex-code directly. As soon as the
 	assembler can handle PC-relative code, the line above should be
 	replaced by:
 
-	add.l           _GMTOffset(pc),d0
-	move.l          _OldWriteBattClock(pc),a0
-	jmp             (a0)
+	add.l		_GMTOffset(pc),d0
+	move.l		_OldWriteBattClock(pc),a0
+	jmp		(a0)
 */
 
 _OldReadBattClock:
-	.int            0
+	.int		0
 _OldWriteBattClock:
-	.int            0
+	.int		0
 _GMTOffset:
-	.int            0
+	.int		0
 _EndOfPatch:
 ");
 
@@ -237,13 +228,13 @@ static void usage(void)
   fprintf(stderr, "Usage: ixtimezone <option>
 Where <option> is one of:
 
--test           Show GMT and localtime
--get-offset     Get GMT offset and patch ixemul.library
--check-dst      As -get-offset, but also automatically adjust the Amiga
+-test		Show GMT and localtime
+-get-offset	Get GMT offset and patch ixemul.library
+-check-dst	As -get-offset, but also automatically adjust the Amiga
 		time if Daylight Saving Time has gone in effect (or vice
 		versa)
--patch-resource As -get-offset, but also patch the battclock.resource
--remove-patch   Remove the battclock.resource patch\n");
+-patch-resource	As -get-offset, but also patch the battclock.resource
+-remove-patch	Remove the battclock.resource patch\n");
   exit(1);
 }
 
@@ -309,5 +300,4 @@ int main(int argc, char **argv)
   write_ixtime(&new, write_to_envarc);
   if (patch_resource)
     patch_batt_resource(new.offset);
-  return 0;
 }

@@ -1,8 +1,8 @@
-/*      $NetBSD: ioctl.h,v 1.19 1995/10/10 01:27:09 mycroft Exp $       */
+/*	$NetBSD: ioctl.h,v 1.19 1995/10/10 01:27:09 mycroft Exp $	*/
 
 /*-
  * Copyright (c) 1982, 1986, 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
  * to the University of California by American Telephone and Telegraph
@@ -19,8 +19,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -37,11 +37,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)ioctl.h     8.6 (Berkeley) 3/28/94
+ *	@(#)ioctl.h	8.6 (Berkeley) 3/28/94
  */
 
-#ifndef _SYS_IOCTL_H_
-#define _SYS_IOCTL_H_
+#ifndef	_SYS_IOCTL_H_
+#define	_SYS_IOCTL_H_
 
 #include <sys/ttycom.h>
 
@@ -51,13 +51,13 @@
  * nonwithstanding).
  */
 struct ttysize {
-	unsigned short  ts_lines;
-	unsigned short  ts_cols;
-	unsigned short  ts_xxx;
-	unsigned short  ts_yyy;
+	unsigned short	ts_lines;
+	unsigned short	ts_cols;
+	unsigned short	ts_xxx;
+	unsigned short	ts_yyy;
 };
-#define TIOCGSIZE       TIOCGWINSZ
-#define TIOCSSIZE       TIOCSWINSZ
+#define	TIOCGSIZE	TIOCGWINSZ
+#define	TIOCSSIZE	TIOCSWINSZ
 
 #include <sys/ioccom.h>
 
@@ -69,7 +69,7 @@ struct ttysize {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int     ioctl __P((int, unsigned long, ...));
+int	ioctl __P((int, unsigned long, ...));
 __END_DECLS
 #endif /* !_KERNEL */
 #endif /* !_SYS_IOCTL_H_ */

@@ -1,8 +1,8 @@
-/*      $NetBSD: fscanf.c,v 1.4 1995/02/02 02:09:37 jtc Exp $   */
+/*	$NetBSD: fscanf.c,v 1.4 1995/02/02 02:09:37 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,86 +38,40 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fscanf.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)fscanf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: fscanf.c,v 1.4 1995/02/02 02:09:37 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
-
-#ifdef NATIVE_MORPHOS
-#define __svfscanf my___svfscanf
-int __svfscanf(FILE *, const char *, my_va_list);
+#if __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
 #endif
 
 int
+#if __STDC__
 fscanf(FILE *fp, char const *fmt, ...) {
 	int ret;
-	my_va_list ap;
+	va_list ap;
 
-	my_va_start(ap, fmt);
+	va_start(ap, fmt);
+#else
+fscanf(fp, fmt, va_alist)
+	FILE *fp;
+	char *fmt;
+	va_dcl
+{
+	int ret;
+	va_list ap;
+
+	va_start(ap);
+#endif
 	ret = __svfscanf(fp, fmt, ap);
-	my_va_end(ap);
+	va_end(ap);
 	return (ret);
 }
-
-#ifdef NATIVE_MORPHOS
-
-int
-_varargs68k_fscanf(FILE *fp, char const *fmt, char *ap1) {
-	my_va_list ap;
-	my_va_init_68k(ap, ap1);
-	return __svfscanf(fp, fmt, ap);
-}
-
-asm("	.section \".text\"
-	.type	_stk_fscanf,@function
-	.globl	_stk_fscanf
-_stk_fscanf:
-	andi.	11,1,15
-	mr	12,1
-	bne-	.align_fscanf
-	b	fscanf
-.align_fscanf:
-	addi	11,11,128
-	mflr	0
-	neg	11,11
-	stw	0,4(1)
-	stwux	1,1,11
-
-	stw	5,16(1)
-	stw	6,20(1)
-	stw	7,24(1)
-	stw	8,28(1)
-	stw	9,32(1)
-	stw	10,36(1)
-	bc	4,6,.nofloat_fscanf
-	stfd	1,40(1)
-	stfd	2,48(1)
-	stfd	3,56(1)
-	stfd	4,64(1)
-	stfd	5,72(1)
-	stfd	6,80(1)
-	stfd	7,88(1)
-	stfd	8,96(1)
-.nofloat_fscanf:
-
-	addi	5,1,104
-	lis	0,0x200
-	addi	12,12,8
-	addi	11,1,8
-	stw	0,0(5)
-	stw	12,4(5)
-	stw	11,8(5)
-	bl	__svfscanf
-	lwz	1,0(1)
-	lwz	0,4(1)
-	mtlr	0
-	blr
-");
-#endif
-

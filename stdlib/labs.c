@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)labs.c      5.2 (Berkeley) 5/17/90";
+static char sccsid[] = "@(#)labs.c	5.2 (Berkeley) 5/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -26,7 +26,7 @@ static char sccsid[] = "@(#)labs.c      5.2 (Berkeley) 5/17/90";
 
 #include <stdlib.h>
 
-long 
+long const
 labs(long j)
 {
 	return(j < 0 ? -j : j);

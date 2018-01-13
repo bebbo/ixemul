@@ -14,7 +14,7 @@ double frexp(double value, int *eptr)
   union
   {
     double v;
-    struct
+    struct 
     {
       u_int u_sign  :  1;
       u_int u_exp   : 11;
@@ -34,94 +34,32 @@ double frexp(double value, int *eptr)
   return 0.0;
 }
 
-#ifdef __PPC__
-#undef _ENTRY
-#undef ENTRY
-#undef _C_LABEL
-#define ENTRY(name) asm(".text; .globl " #name "; .type " #name ",@function;" #name ":");
-
 /* fabs(double) */
 ENTRY(fabs)
 asm("
-	fabs    3,3
-	blr
+	movel	sp@(4),d0
+	movel	sp@(8),d1
+	bclr	#31,d0
+	rts
 ");
 
 /* -double */
 ENTRY(__negdf2)
 asm("
-	fneg    3,3
-	blr
+	movel	sp@(4),d0
+	movel	sp@(8),d1
+	bchg	#31,d0
+	rts
 ");
 
 /* -single */
 ENTRY(__negsf2)
 asm("
-	fneg    3,3
-	blr
+	movel	sp@(4),d0
+	bchg	#31,d0
+	rts
 ");
 
-ENTRY(__divsi3)
-asm("
-	divw	3,3,4
-	blr
-");
-
-ENTRY(__modsi3)
-asm("
-	divw	5,3,4
-	mullw	5,5,4
-	subf	3,5,3
-	blr
-");
-
-ENTRY(__mulsi3)
-asm("
-	mullw	3,3,4
-	blr
-");
-
-ENTRY(__udivsi3)
-asm("
-	divwu	3,3,4
-	blr
-");
-
-ENTRY(__umodsi3)
-asm("
-	divwu	5,3,4
-	mullw	5,5,4
-	subf	3,5,3
-	blr
-");
-
-#else
-/* fabs(double) */
-ENTRY(fabs)
-asm(" \n\
-	movel   sp@(4),d0 \n\
-	movel   sp@(8),d1 \n\
-	bclr    #31,d0 \n\
-	rts \n\
-");
-
-/* -double */
-ENTRY(__negdf2)
-asm(" \n\
-	movel   sp@(4),d0 \n\
-	movel   sp@(8),d1 \n\
-	bchg    #31,d0 \n\
-	rts \n\
-");
-
-/* -single */
-ENTRY(__negsf2)
-asm(" \n\
-	movel   sp@(4),d0 \n\
-	bchg    #31,d0 \n\
-	rts \n\
-");
-#endif
 
 #if defined(mc68020) || defined(mc68030) || defined(mc68040) || defined(mc68060)
 
@@ -158,7 +96,7 @@ unsigned __umodsi3(unsigned a, int b)
 }
 
 
-#elif !defined(__PPC__)
+#else
 
 
 SItype __divsi3(SItype a, SItype b)
@@ -194,7 +132,7 @@ SItype __mulsi3(SItype a, SItype b)
 
   if (a < 0) a = -a;
   if (b < 0) b = -b;
-
+  
   res = mulu(a,b);
   return neg ? -res : res;
 }
@@ -217,7 +155,7 @@ unsigned SItype __umodsi3(unsigned SItype a, unsigned SItype b)
 
 
 
-#if defined(__HAVE_68881__) || defined(__PPC__)
+#ifdef __HAVE_68881__
 
 // Let the compiler to the hard work :-)
 
@@ -303,53 +241,37 @@ float __addsf3(float a, float b)
   return a + b;
 }
 
-#ifdef __PPC__
-
-int __cmpdf2(double a, double  b)
-{
-  return a < b ? -1 : (a == b ? 0 : 1);
-}
-
-int __cmpsf2(float a, float  b)
-{
-  return a < b ? -1 : (a == b ? 0 : 1);
-}
-
-#else
-
 /* double > double: 1 */
 /* double < double: -1 */
 /* double == double: 0 */
 ENTRY(__cmpdf2)
-asm(" \n\
-	fmoved  sp@(4),fp0 \n\
-	fcmpd   sp@(12),fp0 \n\
-	fbgt    Lagtb1 \n\
-	fslt    d0 \n\
-	extbl   d0 \n\
-	rts \n\
-Lagtb1: \n\
-	moveq   #1,d0 \n\
-	rts \n\
+asm("
+	fmoved	sp@(4),fp0
+	fcmpd	sp@(12),fp0
+	fbgt	Lagtb1
+	fslt	d0
+	extbl	d0
+	rts
+Lagtb1:
+	moveq	#1,d0
+	rts
 ");
 
 /* single > single: 1 */
 /* single < single: -1 */
 /* single == single: 0 */
 ENTRY(__cmpsf2)
-asm(" \n\
-	fmoves  sp@(4),fp0 \n\
-	fcmps   sp@(8),fp0 \n\
-	fbgt    Lagtb2 \n\
-	fslt    d0 \n\
-	extbl   d0 \n\
-	rts \n\
-Lagtb2: \n\
-	moveq   #1,d0 \n\
-	rts \n\
+asm("
+	fmoves	sp@(4),fp0
+	fcmps	sp@(8),fp0
+	fbgt	Lagtb2
+	fslt	d0
+	extbl	d0
+	rts
+Lagtb2:
+	moveq	#1,d0
+	rts
 ");
-
-#endif
 
 /* double / double */
 double __divdf3(double a, double b)
@@ -411,10 +333,43 @@ double __floatsidf(SItype a)
   return a;
 }
 
+/*
+ * double ldexp(val, exp)
+ * returns: val * (2**exp), for integer exp
+ */
+ENTRY(ldexp)
+asm("
+	fmoved		sp@(4),fp0
+	fbeq		Ldone
+	ftwotoxl	sp@(12),fp1
+	fmulx		fp1,fp0
+Ldone:
+	fmoved		fp0,sp@-
+	movel		sp@+,d0
+	movel		sp@+,d1
+	rts
+");
+
+/*
+ * double modf(val, iptr)
+ * returns: xxx and n (in *iptr) where val == n.xxx
+ */
+ENTRY(modf)
+asm("
+	fmoved	sp@(4),fp0
+	movel	sp@(12),a0
+	fintrzx	fp0,fp1
+	fmoved	fp1,a0@
+	fsubx	fp1,fp0
+	fmoved	fp0,sp@-
+	movel	sp@+,d0
+	movel	sp@+,d1
+	rts
+");
 
 
 
-#else /* __HAVE_68881__ or __PPC__ */
+#else /* __HAVE_68881__ */
 
 
 
@@ -422,7 +377,7 @@ double __floatsidf(SItype a)
  *  if the first 32 bits of both doubles are equal, and
  *  both doubles are negative, then the result can no longer
  *  be trusted.
- *
+ * 
  *  This is the output of a small test program:
  *
  *    test -2.000001 -2.0000009
@@ -612,45 +567,6 @@ double __floatsidf(SItype a)
 {
   return IEEEDPFlt(a);
 }
-#endif /* __HAVE_68881__ or __PPC__ */
-
-#ifdef __HAVE_68881__
-
-/*
- * double ldexp(val, exp)
- * returns: val * (2**exp), for integer exp
- */
-ENTRY(ldexp)
-asm(" \n\
-	fmoved          sp@(4),fp0 \n\
-	fbeq            Ldone \n\
-	ftwotoxl        sp@(12),fp1 \n\
-	fmulx           fp1,fp0 \n\
-Ldone: \n\
-	fmoved          fp0,sp@- \n\
-	movel           sp@+,d0 \n\
-	movel           sp@+,d1 \n\
-	rts \n\
-");
-
-/*
- * double modf(val, iptr)
- * returns: xxx and n (in *iptr) where val == n.xxx
- */
-ENTRY(modf)
-asm(" \n\
-	fmoved  sp@(4),fp0 \n\
-	movel   sp@(12),a0 \n\
-	fintrzx fp0,fp1 \n\
-	fmoved  fp1,a0@ \n\
-	fsubx   fp1,fp0 \n\
-	fmoved  fp0,sp@- \n\
-	movel   sp@+,d0 \n\
-	movel   sp@+,d1 \n\
-	rts \n\
-");
-
-#else /* __HAVE_68881__ */
 
 /*
  * ldexp returns the quanity "value" * 2 ^ "exp"
@@ -672,13 +588,13 @@ asm(" \n\
  *
  */
 
-#define MANT_MASK 0x800FFFFF    /* Mantissa extraction mask     */
-#define ZPOS_MASK 0x3FF00000    /* Positive # mask for exp = 0  */
-#define ZNEG_MASK 0x3FF00000    /* Negative # mask for exp = 0  */
+#define MANT_MASK 0x800FFFFF	/* Mantissa extraction mask     */
+#define ZPOS_MASK 0x3FF00000	/* Positive # mask for exp = 0  */
+#define ZNEG_MASK 0x3FF00000	/* Negative # mask for exp = 0  */
 
-#define EXP_MASK 0x7FF00000     /* Mask for exponent            */
-#define EXP_SHIFTS 20           /* Shifts to get into LSB's     */
-#define EXP_BIAS 1023           /* Exponent bias                */
+#define EXP_MASK 0x7FF00000	/* Mask for exponent            */
+#define EXP_SHIFTS 20		/* Shifts to get into LSB's     */
+#define EXP_BIAS 1023		/* Exponent bias                */
 
 union dtol
 {
@@ -707,22 +623,8 @@ double ldexp(double value, int exp)
  * integral part into iptr (a pointer to double).
  */
 
-#ifdef __PPC__
-double const floor(double parm);
-double const ceil(double parm);
-#endif
-
 double modf(double value, double *iptr)
 {
-#ifdef __PPC__
-    if(value<0){
-        *iptr=ceil(value);
-        return(*iptr-value);
-    }else{
-        *iptr=floor(value);
-        return(value-*iptr);
-    }
-#else
   /* if value negative */
   if (IEEEDPTst(value) < 0)
     {
@@ -736,7 +638,6 @@ double modf(double value, double *iptr)
       *iptr = IEEEDPFloor(value);
       return IEEEDPSub(value, *iptr);
     }
-#endif
 }
 
 #endif /* __HAVE_68881__ */

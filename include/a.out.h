@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,31 +30,31 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)a.out.h     5.6 (Berkeley) 4/30/91
+ *	@(#)a.out.h	5.6 (Berkeley) 4/30/91
  */
 
-#ifndef _AOUT_H_
-#define _AOUT_H_
+#ifndef	_AOUT_H_
+#define	_AOUT_H_
 
 #include <sys/exec.h>
 
 #if defined(hp300) || defined(i386)
-#define __LDPGSZ        4096
+#define	__LDPGSZ	4096
 #endif
 #if defined(tahoe) || defined(vax)
-#define __LDPGSZ        1024
+#define	__LDPGSZ	1024
 #endif
 #ifdef __amigaos__
-#define __LDPGSZ        8192
+#define __LDPGSZ	8192
 #endif
 
 /* Valid magic number check. */
-#define N_BADMAG(ex) \
+#define	N_BADMAG(ex) \
 	((ex).a_magic != NMAGIC && (ex).a_magic != OMAGIC && \
 	    (ex).a_magic != ZMAGIC)
 
 /* Address of the bottom of the text segment. */
-#define N_TXTADDR(ex)   ((ex).a_magic == ZMAGIC ? __LDPGSZ : 0)
+#define N_TXTADDR(ex)	((ex).a_magic == ZMAGIC ? __LDPGSZ : 0)
 
 /* Address of the bottom of the data segment. */
 #define N_DATADDR(ex) \
@@ -64,11 +64,11 @@
 #define N_BSSADDR(ex) (N_DATADDR(ex)+(ex).a_data)
 
 /* Text segment offset. */
-#define N_TXTOFF(ex) \
+#define	N_TXTOFF(ex) \
 	((ex).a_magic == ZMAGIC ? 0 : sizeof(struct exec))
 
 /* Data segment offset. */
-#define N_DATOFF(ex) \
+#define	N_DATOFF(ex) \
 	(N_TXTOFF(ex) + ((ex).a_magic != ZMAGIC ? (ex).a_text \
 	: __LDPGSZ + ((ex).a_text - 1 & ~(__LDPGSZ - 1))))
 
@@ -78,18 +78,18 @@
 	    (ex).a_drsize)
 
 /* String table offset. */
-#define N_STROFF(ex)    (N_SYMOFF(ex) + (ex).a_syms)
+#define	N_STROFF(ex) 	(N_SYMOFF(ex) + (ex).a_syms)
 
 /* Relocation format. */
 struct relocation_info {
-	int r_address;                  /* offset in text or data segment */
-	unsigned int r_symbolnum : 24,  /* ordinal number of add symbol */
-			 r_pcrel :  1,  /* 1 if value should be pc-relative */
-			r_length :  2,  /* log base 2 of value's width */
-			r_extern :  1,  /* 1 if need to add symbol to value */
-			r_baserel:  1,  /* 1 if linkage table relative */
-			r_jmptable :  1,        /* 1 if pc-relative to jump table */
-				 :  2;  /* reserved */
+	int r_address;			/* offset in text or data segment */
+	unsigned int r_symbolnum : 24,	/* ordinal number of add symbol */
+			 r_pcrel :  1,	/* 1 if value should be pc-relative */
+			r_length :  2,	/* log base 2 of value's width */
+			r_extern :  1,	/* 1 if need to add symbol to value */
+			r_baserel:  1,	/* 1 if linkage table relative */
+			r_jmptable :  1,	/* 1 if pc-relative to jump table */
+				 :  2;	/* reserved */
 };
 
 #define _AOUT_INCLUDE_

@@ -17,26 +17,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: pipe.c,v 1.1.1.1 2005/03/15 15:57:08 laire Exp $
+ *  $Id: pipe.c,v 1.4 1994/06/19 15:14:19 rluebbert Exp $
  *
  *  $Log: pipe.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:08  laire
- *  a new beginning
- *
- *  Revision 1.2  2004/07/04 22:47:12  piru
- *  2004-07-05  Harry Sintonen <sintonen@iki.fi>
- *  	* Removed the global max file limit of 512. Currently the close()d
- *  	  files don't get released, but are cached for reuse instead.
- *  	* Bumped version to 49.13.
- *
- *  WARNING: Since the deps are broken, you better make clean before build!
- *
- *  Revision 1.1.1.1  2000/05/07 19:38:24  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:46:52  nobody
- *  Initial import
- *
  *  Revision 1.4  1994/06/19  15:14:19  rluebbert
  *  *** empty log message ***
  *
@@ -78,9 +61,9 @@ pipe (int pv[2])
   if ((ss = init_stream()))
     {
       if (! falloc (&f1, pv))
-	{
-	  if (! falloc (&f2, pv+1))
-	    {
+        {
+          if (! falloc (&f2, pv+1))
+            {
 	      f1->f_ss = ss;
 	      f1->f_stb.st_mode = 0666 | S_IFCHR;
 	      f1->f_stb.st_size = UNIX_SOCKET_SIZE;
@@ -109,7 +92,6 @@ pipe (int pv[2])
 	      goto ret;
 	    }
 	  f1->f_count = 0;
-	  ffree(f1);
 	}
 
       kfree (ss);
@@ -136,21 +118,19 @@ __pclose (struct file *f)
   if (f->f_count == 0)
     {
       if (f->f_read)
-	ss->flags |= UNF_NO_READER;
+        ss->flags |= UNF_NO_READER;
       else
 	ss->flags |= UNF_NO_WRITER;
 	
       if ((ss->flags & (UNF_NO_READER|UNF_NO_WRITER)) ==
-		       (UNF_NO_READER|UNF_NO_WRITER))
+	  	       (UNF_NO_READER|UNF_NO_WRITER))
 	kfree (ss);
       else
-	{
-	  if (ss->task)
-	    Signal(ss->task, 1UL << u.u_pipe_sig);
-	  ix_wakeup ((u_int)ss);
-	}
-
-      ffree(f);
+        {
+          if (ss->task)
+            Signal(ss->task, 1UL << u.u_pipe_sig);
+          ix_wakeup ((u_int)ss);
+        }
     }
 
   Permit();

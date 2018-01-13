@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_overflow.c,v 1.6 1996/05/03 21:50:48 cgd Exp $      */
+/*	$NetBSD: bt_overflow.c,v 1.6 1996/05/03 21:50:48 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_overflow.c       8.5 (Berkeley) 7/16/94";
+static char sccsid[] = "@(#)bt_overflow.c	8.5 (Berkeley) 7/16/94";
 #else
 static char rcsid[] = "$NetBSD: bt_overflow.c,v 1.6 1996/05/03 21:50:48 cgd Exp $";
 #endif
@@ -74,13 +74,13 @@ static char rcsid[] = "$NetBSD: bt_overflow.c,v 1.6 1996/05/03 21:50:48 cgd Exp 
  * __OVFL_GET -- Get an overflow key/data item.
  *
  * Parameters:
- *      t:      tree
- *      p:      pointer to { pgno_t, u_int32_t }
- *      buf:    storage address
- *      bufsz:  storage size
+ *	t:	tree
+ *	p:	pointer to { pgno_t, u_int32_t }
+ *	buf:	storage address
+ *	bufsz:	storage size
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __ovfl_get(t, p, ssz, buf, bufsz)
@@ -134,12 +134,12 @@ __ovfl_get(t, p, ssz, buf, bufsz)
  * __OVFL_PUT -- Store an overflow key/data item.
  *
  * Parameters:
- *      t:      tree
- *      data:   DBT to store
- *      pgno:   storage page number
+ *	t:	tree
+ *	data:	DBT to store
+ *	pgno:	storage page number
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __ovfl_put(t, dbt, pg)
@@ -189,11 +189,11 @@ __ovfl_put(t, dbt, pg)
  * __OVFL_DELETE -- Delete an overflow chain.
  *
  * Parameters:
- *      t:      tree
- *      p:      pointer to { pgno_t, u_int32_t }
+ *	t:	tree
+ *	p:	pointer to { pgno_t, u_int32_t }
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __ovfl_delete(t, p)

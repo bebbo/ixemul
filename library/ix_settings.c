@@ -1,7 +1,6 @@
 #define _KERNEL
 #include <ixemul.h>
-//#include "version.h"
-#include "ix_internals_backup.h"
+#include "version.h"
 
 long ix_get_gmt_offset(void)
 {
@@ -22,7 +21,7 @@ struct ix_settings *ix_get_settings(void)
   settings.flags = ix.ix_flags;
   settings.membuf_limit = ix.ix_membuf_limit;
   settings.red_zone_size = 0; /* obsolete */
-  settings.fs_buf_factor = 32;
+  settings.fs_buf_factor = ix.ix_fs_buf_factor;
   settings.network_type = ix.ix_network_type;
   return &settings;
 }
@@ -33,12 +32,11 @@ struct ix_settings *ix_get_default_settings(void)
   {
     IX_VERSION,
     IX_REVISION,
-    ix_translate_slash | ix_no_insert_disk_requester
-    | ix_allow_amiga_wildcard | ix_watch_availmem,
-    0,                  /* membuf_limit  */
-    0,                  /* red_zone_size */
-    64,                 /* fs_buf_factor */
-    IX_NETWORK_AMITCP   /* network_type */
+    ix_translate_slash | ix_no_insert_disk_requester | ix_allow_amiga_wildcard,
+    0,			/* membuf_limit  */
+    0,			/* red_zone_size */
+    64,			/* fs_buf_factor */
+    IX_NETWORK_AUTO	/* network_type */
   };
 
   return &default_settings;
@@ -87,25 +85,25 @@ long ix_get_long(unsigned long id, unsigned long extra)
 
     case IXID_CPU:
       if (has_68060_or_up)
-	return IX_CPU_68060;
+        return IX_CPU_68060;
       if (has_68040_or_up)
-	return IX_CPU_68040;
+        return IX_CPU_68040;
       if (has_68030_or_up)
-	return IX_CPU_68030;
+        return IX_CPU_68030;
       if (has_68020_or_up)
-	return IX_CPU_68020;
+        return IX_CPU_68020;
       if (has_68010_or_up)
-	return IX_CPU_68010;
+        return IX_CPU_68010;
       return IX_CPU_68000;
 
     case IXID_OS:
       return OS_IS_AMIGAOS;
 
     case IXID_OFILE:
-      return (long) u.u_ofile;
+      return u.u_ofile;
 
     case IXID_ENVIRON:
-      return (long) u.u_environ;
+      return u.u_environ;
       
     case IXID_EXPAND_CMD_LINE:
       return u.u_expand_cmd_line;

@@ -1,83 +1,58 @@
 #### Start of system configuration section. ####
 
-srcdir =        @srcdir@
-VPATH =         @srcdir@
+srcdir =	@srcdir@
+VPATH =		@srcdir@
 
 # Common prefix for machine-independent installed files.
-prefix =        @prefix@
+prefix =	@prefix@
 
 # Common prefix for machine-dependent installed files.
-exec_prefix =   @exec_prefix@
+exec_prefix =	@exec_prefix@
 
-bindir =        $(exec_prefix)/bin
-libdir =        $(exec_prefix)/lib
-syslibsdir =    $(exec_prefix)/Sys/libs
-sysldir =       $(exec_prefix)/Sys/l
-incdir =        $(exec_prefix)/include
-etcdir =        $(exec_prefix)/etc
-mandir =        $(prefix)/man
+bindir =	$(exec_prefix)/Sys/bin
+libdir =	$(exec_prefix)/lib
+syslibsdir =	$(exec_prefix)/Sys/libs
+sysldir =	$(exec_prefix)/Sys/l
+incdir =	$(exec_prefix)/include
+etcdir =	$(exec_prefix)/etc
+mandir =	$(prefix)/man
 
-INSTALL =         @INSTALL@
+INSTALL =	@INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA =    @INSTALL_DATA@
+INSTALL_DATA =	@INSTALL_DATA@
 
-# Will we produce 68k or ppc binaries ?
+CC =		@CC@
+AS =		as
+CFLAGS =	@CFLAGS@
+LDFLAGS =	@LDFLAGS@
 
-BUILD_M68K =    @BUILD_M68K@
-BUILD_PPC =     @BUILD_PPC@
-
-# Tools used to build native executables for the machine used for
-# compilation.
-
-CC =            @CC@
-AS =            @AS@
-AR =            @AR@
-CFLAGS =        @CFLAGS@
-LDFLAGS =       @LDFLAGS@
-COPTFLAGS =     @COPTFLAGS@
-RANLIB =        @RANLIB@
-
-# Tools used to produce 68k executables.
-
-CC68K =         @CC68K@ 
-AS68K =         @AS68K@
-AR68K =         @AR68K@
-CFLAGS68K =     @CFLAGS68K@
-LDFLAGS68K =    @LDFLAGS68K@
-COPTFLAGS68K =  @COPTFLAGS68K@
-RANLIB68K =     @RANLIB68K@
-
-# Tools used to produce ppc executables.
-
-CCPPC =         @CCPPC@
-ASPPC =         @ASPPC@
-ARPPC =         @ARPPC@
-CFLAGSPPC =     @CFLAGSPPC@
-LDFLAGSPPC =    @LDFLAGSPPC@
-COPTFLAGSPPC =  @COPTFLAGSPPC@
-RANLIBPPC =     @RANLIBPPC@
+RANLIB =	@RANLIB@
 
 #### End system configuration section ####
 
 # Supported OSes
-OS =            morphos amigaos #pos
+OS =		amigaos
 
 # Directories that depend on baserel/baserel32/no-baserel only
-BASE =          glue stack static net db
+BASE =		glue stack static net db
+
 
 # Directories that depend on the CPU and OS type
-CPUOSONLY =     ixnet
+CPUOSONLY =	ixnet
+
 
 # Directories that depend on the CPU, FPU and OS type
-CPUFPUOS =      general string stdlib stdio wchar library
+CPUFPUOS =	general string stdlib stdio library
+
 
 # Directories that depend on both baserel/baserel32/no-baserel and CPU/FPU type
 # None at the moment, although 'stack' and 'static' should be moved here
 # once we can use a CPU/FPU specific libc.a.
 BASECPUFPU =
 
+
 # For use in 'make clean' and 'make clobber'
-DIRS =          $(BASE) $(CPUOSONLY) $(CPUFPUOS) $(BASECPUFPU)
+DIRS =		$(BASE) $(CPUOSONLY) $(CPUFPUOS) $(BASECPUFPU)
 
 
 ###  CPU-FPU types.
@@ -87,44 +62,29 @@ DIRS =          $(BASE) $(CPUOSONLY) $(CPUFPUOS) $(BASECPUFPU)
 ###
 ###  Note that libsrc, which builds the runtime startup files and all
 ###  versions of libc.a, and utils completely ignore the base/cpu/fpu variables,
-###  so these are handled in the all:
+###  so these are handled in the all: target.
 ###
 ###  There is one special combination: "notrap.soft-float".
 ###  In this case an 68000.soft-float version will be compiled with the -DNOTRAP
 ###  option. See the OTHER_CFLAGS explanation for more information.
 ###
 ###  You can remove specific CPU/FPU combinations that you are not interested in.
-###
-###  Examples of valid entries:
-###
-###  68000.soft-float, notrap.soft-float,
-###  68020.soft-float 68020.68881 68040.soft-float 68040.68881
-###  68060.68881 68060.soft-float
-###  powerpc.604e powerpc.603e
 
-CPU-FPU-TYPES = @TYPES@
+CPU-FPU-TYPES =	68000.soft-float notrap.soft-float \
+		68020.soft-float 68020.68881 \
+		68040.soft-float 68040.68881 \
+		68060.68881
 
 # Some additional options for OTHER_CFLAGS that may or may not be useful are:
 #
-# -DDEBUG_VERSION       (build a debugging version)
+# -DDEBUG_VERSION	(build a debugging version)
 # -DNOTRAP              (build a version that uses tc_UserData instead of
 #                        tc_TrapData and also doesn't install any traphandlers.
 #                        This can be used for debugging with a debugger other
 #                        than gdb.
 
-OTHER_CFLAGS = -static -Wall -O2 -DNOTRAP
+OTHER_CFLAGS = -static -fomit-frame-pointer -Wall
 
-# Flags used when compiling 68k code
-M68K_CFLAGS = -fomit-frame-pointer
-
-# Flags used when compiling ppc code (MorphOS and PowerUp)
-POWERPC_CFLAGS = -mmultiple -fsigned-char
-
-# Flags used when compiling for MorphOS
-MORPHOS_CFLAGS = -DNATIVE_MORPHOS
-
-# Flags used when compiling for PowerUp
-POWERUP_CFLAGS = -DSHAREDL
 
 ###############################################
 ###                                         ###
@@ -134,7 +94,7 @@ POWERUP_CFLAGS = -DSHAREDL
 
 ### All targets that are generated look like this:
 ###
-###     directory-name.cpu.fpu.base
+### 	directory-name.cpu.fpu.base
 ###
 ### The following four defines extract one of these fields from the target name:
 
@@ -145,255 +105,122 @@ base = $(word 4, $(subst ., ,$@))
 os   = $(word 4, $(subst ., ,$@))
 
 
-FLAGS_TO_PASS = "AS=$(AS)"                      \
-		"BASE=$(base)"                  \
-		"BUILDDIR=$(dir)"               \
-		"CC=$(CC)"                      \
-		"CFLAGS=$(CFLAGS) $(OTHER_CFLAGS)" \
-		"CPU=$(cpu)"                    \
-		"FPU=$(fpu)"                    \
-		"LDFLAGS=$(LDFLAGS)"            \
-		"OS=$(os)"                      \
-		"AR=$(AR)"                      \
+FLAGS_TO_PASS =	"AS=$(AS)"			\
+		"BASE=$(base)"			\
+		"BUILDDIR=$(dir)"		\
+		"CC=$(CC)"			\
+		"CFLAGS=$(CFLAGS)"		\
+		"CPU=$(cpu)"			\
+		"FPU=$(fpu)"			\
+		"LDFLAGS=$(LDFLAGS)"		\
+		"OS=$(os)"			\
+		"OTHER_CFLAGS=$(OTHER_CFLAGS)"	\
 		"RANLIB=$(RANLIB)"
-
-PPC_FLAGS_TO_PASS = "AS=$(ASPPC)"                   \
-		    "BASE=$(base)"                  \
-		    "BUILDDIR=$(dir)"               \
-		    "CC=$(CCPPC)"                   \
-		    "CFLAGS=$(CFLAGSPPC) $(POWERPC_CFLAGS) $(OTHER_CFLAGS)" \
-		    "CPU=$(cpu)"                    \
-		    "FPU=$(fpu)"                    \
-		    "LD=$(LDPPC)"                   \
-		    "LDFLAGS=$(LDFLAGSPPC)"         \
-		    "OS=$(os)"                      \
-		    "AR=$(ARPPC)"                   \
-		    "RANLIB=$(RANLIBPPC)"
-
-M68K_FLAGS_TO_PASS = "AS=$(AS68K)"                   \
-		     "BASE=$(base)"                  \
-		     "BUILDDIR=$(dir)"               \
-		     "CC=$(CC68K)"                   \
-		     "CFLAGS=$(CFLAGS68K) $(M68K_CFLAGS) $(OTHER_CFLAGS)" \
-		     "CPU=$(cpu)"                    \
-		     "FPU=$(fpu)"                    \
-		     "LD=$(LD68K)"                   \
-		     "LDFLAGS=$(LDFLAGS68K)"         \
-		     "OS=$(os)"                      \
-		     "AR=$(AR68K)"                   \
-		     "RANLIB=$(RANLIB68K)"
 
 ### Generate the targets we have to build. First we create defines for each
 ### type (dependent on base only, or only on cpu-fpu, or dependent on all
 ### three). Only the directory needs to be filled in in the second stage.
 
-m68k-base-types         = $(d).68000.soft-float.baserel \
-			  $(d).68020.soft-float.baserel32 \
-			  $(d).68000.soft-float.no-baserel
+base-types         = $(d).68000.soft-float.baserel \
+		     $(d).68020.soft-float.baserel32 \
+		     $(d).68000.soft-float.no-baserel
 
-m68k-cpu-types          = $(d).m68k
+cpu-os-types	   = $(addprefix $(d).,$(sort $(CPU-FPU-TYPES:.68881=.soft-float)))
 
-m68k-cpu-os-types       = $(addprefix $(d).,$(sort $(filter-out powerpc.%, $(CPU-FPU-TYPES:.68881=.soft-float))))
+cpu-fpu-os-types   = $(addprefix $(d).,$(CPU-FPU-TYPES))
 
-m68k-cpu-fpu-os-types   = $(addprefix $(d).,$(filter-out powerpc.%, $(CPU-FPU-TYPES)))
-
-m68k-base-cpu-fpu-types = $(addsuffix .baserel, $(cpu-fpu-types)) \
-			  $(addsuffix .baserel32, $(cpu-fpu-types)) \
-			  $(addsuffix .no-baserel, $(cpu-fpu-types))
-
-
-ppc-base-types         = $(d).powerpc.604e.morphos \
-			 $(d).powerpc.604e.morphos-rel32 \
-#			 $(d).powerpc.604e.morphos-rel \
-#                        $(d).powerpc.604e.powerup
-
-ppc-cpu-types          = $(d).powerpc
-
-ppc-cpu-os-types       = $(addprefix $(d).,$(sort $(filter powerpc.%, $(CPU-FPU-TYPES))))
-
-ppc-cpu-fpu-os-types   = $(addprefix $(d).,$(filter powerpc.%, $(CPU-FPU-TYPES)))
-
-ppc-base-cpu-fpu-types = $(addsuffix .morphos, $(cpu-fpu-types)) \
-			 $(addsuffix .morphos-rel32, $(cpu-fpu-types)) \
-#			 $(addsuffix .morphos-rel, $(cpu-fpu-types)) \
-#                        $(addsuffix .powerup, $(cpu-fpu-types))
+base-cpu-fpu-types = $(addsuffix .baserel, $(cpu-fpu-types)) \
+		     $(addsuffix .baserel32, $(cpu-fpu-types)) \
+		     $(addsuffix .no-baserel, $(cpu-fpu-types))
 
 
 ### Now fill in the directory name
 
-ifeq ($(BUILD_M68K), yes)
-	m68k-base-targets         := $(foreach d, $(BASE), $(m68k-base-types))
-	m68k-cpu-targets          := $(foreach d, $(CPUONLY), $(m68k-cpu-types))
-	m68k-cpu-os-targets       := $(foreach o, $(filter amigaos pos, $(OS)), $(addsuffix .$(o),$(foreach d, $(CPUOSONLY), $(m68k-cpu-os-types))))
-	m68k-cpu-fpu-os-targets   := $(foreach o, $(filter amigaos pos, $(OS)), $(addsuffix .$(o),$(foreach d, $(CPUFPUOS), $(m68k-cpu-fpu-os-types))))
-	m68k-base-cpu-fpu-targets := $(foreach d, $(BASECPUFPU), $(m68k-base-cpu-fpu-types))
-endif
-
-ifeq ($(BUILD_PPC), yes)
-	ppc-base-targets         := $(foreach d, $(BASE), $(ppc-base-types))
-	ppc-cpu-targets          := $(foreach d, $(CPUONLY), $(ppc-cpu-types))
-	ppc-cpu-os-targets       := $(foreach o, $(filter morphos powerup, $(OS)), $(addsuffix .$(o),$(foreach d, $(CPUOSONLY), $(ppc-cpu-os-types))))
-	ppc-cpu-fpu-os-targets   := $(foreach o, $(filter morphos powerup, $(OS)), $(addsuffix .$(o),$(foreach d, $(CPUFPUOS), $(ppc-cpu-fpu-os-types))))
-	ppc-base-cpu-fpu-targets := $(foreach d, $(BASECPUFPU), $(ppc-base-cpu-fpu-types))
-endif
-
+base-targets         := $(foreach d, $(BASE),       $(base-types))
+cpu-targets          := $(foreach d, $(CPUONLY),    $(cpu-types))
+cpu-os-targets       := $(foreach o, $(OS), $(addsuffix .$(o),$(foreach d, $(CPUOSONLY), $(cpu-os-types))))
+cpu-fpu-os-targets   := $(foreach o, $(OS), $(addsuffix .$(o),$(foreach d, $(CPUFPUOS), $(cpu-fpu-os-types))))
+base-cpu-fpu-targets := $(foreach d, $(BASECPUFPU), $(base-cpu-fpu-types))
 
 
 ### Make all targets and libsrc, utils and man pages.
 
-all:    $(gcc-m68k-ok) $(m68k-base-targets) $(m68k-cpu-os-targets) $(m68k-cpu-fpu-os-targets) \
-	$(m68k-base-cpu-fpu-targets) $(gcc-ppc-ok) $(ppc-base-targets) $(ppc-cpu-os-targets) \
-	$(ppc-cpu-fpu-os-targets) $(ppc-base-cpu-fpu-targets)
-	@(cd libsrc && $(MAKE) $(FLAGS_TO_PASS) CC=m68k-amigaos-gcc) 
-	@(cd libsrc && $(MAKE) $(PPC_FLAGS_TO_PASS) "OTHER_CFLAGS=$(MORPHOS_CFLAGS)" "OS=$(os)")
-	@(cd utils && $(MAKE) $(FLAGS_TO_PASS) CC=m68k-amigaos-gcc)
-#        @(cd man && $(MAKE) $(FLAGS_TO_PASS))
+all:	gcc-ok $(base-targets) $(cpu-os-targets) $(cpu-fpu-os-targets) $(base-cpu-fpu-targets)
+	@(cd libsrc && $(MAKE) $(FLAGS_TO_PASS))
+	@(cd utils && $(MAKE) $(FLAGS_TO_PASS))
+	@(cd man && $(MAKE) $(FLAGS_TO_PASS))
 
-
-#inlines:    ../inlines/Makefile
-#	 @(cd ../inlines &&$(MAKE))
-
+# Work in progress - dez@geekgadgets.org
+#inlines:	../inlines/Makefile
+#	@(cd ../inlines &&$(MAKE))
+#
 #../inlines/Makefile:
-#	 @mkdir -p ../inlines
-#	 @(cd ../inlines && $(srcdir)/../inlines/configure --prefix=$(prefix))
+#	@mkdir -p ../inlines
+#	@(cd ../inlines && $(srcdir)/../inlines/configure --prefix=$(prefix))
 
-gcc-m68k-ok:
-ifeq ($(BUILD_M68K), yes)
+gcc-ok:
 	@echo >t.c
-	@echo If the next command fails, then your gcc is out of date!
-	$(CC68K) -c -m68020 -resident32 -mrestore-a4 t.c
+	@echo If the next command fails, then your gcc is out of date! 
+	$(CC) -c -m68020 -resident32 -mrestore-a4 t.c
+	@echo >gcc-ok
 	@rm -f t.c t.o
-endif
-	@echo >gcc-m68k-ok
-
-gcc-ppc-ok:
-ifeq ($(BUILD_PPC), yes)
-	@echo >t.c
-	@echo If the next command fails, then your gcc can't generate PowerPC code
-	$(CCPPC) -c -mcpu=604e t.c
-	@rm -f t.c t.o
-endif
-	@echo >gcc-ppc-ok
 
 ###  Some targets are only dependent on BASE, others on CPU-FPU, and
 ###  others depend on all three.
 
 ###  This makes targets that are only dependent on BASE.
 
-$(m68k-base-targets):
-	@if [ ! -d $(dir)/$(base) ]; then       \
-	    echo mkdir -p $(dir)/$(base);       \
-	    mkdir -p $(dir)/$(base);            \
-	fi;                                     \
-	if [ $(dir) = "glue" ]; then            \
-	  (cd $(dir)/$(base) ;                          \
-	   $(MAKE) -f ../Makefile $(FLAGS_TO_PASS)      \
-		"AR=$(AR68K)");                         \
-	else                                            \
-	  (cd $(dir)/$(base) ;                          \
-	   $(MAKE) -f ../Makefile $(M68K_FLAGS_TO_PASS));\
-	fi
-
-$(ppc-base-targets):
-	@if [ ! -d $(dir)/$(base) ]; then       \
-	    echo mkdir -p $(dir)/$(base);       \
-	    mkdir -p $(dir)/$(base);            \
-	fi;                                     \
-	if [ $(dir) = "glue" ]; then            \
-	  (cd $(dir)/$(base) ;                          \
-	    $(MAKE) -f ../Makefile $(FLAGS_TO_PASS)     \
-		"AR=$(ARPPC)");                         \
-	else                                            \
-	  (cd $(dir)/$(base) ;                          \
-	    $(MAKE) -f ../Makefile $(PPC_FLAGS_TO_PASS) \
-		"OTHER_CFLAGS=$(MORPHOS_CFLAGS)");      \
-	fi
+$(base-targets):
+	@if [ ! -d $(dir)/$(base) ]; then	\
+		echo mkdir -p $(dir)/$(base);	\
+		mkdir -p $(dir)/$(base);	\
+	fi;					\
+	(cd $(dir)/$(base) ; $(MAKE) -f ../Makefile $(FLAGS_TO_PASS));
 
 
 ###  This makes targets that are only dependent on the CPU.
 ###  Override the settings CPU and OTHER_CFLAGS if CPU is "notrap".
 
-$(m68k-cpu-os-targets):
-	@if [ ! -d $(dir)/$(cpu)/$(os) ]; then                          \
-		echo mkdir -p $(dir)/$(cpu)/$(os);                      \
-		mkdir -p $(dir)/$(cpu)/$(os);                           \
-	fi;                                                             \
-	if [ $(cpu) = "notrap" ]; then                                  \
-		(cd $(dir)/$(cpu)/$(os) ;                               \
-		$(MAKE) -f ../../Makefile $(M68K_FLAGS_TO_PASS)         \
-		  CPU=68000 "OTHER_CFLAGS=$(M68K_CFLAGS) -DNOTRAP");    \
-	else                                                            \
-		(cd $(dir)/$(cpu)/$(os) ;                               \
-		$(MAKE) -f ../../Makefile $(M68K_FLAGS_TO_PASS));       \
-	fi;
-
-$(ppc-cpu-os-targets):
-	@if [ ! -d $(dir)/$(cpu)/$(os) ]; then                          \
-		echo mkdir -p $(dir)/$(cpu)/$(os);                      \
-		mkdir -p $(dir)/$(cpu)/$(os);                           \
-	fi;                                                             \
-	if [ $(os) = "morphos" ]; then                                  \
-		(cd $(dir)/$(cpu)/$(os) ;                               \
-		$(MAKE) -f ../../Makefile $(PPC_FLAGS_TO_PASS)          \
-		  "OTHER_CFLAGS=$(MORPHOS_CFLAGS)");                    \
-	else                                                            \
-		(cd $(dir)/$(cpu)/$(os) ;                               \
-		$(MAKE) -f ../../Makefile $(PPC_FLAGS_TO_PASS)          \
-		  "OTHER_CFLAGS=$(POWERUP_CFLAGS)");                    \
+$(cpu-os-targets):
+	@if [ ! -d $(dir)/$(cpu)/$(os) ]; then				\
+		echo mkdir -p $(dir)/$(cpu)/$(os);			\
+		mkdir -p $(dir)/$(cpu)/$(os);				\
+	fi;								\
+	if [ $(cpu) = "notrap" ]; then				\
+		(cd $(dir)/$(cpu)/$(os) ; 				\
+		 $(MAKE) -f ../../Makefile $(FLAGS_TO_PASS) 		\
+		  CPU=68000 "OTHER_CFLAGS=$(OTHER_CFLAGS) -DNOTRAP"); 	\
+	else								\
+		(cd $(dir)/$(cpu)/$(os) ; 				\
+		 $(MAKE) -f ../../Makefile $(FLAGS_TO_PASS));		\
 	fi;
 
 
 ###  This makes targets that are only dependent on CPU and FPU.
 ###  Override the settings CPU and OTHER_CFLAGS if CPU is "notrap".
 
-$(m68k-cpu-fpu-os-targets):
-	@if [ ! -d $(dir)/$(cpu)/$(fpu)/$(os) ]; then           \
-		echo mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);       \
-		mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);            \
-	fi;                                                     \
-	if [ $(cpu) = "notrap" ]; then                                  \
-		(cd $(dir)/$(cpu)/$(fpu)/$(os) ;                        \
-		$(MAKE) -f ../../../Makefile $(M68K_FLAGS_TO_PASS)      \
-		  CPU=68000 "OTHER_CFLAGS= -DNOTRAP");                  \
-	else                                                            \
-		(cd $(dir)/$(cpu)/$(fpu)/$(os) ;                        \
-		$(MAKE) -f ../../../Makefile $(M68K_FLAGS_TO_PASS)	\
-		  "OTHER_CFLAGS=$(OTHER_CFLAGS)");			\
+$(cpu-fpu-os-targets):
+	@if [ ! -d $(dir)/$(cpu)/$(fpu)/$(os) ]; then		\
+		echo mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);	\
+		mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);		\
+	fi;						        \
+	if [ $(cpu) = "notrap" ]; then			\
+		(cd $(dir)/$(cpu)/$(fpu)/$(os) ; 		\
+		 $(MAKE) -f ../../../Makefile $(FLAGS_TO_PASS) 	\
+		  CPU=68000 "OTHER_CFLAGS=$(OTHER_CFLAGS) -DNOTRAP"); \
+	else							\
+		(cd $(dir)/$(cpu)/$(fpu)/$(os) ; 		\
+		 $(MAKE) -f ../../../Makefile $(FLAGS_TO_PASS));\
 	fi;
-
-$(ppc-cpu-fpu-os-targets):
-	@if [ ! -d $(dir)/$(cpu)/$(fpu)/$(os) ]; then           \
-		echo mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);       \
-		mkdir -p $(dir)/$(cpu)/$(fpu)/$(os);            \
-	fi;                                                     \
-	if [ $(os) = "morphos" ]; then                                  \
-		(cd $(dir)/$(cpu)/$(fpu)/$(os) ;                        \
-		$(MAKE) -f ../../../Makefile $(PPC_FLAGS_TO_PASS)       \
-		  "OTHER_CFLAGS=$(MORPHOS_CFLAGS) $(OTHER_CFLAGS)");    \
-	else                                                            \
-		(cd $(dir)/$(cpu)/$(fpu)/$(os) ;                        \
-		$(MAKE) -f ../../../Makefile $(PPC_FLAGS_TO_PASS)       \
-		  "OTHER_CFLAGS=$(POWERUP_CFLAGS) $(OTHER_CFLAGS)");    \
-	fi;
-
 
 ###  This makes targets that are dependent on CPU, FPU, and BASE.
 
-$(m68k-base-cpu-fpu-targets):
-	@if [ ! -d $(dir)/$(base)/$(cpu)/$(fpu) ]; then         \
-		echo mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);     \
-		mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);          \
-	fi;                                                     \
-	(cd $(dir)/$(base)/$(cpu)/$(fpu) ;                      \
-	$(MAKE) -f ../../../Makefile $(M68K_FLAGS_TO_PASS));
-
-$(ppc-base-cpu-fpu-targets):
-	@if [ ! -d $(dir)/$(base)/$(cpu)/$(fpu) ]; then         \
-		echo mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);     \
-		mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);          \
-	fi;                                                     \
-	(cd $(dir)/$(base)/$(cpu)/$(fpu) ;                      \
-	$(MAKE) -f ../../../Makefile $(PPC_FLAGS_TO_PASS));
+$(base-cpu-fpu-targets):
+	@if [ ! -d $(dir)/$(base)/$(cpu)/$(fpu) ]; then		\
+		echo mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);	\
+		mkdir -p $(dir)/$(base)/$(cpu)/$(fpu);		\
+	fi;							\
+	(cd $(dir)/$(base)/$(cpu)/$(fpu) ; $(MAKE) -f ../../../Makefile $(FLAGS_TO_PASS));
 
 
 ###  Install all the libraries, include files, runtime files, etc.
@@ -403,36 +230,28 @@ ixcpu  = $(subst 68,,$(word 2, $(subst ., ,$@)))
 
 
 $(ixemul-targets):
-	@echo Installing $@;                                            \
-	if [ "$(fpu)" = "68881" ]; then                                 \
-		fpu=-fpu;                                               \
-	else                                                            \
-		fpu=;                                                   \
-	fi;                                                             \
-	if [ "$(cpu)" = "notrap" ]; then                                \
-		fpu=-notrap; cpu=000;                                   \
-	else                                                            \
-		cpu=$(ixcpu);                                           \
-	fi;                                                             \
-	if [ "$(os)" = "pos" ]; then                                    \
-		os=-pos;                                                \
-	else                                                            \
-		pos=;                                                   \
-	fi;                                                             \
-	if [ "$(os)" = "morphos" ]; then                                \
-		os=-morphos;                                            \
-	fi;                                                             \
-	if [ -f library/$(cpu)/$(fpu)/$(os)/ixemul.library ]; then      \
-		$(INSTALL) library/$(cpu)/$(fpu)/$(os)/ixemul.library   \
-			$(syslibsdir)/ixemul-$$cpu$$fpu$$os.library;    \
-	else true; fi;                                                  \
-	if [ -f library/$(cpu)/$(fpu)/$(os)/ixemul.trace ]; then        \
-		$(INSTALL) library/$(cpu)/$(fpu)/$(os)/ixemul.trace     \
-			$(syslibsdir)/ixemul-$$cpu$$fpu$$os.trace;      \
-	else true; fi;                                                  \
-	if [ -f ixnet/$(cpu)/$(os)/ixnet.library ]; then                \
-		$(INSTALL) ixnet/$(cpu)/$(os)/ixnet.library             \
-			$(syslibsdir)/ixnet-$$cpu$$os.library;          \
+	@echo Installing $@;						\
+	if [ "$(fpu)" = "68881" ]; then 				\
+		fpu=-fpu; 						\
+	else								\
+		fpu=;							\
+	fi;								\
+	if [ "$(cpu)" = "notrap" ]; then 				\
+		fpu=-notrap; cpu=000;					\
+	else								\
+		cpu=$(ixcpu);						\
+	fi;								\
+	if [ -f library/$(cpu)/$(fpu)/$(os)/ixemul.library ]; then 	\
+		$(INSTALL) library/$(cpu)/$(fpu)/$(os)/ixemul.library 	\
+			$(syslibsdir)/ixemul-$$cpu$$fpu$$os.library;	\
+	else true; fi;							\
+	if [ -f library/$(cpu)/$(fpu)/$(os)/ixemul.trace ]; then 	\
+		$(INSTALL) library/$(cpu)/$(fpu)/$(os)/ixemul.trace	\
+			$(syslibsdir)/ixemul-$$cpu$$fpu$$os.trace;	\
+	else true; fi;							\
+	if [ -f ixnet/$(cpu)/$(os)/ixnet.library ]; then		\
+		$(INSTALL) ixnet/$(cpu)/$(os)/ixnet.library 		\
+			$(syslibsdir)/ixnet-$$cpu$$os.library; 		\
 	else true; fi
 
 install: installdirs $(ixemul-targets)
@@ -481,7 +300,7 @@ install: installdirs $(ixemul-targets)
 	(cd utils/zoneinfo && cp -r . $(etcdir)/zoneinfo)
 
 
-installdirs:    mkinstalldirs
+installdirs:	mkinstalldirs
 	$(srcdir)/mkinstalldirs $(bindir) $(libdir) $(syslibsdir) \
 		$(sysldir) $(incdir) $(etcdir) $(mandir) $(libdir)/libb \
 		$(libdir)/libb32/libm020
@@ -503,31 +322,28 @@ clobber:
 ixdist-targets   := $(addprefix ixdist.,$(foreach o, $(OS), $(addsuffix .$(o),$(CPU-FPU-TYPES))))
 
 $(ixdist-targets):
-	@echo Distributing $@;                                          \
-	mkdir -p gg/Sys/libs;                                           \
-	ext=library;                                                    \
-	if [ "$(fpu)" = "68881" ]; then                                 \
-		fpulha=f; fpu=-fpu;                                     \
-	else                                                            \
-		fpulha=s; fpu=;                                         \
-	fi;                                                             \
-	if [ "$(cpu)" = "notrap" ]; then                                \
-		cpu=000; fpulha=n; fpu=-notrap; ext=trace;              \
-	else                                                            \
-		cpu=$(ixcpu);                                           \
-	fi;                                                             \
-	if [ "$(os)" = "pos" ]; then                                    \
-		os=-pos;                                                \
-	else                                                            \
-		os=;                                                    \
-	fi;                                                             \
-	mkdir -p gg/Sys/libs;                                           \
-	cp -p library/$(cpu)/$(fpu)/$(os)/ixemul.$$ext                  \
-		gg/Sys/libs/ixemul$$cpu$$fpu$$os.library;               \
-	cp -p ixnet/$(cpu)/$(os)/ixnet.library                          \
-		gg/Sys/libs/ixnet$$cpu$$os.library;                     \
-	cp -p $(srcdir)/README gg/Sys/libs/README;                      \
-	cp -p $(srcdir)/README.pOS gg/Sys/libs/README.pOS;              \
+	@echo Distributing $@;						\
+	mkdir -p gg/Sys/libs;						\
+	ext=library;							\
+	if [ "$(fpu)" = "68881" ]; then 				\
+		fpulha=f; fpu=-fpu;					\
+	else								\
+		fpulha=s; fpu=;						\
+	fi;								\
+	if [ "$(cpu)" = "notrap" ]; then 				\
+		cpu=000; fpulha=n; fpu=-notrap;	ext=trace;		\
+	else								\
+		cpu=$(ixcpu); 						\
+	fi;								\
+	os=;	 							\
+	fi;								\
+	mkdir -p gg/Sys/libs;	 					\
+	cp -p library/$(cpu)/$(fpu)/$(os)/ixemul.$$ext	 		\
+		gg/Sys/libs/ixemul$$cpu$$fpu$$os.library;		\
+	cp -p ixnet/$(cpu)/$(os)/ixnet.library 				\
+		gg/Sys/libs/ixnet$$cpu$$os.library;			\
+	cp -p $(srcdir)/README gg/Sys/libs/README;			\
+        cp -p $(srcdir)/README.pOS gg/Sys/libs/README.pOS;              \
 	(cd gg && lha -mraxeq a /distrib/ixemul-$$cpu$$fpulha$$os.lha Sys);\
 	rm -f gg/Sys/libs/*
 
@@ -538,7 +354,7 @@ dist-prepare:
 	rm -rf gg ixemul distrib
 	mkdir -p distrib
 
-dist:   dist-prepare $(ixdist-targets)
+dist:	dist-prepare $(ixdist-targets)
 	#
 	# Create ixemul-bin.lha, which contains utilities
 	# that are generally useful to ixemul.library users.
@@ -629,11 +445,6 @@ dist:   dist-prepare $(ixdist-targets)
 	cp -p $(srcdir)/README gg/Sys/libs/README
 	cp -p $(srcdir)/README.pOS gg/Sys/libs/README.pOS
 	(cd gg && lha -mraxeq a /distrib/ixemul-000t.lha Sys)
-	rm -f gg/Sys/libs/*
-	cp -p library/68000/soft-float/pos/ixemul.trace gg/Sys/libs/ixemul000-pos.trace
-	cp -p $(srcdir)/README gg/Sys/libs/README
-	cp -p $(srcdir)/README.pOS gg/Sys/libs/README.pOS
-	(cd gg && lha -mraxeq a /distrib/ixemul-000t-pos.lha Sys)
 	rm -f gg/Sys/libs/*
 	sleep 5
 	rm -rf gg

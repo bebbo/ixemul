@@ -1,8 +1,8 @@
-/*      $NetBSD: ndbm.c,v 1.9 1996/05/04 00:38:58 cgd Exp $     */
+/*	$NetBSD: ndbm.c,v 1.9 1996/05/04 00:38:58 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)ndbm.c      8.4 (Berkeley) 7/21/94";
+static char sccsid[] = "@(#)ndbm.c	8.4 (Berkeley) 7/21/94";
 #else
 static char rcsid[] = "$NetBSD: ndbm.c,v 1.9 1996/05/04 00:38:58 cgd Exp $";
 #endif
@@ -59,8 +59,8 @@ static char rcsid[] = "$NetBSD: ndbm.c,v 1.9 1996/05/04 00:38:58 cgd Exp $";
 
 /*
  * Returns:
- *      *DBM on success
- *       NULL on failure
+ * 	*DBM on success
+ *	 NULL on failure
  */
 extern DBM *
 dbm_open(file, flags, mode)
@@ -90,8 +90,8 @@ dbm_close(db)
 
 /*
  * Returns:
- *      DATUM on success
- *      NULL on failure
+ *	DATUM on success
+ *	NULL on failure
  */
 extern datum
 dbm_fetch(db, key)
@@ -116,8 +116,8 @@ dbm_fetch(db, key)
 
 /*
  * Returns:
- *      DATUM on success
- *      NULL on failure
+ *	DATUM on success
+ *	NULL on failure
  */
 extern datum
 dbm_firstkey(db)
@@ -137,8 +137,8 @@ dbm_firstkey(db)
 
 /*
  * Returns:
- *      DATUM on success
- *      NULL on failure
+ *	DATUM on success
+ *	NULL on failure
  */
 extern datum
 dbm_nextkey(db)
@@ -158,8 +158,8 @@ dbm_nextkey(db)
 
 /*
  * Returns:
- *       0 on success
- *      <0 failure
+ *	 0 on success
+ *	<0 failure
  */
 extern int
 dbm_delete(db, key)
@@ -180,9 +180,9 @@ dbm_delete(db, key)
 
 /*
  * Returns:
- *       0 on success
- *      <0 failure
- *       1 if DBM_INSERT and entry exists
+ *	 0 on success
+ *	<0 failure
+ *	 1 if DBM_INSERT and entry exists
  */
 extern int
 dbm_store(db, key, data, flags)

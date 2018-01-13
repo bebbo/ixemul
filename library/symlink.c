@@ -63,7 +63,7 @@ static void u2a(const char *orig, char *new)
       orig += 3;
       *new++ = '/';
     }
-    else if (!memcmp(orig, "./", 2))
+    else if (!memcmp(orig, "./", 2))     
       orig += 2;
     else if (*orig == '/')
       orig++;
@@ -77,9 +77,9 @@ static void u2a(const char *orig, char *new)
     else
     {
       while (*orig && *orig != '/')
-	*new++ = *orig++;
+        *new++ = *orig++;
       if (*orig == '/')
-	*new++ = *orig++;
+        *new++ = *orig++;
     }
   }
   *new = '\0';
@@ -101,5 +101,8 @@ int symlink (const char *old, const char *new)
   lstr = alloca (strlen (old) + 4);
   lstr = LONG_ALIGN (lstr);
   u2a(old, lstr);
-  return __make_link ((char *)new, (BPTR)lstr, LINK_SOFT);
+  if (__make_link ((char *)new, (BPTR)lstr, LINK_SOFT))
+    return 0;
+  errno = __ioerr_to_errno(IoErr());
+  return -1;
 }

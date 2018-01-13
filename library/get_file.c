@@ -41,17 +41,17 @@ int __get_file (struct file *f)
   for (;;)
     {
       if (!(f->f_sync_flags & FSFF_LOCKED))
-	{
-	  f->f_sync_flags |= FSFF_LOCKED;
-	  /* got it ! */
-	  break;
+        {
+          f->f_sync_flags |= FSFF_LOCKED;
+          /* got it ! */
+          break;
 	}
       f->f_sync_flags |= FSFF_WANTLOCK;
-      if (ix_sleep((caddr_t)&f->f_sync_flags, "get_file") < 0)  /* error in sleep, might be INTR */
-	{
+      if (ix_sleep((caddr_t)&f->f_sync_flags, "get_file") < 0)	/* error in sleep, might be INTR */
+        {
 	  res = -1;
-	  break;
-	}
+          break;
+        }
       /* have to always recheck whether we really got the lock */
     }
   Permit ();      

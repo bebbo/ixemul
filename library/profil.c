@@ -17,18 +17,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: profil.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id: profil.c,v 1.2 1994/06/19 15:14:32 rluebbert Exp $
  *
  *  $Log: profil.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:38:25  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:46:56  nobody
- *  Initial import
- *
  *  Revision 1.2  1994/06/19  15:14:32  rluebbert
  *  *** empty log message ***
  *
@@ -42,7 +33,7 @@ profil (char *buff, int bufsiz, int offset, int scale)
 {
   usetup;
 
-  Disable();    /* prevent ix_timer from accessing these variables */
+  Disable();	/* prevent ix_timer from accessing these variables */
   u.u_prof.pr_base  = (short *)buff;
   u.u_prof.pr_size  = bufsiz;
   u.u_prof.pr_off   = offset;

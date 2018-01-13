@@ -1,8 +1,8 @@
-/*      $NetBSD: res_debug.c,v 1.7 1995/02/25 06:20:56 cgd Exp $        */
+/*	$NetBSD: res_debug.c,v 1.7 1995/02/25 06:20:56 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1985, 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ * 	This product includes software developed by the University of
+ * 	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_debug.c 8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)res_debug.c	8.1 (Berkeley) 6/4/93";
 #else
 static char rcsid[] = "$NetBSD: res_debug.c,v 1.7 1995/02/25 06:20:56 cgd Exp $";
 #endif
@@ -237,7 +237,7 @@ __fp_resstat(statp, file)
 	fprintf(file, ";; res options:");
 	if (!statp)
 		statp = &_res;
-	for (bit = 0;  bit < 32;  bit++) {      /* XXX 32 - bad assumption! */
+	for (bit = 0;  bit < 32;  bit++) {	/* XXX 32 - bad assumption! */
 		if (statp->options & (1<<bit))
 			fprintf(file, " %s", p_option(1<<bit));
 	}
@@ -396,7 +396,7 @@ p_rr(cp, msg, file)
 	int lcnt;
 
 	if ((cp = p_fqname(cp, msg, file)) == NULL)
-		return (NULL);                  /* compression error */
+		return (NULL);			/* compression error */
 	type = _getshort(cp);
 	cp += sizeof(u_int16_t);
 	class = _getshort(cp);
@@ -465,9 +465,9 @@ p_rr(cp, msg, file)
 
 	case T_SOA:
 		putc('\t', file);
-		cp = p_fqname(cp, msg, file);   /* origin */
+		cp = p_fqname(cp, msg, file);	/* origin */
 		putc(' ', file);
-		cp = p_fqname(cp, msg, file);   /* mail addr */
+		cp = p_fqname(cp, msg, file);	/* mail addr */
 		fputs(" (\n", file);
 		t = _getlong(cp);  cp += sizeof(u_int32_t);
 		fprintf(file,"\t\t\t%u\t; serial\n", t);
@@ -488,7 +488,7 @@ p_rr(cp, msg, file)
 		cp = p_fqname(cp, msg, file);
 		break;
 
-	case T_TXT:
+  	case T_TXT:
 		(void) fputs("\t\"", file);
 		cp2 = cp1 + dlen;
 		while (cp < cp2) {
@@ -502,7 +502,7 @@ p_rr(cp, msg, file)
 			}
 		}
 		putc('"', file);
-		break;
+  		break;
 
 	case T_MINFO:
 	case T_RP:
@@ -540,7 +540,7 @@ p_rr(cp, msg, file)
 		while (cp < cp1 + dlen) {
 			c = *cp++;
 			do {
-				if (c & 0200) {
+ 				if (c & 0200) {
 					if (lcnt == 0) {
 						fputs("\n\t\t\t", file);
 						lcnt = 5;
@@ -549,7 +549,7 @@ p_rr(cp, msg, file)
 					putc(' ', file);
 					lcnt--;
 				}
-				c <<= 1;
+ 				c <<= 1;
 			} while (++n & 07);
 		}
 		putc(')', file);
@@ -589,7 +589,7 @@ p_rr(cp, msg, file)
 	return (cp);
 }
 
-static  char nbuf[40];
+static	char nbuf[40];
 
 /*
  * Return a string for the type
@@ -601,43 +601,43 @@ __p_type(type)
 	switch (type) {
 	case T_A:
 		return("A");
-	case T_NS:              /* authoritative server */
+	case T_NS:		/* authoritative server */
 		return("NS");
-	case T_CNAME:           /* canonical name */
+	case T_CNAME:		/* canonical name */
 		return("CNAME");
-	case T_SOA:             /* start of authority zone */
+	case T_SOA:		/* start of authority zone */
 		return("SOA");
-	case T_MB:              /* mailbox domain name */
+	case T_MB:		/* mailbox domain name */
 		return("MB");
-	case T_MG:              /* mail group member */
+	case T_MG:		/* mail group member */
 		return("MG");
-	case T_MR:              /* mail rename name */
+	case T_MR:		/* mail rename name */
 		return("MR");
-	case T_NULL:            /* null resource record */
+	case T_NULL:		/* null resource record */
 		return("NULL");
-	case T_WKS:             /* well known service */
+	case T_WKS:		/* well known service */
 		return("WKS");
-	case T_PTR:             /* domain name pointer */
+	case T_PTR:		/* domain name pointer */
 		return("PTR");
-	case T_HINFO:           /* host information */
+	case T_HINFO:		/* host information */
 		return("HINFO");
-	case T_MINFO:           /* mailbox information */
+	case T_MINFO:		/* mailbox information */
 		return("MINFO");
-	case T_MX:              /* mail routing info */
+	case T_MX:		/* mail routing info */
 		return("MX");
-	case T_TXT:             /* text */
+	case T_TXT:		/* text */
 		return("TXT");
-	case T_RP:              /* responsible person */
+	case T_RP:		/* responsible person */
 		return("RP");
-	case T_AFSDB:           /* AFS cell database */
+	case T_AFSDB:		/* AFS cell database */
 		return("AFSDB");
-	case T_AXFR:            /* zone transfer */
+	case T_AXFR:		/* zone transfer */
 		return("AXFR");
-	case T_MAILB:           /* mail box */
+	case T_MAILB:		/* mail box */
 		return("MAILB");
-	case T_MAILA:           /* mail address */
+	case T_MAILA:		/* mail address */
 		return("MAILA");
-	case T_ANY:             /* matches any type */
+	case T_ANY:		/* matches any type */
 		return("ANY");
 	case T_UINFO:
 		return("UINFO");
@@ -665,11 +665,11 @@ __p_class(class)
 {
 
 	switch (class) {
-	case C_IN:              /* internet class */
+	case C_IN:		/* internet class */
 		return("IN");
-	case C_HS:              /* hesiod class */
+	case C_HS:		/* hesiod class */
 		return("HS");
-	case C_ANY:             /* matches any class */
+	case C_ANY:		/* matches any class */
 		return("ANY");
 	default:
 		(void)sprintf(nbuf, "%d", class);
@@ -685,17 +685,17 @@ p_option(option)
 	u_int32_t option;
 {
 	switch (option) {
-	case RES_INIT:          return "init";
-	case RES_DEBUG:         return "debug";
-	case RES_AAONLY:        return "aaonly";
-	case RES_USEVC:         return "usevc";
-	case RES_PRIMARY:       return "primry";
-	case RES_IGNTC:         return "igntc";
-	case RES_RECURSE:       return "recurs";
-	case RES_DEFNAMES:      return "defnam";
-	case RES_STAYOPEN:      return "styopn";
-	case RES_DNSRCH:        return "dnsrch";
-	default:                sprintf(nbuf, "?0x%x?", option); return nbuf;
+	case RES_INIT:		return "init";
+	case RES_DEBUG:		return "debug";
+	case RES_AAONLY:	return "aaonly";
+	case RES_USEVC:		return "usevc";
+	case RES_PRIMARY:	return "primry";
+	case RES_IGNTC:		return "igntc";
+	case RES_RECURSE:	return "recurs";
+	case RES_DEFNAMES:	return "defnam";
+	case RES_STAYOPEN:	return "styopn";
+	case RES_DNSRCH:	return "dnsrch";
+	default:		sprintf(nbuf, "?0x%x?", option); return nbuf;
 	}
 }
 
@@ -723,7 +723,7 @@ __p_time(value)
 	days = value;
 	value = 0;
 
-#define PLURALIZE(x)    x, (x == 1) ? "" : "s"
+#define	PLURALIZE(x)	x, (x == 1) ? "" : "s"
 	p = nbuf;
 	if (days) {
 		(void)sprintf(p, "%d day%s", PLURALIZE(days));

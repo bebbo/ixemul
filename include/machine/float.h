@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,64 +30,64 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)float.h     7.1 (Berkeley) 5/8/90
+ *	@(#)float.h	7.1 (Berkeley) 5/8/90
  */
 
 #ifndef _MACHINE_FLOAT_H
 #define _MACHINE_FLOAT_H
 
-#define FLT_RADIX       2               /* b */
-#define FLT_ROUNDS      1               /* FP addition rounds to nearest */
+#define FLT_RADIX	2		/* b */
+#define FLT_ROUNDS	1		/* FP addition rounds to nearest */
 
-#define FLT_MANT_DIG    24              /* p */
-#define FLT_EPSILON     1.19209290E-07F /* b**(1-p) */
-#define FLT_DIG         6               /* floor((p-1)*log10(b))+(b == 10) */
-#define FLT_MIN_EXP     (-125)          /* emin */
-#define FLT_MIN         1.17549435E-38F /* b**(emin-1) */
-#define FLT_MIN_10_EXP  (-37)           /* ceil(log10(b**(emin-1))) */
-#define FLT_MAX_EXP     128             /* emax */
-#define FLT_MAX         3.40282347E+38F /* (1-b**(-p))*b**emax */
-#define FLT_MAX_10_EXP  38              /* floor(log10((1-b**(-p))*b**emax)) */
+#define FLT_MANT_DIG	24		/* p */
+#define FLT_EPSILON	1.19209290E-07F	/* b**(1-p) */
+#define FLT_DIG		6		/* floor((p-1)*log10(b))+(b == 10) */
+#define FLT_MIN_EXP	(-125)		/* emin */
+#define FLT_MIN		1.17549435E-38F	/* b**(emin-1) */
+#define FLT_MIN_10_EXP	(-37)		/* ceil(log10(b**(emin-1))) */
+#define FLT_MAX_EXP	128		/* emax */
+#define FLT_MAX		3.40282347E+38F	/* (1-b**(-p))*b**emax */
+#define FLT_MAX_10_EXP	38		/* floor(log10((1-b**(-p))*b**emax)) */
 
-#define DBL_MANT_DIG    53
-#define DBL_EPSILON     2.2204460492503131E-16
-#define DBL_DIG         15
-#define DBL_MIN_EXP     (-1021)
-#define DBL_MIN         2.2250738585072014E-308
-#define DBL_MIN_10_EXP  (-307)
-#define DBL_MAX_EXP     1024
-#define DBL_MAX         1.7976931348623157E+308
-/* #define DBL_MAX              (*(double *)(unsigned long []){0x7fefffff, 0xffffffff}) */
-#define DBL_MAX_10_EXP  308
+#define DBL_MANT_DIG	53
+#define DBL_EPSILON	2.2204460492503131E-16
+#define DBL_DIG		15
+#define DBL_MIN_EXP	(-1021)
+#define DBL_MIN		2.2250738585072014E-308
+#define DBL_MIN_10_EXP	(-307)
+#define DBL_MAX_EXP	1024
+#define DBL_MAX		1.7976931348623157E+308
+/* #define DBL_MAX		(*(double *)(unsigned long []){0x7fefffff, 0xffffffff}) */
+#define DBL_MAX_10_EXP	308
 
-#define LDBL_MANT_DIG   53
-#define LDBL_EPSILON    2.2204460492503131E-16L
-#define LDBL_DIG        15
-#define LDBL_MIN_EXP    (-1021)
-#define LDBL_MIN        2.2250738585072014E-308L
-#define LDBL_MIN_10_EXP (-307)
-#define LDBL_MAX_EXP    1024
-#define LDBL_MAX        1.7976931348623157E+308L
-#define LDBL_MAX_10_EXP 308
+#define LDBL_MANT_DIG	53
+#define LDBL_EPSILON	2.2204460492503131E-16L
+#define LDBL_DIG	15
+#define LDBL_MIN_EXP	(-1021)
+#define LDBL_MIN	2.2250738585072014E-308L
+#define LDBL_MIN_10_EXP	(-307)
+#define LDBL_MAX_EXP	1024
+#define LDBL_MAX	1.7976931348623157E+308L
+#define LDBL_MAX_10_EXP	308
 
 /* C++ support */
-#define MAXFLOAT        FLT_MAX
-#define MAXDOUBLE       DBL_MAX
-#define MINFLOAT        FLT_MIN
-#define MINDOUBLE       DBL_MIN
+#define MAXFLOAT	FLT_MAX
+#define MAXDOUBLE	DBL_MAX
+#define MINFLOAT	FLT_MIN
+#define MINDOUBLE	DBL_MIN
 
-#define _IEEE           1
-#define _DEXPLEN        11
-#define _FEXPLEN        8
-#define _HIDDENBIT      1
+#define _IEEE		1
+#define _DEXPLEN	11
+#define _FEXPLEN	8
+#define _HIDDENBIT	1
 
-#define DMINEXP         DBL_MIN_EXP
-#define FMINEXP         FLT_MIN_EXP
-#define DMAXEXP         DBL_MAX_EXP
-#define FMAXEXP         FLT_MAX_EXP
+#define DMINEXP		DBL_MIN_EXP
+#define FMINEXP		FLT_MIN_EXP
+#define DMAXEXP		DBL_MAX_EXP
+#define FMAXEXP		FLT_MAX_EXP
 
-#define DSIGNIF         DBL_MANT_DIG
-#define FSIGNIF         FLT_MANT_DIG
+#define DSIGNIF		DBL_MANT_DIG
+#define FSIGNIF		FLT_MANT_DIG
 
 #define DMAXPOWTWO  ((double)(1L << LONGBITS -2)*(1L << DSIGNIF - LONGBITS +1))
 #define FMAXPOWTWO  ((float)(1L << FSIGNIF - 1))

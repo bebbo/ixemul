@@ -38,59 +38,59 @@
  *
  * Modifications:
  *
- *      1. We only require IEEE, IBM, or VAX double-precision
- *              arithmetic (not IEEE double-extended).
- *      2. We get by with floating-point arithmetic in a case that
- *              Clinger missed -- when we're computing d * 10^n
- *              for a small integer d and the integer n is not too
- *              much larger than 22 (the maximum integer k for which
- *              we can represent 10^k exactly), we may be able to
- *              compute (d*10^k) * 10^(e-k) with just one roundoff.
- *      3. Rather than a bit-at-a-time adjustment of the binary
- *              result in the hard case, we use floating-point
- *              arithmetic to determine the adjustment to within
- *              one bit; only in really hard cases do we need to
- *              compute a second residual.
- *      4. Because of 3., we don't need a large table of powers of 10
- *              for ten-to-e (just some small tables, e.g. of 10^k
- *              for 0 <= k <= 22).
+ *	1. We only require IEEE, IBM, or VAX double-precision
+ *		arithmetic (not IEEE double-extended).
+ *	2. We get by with floating-point arithmetic in a case that
+ *		Clinger missed -- when we're computing d * 10^n
+ *		for a small integer d and the integer n is not too
+ *		much larger than 22 (the maximum integer k for which
+ *		we can represent 10^k exactly), we may be able to
+ *		compute (d*10^k) * 10^(e-k) with just one roundoff.
+ *	3. Rather than a bit-at-a-time adjustment of the binary
+ *		result in the hard case, we use floating-point
+ *		arithmetic to determine the adjustment to within
+ *		one bit; only in really hard cases do we need to
+ *		compute a second residual.
+ *	4. Because of 3., we don't need a large table of powers of 10
+ *		for ten-to-e (just some small tables, e.g. of 10^k
+ *		for 0 <= k <= 22).
  */
 
 /*
  * #define IEEE_LITTLE_ENDIAN for IEEE-arithmetic machines where the least
- *      significant byte has the lowest address.
+ *	significant byte has the lowest address.
  * #define IEEE_BIG_ENDIAN for IEEE-arithmetic machines where the most
- *      significant byte has the lowest address.
+ *	significant byte has the lowest address.
  * #define Long int on machines with 32-bit ints and 64-bit longs.
  * #define Sudden_Underflow for IEEE-format machines without gradual
- *      underflow (i.e., that flush to zero on underflow).
+ *	underflow (i.e., that flush to zero on underflow).
  * #define IBM for IBM mainframe-style floating-point arithmetic.
  * #define VAX for VAX-style floating-point arithmetic.
  * #define Unsigned_Shifts if >> does treats its left operand as unsigned.
  * #define No_leftright to omit left-right logic in fast floating-point
- *      computation of dtoa.
+ *	computation of dtoa.
  * #define Check_FLT_ROUNDS if FLT_ROUNDS can assume the values 2 or 3.
  * #define RND_PRODQUOT to use rnd_prod and rnd_quot (assembly routines
- *      that use extended-precision instructions to compute rounded
- *      products and quotients) with IBM.
+ *	that use extended-precision instructions to compute rounded
+ *	products and quotients) with IBM.
  * #define ROUND_BIASED for IEEE-format with biased rounding.
  * #define Inaccurate_Divide for IEEE-format with correctly rounded
- *      products but inaccurate quotients, e.g., for Intel i860.
+ *	products but inaccurate quotients, e.g., for Intel i860.
  * #define Just_16 to store 16 bits per 32-bit Long when doing high-precision
- *      integer arithmetic.  Whether this speeds things up or slows things
- *      down depends on the machine and the number being converted.
+ *	integer arithmetic.  Whether this speeds things up or slows things
+ *	down depends on the machine and the number being converted.
  * #define KR_headers for old-style C function headers.
  * #define Bad_float_h if your system lacks a float.h or if it does not
- *      define some or all of DBL_DIG, DBL_MAX_10_EXP, DBL_MAX_EXP,
- *      FLT_RADIX, FLT_ROUNDS, and DBL_MAX.
+ *	define some or all of DBL_DIG, DBL_MAX_10_EXP, DBL_MAX_EXP,
+ *	FLT_RADIX, FLT_ROUNDS, and DBL_MAX.
  * #define MALLOC your_malloc, where your_malloc(n) acts like malloc(n)
- *      if memory is available and otherwise does something you deem
- *      appropriate.  If MALLOC is undefined, malloc will be invoked
- *      directly -- and assumed always to succeed.
+ *	if memory is available and otherwise does something you deem
+ *	appropriate.  If MALLOC is undefined, malloc will be invoked
+ *	directly -- and assumed always to succeed.
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char *rcsid = "$Id: strtod.c,v 1.1.1.1 2005/03/15 15:57:07 laire Exp $";
+static char *rcsid = "$Id: strtod.c,v 1.19 1994/12/23 22:50:19 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -114,8 +114,8 @@ static char *rcsid = "$Id: strtod.c,v 1.1.1.1 2005/03/15 15:57:07 laire Exp $";
 #define VAX
 #endif
 
-#define Long    int32_t
-#define ULong   u_int32_t
+#define Long	int32_t
+#define ULong	u_int32_t
 
 #ifdef DEBUG
 #include "stdio.h"
@@ -284,7 +284,7 @@ IBM should be defined.
 #define Bias 65
 #define Exp_1  0x41000000
 #define Exp_11 0x41000000
-#define Ebits 8 /* exponent has 7 bits, but 8 is the right value in b2d */
+#define Ebits 8	/* exponent has 7 bits, but 8 is the right value in b2d */
 #define Frac_mask  0xffffff
 #define Frac_mask1 0xffffff
 #define Bletch 4
@@ -383,7 +383,7 @@ Balloc
 {
 	int x;
 	Bigint *rv;
-	usetup;
+        usetup;
 
 	if ((rv = u.u_freelist[k])) {
 		u.u_freelist[k] = rv->next;
@@ -406,7 +406,7 @@ Bfree
 	(Bigint *v)
 #endif
 {
-	usetup;
+        usetup;
 
 	if (v) {
 		v->next = u.u_freelist[v->k];
@@ -422,7 +422,7 @@ multadd
 #ifdef KR_headers
 	(b, m, a) Bigint *b; int m, a;
 #else
-	(Bigint *b, int m, int a)       /* multiply by m and add a */
+	(Bigint *b, int m, int a)	/* multiply by m and add a */
 #endif
 {
 	int i, wds;
@@ -697,7 +697,7 @@ pow5mult
 	Bigint *b1, *p5, *p51;
 	int i;
 	static CONST int p05[3] = { 5, 25, 125 };
-	usetup;
+        usetup;
 
 	if ((i = k & 3))
 		b = multadd(b, p05[i-1], 0);
@@ -830,7 +830,7 @@ diff
 {
 	Bigint *c;
 	int i, wa, wb;
-	Long borrow, y; /* We need signed shifts here. */
+	Long borrow, y;	/* We need signed shifts here. */
 	ULong *xa, *xae, *xb, *xbe, *xc;
 #ifdef Pack_32
 	Long z;
@@ -1038,7 +1038,7 @@ d2b
 	x = b->x;
 
 	z = d0 & Frac_mask;
-	d0 &= 0x7fffffff;       /* clear sign bit, which we ignore */
+	d0 &= 0x7fffffff;	/* clear sign bit, which we ignore */
 #ifdef Sudden_Underflow
 	de = (int)(d0 >> Exp_shift);
 #ifndef IBM
@@ -1221,7 +1221,7 @@ strtod
 	Long L;
 	ULong y, z;
 	Bigint *bb = 0, *bb1, *bd = 0, *bd0, *bs = 0, *delta = 0;
-	usetup;
+        usetup;
 
 #ifndef KR_headers
 	CONST char decimal_point = localeconv()->decimal_point[0];
@@ -1490,7 +1490,7 @@ strtod
 	for(;;) {
 		bd = Balloc(bd0->k);
 		Bcopy(bd, bd0);
-		bb = d2b(rv, &bbe, &bbbits);    /* rv = bb * 2^bbe */
+		bb = d2b(rv, &bbe, &bbbits);	/* rv = bb * 2^bbe */
 		bs = i2b(1);
 
 		if (e >= 0) {
@@ -1513,8 +1513,8 @@ strtod
 		j = P + 1 - bbbits;
 #endif
 #else
-		i = bbe + bbbits - 1;   /* logb(rv) */
-		if (i < Emin)   /* denormal */
+		i = bbe + bbbits - 1;	/* logb(rv) */
+		if (i < Emin)	/* denormal */
 			j = bbe + (P-Emin);
 		else
 			j = P + 1 - bbbits;
@@ -1768,7 +1768,7 @@ quorem
 	n = S->wds;
 #ifdef DEBUG
 	/*debug*/ if (b->wds > n)
-	/*debug*/       Bug("oversize b in quorem");
+	/*debug*/	Bug("oversize b in quorem");
 #endif
 	if (b->wds < n)
 		return 0;
@@ -1776,10 +1776,10 @@ quorem
 	sxe = sx + --n;
 	bx = b->x;
 	bxe = bx + n;
-	q = *bxe / (*sxe + 1);  /* ensure q <= true quotient */
+	q = *bxe / (*sxe + 1);	/* ensure q <= true quotient */
 #ifdef DEBUG
 	/*debug*/ if (q > 9)
-	/*debug*/       Bug("oversized quotient in quorem");
+	/*debug*/	Bug("oversized quotient in quorem");
 #endif
 	if (q) {
 		borrow = 0;
@@ -1860,32 +1860,32 @@ quorem
  * Guy L. Steele, Jr. and Jon L. White [Proc. ACM SIGPLAN '90, pp. 92-101].
  *
  * Modifications:
- *      1. Rather than iterating, we use a simple numeric overestimate
- *         to determine k = floor(log10(d)).  We scale relevant
- *         quantities using O(log2(k)) rather than O(k) multiplications.
- *      2. For some modes > 2 (corresponding to ecvt and fcvt), we don't
- *         try to generate digits strictly left to right.  Instead, we
- *         compute with fewer bits and propagate the carry if necessary
- *         when rounding the final digit up.  This is often faster.
- *      3. Under the assumption that input will be rounded nearest,
- *         mode 0 renders 1e23 as 1e23 rather than 9.999999999999999e22.
- *         That is, we allow equality in stopping tests when the
- *         round-nearest rule will give the same floating-point value
- *         as would satisfaction of the stopping test with strict
- *         inequality.
- *      4. We remove common factors of powers of 2 from relevant
- *         quantities.
- *      5. When converting floating-point integers less than 1e16,
- *         we use floating-point arithmetic rather than resorting
- *         to multiple-precision integers.
- *      6. When asked to produce fewer than 15 digits, we first try
- *         to get by with floating-point arithmetic; we resort to
- *         multiple-precision integer arithmetic only if we cannot
- *         guarantee that the floating-point calculation has given
- *         the correctly rounded result.  For k requested digits and
- *         "uniformly" distributed input, the probability is
- *         something like 10^(k-15) that we must resort to the Long
- *         calculation.
+ *	1. Rather than iterating, we use a simple numeric overestimate
+ *	   to determine k = floor(log10(d)).  We scale relevant
+ *	   quantities using O(log2(k)) rather than O(k) multiplications.
+ *	2. For some modes > 2 (corresponding to ecvt and fcvt), we don't
+ *	   try to generate digits strictly left to right.  Instead, we
+ *	   compute with fewer bits and propagate the carry if necessary
+ *	   when rounding the final digit up.  This is often faster.
+ *	3. Under the assumption that input will be rounded nearest,
+ *	   mode 0 renders 1e23 as 1e23 rather than 9.999999999999999e22.
+ *	   That is, we allow equality in stopping tests when the
+ *	   round-nearest rule will give the same floating-point value
+ *	   as would satisfaction of the stopping test with strict
+ *	   inequality.
+ *	4. We remove common factors of powers of 2 from relevant
+ *	   quantities.
+ *	5. When converting floating-point integers less than 1e16,
+ *	   we use floating-point arithmetic rather than resorting
+ *	   to multiple-precision integers.
+ *	6. When asked to produce fewer than 15 digits, we first try
+ *	   to get by with floating-point arithmetic; we resort to
+ *	   multiple-precision integer arithmetic only if we cannot
+ *	   guarantee that the floating-point calculation has given
+ *	   the correctly rounded result.  For k requested digits and
+ *	   "uniformly" distributed input, the probability is
+ *	   something like 10^(k-15) that we must resort to the Long
+ *	   calculation.
  */
 
  char *
@@ -1897,7 +1897,7 @@ __dtoa
 	(double d, int mode, int ndigits, int *decpt, int *sign, char **rve)
 #endif
 {
- /*     Arguments ndigits, decpt, sign are similar to those
+ /*	Arguments ndigits, decpt, sign are similar to those
 	of ecvt and fcvt; trailing zeros are suppressed from
 	the returned string.  If not null, *rve is set to point
 	to the end of the return value.  If d is +-Infinity or NaN,
@@ -1934,7 +1934,7 @@ __dtoa
 	int bbits, b2, b5, be, dig, i, ieps, ilim = 0, ilim0, ilim1 = 0,
 		j, j1, k, k0, k_check, leftright, m2, m5, s2, s5,
 		spec_case = 0, try_quick;
-	usetup;
+        usetup;
 	Long L;
 #ifndef Sudden_Underflow
 	int denorm;
@@ -1953,7 +1953,7 @@ __dtoa
 	if (word0(d) & Sign_bit) {
 		/* set sign for everything, including 0's and NaNs */
 		*sign = 1;
-		word0(d) &= ~Sign_bit;  /* clear sign bit */
+		word0(d) &= ~Sign_bit;	/* clear sign bit */
 		}
 	else
 		*sign = 0;
@@ -2006,15 +2006,15 @@ __dtoa
 			d2 /= 1 << j;
 #endif
 
-		/* log(x)       ~=~ log(1.5) + (x-1.5)/1.5
-		 * log10(x)      =  log(x) / log(10)
-		 *              ~=~ log(1.5)/log(10) + (x-1.5)/(1.5*log(10))
+		/* log(x)	~=~ log(1.5) + (x-1.5)/1.5
+		 * log10(x)	 =  log(x) / log(10)
+		 *		~=~ log(1.5)/log(10) + (x-1.5)/(1.5*log(10))
 		 * log10(d) = (i-Bias)*log(2)/log(10) + log10(d2)
 		 *
 		 * This suggests computing an approximation k to log10(d) by
 		 *
 		 * k = (i - Bias)*0.301029995663981
-		 *      + ( (d2-1.5)*0.289529654602168 + 0.176091259055681 );
+		 *	+ ( (d2-1.5)*0.289529654602168 + 0.176091259055681 );
 		 *
 		 * We want k to be too large rather than too small.
 		 * The error in the first-order Taylor series approximation
@@ -2051,7 +2051,7 @@ __dtoa
 	ds = (d2-1.5)*0.289529654602168 + 0.1760912590558 + i*0.301029995663981;
 	k = (int)ds;
 	if (ds < 0. && ds != k)
-		k--;    /* want k = floor(ds) */
+		k--;	/* want k = floor(ds) */
 	k_check = 1;
 	if (k >= 0 && k <= Ten_pmax) {
 		if (d < tens[k])
@@ -2366,7 +2366,7 @@ __dtoa
 	if (k_check) {
 		if (cmp(b,S) < 0) {
 			k--;
-			b = multadd(b, 10, 0);  /* we botched the k estimate */
+			b = multadd(b, 10, 0);	/* we botched the k estimate */
 			if (leftright)
 				mhi = multadd(mhi, 10, 0);
 			ilim = ilim1;
@@ -2489,7 +2489,7 @@ __dtoa
 		}
  ret1:
 	Bfree(b);
-	if (s == s0) {                          /* don't return empty string */
+	if (s == s0) {				/* don't return empty string */
 		*s++ = '0';
 		k = 0;
 	}

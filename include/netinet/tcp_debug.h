@@ -14,30 +14,30 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)tcp_debug.h 7.3 (Berkeley) 6/29/88
+ *	@(#)tcp_debug.h	7.3 (Berkeley) 6/29/88
  */
 
-struct  tcp_debug {
-	n_time  td_time;
-	short   td_act;
-	short   td_ostate;
-	caddr_t td_tcb;
-	struct  tcpiphdr td_ti;
-	short   td_req;
-	struct  tcpcb __ALIGN2__ td_cb;
-} __PACKED__;
+struct	tcp_debug {
+	n_time	td_time;
+	short	td_act;
+	short	td_ostate;
+	caddr_t	td_tcb;
+	struct	tcpiphdr td_ti;
+	short	td_req;
+	struct	tcpcb td_cb;
+};
 
-#define TA_INPUT        0
-#define TA_OUTPUT       1
-#define TA_USER         2
-#define TA_RESPOND      3
-#define TA_DROP         4
+#define	TA_INPUT 	0
+#define	TA_OUTPUT	1
+#define	TA_USER		2
+#define	TA_RESPOND	3
+#define	TA_DROP		4
 
 #ifdef TANAMES
-char    *tanames[] =
+char	*tanames[] =
     { "input", "output", "user", "respond", "drop" };
 #endif
 
-#define TCP_NDEBUG 100
-struct  tcp_debug tcp_debug[TCP_NDEBUG];
-int     tcp_debx;
+#define	TCP_NDEBUG 100
+struct	tcp_debug tcp_debug[TCP_NDEBUG];
+int	tcp_debx;

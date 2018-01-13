@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,8 +32,8 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-/*static char *sccsid = "from: @(#)system.c     5.10 (Berkeley) 2/23/91";*/
-static char *rcsid = "$Id: system.c,v 1.1.1.1 2005/03/15 15:57:07 laire Exp $";
+/*static char *sccsid = "from: @(#)system.c	5.10 (Berkeley) 2/23/91";*/
+static char *rcsid = "$Id: system.c,v 1.10 1995/06/14 05:20:01 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -55,17 +55,17 @@ system(command)
 	int omask;
 	int pstat;
 	char *argp[] = {"sh", "-c", (char *) command, NULL};
-	usetup;
+        usetup;
 
-	if (!command)           /* just checking... */
+	if (!command)		/* just checking... */
 		return(1);
 
 	omask = sigblock(sigmask(SIGCHLD));
 	switch(pid = vfork()) {
-	case -1:                        /* error */
+	case -1:			/* error */
 		(void)sigsetmask(omask);
 		return(-1);
-	case 0:                         /* child */
+	case 0:				/* child */
 		(void)sigsetmask(omask);
 		execve("sh", argp, *u.u_environ);
 		_exit(127);

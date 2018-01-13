@@ -1,8 +1,8 @@
-/*      $NetBSD: fgets.c,v 1.5 1995/03/25 02:50:04 jtc Exp $    */
+/*	$NetBSD: fgets.c,v 1.5 1995/03/25 02:50:04 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fgets.c     8.2 (Berkeley) 12/22/93";
+static char sccsid[] = "@(#)fgets.c	8.2 (Berkeley) 12/22/93";
 #endif
 static char rcsid[] = "$NetBSD: fgets.c,v 1.5 1995/03/25 02:50:04 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -64,11 +64,11 @@ fgets(buf, n, fp)
 	register char *s;
 	register unsigned char *p, *t;
 
-	if (n <= 0)             /* sanity check */
+	if (n <= 0)		/* sanity check */
 		return (NULL);
 
 	s = buf;
-	n--;                    /* leave space for NUL */
+	n--;			/* leave space for NUL */
 	while (n != 0) {
 		/*
 		 * If the buffer is empty, refill it.

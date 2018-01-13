@@ -15,8 +15,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,8 +35,8 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-/*static char *sccsid = "from: @(#)vfprintf.c   5.50 (Berkeley) 12/16/92";*/
-static char *rcsid = "$Id: vfprintf.c,v 1.3 2006/02/15 20:27:22 piru Exp $";
+/*static char *sccsid = "from: @(#)vfprintf.c	5.50 (Berkeley) 12/16/92";*/
+static char *rcsid = "$Id: vfprintf.c,v 1.17 1995/05/02 19:52:41 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -54,14 +54,14 @@ static char *rcsid = "$Id: vfprintf.c,v 1.3 2006/02/15 20:27:22 piru Exp $";
 #include <stdlib.h>
 #include <string.h>
 
+#if __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+
 #include "local.h"
 #include "fvwrite.h"
-#include "my_varargs.h"
-
-#ifdef NATIVE_MORPHOS
-#define vfprintf my_vfprintf
-int vfprintf(FILE *fp, const char *fmt0, my_va_list ap);
-#endif
 
 /*
  * Flush out all the vectors defined by the given uio,
@@ -93,7 +93,7 @@ static int
 __sbprintf(fp, fmt, ap)
 	register FILE *fp;
 	const char *fmt;
-	my_va_list ap;
+	va_list ap;
 {
 	int ret;
 	FILE fake;
@@ -108,7 +108,7 @@ __sbprintf(fp, fmt, ap)
 	/* set up the buffer */
 	fake._bf._base = fake._p = buf;
 	fake._bf._size = fake._w = sizeof(buf);
-	fake._lbfsize = 0;      /* not actually used, but Just In Case */
+	fake._lbfsize = 0;	/* not actually used, but Just In Case */
 
 	/* do the work, then copy any error status */
 	ret = vfprintf(&fake, fmt, ap);
@@ -126,15 +126,15 @@ __sbprintf(fp, fmt, ap)
 #include <math.h>
 #include "floatio.h"
 
-#define BUF             (MAXEXP+MAXFRACT+1)     /* + decimal point */
-#define DEFPREC         6
+#define	BUF		(MAXEXP+MAXFRACT+1)	/* + decimal point */
+#define	DEFPREC		6
 
 static char *cvt __P((double, int, int, char *, int *, int, int *));
 static int exponent __P((char *, int, int));
 
 #else /* no FLOATING_POINT */
 
-#define BUF             40
+#define	BUF		40
 
 #endif /* FLOATING_POINT */
 
@@ -142,74 +142,74 @@ static int exponent __P((char *, int, int));
 /*
  * Macros for converting digits to letters and vice versa
  */
-#define to_digit(c)     ((c) - '0')
-#define is_digit(c)     ((unsigned)to_digit(c) <= 9)
-#define to_char(n)      ((n) + '0')
+#define	to_digit(c)	((c) - '0')
+#define is_digit(c)	((unsigned)to_digit(c) <= 9)
+#define	to_char(n)	((n) + '0')
 
 #undef LONGDBL
 
 /*
  * Flags used during conversion.
  */
-#define ALT             0x001           /* alternate form */
-#define HEXPREFIX       0x002           /* add 0x or 0X prefix */
-#define LADJUST         0x004           /* left adjustment */
-#define LONGDBL         0x008           /* long double; unimplemented */
-#define LONGINT         0x010           /* long integer */
-#define QUADINT         0x020           /* quad integer */
-#define SHORTINT        0x040           /* short integer */
-#define ZEROPAD         0x080           /* zero (as opposed to blank) pad */
-#define FPT             0x100           /* Floating point number */
+#define	ALT		0x001		/* alternate form */
+#define	HEXPREFIX	0x002		/* add 0x or 0X prefix */
+#define	LADJUST		0x004		/* left adjustment */
+#define	LONGDBL		0x008		/* long double; unimplemented */
+#define	LONGINT		0x010		/* long integer */
+#define	QUADINT		0x020		/* quad integer */
+#define	SHORTINT	0x040		/* short integer */
+#define	ZEROPAD		0x080		/* zero (as opposed to blank) pad */
+#define FPT		0x100		/* Floating point number */
 int
 vfprintf(fp, fmt0, ap)
 	FILE *fp;
 	const char *fmt0;
-	my_va_list ap;
+	_BSD_VA_LIST_ ap;
 {
-	register char *fmt;     /* format string */
-	register int ch;        /* character from fmt */
-	register int n, m;      /* handy integers (short term usage) */
-	register char *cp;      /* handy char pointer (short term usage) */
+	register char *fmt;	/* format string */
+	register int ch;	/* character from fmt */
+	register int n, m;	/* handy integers (short term usage) */
+	register char *cp;	/* handy char pointer (short term usage) */
 	register struct __siov *iovp;/* for PRINT macro */
-	register int flags;     /* flags as above */
-	int ret;                /* return value accumulator */
-	int width;              /* width from format (%8d), or 0 */
-	int prec;               /* precision from format (%.3d), or -1 */
-	char sign;              /* sign prefix (' ', '+', '-', or \0) */
+	register int flags;	/* flags as above */
+	int ret;		/* return value accumulator */
+	int width;		/* width from format (%8d), or 0 */
+	int prec;		/* precision from format (%.3d), or -1 */
+	char sign;		/* sign prefix (' ', '+', '-', or \0) */
 	wchar_t wc;
 #ifdef FLOATING_POINT
 	char *decimal_point = localeconv()->decimal_point;
-	char softsign;          /* temporary negative sign for floats */
-	double _double = 0;     /* double precision arguments %[eEfgG] */
-	int expt;               /* integer value of exponent */
-	int expsize = 0;        /* character count for expstr */
-	int ndig;               /* actual number of digits returned by cvt */
-	char expstr[7];         /* buffer for exponent string */
+	char softsign;		/* temporary negative sign for floats */
+	double _double = 0;	/* double precision arguments %[eEfgG] */
+	int expt;		/* integer value of exponent */
+	int expsize = 0;	/* character count for expstr */
+	int ndig;		/* actual number of digits returned by cvt */
+	char expstr[7];		/* buffer for exponent string */
 #endif
 
-#ifdef __GNUC__                 /* gcc has builtin quad type (long long) SOS */
-#define quad_t    long long
-#define u_quad_t  unsigned long long
+#ifdef __GNUC__			/* gcc has builtin quad type (long long) SOS */
+#define	quad_t	  long long
+#define	u_quad_t  unsigned long long
 #endif
 
-	u_quad_t _uquad;        /* integer arguments %[diouxX] */
+	u_quad_t _uquad;	/* integer arguments %[diouxX] */
 	enum { OCT, DEC, HEX } base;/* base for [diouxX] conversion */
-	int dprec;              /* a copy of prec if [diouxX], 0 otherwise */
-	int realsz;             /* field size expanded by dprec */
-	int size;               /* size of converted field or string */
-	char *xdigs = NULL;     /* digits for [xX] conversion */
+	int dprec;		/* a copy of prec if [diouxX], 0 otherwise */
+	int realsz;		/* field size expanded by dprec */
+	int size;		/* size of converted field or string */
+	char *xdigs = NULL;	/* digits for [xX] conversion */
 #define NIOV 8
-	struct __suio uio;      /* output information: summary */
+	struct __suio uio;	/* output information: summary */
 	struct __siov iov[NIOV];/* ... and individual io vectors */
-	char buf[BUF];          /* space for %c, %[diouxX], %[eEfgG] */
-	char ox[2];             /* space for 0x hex-prefix */
+	char buf[BUF];		/* space for %c, %[diouxX], %[eEfgG] */
+	char ox[2];		/* space for 0x hex-prefix */
 
 	/*
 	 * Choose PADSIZE to trade efficiency vs. size.  If larger printf
 	 * fields occur frequently, increase PADSIZE and make the initialisers
 	 * below longer.
 	 */
-#define PADSIZE 16              /* pad chunk size */
+#define	PADSIZE	16		/* pad chunk size */
 	static char blanks[PADSIZE] =
 	 {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
 	static char zeroes[PADSIZE] =
@@ -218,7 +218,7 @@ vfprintf(fp, fmt0, ap)
 	/*
 	 * BEWARE, these `goto error' on error, and PAD uses `n'.
 	 */
-#define PRINT(ptr, len) { \
+#define	PRINT(ptr, len) { \
 	iovp->iov_base = (ptr); \
 	iovp->iov_len = (len); \
 	uio.uio_resid += (len); \
@@ -229,7 +229,7 @@ vfprintf(fp, fmt0, ap)
 		iovp = iov; \
 	} \
 }
-#define PAD(howmany, with) { \
+#define	PAD(howmany, with) { \
 	if ((n = (howmany)) > 0) { \
 		while (n > PADSIZE) { \
 			PRINT(with, PADSIZE); \
@@ -238,7 +238,7 @@ vfprintf(fp, fmt0, ap)
 		PRINT(with, n); \
 	} \
 }
-#define FLUSH() { \
+#define	FLUSH() { \
 	if (uio.uio_resid && __sprint(fp, &uio)) \
 		goto error; \
 	uio.uio_iovcnt = 0; \
@@ -249,17 +249,16 @@ vfprintf(fp, fmt0, ap)
 	 * To extend shorts properly, we need both signed and unsigned
 	 * argument extraction methods.
 	 */
-#define SARG() \
-	(flags&QUADINT ? my_va_arg(ap, quad_t) : \
-	    flags&LONGINT ? my_va_arg(ap, long) : \
-	    flags&SHORTINT ? (long)(short)my_va_arg(ap, int) : \
-	    (long)my_va_arg(ap, int))
-#define UARG() \
-	(flags&QUADINT ? my_va_arg(ap, u_quad_t) : \
-	    flags&LONGINT ? my_va_arg(ap, u_long) : \
-	    flags&SHORTINT ? (u_long)(u_short)my_va_arg(ap, int) : \
-	    (u_long)my_va_arg(ap, u_int))
-
+#define	SARG() \
+	(flags&QUADINT ? va_arg(ap, quad_t) : \
+	    flags&LONGINT ? va_arg(ap, long) : \
+	    flags&SHORTINT ? (long)(short)va_arg(ap, int) : \
+	    (long)va_arg(ap, int))
+#define	UARG() \
+	(flags&QUADINT ? va_arg(ap, u_quad_t) : \
+	    flags&LONGINT ? va_arg(ap, u_long) : \
+	    flags&SHORTINT ? (u_long)(u_short)va_arg(ap, int) : \
+	    (u_long)va_arg(ap, u_int))
 
 	/* sorry, fprintf(read_only_file, "") returns EOF, not 0 */
 	if (cantwrite(fp))
@@ -281,15 +280,7 @@ vfprintf(fp, fmt0, ap)
 	 */
 	for (;;) {
 		cp = fmt;
-		#if 1
-		/* 15th Feb 2006: Regular printf format string must never use
-		 * wide chars, even if supported by the system. wprintf family
-		 * of functions is another story. - Piru
-		 */
-		while ((wc = *fmt, n = wc != '\0') > 0) {
-		#else
 		while ((n = mbtowc(&wc, fmt, MB_CUR_MAX)) > 0) {
-		#endif
 			fmt += n;
 			if (wc == '%') {
 				fmt--;
@@ -302,7 +293,7 @@ vfprintf(fp, fmt0, ap)
 		}
 		if (n <= 0)
 			goto done;
-		fmt++;          /* skip over '%' */
+		fmt++;		/* skip over '%' */
 
 		flags = 0;
 		dprec = 0;
@@ -310,13 +301,13 @@ vfprintf(fp, fmt0, ap)
 		prec = -1;
 		sign = '\0';
 
-rflag:          ch = *fmt++;
-reswitch:       switch (ch) {
+rflag:		ch = *fmt++;
+reswitch:	switch (ch) {
 		case ' ':
 			/*
 			 * ``If the space and + flags both appear, the space
 			 * flag will be ignored.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 */
 			if (!sign)
 				sign = ' ';
@@ -328,10 +319,10 @@ reswitch:       switch (ch) {
 			/*
 			 * ``A negative field width argument is taken as a
 			 * - flag followed by a positive field width.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 * They don't exclude field widths read from args.
 			 */
-			if ((width = my_va_arg(ap, int)) >= 0)
+			if ((width = va_arg(ap, int)) >= 0)
 				goto rflag;
 			width = -width;
 			/* FALLTHROUGH */
@@ -343,7 +334,7 @@ reswitch:       switch (ch) {
 			goto rflag;
 		case '.':
 			if ((ch = *fmt++) == '*') {
-				n = my_va_arg(ap, int);
+				n = va_arg(ap, int);
 				prec = n < 0 ? -1 : n;
 				goto rflag;
 			}
@@ -358,7 +349,7 @@ reswitch:       switch (ch) {
 			/*
 			 * ``Note that 0 is taken as a flag, not as the
 			 * beginning of a field width.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 */
 			flags |= ZEROPAD;
 			goto rflag;
@@ -388,15 +379,10 @@ reswitch:       switch (ch) {
 			}
 			goto rflag;
 		case 'q':
-		case 'j':
 			flags |= QUADINT;
 			goto rflag;
-		case 'z':
-		case 't':
-			flags |= LONGINT;
-			goto rflag;
 		case 'c':
-			*(cp = buf) = my_va_arg(ap, int);
+			*(cp = buf) = va_arg(ap, int);
 			size = 1;
 			sign = '\0';
 			break;
@@ -425,9 +411,9 @@ reswitch:       switch (ch) {
 			}
 
 			if (flags & LONGDBL) {
-				_double = (double) my_va_arg(ap, long double);
+				_double = (double) va_arg(ap, long double);
 			} else {
-				_double = my_va_arg(ap, double);
+				_double = va_arg(ap, double);
 			}
 
 			/* do this before tricky precision changes */
@@ -452,21 +438,21 @@ reswitch:       switch (ch) {
 					ch = (ch == 'g') ? 'e' : 'E';
 				else
 					ch = 'g';
-			}
-			if (ch <= 'e') {        /* 'e' or 'E' fmt */
+			} 
+			if (ch <= 'e') {	/* 'e' or 'E' fmt */
 				--expt;
 				expsize = exponent(expstr, expt, ch);
 				size = expsize + ndig;
 				if (ndig > 1 || flags & ALT)
 					++size;
-			} else if (ch == 'f') {         /* f fmt */
+			} else if (ch == 'f') {		/* f fmt */
 				if (expt > 0) {
 					size = expt;
 					if (prec || flags & ALT)
 						size += prec + 1;
-				} else  /* "0.X" */
+				} else	/* "0.X" */
 					size = prec + 2;
-			} else if (expt >= ndig) {      /* fixed g fmt */
+			} else if (expt >= ndig) {	/* fixed g fmt */
 				size = expt;
 				if (flags & ALT)
 					++size;
@@ -480,14 +466,14 @@ reswitch:       switch (ch) {
 #endif /* FLOATING_POINT */
 		case 'n':
 			if (flags & QUADINT)
-				*my_va_arg(ap, quad_t *) = ret;
+				*va_arg(ap, quad_t *) = ret;
 			else if (flags & LONGINT)
-				*my_va_arg(ap, long *) = ret;
+				*va_arg(ap, long *) = ret;
 			else if (flags & SHORTINT)
-				*my_va_arg(ap, short *) = ret;
+				*va_arg(ap, short *) = ret;
 			else
-				*my_va_arg(ap, int *) = ret;
-			continue;       /* no output */
+				*va_arg(ap, int *) = ret;
+			continue;	/* no output */
 		case 'O':
 			flags |= LONGINT;
 			/*FALLTHROUGH*/
@@ -501,17 +487,17 @@ reswitch:       switch (ch) {
 			 * value of the pointer is converted to a sequence
 			 * of printable characters, in an implementation-
 			 * defined manner.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 */
 			/* NOSTRICT */
-			_uquad = (u_long)my_va_arg(ap, void *);
+			_uquad = (u_long)va_arg(ap, void *);
 			base = HEX;
 			xdigs = "0123456789abcdef";
 			flags |= HEXPREFIX;
 			ch = 'x';
 			goto nosign;
 		case 's':
-			if ((cp = my_va_arg(ap, char *)) == NULL)
+			if ((cp = va_arg(ap, char *)) == NULL)
 				cp = "(null)";
 			if (prec >= 0) {
 				/*
@@ -543,26 +529,26 @@ reswitch:       switch (ch) {
 			goto hex;
 		case 'x':
 			xdigs = "0123456789abcdef";
-hex:                    _uquad = UARG();
+hex:			_uquad = UARG();
 			base = HEX;
 			/* leading 0x/X only if non-zero */
 			if (flags & ALT && _uquad != 0)
 				flags |= HEXPREFIX;
 
 			/* unsigned conversions */
-nosign:                 sign = '\0';
+nosign:			sign = '\0';
 			/*
 			 * ``... diouXx conversions ... if a precision is
 			 * specified, the 0 flag will be ignored.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 */
-number:                 if ((dprec = prec) >= 0)
+number:			if ((dprec = prec) >= 0)
 				flags &= ~ZEROPAD;
 
 			/*
 			 * ``The result of converting a zero value with an
 			 * explicit precision of zero is no characters.''
-			 *      -- ANSI X3J11
+			 *	-- ANSI X3J11
 			 */
 			cp = buf + BUF;
 			if (_uquad != 0 || prec != 0) {
@@ -607,7 +593,7 @@ number:                 if ((dprec = prec) >= 0)
 			size = buf + BUF - cp;
 		skipsize:
 			break;
-		default:        /* "%?" prints ?, unless ? is NUL */
+		default:	/* "%?" prints ?, unless ? is NUL */
 			if (ch == '\0')
 				goto done;
 			/* pretend it was %c with argument ch */
@@ -662,8 +648,8 @@ number:                 if ((dprec = prec) >= 0)
 #ifdef FLOATING_POINT
 		if ((flags & FPT) == 0) {
 			PRINT(cp, size);
-		} else {        /* glue together f_p fragments */
-			if (ch >= 'f') {        /* 'f' or 'g' */
+		} else {	/* glue together f_p fragments */
+			if (ch >= 'f') {	/* 'f' or 'g' */
 				if (_double == 0) {
 					/* kludge for __dtoa irregularity */
 					PRINT("0", 1);
@@ -687,17 +673,17 @@ number:                 if ((dprec = prec) >= 0)
 					PRINT(".", 1);
 					PRINT(cp, ndig-expt);
 				}
-			} else {        /* 'e' or 'E' */
+			} else {	/* 'e' or 'E' */
 				if (ndig > 1 || flags & ALT) {
 					ox[0] = *cp++;
 					ox[1] = '.';
 					PRINT(ox, 2);
 					if (_double) {
 						PRINT(cp, ndig-1);
-					} else  /* 0.[0..] */
+					} else	/* 0.[0..] */
 						/* __dtoa irregularity */
 						PAD(ndig - 1, zeroes);
-				} else  /* XeYYY */
+				} else	/* XeYYY */
 					PRINT(cp, 1);
 				PRINT(expstr, expsize);
 			}
@@ -712,7 +698,7 @@ number:                 if ((dprec = prec) >= 0)
 		/* finally, adjust ret */
 		ret += width > realsz ? width : realsz;
 
-		FLUSH();        /* copy out the I/O vectors */
+		FLUSH();	/* copy out the I/O vectors */
 	}
 done:
 	FLUSH();
@@ -735,16 +721,16 @@ cvt(value, ndigits, flags, sign, decpt, ch, length)
 	char *digits, *bp, *rve;
 
 	if (ch == 'f') {
-		mode = 3;               /* ndigits after the decimal point */
+		mode = 3;		/* ndigits after the decimal point */
 	} else {
-		/* To obtain ndigits after the decimal point for the 'e'
-		 * and 'E' formats, round to ndigits + 1 significant
+		/* To obtain ndigits after the decimal point for the 'e' 
+		 * and 'E' formats, round to ndigits + 1 significant 
 		 * figures.
 		 */
 		if (ch == 'e' || ch == 'E') {
 			ndigits++;
 		}
-		mode = 2;               /* ndigits significant digits */
+		mode = 2;		/* ndigits significant digits */
 	}
 
 	if (value < 0) {
@@ -753,14 +739,14 @@ cvt(value, ndigits, flags, sign, decpt, ch, length)
 	} else
 		*sign = '\000';
 	digits = __dtoa(value, mode, ndigits, decpt, &dsgn, &rve);
-	if ((ch != 'g' && ch != 'G') || flags & ALT) {  /* Print trailing zeros */
+	if ((ch != 'g' && ch != 'G') || flags & ALT) {	/* Print trailing zeros */
 		bp = digits + ndigits;
 		if (ch == 'f') {
 			if (*digits == '0' && value)
 				*decpt = -ndigits + 1;
 			bp += *decpt;
 		}
-		if (value == 0) /* kludge for __dtoa irregularity */
+		if (value == 0)	/* kludge for __dtoa irregularity */
 			rve = bp;
 		while (rve < bp)
 			*rve++ = '0';
@@ -800,26 +786,3 @@ exponent(p0, exp, fmtch)
 	return (p - p0);
 }
 #endif /* FLOATING_POINT */
-
-#ifdef NATIVE_MORPHOS
-#undef vfprintf
-
-int
-vfprintf(FILE *fp, const char *fmt0, va_list ap)
-{
-    my_va_list ap1;
-    my_va_init_ppc(ap1, ap);
-    return my_vfprintf(fp, fmt0, ap1);
-}
-
-int
-_varargs68k_vfprintf(FILE *fp, const char *fmt0, char *ap)
-{
-    my_va_list ap1;
-    my_va_init_68k(ap1, ap);
-    return my_vfprintf(fp, fmt0, ap1);
-}
-
-#endif
-
-

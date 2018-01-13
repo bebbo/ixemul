@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv)
 {
@@ -30,11 +31,11 @@ int main(int argc, char **argv)
 #ifndef __VERSION_H__\n\
 #define __VERSION_H__\n\
 \n\
-#define IXNET_NAME         \"ixnet.library\"\n\
-#define IXNET_IDSTRING     \"ixnet %d.%d [%s] (%d.%d.%d)\"\n\
-#define IXNET_VERSION      %d\n\
-#define IXNET_REVISION     %d\n\
-#define IXNET_PRIORITY     0\n\
+#define IXNET_NAME     \"ixnet.library\"\n\
+#define IXNET_IDSTRING \"ixnet %d.%d [%s] (%d.%d.%d)\"\n\
+#define IXNET_VERSION  %d\n\
+#define IXNET_REVISION %d\n\
+#define IXNET_PRIORITY 0\n\
 \n\
 #endif\n\
 ";
@@ -55,11 +56,7 @@ int main(int argc, char **argv)
   if (tmp[0])
     strcat(tmp, ", ");
 
-#if defined(CPU_604e)
-  strcat(tmp, "604e");
-#elif defined(CPU_603e)
-  strcat(tmp, "603e");
-#elif defined(mc68060)
+#if defined(mc68060)
   strcat(tmp, "68060");
 #elif defined(mc68040)
   strcat(tmp, "68040");
@@ -69,11 +66,7 @@ int main(int argc, char **argv)
   strcat(tmp, "68000");
 #endif
 
-#if defined(NATIVE_MORPHOS)
-  strcat(tmp, ", morphos");
-#else
   strcat(tmp, ", amigaos");
-#endif
 
   printf(format, major, minor, tmp, day, month, year, major, minor);
   return 0;

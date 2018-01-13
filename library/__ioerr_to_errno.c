@@ -39,44 +39,44 @@ int __ioerr_to_errno(int ioerr)
 
   switch (ioerr)
     {
-      case ERROR_NO_FREE_STORE:                 err = ENOMEM;           break;
-      case ERROR_TASK_TABLE_FULL:               err = EAGAIN;           break;
-      case ERROR_LINE_TOO_LONG:                 err = E2BIG;            break;
+      case ERROR_NO_FREE_STORE:		        err = ENOMEM;           break;
+      case ERROR_TASK_TABLE_FULL:	        err = EAGAIN;           break;
+      case ERROR_LINE_TOO_LONG:		        err = E2BIG;            break;
       case ERROR_INVALID_RESIDENT_LIBRARY:      err = ENOEXEC;          break;
-      case ERROR_FILE_NOT_OBJECT:               err = ENOEXEC;          break;
+      case ERROR_FILE_NOT_OBJECT:	        err = ENOEXEC;          break;
       case ERROR_OBJECT_IN_USE:                 err = EEXIST;           break;
-      case ERROR_OBJECT_EXISTS:                 err = EEXIST;           break;
+      case ERROR_OBJECT_EXISTS:		        err = EEXIST;           break;
       case ERROR_BAD_STREAM_NAME:               err = ENOENT;           break;
       case ERROR_DIR_NOT_FOUND:                 err = ENOENT;           break;
       case ERROR_OBJECT_NOT_FOUND:              err = ENOENT;           break;
-      case ERROR_ACTION_NOT_KNOWN:              err = ENODEV;           break;
-      case ERROR_NO_DEFAULT_DIR:                err = ENOTDIR;          break;
-      case ERROR_OBJECT_TOO_LARGE:              err = ENOMEM;           break;
+      case ERROR_ACTION_NOT_KNOWN:	        err = ENODEV;           break;
+      case ERROR_NO_DEFAULT_DIR:	        err = ENOTDIR;          break;
+      case ERROR_OBJECT_TOO_LARGE:	        err = ENOMEM;           break;
       case ERROR_INVALID_COMPONENT_NAME:        err = EIO;              break;
-      case ERROR_INVALID_LOCK:                  err = ENODEV;           break;
-      case ERROR_TOO_MANY_LEVELS:               err = ELOOP;            break;
-      case ERROR_OBJECT_WRONG_TYPE:             err = ENOTDIR;          break;
-      case ERROR_DISK_NOT_VALIDATED:            err = EIO;              break;
-      case ERROR_DISK_WRITE_PROTECTED:          err = EROFS;            break;
-      case ERROR_RENAME_ACROSS_DEVICES:         err = EXDEV;            break;
+      case ERROR_INVALID_LOCK:		        err = ENODEV;           break;
+      case ERROR_TOO_MANY_LEVELS:	        err = ELOOP;            break;
+      case ERROR_OBJECT_WRONG_TYPE:	        err = ENOTDIR;          break;
+      case ERROR_DISK_NOT_VALIDATED:	        err = EIO;              break;
+      case ERROR_DISK_WRITE_PROTECTED:	        err = EROFS;            break;
+      case ERROR_RENAME_ACROSS_DEVICES:	        err = EXDEV;            break;
       case ERROR_DIRECTORY_NOT_EMPTY:           err = ENOTEMPTY;        break;
-      case ERROR_DEVICE_NOT_MOUNTED:            err = ENXIO;            break;
-      case ERROR_SEEK_ERROR:                    err = ESPIPE;           break;
-      case ERROR_COMMENT_TOO_BIG:               err = ENAMETOOLONG;     break;
-      case ERROR_DISK_FULL:                     err = ENOSPC;           break;
+      case ERROR_DEVICE_NOT_MOUNTED:	        err = ENXIO;            break;
+      case ERROR_SEEK_ERROR:		        err = ESPIPE;           break;
+      case ERROR_COMMENT_TOO_BIG:	        err = ENAMETOOLONG;     break;
+      case ERROR_DISK_FULL:		        err = ENOSPC;           break;
       case ERROR_DELETE_PROTECTED:              err = EACCES;           break;
       case ERROR_WRITE_PROTECTED:               err = EACCES;           break;
-      case ERROR_READ_PROTECTED:                err = EACCES;           break;
+      case ERROR_READ_PROTECTED:	        err = EACCES;           break;
       case ERROR_NOT_A_DOS_DISK:                err = ENXIO;            break;
-      case ERROR_NO_DISK:                       err = ENXIO;            break;
-      case ERROR_NO_MORE_ENTRIES:               err = ENOENT;           break;
+      case ERROR_NO_DISK:		        err = ENXIO;            break;
+      case ERROR_NO_MORE_ENTRIES:	        err = ENOENT;           break;
       /* catch-all for illegal accesses to NIL: */
-      case 4242:                                err = EPERM;            break;
+      case 4242:			        err = EPERM;            break;
       /* catch-all for illegal accesses to /dev/[pt]tyXX */
-      case 5252:                                err = EPERM;            break;
+      case 5252:			        err = EPERM;            break;
       /* catch-all for illegal accesses to / */
-      case 6262:                                err = EPERM;            break;
-      default:                                  err = EIO;              break;
+      case 6262:			        err = EPERM;            break;
+      default:				        err = EIO;              break;
     }
   KPRINTF (("ioerr = %ld, err = %ld\n", ioerr, err));
   return err;

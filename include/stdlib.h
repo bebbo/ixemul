@@ -43,19 +43,19 @@
 #include <sys/types.h>
 #endif
 
-/* For wchar_t and size_t */
-#include <stddef.h> 
-/*
 #ifdef	_BSD_SIZE_T_
 typedef	_BSD_SIZE_T_	size_t;
 #undef	_BSD_SIZE_T_
 #endif
 
-#ifdef	_BSD_WCHAR_T_
-typedef	_BSD_WCHAR_T_	wchar_t;
+#ifndef	__cplusplus
+#ifndef	_WCHAR_T_
+#define	_WCHAR_T_
+typedef	__WCHAR_TYPE__	wchar_t;
+#endif
 #undef	_BSD_WCHAR_T_
 #endif
-*/
+
 typedef struct {
 	int quot;		/* quotient */
 	int rem;		/* remainder */
@@ -83,19 +83,16 @@ typedef struct {
 
 #define	RAND_MAX	0x7fffffff
 
-#define	MB_CUR_MAX	4	/* XXX */
+#define	MB_CUR_MAX	1	/* XXX */
 
 #include <sys/cdefs.h>
-#define atoll(str) ((long long) strtoll(str, (char **)NULL, 10));
 
-extern long long strtoll(const char *str, char **ptr, int base); 
 __BEGIN_DECLS
 void	 abort __P((void));
 int	 abs __P((int));
 int	 atexit __P((void (*)(void)));
 double	 atof __P((const char *));
 int	 atoi __P((const char *));
-
 long	 atol __P((const char *));
 void	*bsearch __P((const void *, const void *, size_t,
 	    size_t, int (*)(const void *, const void *)));

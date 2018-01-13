@@ -1,8 +1,8 @@
-/*      $NetBSD: signal.h,v 1.7 1995/05/28 03:10:06 jtc Exp $   */
+/*	$NetBSD: signal.h,v 1.7 1995/05/28 03:10:06 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)signal.h    8.3 (Berkeley) 3/30/94
+ *	@(#)signal.h	8.3 (Berkeley) 3/30/94
  */
 
 #ifndef _USER_SIGNAL_H
@@ -55,72 +55,76 @@ extern const char *const sys_siglist[];
 #endif
 
 __BEGIN_DECLS
-int     raise __P((int));
-#ifndef _ANSI_SOURCE
-int     kill __P((pid_t, int));
-int     sigaction __P((int, const struct sigaction *, struct sigaction *));
-int     sigemptyset __P((sigset_t *));
-int     sigfillset __P((sigset_t *));
-int     sigpending __P((sigset_t *));
-int     sigprocmask __P((int, const sigset_t *, sigset_t *));
-int     sigsuspend __P((const sigset_t *));
+int	raise __P((int));
+#ifndef	_ANSI_SOURCE
+int	kill __P((pid_t, int));
+int	sigaction __P((int, const struct sigaction *, struct sigaction *));
+#if defined(__GNUC__) && defined(__STDC__)
+#ifdef __EXTERN_INLINE__
+int	sigaddset __P((sigset_t *, int));
+int	sigdelset __P((sigset_t *, int));
+int	sigismember __P((const sigset_t *, int));
+#endif
+#endif
+int	sigemptyset __P((sigset_t *));
+int	sigfillset __P((sigset_t *));
+int	sigpending __P((sigset_t *));
+int	sigprocmask __P((int, const sigset_t *, sigset_t *));
+int	sigsuspend __P((const sigset_t *));
 
 #if defined(__GNUC__) && defined(__STDC__)
-#ifndef __NO_INLINE__
-inline int sigaddset(sigset_t *set, int signo) {
+#ifndef __EXTERN_INLINE__
+#define __EXTERN_INLINE__ static inline
+#endif
+__EXTERN_INLINE__ int sigaddset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
-		errno = 22;                     /* EINVAL */
+		errno = 22;			/* EINVAL */
 		return -1;
 	}
-	*set |= (1 << ((signo)-1));             /* sigmask(signo) */
+	*set |= (1 << ((signo)-1));		/* sigmask(signo) */
 	return (0);
 }
 
-inline int sigdelset(sigset_t *set, int signo) {
+__EXTERN_INLINE__ int sigdelset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
-		errno = 22;                     /* EINVAL */
+		errno = 22;			/* EINVAL */
 		return -1;
 	}
-	*set &= ~(1 << ((signo)-1));            /* sigmask(signo) */
+	*set &= ~(1 << ((signo)-1));		/* sigmask(signo) */
 	return (0);
 }
 
-inline int sigismember(const sigset_t *set, int signo) {
+__EXTERN_INLINE__ int sigismember(const sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
-		errno = 22;                     /* EINVAL */
+		errno = 22;			/* EINVAL */
 		return -1;
 	}
 	return ((*set & (1 << ((signo)-1))) != 0);
 }
-#else
-int     sigaddset __P((sigset_t *, int));
-int     sigdelset __P((sigset_t *, int));
-int     sigismember __P((const sigset_t *, int));
-#endif // __NO_INLINE__
 #endif
 
 /* List definitions after function declarations, or Reiser cpp gets upset. */
-#define sigemptyset(set)        (*(set) = 0, 0)
-#define sigfillset(set)         (*(set) = ~(sigset_t)0, 0)
+#define	sigemptyset(set)	(*(set) = 0, 0)
+#define	sigfillset(set)		(*(set) = ~(sigset_t)0, 0)
 
 #ifndef _POSIX_SOURCE
-int     killpg __P((pid_t, int));
-int     sigblock __P((int));
-int     siginterrupt __P((int, int));
-int     sigpause __P((int));
-void volatile   sigreturn __P((struct sigcontext *));
-int     sigsetmask __P((int));
-int     sigstack __P((const struct sigstack *, struct sigstack *));
-int     sigvec __P((int, struct sigvec *, struct sigvec *));
-void    psignal __P((unsigned int, const char *));
-#endif  /* !_POSIX_SOURCE */
-#endif  /* !_ANSI_SOURCE */
+int	killpg __P((pid_t, int));
+int	sigblock __P((int));
+int	siginterrupt __P((int, int));
+int	sigpause __P((int));
+void volatile	sigreturn __P((struct sigcontext *));
+int	sigsetmask __P((int));
+int	sigstack __P((const struct sigstack *, struct sigstack *));
+int	sigvec __P((int, struct sigvec *, struct sigvec *));
+void	psignal __P((unsigned int, const char *));
+#endif	/* !_POSIX_SOURCE */
+#endif	/* !_ANSI_SOURCE */
 __END_DECLS
 
-#endif  /* !_USER_SIGNAL_H */
+#endif	/* !_USER_SIGNAL_H */

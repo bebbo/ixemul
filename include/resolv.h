@@ -1,4 +1,4 @@
-/*      $NetBSD: resolv.h,v 1.8 1994/10/26 00:56:16 cgd Exp $   */
+/*	$NetBSD: resolv.h,v 1.8 1994/10/26 00:56:16 cgd Exp $	*/
 
 /*
  * Copyright (c) 1983, 1987, 1989 The Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,11 +32,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)resolv.h    5.15 (Berkeley) 4/3/91
+ *	@(#)resolv.h	5.15 (Berkeley) 4/3/91
  */
 
 #ifndef _RESOLV_H_
-#define _RESOLV_H_
+#define	_RESOLV_H_
 
 /*
  * revision information.  this is the release date in YYYYMMDD format.
@@ -46,7 +46,7 @@
  * is new enough to contain a certain feature.
  */
 
-#define __RES           19931104
+#define	__RES		19931104
 
 /*
  * Resolver configuration file.
@@ -61,72 +61,72 @@
 /*
  * Global defines and variables for resolver stub.
  */
-#define MAXNS                   3       /* max # name servers we'll track */
-#define MAXDFLSRCH              3       /* # default domain levels to try */
-#define MAXDNSRCH               6       /* max # domains in search path */
-#define LOCALDOMAINPARTS        2       /* min levels in name that is "local" */
-#define MAXDNSLUS               4       /* max # of host lookup types */
+#define	MAXNS			3	/* max # name servers we'll track */
+#define	MAXDFLSRCH		3	/* # default domain levels to try */
+#define	MAXDNSRCH		6	/* max # domains in search path */
+#define	LOCALDOMAINPARTS	2	/* min levels in name that is "local" */
+#define	MAXDNSLUS		4	/* max # of host lookup types */
 
-#define RES_TIMEOUT             5       /* min. seconds between retries */
-#define MAXRESOLVSORT           10      /* number of net to sort on */
-#define RES_MAXNDOTS            15      /* should reflect bit field size */
+#define	RES_TIMEOUT		5	/* min. seconds between retries */
+#define MAXRESOLVSORT		10	/* number of net to sort on */
+#define RES_MAXNDOTS		15	/* should reflect bit field size */
 
 struct __res_state {
-	int     retrans;                /* retransmition time interval */
-	int     retry;                  /* number of times to retransmit */
-	long    options;                /* option flags - see below. */
-	int     nscount;                /* number of name servers */
-	struct  sockaddr_in nsaddr_list[MAXNS]; /* address of name server */
-#define nsaddr  nsaddr_list[0]          /* for backward compatibility */
-	u_short id;                     /* current packet id */
-	char    *__ALIGN2__ dnsrch[MAXDNSRCH+1]; /* components of domain to search */
-	char    defdname[MAXDNAME];     /* default domain */
-	long    __ALIGN2__ pfcode;      /* RES_PRF_ flags - see below. */
-	u_char  ndots:4;                /* threshold for initial abs. query */
-	u_char  nsort:4;                /* number of elements in sort_list[] */
-	char    unused[3];
+	int	retrans;	 	/* retransmition time interval */
+	int	retry;			/* number of times to retransmit */
+	long	options;		/* option flags - see below. */
+	int	nscount;		/* number of name servers */
+	struct	sockaddr_in nsaddr_list[MAXNS];	/* address of name server */
+#define	nsaddr	nsaddr_list[0]		/* for backward compatibility */
+	u_short	id;			/* current packet id */
+	char	*dnsrch[MAXDNSRCH+1];	/* components of domain to search */
+	char	defdname[MAXDNAME];	/* default domain */
+	long	pfcode;			/* RES_PRF_ flags - see below. */
+	u_char	ndots:4;		/* threshold for initial abs. query */
+	u_char	nsort:4;		/* number of elements in sort_list[] */
+	char	unused[3];
 	struct {
 		struct in_addr addr;
 		u_int32_t mask;
-	} __ALIGN2__ sort_list[MAXRESOLVSORT];
-	char    lookups[MAXDNSLUS];
-} __PACKED__;
+	} sort_list[MAXRESOLVSORT];
+	char	lookups[MAXDNSLUS];
+};
 
 /*
  * Resolver options
  */
-#define RES_INIT        0x0001          /* address initialized */
-#define RES_DEBUG       0x0002          /* print debug messages */
-#define RES_AAONLY      0x0004          /* authoritative answers only */
-#define RES_USEVC       0x0008          /* use virtual circuit */
-#define RES_PRIMARY     0x0010          /* query primary server only */
-#define RES_IGNTC       0x0020          /* ignore trucation errors */
-#define RES_RECURSE     0x0040          /* recursion desired */
-#define RES_DEFNAMES    0x0080          /* use default domain name */
-#define RES_STAYOPEN    0x0100          /* Keep TCP socket open */
-#define RES_DNSRCH      0x0200          /* search up local domain tree */
+#define RES_INIT	0x0001		/* address initialized */
+#define RES_DEBUG	0x0002		/* print debug messages */
+#define RES_AAONLY	0x0004		/* authoritative answers only */
+#define RES_USEVC	0x0008		/* use virtual circuit */
+#define RES_PRIMARY	0x0010		/* query primary server only */
+#define RES_IGNTC	0x0020		/* ignore trucation errors */
+#define RES_RECURSE	0x0040		/* recursion desired */
+#define RES_DEFNAMES	0x0080		/* use default domain name */
+#define RES_STAYOPEN	0x0100		/* Keep TCP socket open */
+#define RES_DNSRCH	0x0200		/* search up local domain tree */
 
-#define RES_DEFAULT     (RES_RECURSE | RES_DEFNAMES | RES_DNSRCH)
+#define RES_DEFAULT	(RES_RECURSE | RES_DEFNAMES | RES_DNSRCH)
 
 /*
  * Resolver "pfcode" values.  Used by dig.
  */
-#define RES_PRF_STATS   0x0001
-/*                      0x0002  */
-#define RES_PRF_CLASS   0x0004
-#define RES_PRF_CMD     0x0008
-#define RES_PRF_QUES    0x0010
-#define RES_PRF_ANS     0x0020
-#define RES_PRF_AUTH    0x0040
-#define RES_PRF_ADD     0x0080
-#define RES_PRF_HEAD1   0x0100
-#define RES_PRF_HEAD2   0x0200
-#define RES_PRF_TTLID   0x0400
-#define RES_PRF_HEADX   0x0800
-#define RES_PRF_QUERY   0x1000
-#define RES_PRF_REPLY   0x2000
-#define RES_PRF_INIT    0x4000
-/*                      0x8000  */
+#define	RES_PRF_STATS	0x0001
+/*			0x0002  */
+#define	RES_PRF_CLASS	0x0004
+#define	RES_PRF_CMD	0x0008
+#define	RES_PRF_QUES	0x0010
+#define	RES_PRF_ANS	0x0020
+#define	RES_PRF_AUTH	0x0040
+#define	RES_PRF_ADD	0x0080
+#define	RES_PRF_HEAD1	0x0100
+#define	RES_PRF_HEAD2	0x0200
+#define	RES_PRF_TTLID	0x0400
+#define	RES_PRF_HEADX	0x0800
+#define	RES_PRF_QUERY	0x1000
+#define	RES_PRF_REPLY	0x2000
+#define	RES_PRF_INIT	0x4000
+/*			0x8000  */
 
 extern struct __res_state _res;
 
@@ -134,33 +134,33 @@ extern struct __res_state _res;
 #include <stdio.h>
 
 /* Private routines shared between libc/net, named, nslookup and others. */
-#define dn_skipname     __dn_skipname
-#define fp_query        __fp_query
-#define hostalias       __hostalias
-#define putlong         __putlong
-#define putshort        __putshort
-#define p_class         __p_class
-#define p_time          __p_time
-#define p_type          __p_type
+#define	dn_skipname	__dn_skipname
+#define	fp_query	__fp_query
+#define	hostalias	__hostalias
+#define	putlong		__putlong
+#define	putshort	__putshort
+#define p_class		__p_class
+#define p_time		__p_time
+#define p_type		__p_type
 __BEGIN_DECLS
-int      __dn_skipname __P((const u_char *, const u_char *));
-void     __fp_query __P((char *, FILE *));
-char    *__hostalias __P((const char *));
-void     __putlong __P((u_int32_t, u_char *));
-void     __putshort __P((u_int16_t, u_char *));
-char    *__p_class __P((int));
-char    *__p_time __P((u_int32_t));
-char    *__p_type __P((int));
+int	 __dn_skipname __P((const u_char *, const u_char *));
+void	 __fp_query __P((char *, FILE *));
+char	*__hostalias __P((const char *));
+void	 __putlong __P((u_int32_t, u_char *));
+void	 __putshort __P((u_int16_t, u_char *));
+char	*__p_class __P((int));
+char	*__p_time __P((u_int32_t));
+char	*__p_type __P((int));
 
-int      dn_comp __P((const u_char *, u_char *, int, u_char **, u_char **));
-int      dn_expand __P((const u_char *, const u_char *, const u_char *,
+int	 dn_comp __P((const u_char *, u_char *, int, u_char **, u_char **));
+int	 dn_expand __P((const u_char *, const u_char *, const u_char *,
 		u_char *, int));
-int      res_init __P((void));
-int      res_query __P((char *, int, int, u_char *, int));
-int      res_search __P((const char *, int, int, u_char *, int));
-int      res_mkquery __P((int, const char *, int, int, const char *, int,
+int	 res_init __P((void));
+int	 res_query __P((char *, int, int, u_char *, int));
+int	 res_search __P((const char *, int, int, u_char *, int));
+int	 res_mkquery __P((int, const char *, int, int, const char *, int,
 		const char *, char *, int));
-int      res_send __P((const char *, int, char *, int));
+int	 res_send __P((const char *, int, char *, int));
 __END_DECLS
 
 #endif /* !_RESOLV_H_ */

@@ -1,8 +1,8 @@
-/*      $NetBSD: fopen.c,v 1.4 1995/02/02 02:09:23 jtc Exp $    */
+/*	$NetBSD: fopen.c,v 1.4 1995/02/02 02:09:23 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fopen.c     8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)fopen.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: fopen.c,v 1.4 1995/02/02 02:09:23 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -61,13 +61,13 @@ fopen(file, mode)
 	register FILE *fp;
 	register int f;
 	int flags, oflags;
-     usetup;
+
 	if ((flags = __sflags(mode, &oflags)) == 0)
 		return (NULL);
 	if ((fp = __sfp()) == NULL)
 		return (NULL);
 	if ((f = syscall(SYS_open, file, oflags, DEFFILEMODE)) < 0) {
-		fp->_flags = 0;                 /* release */
+		fp->_flags = 0;			/* release */
 		return (NULL);
 	}
 	fp->_file = f;
@@ -77,8 +77,7 @@ fopen(file, mode)
 	fp->_write = __swrite;
 	fp->_seek = __sseek;
 	fp->_close = __sclose;
-	
-	//fp->_file_struct = u.u_ofile[f];
+
 	/*
 	 * When opening in append mode, even though we use O_APPEND,
 	 * we need to seek to the end so that ftell() gets the right

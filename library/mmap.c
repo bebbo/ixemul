@@ -24,35 +24,28 @@
 
 extern int read(), write();
 
-#define ALIGN
-
 caddr_t mmap (caddr_t addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
   struct mmap_mem *m;
   usetup;
-  int pagesize = 0;
   
- #ifdef ALIGN
-  pagesize = getpagesize();
- #endif
   if (flags & MAP_FIXED)
     {
       errno = ENOMEM;
-      return (daddr_t)-1;
+      return NULL;
     }
   if (!(flags & MAP_ANON) && (fd < 0 || fd >= NOFILE || !u.u_ofile[fd]))
     {
       errno = EBADF;
       return (caddr_t)-1;
     }
- 
   m = malloc(sizeof(struct mmap_mem));
   if (m == NULL)
     {
       errno = ENOMEM;
       return (caddr_t)-1;
     }
-  m->addr = malloc(len + pagesize);
+  m->addr = malloc(len);
   if (m->addr == NULL)
     {
       free(m);
@@ -61,7 +54,7 @@ caddr_t mmap (caddr_t addr, size_t len, int prot, int flags, int fd, off_t offse
     }
   if (!(flags & MAP_ANON))
     {
-      off_t curoff = lseek(fd, 0, SEEK_CUR,0);
+      off_t curoff = lseek(fd, 0, SEEK_CUR);
 
       lseek(fd, offset, SEEK_SET);
       read(fd, m->addr, len);
@@ -74,14 +67,9 @@ caddr_t mmap (caddr_t addr, size_t len, int prot, int flags, int fd, off_t offse
   m->offset = offset;
   m->next = u.u_mmap;
   u.u_mmap = m;
-#ifdef ALIGN
-  unsigned long addr2 = m->addr + pagesize;
-  return addr2 & ~(pagesize-1);
-#else
   return m->addr;
-#endif
 }
- 
+
 static struct mmap_mem *find_mmap(caddr_t addr)
 {
   usetup;
@@ -137,7 +125,7 @@ int munmap(caddr_t addr, size_t len)
   for (m = u.u_mmap; m; m = m->next)
     {
       if ((caddr_t)m->addr <= addr && (caddr_t)m->addr + m->length > addr)
-	break;
+        break;
       prev = m;
     }
   if (!m)

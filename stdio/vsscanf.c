@@ -1,8 +1,8 @@
-/*      $NetBSD: vsscanf.c,v 1.5 1995/02/02 02:10:57 jtc Exp $  */
+/*	$NetBSD: vsscanf.c,v 1.5 1995/02/02 02:10:57 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Donn Seeley at UUNET Technologies, Inc.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,22 +38,16 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vsscanf.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vsscanf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vsscanf.c,v 1.5 1995/02/02 02:10:57 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
 #include <string.h>
-
-#ifdef NATIVE_MORPHOS
-#define __svfscanf my___svfscanf
-int __svfscanf(FILE *, const char *, my_va_list);
-#endif
 
 /* ARGSUSED */
 static int
@@ -70,39 +64,15 @@ int
 vsscanf(str, fmt, ap)
 	const char *str;
 	const char *fmt;
-	va_list ap;
+	_BSD_VA_LIST_ ap;
 {
 	FILE f;
-	my_va_list ap1;
-	my_va_init(ap1, ap);
+
 	f._flags = __SRD;
 	f._bf._base = f._p = (unsigned char *)str;
 	f._bf._size = f._r = strlen(str);
 	f._read = eofread2;
 	f._ub._base = NULL;
 	f._lb._base = NULL;
-	return (__svfscanf(&f, fmt, ap1));
+	return (__svfscanf(&f, fmt, ap));
 }
-
-#ifdef NATIVE_MORPHOS
-
-int
-_varargs68k_vsscanf(str, fmt, ap)
-	const char *str;
-	const char *fmt;
-	va_list ap;
-{
-	FILE f;
-	my_va_list ap1;
-	my_va_init_68k(ap1, ap);
-	f._flags = __SRD;
-	f._bf._base = f._p = (unsigned char *)str;
-	f._bf._size = f._r = strlen(str);
-	f._read = eofread2;
-	f._ub._base = NULL;
-	f._lb._base = NULL;
-	return (__svfscanf(&f, fmt, ap1));
-}
-
-#endif
-

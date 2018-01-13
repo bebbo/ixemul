@@ -1,4 +1,4 @@
-/*      $NetBSD: signame.c,v 1.6 1995/03/04 01:56:05 cgd Exp $  */
+/*	$NetBSD: signame.c,v 1.6 1995/03/04 01:56:05 cgd Exp $	*/
 
 /*
  * Copyright (c) 1983 Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "from: @(#)siglist.c     5.6 (Berkeley) 2/23/91";*/
+static char sccsid[] = "from: @(#)siglist.c	5.6 (Berkeley) 2/23/91";*/
 #else
 static char rcsid[] = "$NetBSD: signame.c,v 1.6 1995/03/04 01:56:05 cgd Exp $";
 #endif
@@ -46,35 +46,35 @@ static char rcsid[] = "$NetBSD: signame.c,v 1.6 1995/03/04 01:56:05 cgd Exp $";
 
 const char *const sys_signame[NSIG] = {
 	"Signal 0",
-	"HUP",          /* SIGHUP */
-	"INT",          /* SIGINT */
-	"QUIT",         /* SIGQUIT */
-	"ILL",          /* SIGILL */
-	"TRAP",         /* SIGTRAP */
-	"ABRT",         /* SIGABRT */
-	"EMT",          /* SIGEMT */
-	"FPE",          /* SIGFPE */
-	"KILL",         /* SIGKILL */
-	"BUS",          /* SIGBUS */
-	"SEGV",         /* SIGSEGV */
-	"SYS",          /* SIGSYS */
-	"PIPE",         /* SIGPIPE */
-	"ALRM",         /* SIGALRM */
-	"TERM",         /* SIGTERM */
-	"URG",          /* SIGURG */
-	"STOP",         /* SIGSTOP */
-	"TSTP",         /* SIGTSTP */
-	"CONT",         /* SIGCONT */
-	"CHLD",         /* SIGCHLD */
-	"TTIN",         /* SIGTTIN */
-	"TTOU",         /* SIGTTOU */
-	"IO",           /* SIGIO */
-	"XCPU",         /* SIGXCPU */
-	"XFSZ",         /* SIGXFSZ */
-	"VTALRM",       /* SIGVTALRM */
-	"PROF",         /* SIGPROF */
-	"WINCH",        /* SIGWINCH */
-	"INFO",         /* SIGINFO */
-	"USR1",         /* SIGUSR1 */
-	"USR2"          /* SIGUSR2 */
+	"HUP",		/* SIGHUP */
+	"INT",		/* SIGINT */
+	"QUIT",		/* SIGQUIT */
+	"ILL",		/* SIGILL */
+	"TRAP",		/* SIGTRAP */
+	"ABRT",		/* SIGABRT */
+	"EMT",		/* SIGEMT */
+	"FPE",		/* SIGFPE */
+	"KILL",		/* SIGKILL */
+	"BUS",		/* SIGBUS */
+	"SEGV",		/* SIGSEGV */
+	"SYS",		/* SIGSYS */
+	"PIPE",		/* SIGPIPE */
+	"ALRM",		/* SIGALRM */
+	"TERM",		/* SIGTERM */
+	"URG",		/* SIGURG */
+	"STOP",		/* SIGSTOP */
+	"TSTP",		/* SIGTSTP */
+	"CONT",		/* SIGCONT */
+	"CHLD",		/* SIGCHLD */
+	"TTIN",		/* SIGTTIN */
+	"TTOU",		/* SIGTTOU */
+	"IO",		/* SIGIO */
+	"XCPU",		/* SIGXCPU */
+	"XFSZ",		/* SIGXFSZ */
+	"VTALRM",	/* SIGVTALRM */
+	"PROF",		/* SIGPROF */
+	"WINCH",	/* SIGWINCH */
+	"INFO",		/* SIGINFO */
+	"USR1",		/* SIGUSR1 */
+	"USR2"		/* SIGUSR2 */
 };

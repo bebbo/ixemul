@@ -1,8 +1,8 @@
-/*      $NetBSD: vsnprintf.c,v 1.5 1995/02/02 02:10:54 jtc Exp $        */
+/*	$NetBSD: vsnprintf.c,v 1.5 1995/02/02 02:10:54 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,73 +38,32 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vsnprintf.c 8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vsnprintf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vsnprintf.c,v 1.5 1995/02/02 02:10:54 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
-
-#ifdef NATIVE_MORPHOS
-#define vsnprintf my_vsnprintf
-#define vfprintf my_vfprintf
-int vfprintf(FILE *fp, const char *fmt0, my_va_list ap);
-int vsnprintf(char *str, size_t n, const char *fmt, my_va_list ap);
-#endif
 
 int
 vsnprintf(str, n, fmt, ap)
 	char *str;
 	size_t n;
 	const char *fmt;
-	my_va_list ap;
+	_BSD_VA_LIST_ ap;
 {
 	int ret;
 	FILE f;
 
-	f._flags = __SWR | __SSTR;
-	/* To be compatible with glibc, we need to handle the special case where n is 0. */
 	if ((int)n < 1)
-	{
-		f._bf._base = f._p = (void *)-1;
-		f._bf._size = f._w = 0;
-	}
-	else
-	{
-		f._bf._base = f._p = (unsigned char *)str;
-		f._bf._size = f._w = n - 1;
-	}
+		return (EOF);
+	f._flags = __SWR | __SSTR;
+	f._bf._base = f._p = (unsigned char *)str;
+	f._bf._size = f._w = n - 1;
 	ret = vfprintf(&f, fmt, ap);
-	if (f._p != (void *)-1)
-	{
-		*f._p = 0;
-	}
+	*f._p = 0;
 	return (ret);
 }
-
-#ifdef NATIVE_MORPHOS
-#undef vfprintf
-#undef vsnprintf
-
-int
-vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
-{
-    my_va_list ap1;
-    my_va_init_ppc(ap1, ap);
-    return my_vsnprintf(str, n, fmt, ap1);
-}
-
-int
-_varargs68k_vsnprintf(char *str, size_t n, const char *fmt, char *ap)
-{
-    my_va_list ap1;
-    my_va_init_68k(ap1, ap);
-    return my_vsnprintf(str, n, fmt, ap1);
-}
-
-#endif
-

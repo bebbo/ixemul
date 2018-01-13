@@ -1,4 +1,4 @@
-/*      $NetBSD: ipcs.c,v 1.10.6.1 1996/06/07 01:53:47 thorpej Exp $    */
+/*	$NetBSD: ipcs.c,v 1.10.6.1 1996/06/07 01:53:47 thorpej Exp $	*/
 
 /*
  * Copyright (c) 1994 SigmaSoft, Th. Lockert <tholo@sigmasoft.com>
@@ -14,7 +14,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by SigmaSoft, Th.  Lockert.
+ *	This product includes software developed by SigmaSoft, Th.  Lockert.
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
@@ -52,10 +52,10 @@
 #include <string.h>
 #include <unistd.h>
 
-int     semconfig __P((int, ...));
-void    usage __P((void));
+int	semconfig __P((int, ...));
+void	usage __P((void));
 
-extern  char *__progname;               /* from crt0.o */
+extern	char *__progname;		/* from crt0.o */
 
 char   *
 fmt_perm(mode)
@@ -93,18 +93,18 @@ cvt_time(t, buf)
 			tm->tm_hour, tm->tm_min, tm->tm_sec);
 	}
 }
-#define SHMINFO         1
-#define SHMTOTAL        2
-#define MSGINFO         4
-#define MSGTOTAL        8
-#define SEMINFO         16
-#define SEMTOTAL        32
+#define	SHMINFO		1
+#define	SHMTOTAL	2
+#define	MSGINFO		4
+#define	MSGTOTAL	8
+#define	SEMINFO		16
+#define	SEMTOTAL	32
 
-#define BIGGEST         1
-#define CREATOR         2
-#define OUTSTANDING     4
-#define PID             8
-#define TIME            16
+#define BIGGEST		1
+#define CREATOR		2
+#define OUTSTANDING	4
+#define PID		8
+#define TIME		16
 
 struct seminfo *seminfo;
 struct msginfo *msginfo;
@@ -117,7 +117,7 @@ main(argc, argv)
 	int     display = SHMINFO | MSGINFO | SEMINFO;
 	int     option = 0;
 	char   *core = NULL, *namelist = NULL;
-	char    errbuf[_POSIX2_LINE_MAX];
+	char	errbuf[_POSIX2_LINE_MAX];
 	int     i;
 
 	while ((i = getopt(argc, argv, "MmQqSsabC:cN:optT")) != EOF)
@@ -218,7 +218,7 @@ main(argc, argv)
 			for (i = 0; i < msginfo->msgmni; i += 1) {
 				if (xmsqids[i].msg_qbytes != 0) {
 					char    stime_buf[100], rtime_buf[100],
-						ctime_buf[100];
+					        ctime_buf[100];
 					struct msqid_ds *msqptr = &xmsqids[i];
 
 					cvt_time(msqptr->msg_stime, stime_buf);
@@ -290,7 +290,7 @@ main(argc, argv)
 				shmlist = shmlist->next;
 				if (xshmids->shm_perm.mode & 0x0800) {
 					char    atime_buf[100], dtime_buf[100],
-						ctime_buf[100];
+					        ctime_buf[100];
 					struct shmid_ds *shmptr = xshmids;
 
 					cvt_time(shmptr->shm_atime, atime_buf);

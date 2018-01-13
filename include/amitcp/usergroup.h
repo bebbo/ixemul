@@ -1,12 +1,12 @@
 #ifndef LIBRARIES_USERGROUP_H
 #define LIBRARIES_USERGROUP_H \
-       "$Id: usergroup.h,v 1.1.1.1 2005/03/15 15:57:12 laire Exp $"
+       "$Id: usergroup.h,v 4.2 1994/10/05 23:18:49 ppessi Exp $"
 /*
- *      Definitions of AmiTCP/IP usergroup.library for 32 bit C compilers
+ *	Definitions of AmiTCP/IP usergroup.library for 32 bit C compilers
  *
- *      Copyright © 1994 AmiTCP/IP Group,
- *                       Network Solutions Development, Inc.
- *                       All rights reserved.
+ *	Copyright © 1994 AmiTCP/IP Group,
+ *			 Network Solutions Development, Inc.
+ *			 All rights reserved.
  */
 
 #ifndef EXEC_TYPES_H
@@ -25,31 +25,31 @@
 
 #include <sys/param.h>
 
-#define USERGROUPNAME "usergroup.library"
+#define USERGROUPNAME "AmiTCP:libs/usergroup.library"
 
 /* Extended password encryption begins with underscore */
 #define _PASSWORD_EFMT1 '_'
 
 /* Maximum length for password */
-#define _PASSWORD_LEN   128
+#define _PASSWORD_LEN	128
 
 /* A user can belong to NGROUPS different groups */
 /* #define NGROUPS 32 */
 
 /* Max length of a login name */
-/* #define MAXLOGNAME      32 */
+/* #define MAXLOGNAME	   32 */
 
 /* Credentials of a process */
 struct UserGroupCredentials {
   uid_t   cr_ruid;
   gid_t   cr_rgid;
-  mode_t  cr_umask;             /* umask */
+  mode_t  cr_umask;		/* umask */
   uid_t   cr_euid;
-  short   cr_ngroups;           /* number of groups */
+  short   cr_ngroups;		/* number of groups */
   gid_t   cr_groups[NGROUPS];
-  pid_t   __ALIGN2__ cr_session;
-  char    cr_login[MAXLOGNAME]; /* setlogin() name */
-} __PACKED__;
+  pid_t   cr_session;
+  char	  cr_login[MAXLOGNAME]; /* setlogin() name */
+};
 
 /*
  * ID conversion macros

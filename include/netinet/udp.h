@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)udp.h       7.3 (Berkeley) 6/29/88
+ *	@(#)udp.h	7.3 (Berkeley) 6/29/88
  */
 
 /*
@@ -22,8 +22,8 @@
  * Per RFC 768, September, 1981.
  */
 struct udphdr {
-	u_short uh_sport;               /* source port */
-	u_short uh_dport;               /* destination port */
-	short   uh_ulen;                /* udp length */
-	u_short uh_sum;                 /* udp checksum */
+	u_short	uh_sport;		/* source port */
+	u_short	uh_dport;		/* destination port */
+	short	uh_ulen;		/* udp length */
+	u_short	uh_sum;			/* udp checksum */
 };

@@ -1,4 +1,4 @@
-/*      $NetBSD: ftok.c,v 1.3 1995/02/27 03:43:18 cgd Exp $     */
+/*	$NetBSD: ftok.c,v 1.3 1995/02/27 03:43:18 cgd Exp $	*/
 
 /*
  * Copyright (c) 1994 SigmaSoft, Th. Lockert <tholo@sigmasoft.com>

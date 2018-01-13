@@ -34,34 +34,17 @@
 int
 close (int fd)
 {
-  usetup;  
-  struct file **fp;
-  if (u.u_parent_userdata)fp = &u.u_parent_userdata->u_ofile[fd];
-  else fp = &u.u_ofile[fd];
-  /*if (u.u_parent_userdata)
-  {
-	  u_ptr = u.u_parent_userdata;
-  }*/
-  //struct file **fp = &u.u_ofile[fd];
+  usetup;
+  struct file **fp = &u.u_ofile[fd];
 
-KPRINTF(("close(%d)\n", fd));
   /* if this is an open fd */
   if (fd >= 0 && fd < NOFILE && *fp)
     {
-	  
-      struct file *f;
-      /* skip close if execve() atexit-handler close() call and UF_EXCLOSE
-         is clear. - Piru */
-      if ((u.p_flag & EXECVECLOSE) && u.u_ofile[fd] && (u.u_pofile[fd] & UF_EXCLOSE) == 0)
-	{
-	   KPRINTF(("close(%d) skipped\n", fd));
-	   return 0;
-	}
+      struct file *f = *fp;
       /* free the slot in the user table */
-      f = *fp;
       *fp = 0;
       if (f->f_close)
-	return (*f->f_close)(f);
+        return (*f->f_close)(f);
       else
 	{
 	  errno = EIO;

@@ -508,7 +508,7 @@ compatible_startup (void *code, int argc, char **argv)
         {
           old_cis = SelectInput (CTOBPTR (f->f_fh));
           readargs_kludge (CTOBPTR (f->f_fh));
-        } 
+        }
       else if (!f)
         {
           int fd = syscall(SYS_open, "/dev/null", 0);

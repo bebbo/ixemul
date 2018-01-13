@@ -22,24 +22,24 @@
  * PCC_STATIC_STRUCT_RETURN defined (i.e., upto and including GCC 2.7.2 Geek Gadgets
  * snapshot 960902).
  */
-asm(" \n\
-.lcomm LF0,8 \n\
-.text \n\
-	.even \n\
-.globl	___obsolete_div \n\
-___obsolete_div: \n\
-	movel	#LF0,a1 \n\
-	jmp	_div \n\
-\n\
-.lcomm LF1,8 \n\
-.globl	___obsolete_ldiv \n\
-___obsolete_ldiv: \n\
-	movel	#LF1,a1 \n\
-	jmp	_ldiv \n\
-\n\
-.lcomm LF2,4 \n\
-.globl	___obsolete_inet_makeaddr \n\
-___obsolete_inet_makeaddr: \n\
-	movel	#LF2,a1 \n\
-	jmp	_inet_makeaddr \n\
+asm("
+.lcomm LF0,8
+.text
+	.even
+.globl	___obsolete_div
+___obsolete_div:
+	movel	#LF0,a1
+	jmp	_div
+
+.lcomm LF1,8
+.globl	___obsolete_ldiv
+___obsolete_ldiv:
+	movel	#LF1,a1
+	jmp	_ldiv
+
+.lcomm LF2,4
+.globl	___obsolete_inet_makeaddr
+___obsolete_inet_makeaddr:
+	movel	#LF2,a1
+	jmp	_inet_makeaddr
 ");

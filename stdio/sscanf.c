@@ -1,8 +1,8 @@
-/*      $NetBSD: sscanf.c,v 1.6 1995/02/02 02:10:38 jtc Exp $   */
+/*	$NetBSD: sscanf.c,v 1.6 1995/02/02 02:10:38 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,23 +38,22 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)sscanf.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)sscanf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: sscanf.c,v 1.6 1995/02/02 02:10:38 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
 #include <string.h>
-#include "local.h"
-
-#ifdef NATIVE_MORPHOS
-#define __svfscanf my___svfscanf
-int __svfscanf(FILE *, const char *, my_va_list);
+#if __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
 #endif
+#include "local.h"
 
 /* ARGSUSED */
 static int
@@ -68,10 +67,17 @@ eofread(cookie, buf, len)
 }
 
 int
+#if __STDC__
 sscanf(const char *str, char const *fmt, ...)
+#else
+sscanf(str, fmt, va_alist)
+	const char *str;
+	char *fmt;
+	va_dcl
+#endif
 {
 	int ret;
-	my_va_list ap;
+	va_list ap;
 	FILE f;
 
 	f._flags = __SRD;
@@ -80,74 +86,12 @@ sscanf(const char *str, char const *fmt, ...)
 	f._read = eofread;
 	f._ub._base = NULL;
 	f._lb._base = NULL;
-	my_va_start(ap, fmt);
+#if __STDC__
+	va_start(ap, fmt);
+#else
+	va_start(ap);
+#endif
 	ret = __svfscanf(&f, fmt, ap);
-	my_va_end(ap);
+	va_end(ap);
 	return (ret);
 }
-
-#ifdef NATIVE_MORPHOS
-
-int
-_varargs68k_sscanf(const char *str, char const *fmt, char *ap1)
-{
-	my_va_list ap;
-	FILE f;
-
-	f._flags = __SRD;
-	f._bf._base = f._p = (unsigned char *)str;
-	f._bf._size = f._r = strlen(str);
-	f._read = eofread;
-	f._ub._base = NULL;
-	f._lb._base = NULL;
-	my_va_init_68k(ap, ap1);
-	return __svfscanf(&f, fmt, ap);
-}
-
-asm("	.section \".text\"
-	.type	_stk_sscanf,@function
-	.globl	_stk_sscanf
-_stk_sscanf:
-	andi.	11,1,15
-	mr	12,1
-	bne-	.align_sscanf
-	b	sscanf
-.align_sscanf:
-	addi	11,11,128
-	mflr	0
-	neg	11,11
-	stw	0,4(1)
-	stwux	1,1,11
-
-	stw	5,16(1)
-	stw	6,20(1)
-	stw	7,24(1)
-	stw	8,28(1)
-	stw	9,32(1)
-	stw	10,36(1)
-	bc	4,6,.nofloat_sscanf
-	stfd	1,40(1)
-	stfd	2,48(1)
-	stfd	3,56(1)
-	stfd	4,64(1)
-	stfd	5,72(1)
-	stfd	6,80(1)
-	stfd	7,88(1)
-	stfd	8,96(1)
-.nofloat_sscanf:
-
-	addi	5,1,104
-	lis	0,0x200
-	addi	12,12,8
-	addi	11,1,8
-	stw	0,0(5)
-	stw	12,4(5)
-	stw	11,8(5)
-	bl	vsscanf
-	lwz	1,0(1)
-	lwz	0,4(1)
-	mtlr	0
-	blr
-");
-#endif
-

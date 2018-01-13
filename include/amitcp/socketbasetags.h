@@ -1,6 +1,6 @@
 #ifndef AMITCP_SOCKETBASETAGS_H
 #define AMITCP_SOCKETBASETAGS_H \
-       "$Id: socketbasetags.h,v 1.1.1.1 2005/03/15 15:57:12 laire Exp $"
+       "$Id: socketbasetags.h,v 4.2 1994/10/05 23:16:56 ppessi Exp $"
 /*
  *      TAG values for SocketBaseTagList()
  *
@@ -21,7 +21,7 @@
 /*
  * Argument passing convention (bit 15)
  */
-#define SBTF_REF 0x8000         /* 0x0000 == VAL */
+#define SBTF_REF 0x8000		/* 0x0000 == VAL */
 
 /*
  * Code (bits 1-14)
@@ -33,7 +33,7 @@
 /* 
  * Direction (bit 0)
  */
-#define SBTF_SET  0x1           /* 0 == GET */
+#define SBTF_SET  0x1		/* 0 == GET */
 
 /*
  * Macros to set things up
@@ -58,14 +58,14 @@
  */
 
 /* signal masks */
-#define SBTC_BREAKMASK          1
-#define SBTC_SIGIOMASK          2
-#define SBTC_SIGURGMASK         3
-#define SBTC_SIGEVENTMASK       4 /* V 4.0 addition */
+#define SBTC_BREAKMASK		1
+#define SBTC_SIGIOMASK		2
+#define SBTC_SIGURGMASK		3
+#define SBTC_SIGEVENTMASK	4 /* V 4.0 addition */
 
 /* error code handling */
-#define SBTC_ERRNO              6
-#define SBTC_HERRNO             7
+#define SBTC_ERRNO		6
+#define SBTC_HERRNO		7
 
 /* socket descriptor table related tags */
 #define SBTC_DTABLESIZE         8
@@ -88,10 +88,10 @@
 #define FDCB_CHECK 2
 
 /* syslog variables (see netinclude:sys/syslog.h for values) */
-#define SBTC_LOGSTAT            10
-#define SBTC_LOGTAGPTR          11
-#define SBTC_LOGFACILITY        12
-#define SBTC_LOGMASK            13
+#define SBTC_LOGSTAT		10
+#define SBTC_LOGTAGPTR		11
+#define SBTC_LOGFACILITY	12
+#define SBTC_LOGMASK		13
 
 /*
  * The argument of following error string tags is a ULONG,
@@ -101,17 +101,17 @@
  * NOTE: error numbers defined in <exec/errors.h> are negative and must be
  * negated (turned to positive) before passing to the SocketBaseTagList().
  */
-#define SBTC_ERRNOSTRPTR        14 /* <sys/errno.h> */
-#define SBTC_HERRNOSTRPTR       15 /* <netdb.h> */
-#define SBTC_IOERRNOSTRPTR      16 /* <exec/errors.h> SEE NOTE ABOVE */
-#define SBTC_S2ERRNOSTRPTR      17 /* <devices/sana2.h> */
-#define SBTC_S2WERRNOSTRPTR     18 /* <devices/sana2.h> */
+#define SBTC_ERRNOSTRPTR	14 /* <sys/errno.h> */
+#define SBTC_HERRNOSTRPTR	15 /* <netdb.h> */
+#define SBTC_IOERRNOSTRPTR	16 /* <exec/errors.h> SEE NOTE ABOVE */
+#define SBTC_S2ERRNOSTRPTR	17 /* <devices/sana2.h> */
+#define SBTC_S2WERRNOSTRPTR	18 /* <devices/sana2.h> */
 
 
 /* errno pointer & size SETTING (only) */
-#define SBTC_ERRNOBYTEPTR       21
-#define SBTC_ERRNOWORDPTR       22
-#define SBTC_ERRNOLONGPTR       24
+#define SBTC_ERRNOBYTEPTR	21
+#define SBTC_ERRNOWORDPTR	22
+#define SBTC_ERRNOLONGPTR	24
 /*
  * Macro for generating the errnoptr tag code from a (constant) size.
  * only 1,2 & 4 are legal 'size' values. If the 'size' value is illegal,
@@ -123,7 +123,7 @@
 				  0)))
 
 /* h_errno pointer */
-#define SBTC_HERRNOLONGPTR      25
+#define SBTC_HERRNOLONGPTR	25
 
 #ifdef notyet
 /*

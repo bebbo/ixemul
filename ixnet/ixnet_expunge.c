@@ -16,18 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: ixnet_expunge.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: ixnet_expunge.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:45  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:45:15  nobody
- *  Initial import
- *
+ *  $Log:$
  *
  */
 

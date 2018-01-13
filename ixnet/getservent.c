@@ -54,17 +54,17 @@ setservent(int f)
     register int network_protocol = p->u_networkprotocol;
 
     if (network_protocol == IX_NETWORK_AS225) {
-	SOCK_setservent(f);
+        SOCK_setservent(f);
     }
     else /* if (network_protocol == IX_NETWORK_AMITCP) */ {
-	if (u.u_serv_fp == NULL) {
-	    u.u_serv_fp = fopen(_TCP_PATH_SERVICES, "r" );
-	    if (!u.u_serv_fp)
-		return;
-	}
-	else
-	    rewind(u.u_serv_fp);
-	u.u_serv_stayopen |= f;
+        if (u.u_serv_fp == NULL) {
+            u.u_serv_fp = fopen(_TCP_PATH_SERVICES, "r" );
+            if (!u.u_serv_fp)
+                return;
+        }
+        else
+            rewind(u.u_serv_fp);
+        u.u_serv_stayopen |= f;
     }
 }
 
@@ -74,87 +74,87 @@ endservent(void)
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	SOCK_endservent();
+        SOCK_endservent();
     }
     else {
-	if (u.u_serv_fp) {
-	    fclose(u.u_serv_fp);
-	    u.u_serv_fp = NULL;
-	}
-	u.u_serv_stayopen = 0;
+        if (u.u_serv_fp) {
+            fclose(u.u_serv_fp);
+            u.u_serv_fp = NULL;
+        }
+        u.u_serv_stayopen = 0;
     }
 }
 
 struct servent *
 getservent(void)
 {
-	usetup;
-	char *s;
-	register char *cp, **q;
-	register struct ixnet *p = (struct ixnet *)u.u_ixnet;
-	register int network_protocol = p->u_networkprotocol;
+        usetup;
+        char *s;
+        register char *cp, **q;
+        register struct ixnet *p = (struct ixnet *)u.u_ixnet;
+        register int network_protocol = p->u_networkprotocol;
 
-	if (network_protocol == IX_NETWORK_AS225) {
-	    return SOCK_getservent();
-	}
-	else /*if (network_protocol == IX_NETWORK_AMITCP)*/ {
-	    if (u.u_serv_line == NULL)
-	      u.u_serv_line = malloc(BUFSIZ + 1);
-	    if (u.u_serv_aliases == NULL)
-	      u.u_serv_aliases = malloc(MAXALIASES * sizeof(char *));
-	    if (u.u_serv_line == NULL || u.u_serv_aliases == NULL)
-	      {
-		errno = ENOMEM;
-		return NULL;
-	      }
-	    if (u.u_serv_fp == NULL && (u.u_serv_fp = fopen(_TCP_PATH_SERVICES, "r" )) == NULL)
-		return (NULL);
+        if (network_protocol == IX_NETWORK_AS225) {
+            return SOCK_getservent();
+        }
+        else /*if (network_protocol == IX_NETWORK_AMITCP)*/ {
+            if (u.u_serv_line == NULL)
+              u.u_serv_line = malloc(BUFSIZ + 1);
+            if (u.u_serv_aliases == NULL)
+              u.u_serv_aliases = malloc(MAXALIASES * sizeof(char *));
+            if (u.u_serv_line == NULL || u.u_serv_aliases == NULL)
+              {
+                errno = ENOMEM;
+                return NULL;
+              }
+            if (u.u_serv_fp == NULL && (u.u_serv_fp = fopen(_TCP_PATH_SERVICES, "r" )) == NULL)
+                return (NULL);
 again:
-	    if ((s = fgets(u.u_serv_line, BUFSIZ, u.u_serv_fp)) == NULL)
-		return (NULL);
+            if ((s = fgets(u.u_serv_line, BUFSIZ, u.u_serv_fp)) == NULL)
+                return (NULL);
 
-	    if (*s == '#')
-		goto again;
+            if (*s == '#')
+                goto again;
 
-	    cp = strpbrk(s, "#\n");
-	    if (cp == NULL)
-		goto again;
+            cp = strpbrk(s, "#\n");
+            if (cp == NULL)
+                goto again;
 
-	    *cp = '\0';
-	    u.u_serv.s_name = s;
-	    s = strpbrk(s, " \t");
-	    if (s == NULL)
-		goto again;
+            *cp = '\0';
+            u.u_serv.s_name = s;
+            s = strpbrk(s, " \t");
+            if (s == NULL)
+                goto again;
 
-	    *s++ = '\0';
-	    while (*s == ' ' || *s == '\t')
-		s++;
+            *s++ = '\0';
+            while (*s == ' ' || *s == '\t')
+                s++;
 
-	    cp = strpbrk(s, ",/");
-	    if (cp == NULL)
-		goto again;
+            cp = strpbrk(s, ",/");
+            if (cp == NULL)
+                goto again;
 
-	    *cp++ = '\0';
-	    u.u_serv.s_port = htons((u_short)atoi(s));
-	    u.u_serv.s_proto = cp;
-	    q = u.u_serv.s_aliases = u.u_serv_aliases;
-	    cp = strpbrk(cp, " \t");
-	    if (cp != NULL)
-		*cp++ = '\0';
+            *cp++ = '\0';
+            u.u_serv.s_port = htons((u_short)atoi(s));
+            u.u_serv.s_proto = cp;
+            q = u.u_serv.s_aliases = u.u_serv_aliases;
+            cp = strpbrk(cp, " \t");
+            if (cp != NULL)
+                *cp++ = '\0';
 
-	    while (cp && *cp) {
-		if (*cp == ' ' || *cp == '\t') {
-		    cp++;
-		continue;
-	    }
-	    if (q < &u.u_serv_aliases[MAXALIASES - 1])
-		*q++ = cp;
+            while (cp && *cp) {
+                if (*cp == ' ' || *cp == '\t') {
+                    cp++;
+                continue;
+            }
+            if (q < &u.u_serv_aliases[MAXALIASES - 1])
+                *q++ = cp;
 
-	    cp = strpbrk(cp, " \t");
-	    if (cp != NULL)
-		*cp++ = '\0';
-	}
-	*q = NULL;
-	return (&u.u_serv);
+            cp = strpbrk(cp, " \t");
+            if (cp != NULL)
+                *cp++ = '\0';
+        }
+        *q = NULL;
+        return (&u.u_serv);
     }
 }

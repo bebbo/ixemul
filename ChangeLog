@@ -1,0 +1,62 @@
+2001-04-05  David Zaroski  <dez@gg.geekgadgets.org>
+
+	* (version.in): bumped version from 48.1 to 48.2 and updated
+	the date fields
+	* Finish applying patches for pOS removal
+
+2001-04-03  David Zaroski  <dez@gg.geekgadgets.org>
+
+	* (Makefile.in): comment out inline autobuilding
+	* (config.guess): Updated
+	* (config.sub): Updated
+	* (configure.in): minor change to inform user if inline headers
+	are not locatable
+	* (configure): Regenerated
+	* Additional [work in progress] removal of pOS references, patches
+	supplied by Jonathan Adamczewski
+	* (library/ixpos.h): Removed
+	* (library/ixposlib.c): Removed
+
+2001-03-29  David Zaroski  <dez@gg.geekgadgets.org>
+
+	* (library/ix_close.c): fix reading from freed memory, patch
+	from Emmanuel Lesueur
+
+2001-03-21  David Zaroski  <dez@gg.geekgadgets.org>
+
+	* Apply patches from Emmanuel Lesueur to fix enforcer hit caused
+	by forking non-ixemul programs
+
+2000-05-19  David Zaroski  <dez@cronus.ninemoons.com>
+
+	* (configure.in): Remove bogus tests
+	* (configure): Regenerated
+	* (ixnet/Makefile.in): Add proper defines of CPU/FPU selection
+	when cross compiling
+	* (library/Makefile.in): Ditto
+
+1999-07-12  David Zaroski  <zaroski@cronus.ninemoons.com>
+
+	* (library/lseek.c): fix error reporting in __extend_file()
+
+1999-06-13  Fred Fish  <fnf@ninemoons.com>
+
+	* version.in: Bump development version from 48.0 to 48.1 and
+	update the date fields.
+
+1999-03-06  David Zaroski  <zaroski@cronus.ninemoons.com>
+
+	* (configure.in): add support for cross compiling
+	* (Makefile.in) : ditto
+	* (man/Makefile.in): fix man page generation
+	* Regenerate configure
+	
+Sat May 23 23:53:18 1998  Fred Fish  <fnf@ninemoons.com>
+
+	* Makefile.in (OS): Remove pos from default list of operating systems
+	to build for.
+
+1998-03-25  Fred Fish  <fnf@ninemoons.com>
+
+	* ChangeLog: New file
+	* Makefile.in (CPU-FPU-TYPES): Add 68060.68881

@@ -1,4 +1,4 @@
-/*- 
+/*-
  * Copyright (c) 1991 The Regents of the University of California.
  * All rights reserved.
  *
@@ -163,7 +163,6 @@ int execvp(const char *name, char * const *argv)
 	   a (possibly provided) CLI PATH, and also supports resident
 	   programs. If this fails, we can still try to find the program
 	   along the $PATH */
-	
 	execv (name, argv);
 	/* if we get here, the execv() failed. So start magic ;-)) */
 	

@@ -16,25 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: getpwent.c,v 1.2 2006/04/04 21:58:38 piru Exp $
+ *  $Id:$
  *
- *  $Log: getpwent.c,v $
- *  Revision 1.2  2006/04/04 21:58:38  piru
- *  2006-04-05  Harry Sintonen <sintonen@iki.fi>
- *  	* Fixed pw_class to be "default" instead of NULL. NULL value made
- *  	  ssh barf (strlen(NULL)).
- *  	* Fixed AS225/INet225 pw_change to be time(NULL), not -1.
- *  	* Bumped version to 49.22.
- *
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:44  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:44:57  nobody
- *  Initial import
- *
+ *  $Log:$
  *
  */
 
@@ -130,7 +114,7 @@ getpwuid(uid_t uid)
 	}
     }
     else /*if (network_protocol == IX_NETWORK_AS225)*/  {
-	struct AS225_passwd *pwd = SOCK_getpwuid(uid);
+        struct AS225_passwd *pwd = SOCK_getpwuid(uid);
 
 	return (pwd ? __AS225InetPwd(pwd) : NULL);
     }
@@ -187,15 +171,15 @@ endpwent(void)
 static struct passwd *__TCP2InetPwd(struct TCP_passwd *pwd)
 {
     usetup;
-    u.u_passwd.pw_name   = pwd->pw_name;
+    u.u_passwd.pw_name = pwd->pw_name;
     u.u_passwd.pw_passwd = pwd->pw_passwd;
-    u.u_passwd.pw_uid    = pwd->pw_uid;
-    u.u_passwd.pw_gid    = pwd->pw_gid;
+    u.u_passwd.pw_uid = pwd->pw_uid;
+    u.u_passwd.pw_gid = pwd->pw_gid;
     u.u_passwd.pw_change = time((time_t *)NULL);
-    u.u_passwd.pw_class  = "default"; /* Was NULL, but that makes things like ssh hit */
-    u.u_passwd.pw_gecos  = pwd->pw_gecos;
-    u.u_passwd.pw_dir    = pwd->pw_dir;
-    u.u_passwd.pw_shell  = pwd->pw_shell;
+    u.u_passwd.pw_class = NULL;
+    u.u_passwd.pw_gecos = pwd->pw_gecos;
+    u.u_passwd.pw_dir = pwd->pw_dir;
+    u.u_passwd.pw_shell = pwd->pw_shell;
     u.u_passwd.pw_expire = (time_t)-1;
     return &u.u_passwd;
 }
@@ -204,16 +188,17 @@ static struct passwd *__TCP2InetPwd(struct TCP_passwd *pwd)
 static struct passwd *__AS225InetPwd(struct AS225_passwd *pwd)
 {
     usetup;
-    u.u_passwd.pw_name   = pwd->pw_name;
+    u.u_passwd.pw_name = pwd->pw_name;
     u.u_passwd.pw_passwd = pwd->pw_passwd;
-    u.u_passwd.pw_uid    = pwd->pw_uid;
-    u.u_passwd.pw_gid    = pwd->pw_gid;
+    u.u_passwd.pw_uid = pwd->pw_uid;
+    u.u_passwd.pw_gid = pwd->pw_gid;
     u.u_passwd.pw_change = time((time_t *)NULL);
-    u.u_passwd.pw_class  = "default"; /* Was NULL, but that makes things like ssh hit */
-    u.u_passwd.pw_gecos  = pwd->pw_gecos;
-    u.u_passwd.pw_dir    = pwd->pw_dir;
-    u.u_passwd.pw_shell  = pwd->pw_shell;
+    u.u_passwd.pw_class = NULL;
+    u.u_passwd.pw_gecos = pwd->pw_gecos;
+    u.u_passwd.pw_dir = pwd->pw_dir;
+    u.u_passwd.pw_shell = pwd->pw_shell;
     u.u_passwd.pw_expire = (time_t)-1;
+    u.u_passwd.pw_change = (time_t)-1;
     return &u.u_passwd;
 }
 

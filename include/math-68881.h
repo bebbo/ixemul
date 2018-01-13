@@ -1,6 +1,6 @@
 /******************************************************************\
 *								   *
-*  <math-68881.h>		last modified: 23 May 1992.	   *
+*  <math-68881.h>		last modified: 18 May 1989.	   *
 *								   *
 *  Copyright (C) 1989 by Matthew Self.				   *
 *  You may freely distribute verbatim copies of this software	   *
@@ -19,139 +19,115 @@
 *								   *
 \******************************************************************/
 
-/* This file is NOT a part of GCC, just distributed with it.  */
-
-/* If you find this in GCC,
-   please send bug reports to bug-gcc@prep.ai.mit.edu.  */
-
-/* Changed by Richard Stallman:
-   May 1993, add conditional to prevent multiple inclusion.
-   % inserted before a #.
-   New function `hypot' added.
-   Nans written in hex to avoid 0rnan.
-   May 1992, use %! for fpcr register.  Break lines before function names.
-   December 1989, add parens around `&' in pow.
-   November 1990, added alternate definition of HUGE_VAL for Sun.  */
-
-/* Changed by Jim Wilson:
-   September 1993, Use #undef before HUGE_VAL instead of #ifdef/#endif.  */
-
-/* Changed by Ian Lance Taylor:
-   September 1994, use extern inline instead of static inline.  */
-
-/* Changed by Diego Casorran:
-   January 2009, added __math_decl usage to let the user decide whenever
-   to use static or extern inline, static should be somewhat faster at
-   the cost of code size... use -DLOCALMATHINLINE or -DSTMATH to enable it */
-
-#ifndef __math_68881
-#define __math_68881
+/* Dec 1991  - mw - added support for -traditional mode */
 
 #include <errno.h>
 
-#undef HUGE_VAL
-#ifdef __sun__
-/* The Sun assembler fails to handle the hex constant in the usual defn.  */
-#define HUGE_VAL							\
-({									\
-  static union { int i[2]; double d; } u = { {0x7ff00000, 0} };		\
-  u.d;									\
-})
+#if defined(__STDC__) || defined(__cplusplus)
+#define _DEFUN(name, args1, args2) name ( args2 )
+#define _AND ,
+#define _CONST const
 #else
+#define _DEFUN(name, args1, args2) name args1 args2;
+#define _AND ;
+#define _CONST
+#endif
+
+#ifndef HUGE_VAL
 #define HUGE_VAL							\
 ({									\
   double huge_val;							\
 									\
-  __asm ("      fmove%.d %#0x7ff0000000000000,      %0\n\t"	/* Infinity */		\
+  __asm ("fmove%.d #0x7ff0000000000000,%0"	/* Infinity */		\
 	 : "=f" (huge_val)						\
 	 : /* no inputs */);						\
   huge_val;								\
 })
 #endif
 
-#ifndef __math_decl
-# if !defined(LOCALMATHINLINE) && !defined(STMATH)
-#  define __math_decl extern __inline
-# else
-#  define __math_decl static __inline
-# endif
-#endif /* __math_decl */
-
-__math_decl double
-sin (double x)
+__inline static _CONST double 
+_DEFUN(sin, (x),
+    double x)
 {
   double value;
 
-  __asm ("      fsin%.x %1,       %0\n\t"
+  __asm ("fsin%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-cos (double x)
+__inline static _CONST double 
+_DEFUN(cos, (x),
+    double x)
 {
   double value;
 
-  __asm ("          fcos%.x %1,      %0\n\t"
+  __asm ("fcos%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-tan (double x)
+__inline static _CONST double 
+_DEFUN(tan, (x),
+    double x)
 {
   double value;
 
-    __asm ("        ftan%.x %1,        %0\n\t"
+  __asm ("ftan%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-asin (double x)
+__inline static _CONST double 
+_DEFUN(asin, (x),
+    double x)
 {
   double value;
 
-  __asm ("          fasin%.x %1,        %0\n\t"
+  __asm ("fasin%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-acos (double x)
+__inline static _CONST double 
+_DEFUN(acos, (x),
+    double x)
 {
   double value;
 
-  __asm ("            facos%.x %1,         %0\n\t"
+  __asm ("facos%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-atan (double x)
+__inline static _CONST double 
+_DEFUN(atan, (x),
+    double x)
 {
   double value;
 
-  __asm ("          fatan%.x %1,         %0\n\t"
+  __asm ("fatan%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-atan2 (double y, double x)
+__inline static _CONST double 
+_DEFUN(atan2, (y, x),
+    double y _AND
+    double x)
 {
   double pi, pi_over_2;
 
-  __asm ("              fmovecr%.x %#0,      %0\n\t"		/* extended precision pi */
+  __asm ("fmovecr%.x %#0,%0"		/* extended precision pi */
 	 : "=f" (pi)
 	 : /* no inputs */ );
-  __asm ("              fscale%.b %#-1,         %0\n\t"		/* no loss of accuracy */
+  __asm ("fscale%.b %#-1,%0"		/* no loss of accuracy */
 	 : "=f" (pi_over_2)
 	 : "0" (pi));
   if (x > 0)
@@ -173,19 +149,19 @@ atan2 (double y, double x)
     }
   else
     {
-      if (y < 0)
-	{
-	  if (-x > -y)
-	    return - pi + atan (y / x);
-	  else
-	    return - pi_over_2 - atan (x / y);
-	}
-      else
+      if (y > 0)
 	{
 	  if (-x > y)
 	    return pi + atan (y / x);
-	  else if (y > 0)
+	  else
 	    return pi_over_2 - atan (x / y);
+	}
+      else
+	{
+	  if (-x > -y)
+	    return - pi + atan (y / x);
+	  else if (y < 0)
+	    return - pi_over_2 - atan (x / y);
 	  else
 	    {
 	      double value;
@@ -194,7 +170,7 @@ atan2 (double y, double x)
 #endif
 
 	      errno = EDOM;
-	      __asm ("             fmove%.d %#0x7fffffffffffffff,      %0\n\t" 	/* quiet NaN */
+	      __asm ("fmove%.d %#0rnan,%0" 	/* quiet NaN */
 		     : "=f" (value)
 		     : /* no inputs */);
 	      return value;
@@ -203,124 +179,136 @@ atan2 (double y, double x)
     }
 }
 
-__math_decl double
-sinh (double x)
+__inline static _CONST double 
+_DEFUN(sinh, (x),
+    double x)
 {
   double value;
 
-  __asm ("              fsinh%.x %1,        %0\n\t"
+  __asm ("fsinh%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-cosh (double x)
+__inline static _CONST double 
+_DEFUN(cosh, (x),
+    double x)
 {
   double value;
 
-  __asm ("      fcosh%.x %1,         %0\n\t"
+  __asm ("fcosh%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-tanh (double x)
+__inline static _CONST double 
+_DEFUN(tanh, (x),
+    double x)
 {
   double value;
 
-  __asm ("              ftanh%.x %1,         %0\n\t"
+  __asm ("ftanh%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-atanh (double x)
+__inline static _CONST double 
+_DEFUN(atanh, (x),
+    double x)
 {
   double value;
 
-  __asm ("      fatanh%.x %1,        %0\n\t"
+  __asm ("fatanh%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-exp (double x)
+__inline static _CONST double 
+_DEFUN(exp, (x),
+    double x)
 {
   double value;
 
-  __asm ("              fetox%.x %1,         %0\n\t"
+  __asm ("fetox%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-expm1 (double x)
+__inline static _CONST double 
+_DEFUN(expm1, (x),
+    double x)
 {
   double value;
 
-  __asm ("      fetoxm1%.x %1,       %0\n\t"
+  __asm ("fetoxm1%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-log (double x)
+__inline static _CONST double 
+_DEFUN(log, (x),
+    double x)
 {
   double value;
 
-  __asm ("              flogn%.x %1,         %0\n\t"
+  __asm ("flogn%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-log1p (double x)
+__inline static _CONST double 
+_DEFUN(log1p, (x),
+    double x)
 {
   double value;
 
-  __asm ("              flognp1%.x %1,       %0\n\t"
+  __asm ("flognp1%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-log10 (double x)
+__inline static _CONST double 
+_DEFUN(log10, (x),
+    double x)
 {
   double value;
 
-  __asm ("              flog10%.x %1,       %0\n\t"
+  __asm ("flog10%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-sqrt (double x)
+__inline static _CONST double 
+_DEFUN(sqrt, (x),
+    double x)
 {
   double value;
 
-  __asm ("              fsqrt%.x %1,        %0\n\t"
+  __asm ("fsqrt%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-hypot (double x, double y)
+__inline static _CONST double
+hypot (_CONST double x, _CONST double y)
 {
   return sqrt (x*x + y*y);
 }
 
-__math_decl double
-pow (double x, double y)
+__inline static _CONST double 
+_DEFUN(pow, (x, y),
+    _CONST double x _AND
+    _CONST double y)
 {
   if (x > 0)
     return exp (y * log (x));
@@ -336,17 +324,17 @@ pow (double x, double y)
 #endif
 
 	  errno = EDOM;
-	  __asm ("             fmove%.d %#0x7fffffffffffffff,       %0\n\t"		/* quiet NaN */
+	  __asm ("fmove%.d %#0rnan,%0"		/* quiet NaN */
 		 : "=f" (value)
 		 : /* no inputs */);
 	  return value;
 	}
     }
-  else
+  else	/* x < 0 */
     {
       double temp;
 
-      __asm ("              fintrz%.x %1,       %0\n\t"
+      __asm ("fintrz%.x %1,%0"
 	     : "=f" (temp)			/* integer-valued float */
 	     : "f" (y));
       if (y == temp)
@@ -366,7 +354,7 @@ pow (double x, double y)
 #endif
 
 	  errno = EDOM;
-	  __asm ("             fmove%.d %#0x7fffffffffffffff,       %0\n\t"		/* quiet NaN */
+	  __asm ("fmove%.d %#0rnan,%0"		/* quiet NaN */
 		 : "=f" (value)
 		 : /* no inputs */);
 	  return value;
@@ -374,158 +362,175 @@ pow (double x, double y)
     }
 }
 
-__math_decl double
-fabs (double x)
+__inline static _CONST double 
+_DEFUN(fabs, (x),
+    double x)
 {
   double value;
 
-  __asm ("              fabs%.x %1, %0\n\t"
+  __asm ("fabs%.x %1,%0"
 	 : "=f" (value)
 	 : "f" (x));
   return value;
 }
 
-__math_decl double
-ceil (double x)
+__inline static _CONST double 
+_DEFUN(ceil, (x),
+    double x)
 {
   int rounding_mode, round_up;
   double value;
 
-  __asm volatile ("             fmove%.l %!,         %0\n\t"
+  __asm __volatile ("fmove%.l fpcr,%0"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_up = rounding_mode | 0x30;
-  __asm volatile ("             fmove%.l %0,        %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (round_up));
-  __asm volatile ("             fint%.x %1,      %0\n\t"
+  __asm __volatile ("fint%.x %1,%0"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("             fmove%.l %0,         %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
 }
 
-__math_decl double
-floor (double x)
+__inline static _CONST double 
+_DEFUN(floor, (x),
+    double x)
 {
   int rounding_mode, round_down;
   double value;
 
-  __asm volatile ("             fmove%.l %!,         %0\n\t"
+  __asm __volatile ("fmove%.l fpcr,%0"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_down = (rounding_mode & ~0x10)
 		| 0x20;
-  __asm volatile ("             fmove%.l %0,         %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (round_down));
-  __asm volatile ("             fint%.x %1,         %0\n\t"
+  __asm __volatile ("fint%.x %1,%0"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("             fmove%.l %0,         %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
 }
 
-__math_decl double
-rint (double x)
+__inline static _CONST double 
+_DEFUN(rint, (x),
+    double x)
 {
   int rounding_mode, round_nearest;
   double value;
 
-  __asm volatile ("             fmove%.l %!,         %0\n\t"
+  __asm __volatile ("fmove%.l fpcr,%0"
 		  : "=dm" (rounding_mode)
 		  : /* no inputs */ );
   round_nearest = rounding_mode & ~0x30;
-  __asm volatile ("             fmove%.l %0,         %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (round_nearest));
-  __asm volatile ("             fint%.x %1,         %0\n\t"
+  __asm __volatile ("fint%.x %1,%0"
 		  : "=f" (value)
 		  : "f" (x));
-  __asm volatile ("             fmove%.l %0,         %!\n\t"
+  __asm __volatile ("fmove%.l %0,fpcr"
 		  : /* no outputs */
 		  : "dmi" (rounding_mode));
   return value;
 }
 
-__math_decl double
-fmod (double x, double y)
+__inline static _CONST double 
+_DEFUN(fmod, (x, y),
+    double x _AND
+    double y)
 {
   double value;
 
-  __asm ("              fmod%.x %2,         %0\n\t"
+  __asm ("fmod%.x %2,%0"
 	 : "=f" (value)
 	 : "0" (x),
 	   "f" (y));
   return value;
 }
 
-__math_decl double
-drem (double x, double y)
+__inline static _CONST double 
+_DEFUN(drem, (x, y),
+    double x _AND
+    double y)
 {
   double value;
 
-  __asm ("              frem%.x %2,         %0\n\t"
+  __asm ("frem%.x %2,%0"
 	 : "=f" (value)
 	 : "0" (x),
 	   "f" (y));
   return value;
 }
 
-__math_decl double
-scalb (double x, int n)
+__inline static _CONST double 
+_DEFUN(scalb, (x, n),
+    double x _AND
+    int n)
 {
   double value;
 
-  __asm ("              fscale%.l %2,        %0\n\t"
+  __asm ("fscale%.l %2,%0"
 	 : "=f" (value)
 	 : "0" (x),
 	   "dmi" (n));
   return value;
 }
 
-__math_decl double logb (double x)
+__inline static double 
+_DEFUN(logb, (x),
+    double x)
 {
   double exponent;
-__asm ("                fgetexp%.x %1,      %0\n\t"
+
+  __asm ("fgetexp%.x %1,%0"
 	 : "=f" (exponent)
 	 : "f" (x));
   return exponent;
 }
 
-__math_decl double
-ldexp (double x, int n)
+__inline static _CONST double 
+_DEFUN(ldexp, (x, n),
+    double x _AND
+    int n)
 {
   double value;
 
-  __asm ("              fscale%.l %2,        %0\n\t"
+  __asm ("fscale%.l %2,%0"
 	 : "=f" (value)
 	 : "0" (x),
 	   "dmi" (n));
   return value;
 }
 
-__math_decl double
-frexp (double x, int *exp)
+__inline static double 
+_DEFUN(frexp, (x, exp),
+    double x _AND
+    int *exp)
 {
   double float_exponent;
   int int_exponent;
   double mantissa;
 
-  __asm ("              fgetexp%.x %1,       %0\n\t"
+  __asm ("fgetexp%.x %1,%0"
 	 : "=f" (float_exponent) 	/* integer-valued float */
 	 : "f" (x));
   int_exponent = (int) float_exponent;
-    __asm ("            fgetman%.x %1,        %0\n\t"
+  __asm ("fgetman%.x %1,%0"
 	 : "=f" (mantissa)		/* 1.0 <= mantissa < 2.0 */
 	 : "f" (x));
   if (mantissa != 0)
     {
-      __asm ("              fscale%.b %#-1,         %0\n\t"
+      __asm ("fscale%.b %#-1,%0"
 	     : "=f" (mantissa)		/* mantissa /= 2.0 */
 	     : "0" (mantissa));
       int_exponent += 1;
@@ -534,16 +539,20 @@ frexp (double x, int *exp)
   return mantissa;
 }
 
-__math_decl double
-modf (double x, double *ip)
+__inline static double 
+_DEFUN(modf, (x, ip),
+    double x _AND
+    double *ip)
 {
   double temp;
 
-  __asm ("              fintrz%.x %1,       %0\n\t"
+  __asm ("fintrz%.x %1,%0"
 	 : "=f" (temp)			/* integer-valued float */
 	 : "f" (x));
   *ip = temp;
   return x - temp;
 }
 
-#endif /* not __math_68881 */
+#undef _DEFUN
+#undef _AND
+#undef _CONST

@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)if_llc.h    7.2 (Berkeley) 6/28/90
+ *      @(#)if_llc.h	7.2 (Berkeley) 6/28/90
  */
 
 /*
@@ -42,8 +42,8 @@
  */
 
 struct llc {
-	u_char  llc_dsap;
-	u_char  llc_ssap;
+	u_char	llc_dsap;
+	u_char	llc_ssap;
 	union {
 	    struct {
 		u_char control;
@@ -71,12 +71,12 @@ struct llc {
 #define llc_class llc_un.type_u.class
 #define llc_window llc_un.type_u.window_x2
 
-#define LLC_UI          0x3
-#define LLC_UI_P        0x13
-#define LLC_XID         0xaf
-#define LLC_XID_P       0xbf
-#define LLC_TEST        0xe3
-#define LLC_TEST_P      0xf3
+#define LLC_UI		0x3
+#define LLC_UI_P	0x13
+#define LLC_XID		0xaf
+#define LLC_XID_P	0xbf
+#define LLC_TEST	0xe3
+#define LLC_TEST_P	0xf3
 
-#define LLC_ISO_LSAP    0xfe
-#define LLC_SNAP_LSAP   0xaa
+#define LLC_ISO_LSAP	0xfe
+#define LLC_SNAP_LSAP	0xaa

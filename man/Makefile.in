@@ -21,7 +21,7 @@ CFLAGS =	@CFLAGS@
 LDFLAGS =	@LDFLAGS@
 
 RANLIB =	@RANLIB@
-AR =		ar
+AR = @AR@
 RM =		rm -f
 
 #### End system configuration section ####
@@ -31,7 +31,7 @@ SHELL =		/bin/sh
 VPATH :=	$(wildcard $(srcdir)/man?)
 DIRS :=		$(VPATH:$(srcdir)/man%=cat%)
 SRC :=		$(wildcard $(srcdir)/man?/*.?)
-DOCS :=		$(addsuffix .0,$(basename $(SRC:$(srcdir)/man%=cat%)))
+DOCS :=		$(SRC:$(srcdir)/man%=cat%)
 
 all:		$(DIRS) $(DOCS)
 

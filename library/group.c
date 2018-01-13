@@ -49,7 +49,7 @@ static const struct group builtin_nogroup =
 static struct group *
 GroupInfo2grp (struct muGroupInfo *GI, struct muUserInfo *UI)
 {
-  static const char *members[] = { NULL };
+  static char *members[] = { NULL };
   usetup;
   struct group *grp = &u.u_group;
 
@@ -67,8 +67,8 @@ GroupInfo2grp (struct muGroupInfo *GI, struct muUserInfo *UI)
 
 /* builtin group file parsing */
 
-#define MAXGRP          200
-#define MAXLINELENGTH   1024
+#define MAXGRP		200
+#define MAXLINELENGTH	1024
 #define UNIX_STRSEP     ":\n"
 #define AMIGAOS_STRSEP  "|\n"
 
@@ -131,11 +131,11 @@ grscan(int search, gid_t gid, char *name)
 
     for (m = u.u_group.gr_mem = u.u_members;; ++m) {
       if (m == &u.u_members[MAXGRP - 1]) {
-	*m = NULL;
+        *m = NULL;
 	break;
       }
       if ((*m = strsep(&bp, ", \n")) == NULL)
-	break;
+        break;
     }
     return 1;
   }
@@ -231,7 +231,7 @@ struct group *getgrgid (gid_t gid)
 
       rval = grscan(1, gid, NULL);
       if (!u.u_grp_stayopen)
-	syscall(SYS_endgrent);
+        syscall(SYS_endgrent);
 
       return (rval ? &u.u_group : NULL);
     }
@@ -272,10 +272,10 @@ struct group *getgrnam (const char *name)
        */
 
       if (name == NULL)
-	return NULL;
+        return NULL;
 
       if ((muGROUPIDSIZE - 1) < strlen (name))
-	return NULL;
+        return NULL;
 
       strcpy (GI->GroupID, name);
       GI = muGetGroupInfo (GI, muKeyType_GroupID);
@@ -292,7 +292,7 @@ struct group *getgrnam (const char *name)
 
       rval = grscan(1, 0, (char *)name);
       if (!u.u_grp_stayopen)
-	syscall(SYS_endgrent);
+        syscall(SYS_endgrent);
 
       return (rval ? &u.u_group : NULL);
     }
@@ -346,7 +346,7 @@ getgrent(void)
       u.u_nextgid = -2;
      
       if ((name = (char *)syscall(SYS_getenv, "GROUP")))
-	return (struct group *)syscall(SYS_getgrnam, name);
+        return (struct group *)syscall(SYS_getgrnam, name);
     case (gid_t)(-2):
       u.u_nextgid = -1;
       return (struct group *)&builtin_nogroup;
@@ -481,14 +481,14 @@ initgroups (const char *name, int basegid)
   while ((gr = (struct group *)syscall(SYS_getgrent)))
     {
       if (gr->gr_gid != (gid_t)basegid)
-	for (grm = gr->gr_mem; grm && *grm; grm++)
-	  {
-	    if (!strcmp(name,*grm))
-	      {
-		gidset[ngroups++] = (int)(gr->gr_gid);
-		break;
-	      }
-	  }
+        for (grm = gr->gr_mem; grm && *grm; grm++)
+          {
+            if (!strcmp(name,*grm))
+              {
+                gidset[ngroups++] = (int)(gr->gr_gid);
+                break;
+              }
+          }
       if (ngroups == NGROUPS_MAX) break;
     }
 
@@ -528,8 +528,8 @@ int getgroups(int gidsetlen, int *gidset)
       struct muExtOwner *me = muGetTaskExtOwner (NULL);
       if (me == 0)
       {
-	*gidset = -2;
-	return 1;             /* nobody */
+        *gidset = -2;
+        return 1;             /* nobody */
       }
 
       /* store primary group */
@@ -540,10 +540,10 @@ int getgroups(int gidsetlen, int *gidset)
       /* ensure enough place */
       if (gidsetlen < me->NumSecGroups)
       {
-	errno = EINVAL;
-	KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+        errno = EINVAL;
+        KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 
-	return -1;
+        return -1;
       }
 
       /* slow, but have to copy from UWORD[] --> int[] */

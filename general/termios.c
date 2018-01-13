@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)termios.c   5.9 (Berkeley) 5/20/91";
+static char sccsid[] = "@(#)termios.c	5.9 (Berkeley) 5/20/91";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -44,12 +44,11 @@ static char sccsid[] = "@(#)termios.c   5.9 (Berkeley) 5/20/91";
 #undef _KERNEL
 #include <sys/ioctl.h>
 #include <sys/tty.h>
-#define _KERNEL /* XXX - FREAD and FWRITE was ifdef'd _KERNEL*/
+#define _KERNEL	/* XXX - FREAD and FWRITE was ifdef'd _KERNEL*/
 #include <sys/fcntl.h>
 #undef _KERNEL
 #include <termios.h>
 #include <stdio.h>
-#define _KERNEL
 #include <unistd.h>
 
 int tcgetattr(int fd, struct termios *t)
@@ -162,7 +161,7 @@ int tcdrain(int fd)
 
 int tcflush(int fd, int which)
 {
-	usetup;
+        usetup;
 	int com;
 
 	switch (which) {
@@ -188,7 +187,7 @@ int tcflush(int fd, int which)
 
 int tcflow(int fd, int action)
 {
-	usetup;
+        usetup;
 
 	switch (action) {
 	case TCOOFF:
@@ -198,7 +197,7 @@ int tcflow(int fd, int action)
 		return (ioctl(fd, TIOCSTART, 0));
 		break;
 	case TCIOFF:
-	case TCION: {           /* these posix functions are STUPID */
+	case TCION: {		/* these posix functions are STUPID */
 		struct termios term;
 		unsigned char c;
 

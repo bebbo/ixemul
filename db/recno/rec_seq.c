@@ -1,8 +1,8 @@
-/*      $NetBSD: rec_seq.c,v 1.7 1996/05/03 21:38:53 cgd Exp $  */
+/*	$NetBSD: rec_seq.c,v 1.7 1996/05/03 21:38:53 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1991, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rec_seq.c   8.3 (Berkeley) 7/14/94";
+static char sccsid[] = "@(#)rec_seq.c	8.3 (Berkeley) 7/14/94";
 #else
 static char rcsid[] = "$NetBSD: rec_seq.c,v 1.7 1996/05/03 21:38:53 cgd Exp $";
 #endif
@@ -55,13 +55,13 @@ static char rcsid[] = "$NetBSD: rec_seq.c,v 1.7 1996/05/03 21:38:53 cgd Exp $";
  * __REC_SEQ -- Recno sequential scan interface.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key for positioning and return value
- *      data:   data return value
- *      flags:  R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV.
+ *	dbp:	pointer to access method
+ *	key:	key for positioning and return value
+ *	data:	data return value
+ *	flags:	R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV.
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
+ *	RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
  */
 int
 __rec_seq(dbp, key, data, flags)
@@ -110,7 +110,7 @@ __rec_seq(dbp, key, data, flags)
 		nrec = t->bt_nrecs;
 		break;
 	default:
-einval:         errno = EINVAL;
+einval:		errno = EINVAL;
 		return (RET_ERROR);
 	}
 	

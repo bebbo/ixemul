@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_open.c,v 1.8 1996/05/03 21:50:46 cgd Exp $  */
+/*	$NetBSD: bt_open.c,v 1.8 1996/05/03 21:50:46 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_open.c   8.10 (Berkeley) 8/17/94";
+static char sccsid[] = "@(#)bt_open.c	8.10 (Berkeley) 8/17/94";
 #else
 static char rcsid[] = "$NetBSD: bt_open.c,v 1.8 1996/05/03 21:50:46 cgd Exp $";
 #endif
@@ -68,8 +68,8 @@ static char rcsid[] = "$NetBSD: bt_open.c,v 1.8 1996/05/03 21:50:46 cgd Exp $";
 #include "btree.h"
 
 #ifdef DEBUG
-#undef  MINPSIZE
-#define MINPSIZE        128
+#undef	MINPSIZE
+#define	MINPSIZE	128
 #endif
 
 static int byteorder __P((void));
@@ -83,13 +83,13 @@ static int tmp __P((void));
  * opens the btree.
  *
  * Parameters:
- *      fname:  filename (NULL for in-memory trees)
- *      flags:  open flag bits
- *      mode:   open permission bits
- *      b:      BTREEINFO pointer
+ *	fname:	filename (NULL for in-memory trees)
+ *	flags:	open flag bits
+ *	mode:	open permission bits
+ *	b:	BTREEINFO pointer
  *
  * Returns:
- *      NULL on failure, pointer to DB on success.
+ *	NULL on failure, pointer to DB on success.
  *
  */
 DB *
@@ -168,7 +168,7 @@ __bt_open(fname, flags, mode, openinfo, dflags)
 	if ((t = (BTREE *)malloc(sizeof(BTREE))) == NULL)
 		goto err;
 	memset(t, 0, sizeof(BTREE));
-	t->bt_fd = -1;                  /* Don't close unopened fd on error. */
+	t->bt_fd = -1;			/* Don't close unopened fd on error. */
 	t->bt_lorder = b.lorder;
 	t->bt_order = NOT;
 	t->bt_cmp = b.compare;
@@ -224,7 +224,7 @@ __bt_open(fname, flags, mode, openinfo, dflags)
 	if (fstat(t->bt_fd, &sb))
 		goto err;
 	if (sb.st_size) {
-		if ((nr = read(t->bt_fd, &m, sizeof(BTMETA))) < 0) // in read.c
+		if ((nr = read(t->bt_fd, &m, sizeof(BTMETA))) < 0)
 			goto err;
 		if (nr != sizeof(BTMETA))
 			goto eftype;
@@ -330,13 +330,13 @@ __bt_open(fname, flags, mode, openinfo, dflags)
 
 	return (dbp);
 
-einval: errno = EINVAL;
+einval:	errno = EINVAL;
 	goto err;
 
-eftype: errno = EFTYPE;
+eftype:	errno = EFTYPE;
 	goto err;
 
-err:    if (t) {
+err:	if (t) {
 		if (t->bt_dbp)
 			free(t->bt_dbp);
 		if (t->bt_fd != -1)
@@ -350,10 +350,10 @@ err:    if (t) {
  * NROOT -- Create the root of a new tree.
  *
  * Parameters:
- *      t:      tree
+ *	t:	tree
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 static int
 nroot(t)
@@ -366,7 +366,7 @@ nroot(t)
 		mpool_put(t->bt_mp, meta, 0);
 		return (RET_SUCCESS);
 	}
-	if (errno != EINVAL)            /* It's OK to not exist. */
+	if (errno != EINVAL)		/* It's OK to not exist. */
 		return (RET_ERROR);
 	errno = 0;
 
@@ -429,7 +429,7 @@ byteorder()
 
 int
 __bt_fd(dbp)
-	const DB *dbp;
+        const DB *dbp;
 {
 	BTREE *t;
 

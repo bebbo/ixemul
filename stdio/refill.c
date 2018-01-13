@@ -1,8 +1,8 @@
-/*      $NetBSD: refill.c,v 1.4 1995/02/02 02:10:21 jtc Exp $   */
+/*	$NetBSD: refill.c,v 1.4 1995/02/02 02:10:21 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)refill.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)refill.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: refill.c,v 1.4 1995/02/02 02:10:21 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -51,7 +51,15 @@ static char rcsid[] = "$NetBSD: refill.c,v 1.4 1995/02/02 02:10:21 jtc Exp $";
 #include <stdlib.h>
 #include "local.h"
 
-int lflush();
+static int
+lflush(fp)
+	FILE *fp;
+{
+
+	if ((fp->_flags & (__SLBF|__SWR)) == (__SLBF|__SWR))
+		return (__sflush(fp));
+	return (0);
+}
 
 /*
  * Refill a stdio buffer.
@@ -63,7 +71,7 @@ __srefill(fp)
 {
 	usetup;
 
-	fp->_r = 0;             /* largely a convenience for callers */
+	fp->_r = 0;		/* largely a convenience for callers */
 
 	/* SysV does not make this test; take it out for compatibility */
 	if (fp->_flags & __SEOF)
@@ -112,7 +120,7 @@ __srefill(fp)
 		(void) _fwalk(lflush);
 	fp->_p = fp->_bf._base;
 	fp->_r = (*fp->_read)(fp->_cookie, (char *)fp->_p, fp->_bf._size);
-	fp->_flags &= ~__SMOD;  /* buffer contents are again pristine */
+	fp->_flags &= ~__SMOD;	/* buffer contents are again pristine */
 	if (fp->_r <= 0) {
 		if (fp->_r == 0)
 			fp->_flags |= __SEOF;

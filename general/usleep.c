@@ -18,137 +18,32 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)usleep.c    5.5 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)usleep.c	5.5 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#define NEWUSLEEP
 
 #include <sys/time.h>
 
-#define TICK    10000           /* system clock resolution in microseconds */
-#define USPS    1000000         /* number of microseconds in a second */
+#define	TICK	10000		/* system clock resolution in microseconds */
+#define	USPS	1000000		/* number of microseconds in a second */
 
-
-#ifdef NEWUSLEEP
-void delete_timer(struct timerequest *tr )
-{
-struct MsgPort *tp;
-
-if (tr != 0 )
-    {
-    tp = tr->tr_node.io_Message.mn_ReplyPort;
-
-    if (tp != 0)
-        DeleteMsgPort(tp);
-
-    CloseDevice( (struct IORequest *) tr );
-    DeleteIORequest( (struct IORequest *) tr );
-    }
-}
-
-struct timerequest *create_timer( ULONG unit )
-{
-/* return a pointer to a timer request.  If any problem, return NULL */
-LONG error;
-struct MsgPort *timerport;
-struct timerequest *TimerIO;
-
-timerport = CreateMsgPort();
-if (timerport == NULL )
-    return( NULL );
-
-TimerIO = (struct timerequest *)
-    CreateIORequest( timerport, sizeof( struct timerequest ) );
-if (TimerIO == NULL )
-    {
-    DeleteMsgPort(timerport);   /* Delete message port */
-    return( NULL );
-    }
- error = 0;
-error = OpenDevice( TIMERNAME, unit,(struct IORequest *) TimerIO, 0L );
- //see powersdl source
-
-        //TimerIO->tr_node.io_Device                  = TimerReq[0]->tr_node.io_Device;
-		//TimerIO->tr_node.io_Unit                    = TimerReq[0]->tr_node.io_Unit;
-
-if (error != 0 )
-    {
-	kprintf("cant open timer device \n");
-    delete_timer( TimerIO );
-    return( NULL );
-    }
-
-return( TimerIO );
-}
-
-
-/* more precise timer than AmigaDOS Delay() */
-
-
-
-void wait_for_timer(struct timerequest *tr, struct timeval *tv )
-{
-
-tr->tr_node.io_Command = TR_ADDREQUEST; /* add a new timer request */
-
-/* structure assignment */
-tr->tr_time = *tv;
-
-/* post request to the timer -- will go to sleep till done */
-DoIO((struct IORequest *) tr );
-}
-
-LONG time_delay( struct timeval *tv, LONG unit )
-{
-struct timerequest *tr;
-/* get a pointer to an initialized timer request block */
-tr = create_timer( unit );
-
-/* any nonzero return says timedelay routine didn't work. */
-if (tr == NULL )
-    return( -1L );
-
-wait_for_timer( tr, tv );
-
-/* deallocate temporary structures */
-delete_timer( tr );
-return( 0L );
-}
-
-void usleep (u_int useconds)
-{
-
-	struct timeval tv;
-	if (useconds == 0)
-	{
-	   return;
-	}
-		tv.tv_secs	= useconds / 1000000;
-		tv.tv_micro	= (useconds % 1000000);
-
-	time_delay(&tv, UNIT_MICROHZ );
-}
-
-
-#else
 static void usleephandler(void)
 {
-	usetup;
+        usetup;
 	u.u_ringring = 1;
 }
 
 void usleep(u_int useconds)
 {
-	usetup;
-	return ;
+        usetup;
 	register struct itimerval *itp;
 	struct itimerval itv, oitv;
 	struct sigvec vec, ovec;
 	long omask;
 	static void usleephandler(void);
-    //useconds+=3000;
+
 	itp = &itv;
 	if (!useconds)
 		return;
@@ -179,12 +74,8 @@ void usleep(u_int useconds)
 	u.u_ringring = 0;
 	syscall (SYS_setitimer, ITIMER_REAL, itp, (struct itimerval *)0);
 	while (!u.u_ringring)
-	{
 		syscall (SYS_sigpause, omask & ~sigmask(SIGALRM));
-	}
 	syscall (SYS_sigvec, SIGALRM, &ovec, (struct sigvec *)0);
 	syscall (SYS_sigsetmask, omask);
 	syscall (SYS_setitimer, ITIMER_REAL, &oitv, (struct itimerval *)0);
-
 }
-#endif

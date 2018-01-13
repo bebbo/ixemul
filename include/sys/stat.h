@@ -39,10 +39,6 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-/* ixemul needs 2 bytes alignment for compatibility, libnix doesn't. */
-#ifdef __ixemul__
-//#pragma pack(2)
-#endif
 #if later
 struct stat
 {
@@ -86,9 +82,6 @@ struct	stat
 	long	st_blocks;
 	long	st_spare4[2];
 };
-#endif
-#ifdef __ixemul__
-//#pragma pack()
 #endif
 
 #ifdef __amigaos__

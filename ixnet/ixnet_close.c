@@ -16,18 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: ixnet_close.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: ixnet_close.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:45  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:45:13  nobody
- *  Initial import
- *
+ *  $Log:$
  *
  */
 
@@ -35,7 +26,7 @@
 #include "ixnet.h"
 #include "kprintf.h"
 
-extern struct ExecBase  *SysBase;
+extern struct ExecBase	*SysBase;
 
 void
 ixnet_close (struct ixnet_base *ixbase)
@@ -44,7 +35,7 @@ ixnet_close (struct ixnet_base *ixbase)
     struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     if (p->u_SockBase) {
-	SOCK_cleanup_sockets();
+        SOCK_cleanup_sockets();
 	FreeSignal(p->u_sigurg);
 	FreeSignal(p->u_sigio);
 	CloseLibrary(p->u_SockBase);

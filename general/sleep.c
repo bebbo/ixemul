@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sleep.c     5.5 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)sleep.c	5.5 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -28,13 +28,13 @@ static char sccsid[] = "@(#)sleep.c     5.5 (Berkeley) 6/1/90";
 static void
 sleephandler_sleep(void)
 {
-	usetup;
+        usetup;
 	u.u_ringring = 1;
 }
 
 u_int sleep(u_int seconds)
 {
-	usetup;
+        usetup;
 	register struct itimerval *itp;
 	struct itimerval itv, oitv;
 	struct sigvec vec, ovec;
@@ -64,7 +64,7 @@ u_int sleep(u_int seconds)
 		}
 	}
 	vec.sv_handler = sleephandler_sleep;
-	vec.sv_mask = vec.sv_onstack = 0;
+        vec.sv_mask = vec.sv_onstack = 0;
 	syscall (SYS_sigvec, SIGALRM, &vec, &ovec);
 	omask = syscall (SYS_sigblock, sigmask(SIGALRM));
 	u.u_ringring = 0;

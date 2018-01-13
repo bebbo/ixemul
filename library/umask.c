@@ -54,23 +54,23 @@ umask (mode_t mode)
   if (muBase) {
     long mumode = 0;
 
-    if (mode & S_IXUSR) mumode |= FIBF_EXECUTE | FIBF_SCRIPT;
-    if (mode & S_IWUSR) mumode |= FIBF_READ | FIBF_DELETE;
-    if (mode & S_IRUSR) mumode |= FIBF_READ;
+    if (mode & S_IXUSR)	mumode |= FIBF_EXECUTE | FIBF_SCRIPT;
+    if (mode & S_IWUSR)	mumode |= FIBF_READ | FIBF_DELETE;
+    if (mode & S_IRUSR)	mumode |= FIBF_READ;
 #ifdef FIBF_GRP_EXECUTE
   /* FIBF_GRP_EXECUTE requires at least OS3 headers */
-    if (mode & S_IXGRP) mumode |= FIBF_GRP_EXECUTE;
-    if (mode & S_IWGRP) mumode |= FIBF_GRP_WRITE | FIBF_GRP_DELETE;
-    if (mode & S_IRGRP) mumode |= FIBF_GRP_READ;
-    if (mode & S_IXOTH) mumode |= FIBF_OTR_EXECUTE;
-    if (mode & S_IWOTH) mumode |= FIBF_OTR_WRITE | FIBF_OTR_DELETE;
-    if (mode & S_IROTH) mumode |= FIBF_OTR_READ;
+    if (mode & S_IXGRP)	mumode |= FIBF_GRP_EXECUTE;
+    if (mode & S_IWGRP)	mumode |= FIBF_GRP_WRITE | FIBF_GRP_DELETE;
+    if (mode & S_IRGRP)	mumode |= FIBF_GRP_READ;
+    if (mode & S_IXOTH)	mumode |= FIBF_OTR_EXECUTE;
+    if (mode & S_IWOTH)	mumode |= FIBF_OTR_WRITE | FIBF_OTR_DELETE;
+    if (mode & S_IROTH)	mumode |= FIBF_OTR_READ;
     if (mode & S_ISTXT) mumode |= FIBF_HOLD;
     if (mode & S_ISUID) mumode |= muFIBF_SET_UID;
     if (mode & S_ISGID) mumode |= muFIBF_SET_GID;
 #endif
 
-    muSetDefProtection(muT_Task, (ULONG)SysBase->ThisTask,
+    muSetDefProtection(muT_Task, (ULONG)FindTask(NULL),
 	muT_DefProtection, mumode,
 	TAG_DONE);
   }

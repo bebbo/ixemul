@@ -20,7 +20,7 @@
 #ifndef _SYS_IXNET_SYSCALL_H
 #define _SYS_IXNET_SYSCALL_H
 
-#define SYSTEM_CALL(func, vec, args) NET_##func = vec,
+#define SYSTEM_CALL(func, vec) NET_##func = vec,
 
 enum _net_syscall_ {
 #include <sys/ixnet_syscall.def>

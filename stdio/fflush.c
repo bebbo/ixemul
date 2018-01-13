@@ -1,8 +1,8 @@
-/*      $NetBSD: fflush.c,v 1.7 1995/02/02 02:09:08 jtc Exp $   */
+/*	$NetBSD: fflush.c,v 1.7 1995/02/02 02:09:08 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fflush.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)fflush.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: fflush.c,v 1.7 1995/02/02 02:09:08 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -80,7 +80,7 @@ __sflush(fp)
 	if ((p = fp->_bf._base) == NULL)
 		return (0);
 
-	n = fp->_p - p;         /* write this much */
+	n = fp->_p - p;		/* write this much */
 
 	/*
 	 * Set these immediately to avoid problems with longjmp and to allow
@@ -90,7 +90,6 @@ __sflush(fp)
 	fp->_w = t & (__SLBF|__SNBF) ? 0 : fp->_bf._size;
 
 	for (; n > 0; n -= t, p += t) {
-	
 		t = (*fp->_write)(fp->_cookie, (char *)p, n);
 		if (t <= 0) {
 			fp->_flags |= __SERR;

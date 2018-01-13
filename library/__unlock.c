@@ -26,8 +26,6 @@ int __unlock (BPTR lock)
   return 0;
 }
 
-#if 0
-
 /* ATTENTION: name-clash between sysio-__close and DOS-__Close !! */
 void __Close (BPTR fh)
 {
@@ -56,5 +54,3 @@ void __Close (BPTR fh)
     SetIoErr(0);
   FreeDosObject (DOS_FILEHANDLE, fhp);
 }
-
-#endif

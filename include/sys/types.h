@@ -1,8 +1,8 @@
-/*      $NetBSD: types.h,v 1.23 1995/05/28 03:06:34 jtc Exp $   */
+/*	$NetBSD: types.h,v 1.23 1995/05/28 03:06:34 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1982, 1986, 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
  * to the University of California by American Telephone and Telegraph
@@ -19,8 +19,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -37,11 +37,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)types.h     8.4 (Berkeley) 1/21/94
+ *	@(#)types.h	8.4 (Berkeley) 1/21/94
  */
 
 #ifndef _SYS_TYPES_H_
-#define _SYS_TYPES_H_
+#define	_SYS_TYPES_H_
 
 /* Machine type dependent parameters. */
 #include <machine/types.h>
@@ -49,45 +49,34 @@
 #include <machine/ansi.h>
 #include <machine/endian.h>
 
-/* should be put in a <machine/..> header */
-#ifndef __ALIGN2__
-#ifdef __PPC__
-#define __ALIGN2__  __attribute__((aligned(2)))
-#define __PACKED__  __attribute__((packed))
-#else
-#define __ALIGN2__
-#define __PACKED__
-#endif
-#endif
-
 #ifndef _POSIX_SOURCE
-typedef unsigned char   u_char;
-typedef unsigned short  u_short;
-typedef unsigned int    u_int;
-typedef unsigned long   u_long;
-typedef unsigned short  ushort;         /* Sys V compatibility */
-typedef unsigned int    uint;           /* Sys V compatibility */
+typedef	unsigned char	u_char;
+typedef	unsigned short	u_short;
+typedef	unsigned int	u_int;
+typedef	unsigned long	u_long;
+typedef	unsigned short	ushort;		/* Sys V compatibility */
+typedef	unsigned int	uint;		/* Sys V compatibility */
 #endif
 
-typedef u_int64_t       u_quad_t;       /* quads */
-typedef int64_t         quad_t;
-typedef quad_t *        qaddr_t;
+typedef	u_int64_t	u_quad_t;	/* quads */
+typedef	int64_t		quad_t;
+typedef	quad_t *	qaddr_t;
 
-typedef char *          caddr_t;        /* core address */
-typedef int32_t         daddr_t;        /* disk address */
-typedef int16_t         dev_t;          /* device number */
-typedef u_int32_t       fixpt_t;        /* fixed point number */
-typedef u_int16_t       gid_t;          /* group id */
-typedef u_int32_t       ino_t;          /* inode number */
-typedef long            key_t;          /* IPC key (for Sys V IPC) */
-typedef u_int16_t       mode_t;         /* permissions */
-typedef u_int16_t       nlink_t;        /* link count */
-typedef int32_t         off_t;          /* file offset */
-typedef int32_t         pid_t;          /* process id */
-typedef int32_t         rlim_t;         /* resource limit */
-typedef int32_t         segsz_t;        /* segment size */
-typedef int32_t         swblk_t;        /* swap offset */
-typedef u_int16_t       uid_t;          /* user id */
+typedef	char *		caddr_t;	/* core address */
+typedef	int32_t		daddr_t;	/* disk address */
+typedef	int16_t		dev_t;		/* device number */
+typedef	u_int32_t	fixpt_t;	/* fixed point number */
+typedef	u_int16_t	gid_t;		/* group id */
+typedef	u_int32_t	ino_t;		/* inode number */
+typedef	long		key_t;		/* IPC key (for Sys V IPC) */
+typedef	u_int16_t	mode_t;		/* permissions */
+typedef	u_int16_t	nlink_t;	/* link count */
+typedef	int32_t		off_t;		/* file offset */
+typedef	int32_t		pid_t;		/* process id */
+typedef int32_t		rlim_t;		/* resource limit */
+typedef	int32_t		segsz_t;	/* segment size */
+typedef	int32_t		swblk_t;	/* swap offset */
+typedef	u_int16_t	uid_t;		/* user id */
 
 /*
  * These belong in unistd.h, but are placed here too to ensure that
@@ -98,42 +87,42 @@ typedef u_int16_t       uid_t;          /* user id */
 #ifndef _KERNEL
 #include <sys/cdefs.h>
 __BEGIN_DECLS
-off_t    lseek __P((int, off_t, int));
-int      ftruncate __P((int, off_t));
-int      truncate __P((const char *, off_t));
+off_t	 lseek __P((int, off_t, int));
+int	 ftruncate __P((int, off_t));
+int	 truncate __P((const char *, off_t));
 __END_DECLS
 #endif /* !_KERNEL */
 #endif /* !_POSIX_SOURCE */
 
 #ifndef _POSIX_SOURCE
 /* Major, minor numbers, dev_t's. */
-#define major(x)        ((int32_t)(((u_int32_t)(x) >> 8) & 0xff))
-#define minor(x)        ((int32_t)((x) & 0xff))
-#define makedev(x,y)    ((dev_t)(((x) << 8) | (y)))
+#define	major(x)	((int32_t)(((u_int32_t)(x) >> 8) & 0xff))
+#define	minor(x)	((int32_t)((x) & 0xff))
+#define	makedev(x,y)	((dev_t)(((x) << 8) | (y)))
 #endif
 
-#ifdef  _BSD_CLOCK_T_
-typedef _BSD_CLOCK_T_   clock_t;
-#undef  _BSD_CLOCK_T_
+#ifdef	_BSD_CLOCK_T_
+typedef	_BSD_CLOCK_T_	clock_t;
+#undef	_BSD_CLOCK_T_
 #endif
 
-#ifdef  _BSD_SIZE_T_
-typedef _BSD_SIZE_T_    size_t;
-#undef  _BSD_SIZE_T_
+#ifdef	_BSD_SIZE_T_
+typedef	_BSD_SIZE_T_	size_t;
+#undef	_BSD_SIZE_T_
 #endif
 
-#ifdef  _BSD_SSIZE_T_
-typedef _BSD_SSIZE_T_   ssize_t;
-#undef  _BSD_SSIZE_T_
+#ifdef	_BSD_SSIZE_T_
+typedef	_BSD_SSIZE_T_	ssize_t;
+#undef	_BSD_SSIZE_T_
 #endif
 
-#ifdef  _BSD_TIME_T_
-typedef _BSD_TIME_T_    time_t;
-#undef  _BSD_TIME_T_
+#ifdef	_BSD_TIME_T_
+typedef	_BSD_TIME_T_	time_t;
+#undef	_BSD_TIME_T_
 #endif
 
 #ifndef _POSIX_SOURCE
-#define NBBY    8               /* number of bits in a byte */
+#define	NBBY	8		/* number of bits in a byte */
 
 /*
  * Select uses bit masks of file descriptors in longs.  These macros
@@ -141,26 +130,26 @@ typedef _BSD_TIME_T_    time_t;
  * FD_SETSIZE may be defined by the user, but the default here should
  * be enough for most uses.
  */
-#ifndef FD_SETSIZE
-#define FD_SETSIZE      256
+#ifndef	FD_SETSIZE
+#define	FD_SETSIZE	256
 #endif
 
-typedef int32_t fd_mask;
-#define NFDBITS (sizeof(fd_mask) * NBBY)        /* bits per mask */
+typedef int32_t	fd_mask;
+#define NFDBITS	(sizeof(fd_mask) * NBBY)	/* bits per mask */
 
 #ifndef howmany
-#define howmany(x, y)   (((x) + ((y) - 1)) / (y))
+#define	howmany(x, y)	(((x) + ((y) - 1)) / (y))
 #endif
 
-typedef struct fd_set {
-	fd_mask fds_bits[howmany(FD_SETSIZE, NFDBITS)];
+typedef	struct fd_set {
+	fd_mask	fds_bits[howmany(FD_SETSIZE, NFDBITS)];
 } fd_set;
 
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
-#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_COPY(f, t)   bcopy(f, t, sizeof(*(f)))
-#define FD_ZERO(p)      bzero(p, sizeof(*(p)))
+#define	FD_SET(n, p)	((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define	FD_CLR(n, p)	((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define	FD_ISSET(n, p)	((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define	FD_COPY(f, t)	bcopy(f, t, sizeof(*(f)))
+#define	FD_ZERO(p)	bzero(p, sizeof(*(p)))
 
 #if defined(__STDC__) && defined(_KERNEL)
 /*
@@ -168,17 +157,15 @@ typedef struct fd_set {
  * common structures that cross subsystem boundaries here; others are mostly
  * used in the same place that the structure is defined.
  */
-struct  proc;
-struct  pgrp;
-struct  ucred;
-struct  rusage;
-struct  file;
-struct  buf;
-struct  tty;
-struct  uio;
+struct	proc;
+struct	pgrp;
+struct	ucred;
+struct	rusage;
+struct	file;
+struct	buf;
+struct	tty;
+struct	uio;
 #endif
-/* Amiga - 48.3: */
-typedef int socklen_t;
-typedef u_int16_t in_port_t; 
+
 #endif /* !_POSIX_SOURCE */
 #endif /* !_SYS_TYPES_H_ */

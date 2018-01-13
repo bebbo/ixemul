@@ -61,36 +61,31 @@ ix_get_vars (int argc, char **ctype, int *_sys_nerr,
     default:
     case 12:
       if (execlib)
-	*execlib = 0;
+        *execlib = 0;
 
     case 11:
       if (_res_socket)
-	u.u_res_socket = _res_socket;
+        u.u_res_socket = _res_socket;
 
     case 10:
       if (_res)
-	u.u_res = _res;
+        u.u_res = _res;
 
     case 9:
       if (real_h_errno)
-	{
-	  u.u_h_errno = real_h_errno;
-	}
-	
+        {
+          u.u_h_errno = real_h_errno;
+        }
+        
     case 8:
       /* Needed in pdksh: after the ix_resident call the child needs to
-	 tell ixemul.library what the new address of the errno variable is. */
+         tell ixemul.library what the new address of the errno variable is. */
       if (real_errno)
 	{
 	  u.u_errno = real_errno;
-	}
-
-      /* Be careful to update h_errno pointer even if errno ptr doesn't
-         change! - Piru */
-      if (real_errno || (argc >=9 && real_h_errno))
-	{
-	  if (u.u_ixnetbase)
-	    netcall(NET_set_errno, u.u_errno, argc >=9 ? u.u_h_errno : NULL);
+	  /* assume when h_errno is set, errno is set also */
+          if (u.u_ixnetbase)
+	    netcall(NET_set_errno, real_errno, u.u_h_errno);
 	}
 
     case 7:
@@ -102,12 +97,12 @@ ix_get_vars (int argc, char **ctype, int *_sys_nerr,
 
     case 5:
       if (fpp)
-	{
+        {
 	  __init_stdinouterr ();
-	  *fpp = (FILE **) &u.u_sF[0];
+          *fpp = (FILE **) &u.u_sF[0];
 	  /* make sure all stdio buffers are flushed on exit() */
 	  atexit (_cleanup);
-	}
+        }
 
     case 4:
       if (dosbase) *dosbase = (struct Library *)DOSBase;
@@ -124,7 +119,7 @@ ix_get_vars (int argc, char **ctype, int *_sys_nerr,
     case 0:
       break;
     }
-
+   
   /* now that system start is over, free the tracer */
   u.u_trace_flags = 0;
 }

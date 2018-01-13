@@ -39,28 +39,26 @@ struct mem_file {
 struct tty_glue {
   struct FileHandle *fh;
   unsigned long ttyflags;       /* ixemul mapping of termios flags */
-};                              /* if we run out of bits, we should */
+};				/* if we run out of bits, we should */
 				/* allocate a tty structure instead */
 
 /* ixemul termios flag mappings: */
-#define IXTTY_INLCR             0x00000001
-#define IXTTY_ICRNL             0x00000002
-#define IXTTY_OPOST             0x00000004
-#define IXTTY_ONLCR             0x00000008
-#define IXTTY_RAW               0x00000010
-#define IXTTY_PKT               0x00000020  /* TIOCPKT replacement */
-
-#define IXTTY_SPECIAL           0x00000040  /* linux compatible console handler */
+#define IXTTY_INLCR		0x00000001
+#define IXTTY_ICRNL		0x00000002
+#define IXTTY_OPOST		0x00000004
+#define IXTTY_ONLCR		0x00000008
+#define IXTTY_RAW		0x00000010
+#define IXTTY_PKT		0x00000020  /* TIOCPKT replacement */
 
 /* this will hold basic information about a file, but contrairy to
  * Unix, it will also hold its name */
 
 struct file {
-  char *f_name;      /* the name as used with open() */
+  char *f_name;	     /* the name as used with open() */
   int f_stb_dirty,   /* gets == 1, if changes have been made to 'stb' */
-      f_type,        /* can be a file or some amiga..devices */
-      f_flags,       /* see fcntl.h */
-      f_count,       /* open-count, normally 1, higher after dup() */
+      f_type,	     /* can be a file or some amiga..devices */
+      f_flags,	     /* see fcntl.h */
+      f_count,	     /* open-count, normally 1, higher after dup() */
       (*f_write)(),    /* functions to perform write,read,etc on this fd */
       (*f_read)(),
       (*f_ioctl)(),
@@ -69,13 +67,13 @@ struct file {
   union {
     struct FileHandle *fh; /* this is a CPTR to the allocated
 			    * FileHandle */
-    struct mem_file mf;    /* current data for incore files */
+    struct mem_file mf;	   /* current data for incore files */
     struct {
-	int so;            /* points to socket when DTYPE_SOCKET */
+  	int so; 	   /* points to socket when DTYPE_SOCKET */
 	int domain;
 	int type;
 	int protocol;
-	long id;           /* used in vfork() to store id of socket to give to child */
+	long id;	   /* used in vfork() to store id of socket to give to child */
     } inetsock;
     struct unix_socket *sock; /* points to AF_UNIX socket - DTYPE_USOCKET */
     struct sock_stream *ss;
@@ -88,7 +86,7 @@ struct file {
 #define f_socket_type f__fh.inetsock.type
 #define f_socket_protocol f__fh.inetsock.protocol
 #define f_socket_id f__fh.inetsock.id
-#define f_sock  f__fh.sock
+#define f_sock	f__fh.sock
 #define f_ss  f__fh.ss
 #define f_ttyflags f__fh.tg.ttyflags
   /* WARNING: if you change this struct, take care, that f_sp starts at
@@ -99,14 +97,14 @@ struct file {
 			       * not the higher-level DOS-functions */
   struct StandardPacket f_select_sp; /* for the select() function */
   struct stat f_stb;    /* file-params at open-time, or after changes to fd */
-  int   f_sync_flags;   /* for process synchronization */
+  int	f_sync_flags;	/* for process synchronization */
 };
 
 
-#define FSFB_LOCKED     (0)
-#define FSFF_LOCKED     (1<<0)  /* means the fh is in use */
-#define FSFB_WANTLOCK   (1)
-#define FSFF_WANTLOCK   (1<<1)  /* means a process is sleeping on fh to get free */
+#define FSFB_LOCKED	(0)
+#define FSFF_LOCKED	(1<<0)	/* means the fh is in use */
+#define FSFB_WANTLOCK	(1)
+#define FSFF_WANTLOCK	(1<<1)	/* means a process is sleeping on fh to get free */
 
 #define FSDB_MODE       (0)
 #define FSDF_MODE       (1<<0)  /* means fchmod() was used on the file */
@@ -114,20 +112,20 @@ struct file {
 #define FSDF_OWNER      (1<<1)  /* means fchown() was used on the file */
 #define FSDB_UTIME      (2)
 #define FSDF_UTIME      (1<<2)  /* means we have to set the file time ourselves */
-				/* this is only needed if we truncate the file
-				   without writing anything to it.
-				   Example: echo -n >foo */
+                                /* this is only needed if we truncate the file
+                                   without writing anything to it.
+                                   Example: echo -n >foo */
 
 #endif /* _INTERNAL_FILE_H */
 
 
-#define DTYPE_FILE      1       /* 'file' is really a file */
-#define DTYPE_PIPE      2       /* it's an incore pipe */
-#define DTYPE_MEM       3       /* a RDONLY file completely buffered in memory */
-#define DTYPE_TASK_FILE 4       /* is a 'file', but used by a task, not a process !*/
-#define DTYPE_SOCKET    5       /* socket (inet.library interface) */
-#define DTYPE_USOCKET   6       /* socket (own socket code) */
-#define DTYPE_TTY       7       /* AmigaOS file, with special access functions */
+#define DTYPE_FILE	1	/* 'file' is really a file */
+#define DTYPE_PIPE	2	/* it's an incore pipe */
+#define DTYPE_MEM	3	/* a RDONLY file completely buffered in memory */
+#define DTYPE_TASK_FILE	4	/* is a 'file', but used by a task, not a process !*/
+#define DTYPE_SOCKET	5	/* socket (inet.library interface) */
+#define DTYPE_USOCKET	6	/* socket (own socket code) */
+#define DTYPE_TTY	7	/* AmigaOS file, with special access functions */
 /* more to follow.. */
 
 #endif /* _SYS_FILE_H */

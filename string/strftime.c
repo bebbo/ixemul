@@ -18,13 +18,13 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strftime.c  5.8 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)strftime.c	5.8 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 /*
  * NOTE: I used the older version of this file, since the 4.3bsd-net2
- *       version uses mktime() from ctime.c, and ctime.c is badly suited
- *       for inclusion in a shared library (too much static stuff...)
+ *	 version uses mktime() from ctime.c, and ctime.c is badly suited
+ *	 for inclusion in a shared library (too much static stuff...)
  */
 
 
@@ -59,12 +59,12 @@ static int _add (char *);
 
 size_t strftime(char *s, size_t maxsize, const char *format, const struct tm *t)
 {
-	usetup;
+        usetup;
 	size_t res = 0;
 
 	u.u_pt = s;
 	if ((u.u_gsize = maxsize) < 1)
-		return 0;
+	  	return 0;
 	if (_fmt(format, t)) {
 		*u.u_pt = '\0';
 		res = maxsize - u.u_gsize;
@@ -74,7 +74,7 @@ size_t strftime(char *s, size_t maxsize, const char *format, const struct tm *t)
 
 static size_t _fmt(const char *format, const struct tm *t)
 {
-	usetup;
+        usetup;
 
 	for (; *format; ++format) {
 		if (*format == '%')
@@ -249,7 +249,7 @@ static int _conv(int n, int digits, char pad)
 
 static int _add(char *str)
 {
-	usetup;
+        usetup;
 
 	for (;; ++u.u_pt, --u.u_gsize) {
 		if (!u.u_gsize)

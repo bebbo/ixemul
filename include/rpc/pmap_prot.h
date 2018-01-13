@@ -1,4 +1,4 @@
-/*      $NetBSD: pmap_prot.h,v 1.4 1994/10/26 00:57:00 cgd Exp $        */
+/*	$NetBSD: pmap_prot.h,v 1.4 1994/10/26 00:57:00 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)pmap_prot.h 1.14 88/02/08 SMI 
- *      @(#)pmap_prot.h 2.1 88/07/29 4.0 RPCSRC
+ *	from: @(#)pmap_prot.h 1.14 88/02/08 SMI 
+ *	@(#)pmap_prot.h	2.1 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -41,30 +41,30 @@
  * The following procedures are supported by the protocol:
  *
  * PMAPPROC_NULL() returns ()
- *      takes nothing, returns nothing
+ * 	takes nothing, returns nothing
  *
  * PMAPPROC_SET(struct pmap) returns (bool_t)
- *      TRUE is success, FALSE is failure.  Registers the tuple
- *      [prog, vers, prot, port].
+ * 	TRUE is success, FALSE is failure.  Registers the tuple
+ *	[prog, vers, prot, port].
  *
  * PMAPPROC_UNSET(struct pmap) returns (bool_t)
- *      TRUE is success, FALSE is failure.  Un-registers pair
- *      [prog, vers].  prot and port are ignored.
+ *	TRUE is success, FALSE is failure.  Un-registers pair
+ *	[prog, vers].  prot and port are ignored.
  *
  * PMAPPROC_GETPORT(struct pmap) returns (long unsigned).
- *      0 is failure.  Otherwise returns the port number where the pair
- *      [prog, vers] is registered.  It may lie!
+ *	0 is failure.  Otherwise returns the port number where the pair
+ *	[prog, vers] is registered.  It may lie!
  *
  * PMAPPROC_DUMP() RETURNS (struct pmaplist *)
  *
  * PMAPPROC_CALLIT(unsigned, unsigned, unsigned, string<>)
- *      RETURNS (port, string<>);
+ * 	RETURNS (port, string<>);
  * usage: encapsulatedresults = PMAPPROC_CALLIT(prog, vers, proc, encapsulatedargs);
- *      Calls the procedure on the local machine.  If it is not registered,
- *      this procedure is quite; ie it does not return error information!!!
- *      This procedure only is supported on rpc/udp and calls via
- *      rpc/udp.  This routine only passes null authentication parameters.
- *      This file has no interface to xdr routines for PMAPPROC_CALLIT.
+ * 	Calls the procedure on the local machine.  If it is not registered,
+ *	this procedure is quite; ie it does not return error information!!!
+ *	This procedure only is supported on rpc/udp and calls via
+ *	rpc/udp.  This routine only passes null authentication parameters.
+ *	This file has no interface to xdr routines for PMAPPROC_CALLIT.
  *
  * The service supports remote procedure calls on udp/ip or tcp/ip socket 111.
  */
@@ -73,17 +73,17 @@
 #define _RPC_PMAPPROT_H
 #include <sys/cdefs.h>
 
-#define PMAPPORT                ((u_short)111)
-#define PMAPPROG                ((u_long)100000)
-#define PMAPVERS                ((u_long)2)
-#define PMAPVERS_PROTO          ((u_long)2)
-#define PMAPVERS_ORIG           ((u_long)1)
-#define PMAPPROC_NULL           ((u_long)0)
-#define PMAPPROC_SET            ((u_long)1)
-#define PMAPPROC_UNSET          ((u_long)2)
-#define PMAPPROC_GETPORT        ((u_long)3)
-#define PMAPPROC_DUMP           ((u_long)4)
-#define PMAPPROC_CALLIT         ((u_long)5)
+#define PMAPPORT		((u_short)111)
+#define PMAPPROG		((u_long)100000)
+#define PMAPVERS		((u_long)2)
+#define PMAPVERS_PROTO		((u_long)2)
+#define PMAPVERS_ORIG		((u_long)1)
+#define PMAPPROC_NULL		((u_long)0)
+#define PMAPPROC_SET		((u_long)1)
+#define PMAPPROC_UNSET		((u_long)2)
+#define PMAPPROC_GETPORT	((u_long)3)
+#define PMAPPROC_DUMP		((u_long)4)
+#define PMAPPROC_CALLIT		((u_long)5)
 
 struct pmap {
 	long unsigned pm_prog;
@@ -93,13 +93,13 @@ struct pmap {
 };
 
 struct pmaplist {
-	struct pmap     pml_map;
+	struct pmap	pml_map;
 	struct pmaplist *pml_next;
 };
 
 __BEGIN_DECLS
-extern bool_t xdr_pmap          __P((XDR *, struct pmap *));
-extern bool_t xdr_pmaplist      __P((XDR *, struct pmaplist **));
+extern bool_t xdr_pmap		__P((XDR *, struct pmap *));
+extern bool_t xdr_pmaplist	__P((XDR *, struct pmaplist **));
 __END_DECLS
 
 #endif /* !_RPC_PMAPPROT_H */

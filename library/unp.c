@@ -45,8 +45,8 @@
 
 #define can_read(ss)  (ss->reader != ss->writer)
 #define can_write(ss) (!(ss->reader == ss->writer + 1 \
-			 || (ss->reader == ss->buffer \
-			     && ss->writer == ss->buffer + UNIX_SOCKET_SIZE - 1)))
+	                 || (ss->reader == ss->buffer \
+	                     && ss->writer == ss->buffer + UNIX_SOCKET_SIZE - 1)))
 
 struct ix_unix_name *
 find_unix_name(const char *path)
@@ -78,7 +78,7 @@ add_unix_name(const char *path, int queue_size)
 {
   struct ix_unix_name *un = kmalloc(sizeof(struct ix_unix_name));
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (un == NULL)
     errno_return(ENOMEM, NULL);
 
@@ -125,19 +125,19 @@ get_stream(struct file *f, int read_stream)
   for (;;)
     {
       if (!(ss->flags & UNF_LOCKED))
-	{
-	  ss->flags &= ~UNF_WANT_LOCK;
-	  ss->flags |= UNF_LOCKED;
-	  /* got it ! */
-	  break;
+        {
+          ss->flags &= ~UNF_WANT_LOCK;
+          ss->flags |= UNF_LOCKED;
+          /* got it ! */
+          break;
 	}
       ss->flags |= UNF_WANT_LOCK;
       if (ix_sleep((caddr_t)&ss->flags, "get_sock") < 0)
-	{
+        {
 	  Permit();
-	  setrun(SysBase->ThisTask);
+	  setrun(FindTask(0));
 	  Forbid();
-	}
+        }
       /* have to always recheck whether we really got the lock */
     }
   Permit();
@@ -151,8 +151,8 @@ release_stream(struct sock_stream *ss)
     {
       Forbid ();
       if (ss->flags & UNF_WANT_LOCK)
-	ix_wakeup ((u_int)&ss->flags);
-	
+        ix_wakeup ((u_int)&ss->flags);
+        
       ss->flags &= ~(UNF_WANT_LOCK | UNF_LOCKED);
       Permit ();
     }
@@ -161,7 +161,7 @@ release_stream(struct sock_stream *ss)
 static int stream_is_closed(struct sock_stream *ss)
 {
   return (ss == NULL || (ss->flags & (UNF_NO_READER | UNF_NO_WRITER)) ==
-				     (UNF_NO_READER | UNF_NO_WRITER));
+                                     (UNF_NO_READER | UNF_NO_WRITER));
 }
 
 static void close_stream(struct file *f, int read_stream, int from_close)
@@ -170,7 +170,7 @@ static void close_stream(struct file *f, int read_stream, int from_close)
   struct unix_socket *us = f->f_sock;
   int to_server;
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (us == NULL)
     return;
   to_server = (us->server != f) ? !read_stream : read_stream;
@@ -180,34 +180,34 @@ static void close_stream(struct file *f, int read_stream, int from_close)
     {
       (*ss)->flags |= (read_stream ? UNF_NO_READER : UNF_NO_WRITER);
       if (stream_is_closed(*ss))
-	{
-	  kfree(*ss);
-	  *ss = NULL;
-	}
+        {
+          kfree(*ss);
+          *ss = NULL;
+        }
       else
-	{
-	  if ((*ss)->task)
-	    Signal((*ss)->task, 1UL << u.u_pipe_sig);
-	  ix_wakeup ((u_int)*ss);
-	}
+        {
+          if ((*ss)->task)
+            Signal((*ss)->task, 1UL << u.u_pipe_sig);
+          ix_wakeup ((u_int)*ss);
+        }
     }
   if (read_stream && us->unix_name && f->f_count == 0)
     {
       struct ix_unix_name *un;
     
       if (us->unix_name == ix.ix_unix_names)
-	{
-	  ix.ix_unix_names = ix.ix_unix_names->next;
-	}
+        {
+          ix.ix_unix_names = ix.ix_unix_names->next;
+        }
       else
-	{
-	  for (un = ix.ix_unix_names; un; un = un->next)
-	    if (un->next == us->unix_name)
-	      {
-		un->next = us->unix_name->next;
-		break;
-	      }
-	}
+        {
+          for (un = ix.ix_unix_names; un; un = un->next)
+            if (un->next == us->unix_name)
+              {
+                un->next = us->unix_name->next;
+                break;
+              }
+        }
       kfree(us->unix_name->queue);
       kfree(us->unix_name);
       us->unix_name = NULL;
@@ -226,7 +226,7 @@ int unp_socket(int domain, int type, int protocol, struct unix_socket *sock)
   struct file *fp;
   struct unix_socket *us;
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (type != SOCK_STREAM || protocol != 0)
     errno_return(EPROTONOSUPPORT, -1);
 
@@ -250,7 +250,7 @@ int unp_socket(int domain, int type, int protocol, struct unix_socket *sock)
       errno = err;
       syscall (SYS_sigsetmask, omask);
       if (sock == NULL)
-	kfree(us);
+        kfree(us);
       return -1;
     }
 
@@ -265,7 +265,6 @@ int unp_socket(int domain, int type, int protocol, struct unix_socket *sock)
 int unp_bind(int s, const struct sockaddr *name, int namelen)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *fp = u.u_ofile[s];
   struct ix_unix_name *un;
   int tmp;
@@ -291,7 +290,6 @@ int unp_bind(int s, const struct sockaddr *name, int namelen)
 int unp_listen(int s, int backlog)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *fp = u.u_ofile[s];
   struct unix_socket *us = fp->f_sock;
 
@@ -307,7 +305,6 @@ int unp_listen(int s, int backlog)
 int unp_accept(int s, struct sockaddr *name, int *namelen)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct unix_socket *client = NULL;
   struct ix_unix_name *un = f->f_sock->unix_name;
@@ -322,30 +319,30 @@ int unp_accept(int s, struct sockaddr *name, int *namelen)
   do {
     while (un->queue_index == 0)
       {
-	if (f->f_flags & FNDELAY)
-	  {
-	    err = EWOULDBLOCK;
-	    goto error;
-	  }
-	Forbid ();
-	__release_file (f);
-	syscall (SYS_sigsetmask, omask);
-	sleep_rc = ix_sleep((caddr_t)un, "accept");
-	Permit ();
-	if (sleep_rc < 0)
-	  setrun (SysBase->ThisTask);
-	omask = syscall (SYS_sigsetmask, ~0);
-	__get_file (f);
+        if (f->f_flags & FNDELAY)
+          {
+            err = EWOULDBLOCK;
+            goto error;
+          }
+        Forbid ();
+        __release_file (f);
+        syscall (SYS_sigsetmask, omask);
+        sleep_rc = ix_sleep((caddr_t)un, "accept");
+        Permit ();
+        if (sleep_rc < 0)
+          setrun (FindTask (0));
+        omask = syscall (SYS_sigsetmask, ~0);
+        __get_file (f);
       }
     ix_lock_base();
     client = NULL;
     if (un->queue_index)
       {
-	client = (struct unix_socket *)un->queue[0];
-	if (--un->queue_index)
-	  memcpy(un->queue, un->queue + 1, un->queue_index * 4);
-	if (client)
-	  client->state = UNS_PROCESSING;
+        client = (struct unix_socket *)un->queue[0];
+        if (--un->queue_index)
+          memcpy(un->queue, un->queue + 1, un->queue_index * 4);
+        if (client)
+          client->state = UNS_PROCESSING;
       }
     ix_unlock_base();
   } while (client == NULL);
@@ -377,7 +374,6 @@ error:
 int unp_connect(int s, const struct sockaddr *name, int namelen)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct unix_socket *us = f->f_sock;
   struct ix_unix_name *un;
@@ -407,7 +403,7 @@ int unp_connect(int s, const struct sockaddr *name, int namelen)
   if (!us->from_server)
     {
       if (us->to_server)
-	kfree(us->to_server);
+        kfree(us->to_server);
       us->to_server = NULL;
       ix_unlock_base();
       errno_return(ENOMEM, -1);
@@ -426,7 +422,7 @@ int unp_connect(int s, const struct sockaddr *name, int namelen)
       state = us->state;
       Permit ();
       if (sleep_rc < 0)
-	setrun (SysBase->ThisTask);
+        setrun (FindTask (0));
       Forbid ();
     } while (sleep_rc < 0 || (state != UNS_ERROR && state != UNS_ACCEPTED));
   Permit();
@@ -444,7 +440,6 @@ int unp_connect(int s, const struct sockaddr *name, int namelen)
 int unp_send(int s, const void *buf, int len, int flags)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (flags)
     errno_return(EOPNOTSUPP, -1);
   return unp_write(u.u_ofile[s], buf, len);
@@ -453,7 +448,6 @@ int unp_send(int s, const void *buf, int len, int flags)
 int unp_recv(int s, void *buf, int len, int flags)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   if (flags)
     errno_return(EOPNOTSUPP, -1);
   return unp_read(u.u_ofile[s], buf, len);
@@ -462,7 +456,6 @@ int unp_recv(int s, void *buf, int len, int flags)
 int unp_shutdown(int s, int how)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
 
   ix_lock_base();
@@ -497,7 +490,6 @@ int unp_getsockopt(int s, int level, int name, void *val, int *valsize)
 int unp_getsockname(int s, struct sockaddr *asa, int *alen)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   struct file *f = u.u_ofile[s];
   struct sockaddr_un *un = (struct sockaddr_un *)asa;
 
@@ -516,7 +508,6 @@ int
 stream_read (struct file *f, char *buf, int len)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   int omask = syscall (SYS_sigsetmask, ~0);
   int err = errno;
   int really_read = 0;
@@ -555,16 +546,16 @@ stream_read (struct file *f, char *buf, int len)
 	  sleep_rc = ix_sleep ((caddr_t)ss, "sockread");
 	  Permit ();
 	  if (sleep_rc < 0)
-	    setrun (SysBase->ThisTask);
+	    setrun (FindTask (0));
 	  omask = syscall (SYS_sigsetmask, ~0);
 
 	  ss = get_stream(f, TRUE);
-	  continue;             /* retry */
+	  continue;		/* retry */
 	}
 
       /* okay, there's something to read from the pipe */
       if (ss->reader > ss->writer)
-	{
+        {
 	  /* read till end of buffer and wrap around */
 	  int avail = UNIX_SOCKET_SIZE - (ss->reader - ss->buffer);
 	  int do_read = len < avail ? len : avail;
@@ -579,7 +570,7 @@ stream_read (struct file *f, char *buf, int len)
 	    ss->reader = ss->buffer;
 	}
       if (len && ss->reader < ss->writer)
-	{
+        {
 	  int avail = ss->writer - ss->reader;
 	  int do_read = len < avail ? len : avail;
 
@@ -591,7 +582,7 @@ stream_read (struct file *f, char *buf, int len)
 	}
       Forbid();
       if (ss->task)
-	Signal(ss->task, 1 << getuser(ss->task)->u_pipe_sig);
+        Signal(ss->task, 1 << getuser(ss->task)->u_pipe_sig);
       Permit();
 
       ix_wakeup((u_int)ss);
@@ -607,7 +598,7 @@ stream_read (struct file *f, char *buf, int len)
 int unp_read(struct file *f, char *buf, int len)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (f->f_sock->state != UNS_ACCEPTED)
     errno_return(ENOTCONN, -1);
   return stream_read(f, buf, len);
@@ -617,7 +608,6 @@ int
 stream_write (struct file *f, const char *buf, int len)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
   int omask = syscall (SYS_sigsetmask, ~0);
   int err = errno;
   int sleep_rc;
@@ -631,9 +621,9 @@ stream_write (struct file *f, const char *buf, int len)
 	  really_written = -1;
 	  err = EPIPE;
 	  /* this is something no `real' Amiga pipe handler will do ;-)) */
-	  _psignal (SysBase->ThisTask, SIGPIPE);
+	  _psignal (FindTask (0), SIGPIPE);
 	  break;
-	}
+        }
 	
       /* buffer full ?? */
       if (!can_write(ss))
@@ -641,10 +631,10 @@ stream_write (struct file *f, const char *buf, int len)
 	  if (f->f_flags & FNDELAY)
 	    {
 	      if (! really_written)
-		{
-		  really_written = -1;
-		  err = EAGAIN;
-		}
+	        {
+	          really_written = -1;
+	          err = EAGAIN;
+	        }
 	      break;
 	    }
 
@@ -660,18 +650,18 @@ stream_write (struct file *f, const char *buf, int len)
 	  sleep_rc = ix_sleep ((caddr_t)ss, "sockwrite");
 	  Permit ();
 	  if (sleep_rc < 0)
-	    setrun (SysBase->ThisTask);
+	    setrun (FindTask (0));
 	  omask = syscall (SYS_sigsetmask, ~0);
 
 	  ss = get_stream(f, FALSE);
-	  continue;             /* retry */
+	  continue;		/* retry */
 	}
 
       /* okay, there's some space left to write to the pipe */
 
       if (ss->writer >= ss->reader)
-	{
-	  /* write till end of buffer */
+        {
+          /* write till end of buffer */
 	  int avail = UNIX_SOCKET_SIZE - 1 - (ss->writer - ss->buffer);
 	  int do_write;
 
@@ -689,7 +679,7 @@ stream_write (struct file *f, const char *buf, int len)
 	}
 
       if (ss->writer < ss->reader - 1)
-	{
+        {
 	  int avail = ss->reader - ss->writer - 1;
 	  int do_write = len < avail ? len : avail;
 
@@ -701,7 +691,7 @@ stream_write (struct file *f, const char *buf, int len)
 	}
       Forbid();
       if (ss->task)
-	Signal(ss->task, 1 << getuser(ss->task)->u_pipe_sig);
+        Signal(ss->task, 1 << getuser(ss->task)->u_pipe_sig);
       Permit();
 	
       ix_wakeup((u_int)ss);
@@ -717,7 +707,7 @@ stream_write (struct file *f, const char *buf, int len)
 int unp_write(struct file *f, const char *buf, int len)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (f->f_sock->state != UNS_ACCEPTED)
     errno_return(ENOTCONN, -1);
   return stream_write(f, buf, len);
@@ -738,7 +728,7 @@ int unp_ioctl(struct file *f, int cmd, int inout, int arglen, caddr_t arg)
       {
 	unsigned int *pt = (unsigned int *)arg;
 
-	if (ss == NULL)
+        if (ss == NULL)
 	  *pt = 0;
 	else if (ss->reader < ss->writer)
 	  *pt = ss->writer - ss->reader;
@@ -747,7 +737,7 @@ int unp_ioctl(struct file *f, int cmd, int inout, int arglen, caddr_t arg)
 	else
 	  *pt = 0;
 	result = 0;
-	break;
+        break;
       }
 
     case FIONBIO:
@@ -798,32 +788,32 @@ int unp_select(struct file *f, int select_cmd, int io_mode, fd_set *ignored, u_l
 {
   struct sock_stream *ss = find_stream(f, io_mode == SELMODE_IN);
   usetup;
-  if (u.u_parent_userdata)u_ptr=u.u_parent_userdata; 
+
   if (f->f_type != DTYPE_PIPE && ss == NULL)
     {
       struct ix_unix_name *un = f->f_sock->unix_name;
       int result = 1UL << u.u_pipe_sig;
 
       if (un == NULL)
-	return 0;
+        return 0;
       ix_lock_base();
       un->task = NULL;
       if (select_cmd == SELCMD_CHECK || select_cmd == SELCMD_POLL)
-	{
-	  if (io_mode == SELMODE_IN)
-	    result = un->queue_index != 0;
-	  else
-	    result = 0;
-	}
+        {
+          if (io_mode == SELMODE_IN)
+    	    result = un->queue_index != 0;
+          else
+            result = 0;
+        }
       else
-	un->task = SysBase->ThisTask;
+	un->task = FindTask(0);
       ix_unlock_base();
       return result;
     }
   if (select_cmd == SELCMD_CHECK || select_cmd == SELCMD_POLL)
     {
-      if (select_cmd == SELCMD_CHECK && ss->task == SysBase->ThisTask)
-	ss->task = NULL;
+      if (select_cmd == SELCMD_CHECK && ss->task == FindTask(0))
+        ss->task = NULL;
       /* we support both, read and write checks (hey, something new ;-)) */
       if (io_mode == SELMODE_IN)
 	return can_read(ss) || (ss->flags & UNF_NO_WRITER);
@@ -831,7 +821,7 @@ int unp_select(struct file *f, int select_cmd, int io_mode, fd_set *ignored, u_l
 	return can_write(ss) || (ss->flags & UNF_NO_READER);
       return 0;
     }
-  ss->task = SysBase->ThisTask;
+  ss->task = FindTask(0);
   if (io_mode == SELMODE_IN)
     if (can_read(ss) || (ss->flags & UNF_NO_WRITER))
       Signal(ss->task, 1 << u.u_pipe_sig);
@@ -851,9 +841,6 @@ int unp_close(struct file *f)
       close_stream(f, TRUE, FALSE);
       close_stream(f, FALSE, FALSE);
     }
-
-  if (f->f_count == 0)
-    ffree(f);
 
   ix_unlock_base();
   return 0;

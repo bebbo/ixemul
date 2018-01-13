@@ -1,4 +1,4 @@
-/*      $NetBSD: shm.h,v 1.20 1996/04/09 20:55:35 cgd Exp $     */
+/*	$NetBSD: shm.h,v 1.20 1996/04/09 20:55:35 cgd Exp $	*/
 
 /*
  * Copyright (c) 1994 Adam Glass
@@ -40,25 +40,25 @@
 
 #include <sys/ipc.h>
 
-#define SHM_RDONLY      010000  /* Attach read-only (else read-write) */
-#define SHM_RND         020000  /* Round attach address to SHMLBA */
-#define SHMLBA          CLBYTES /* Segment low boundry address multiple */
+#define	SHM_RDONLY	010000	/* Attach read-only (else read-write) */
+#define	SHM_RND		020000	/* Round attach address to SHMLBA */
+#define	SHMLBA		CLBYTES	/* Segment low boundry address multiple */
 
 /* Some systems (e.g. HP-UX) take these as the second (cmd) arg to shmctl(). */
-#define SHM_LOCK        3       /* Lock segment in memory. */
-#define SHM_UNLOCK      4       /* Unlock a segment locked by SHM_LOCK. */
+#define	SHM_LOCK	3	/* Lock segment in memory. */
+#define	SHM_UNLOCK	4	/* Unlock a segment locked by SHM_LOCK. */
 
 struct shmid_ds {
-	struct ipc_perm   shm_perm;       /* operation permission structure */
-	int               shm_segsz;      /* size of segment in bytes */
-	pid_t             shm_lpid;       /* process ID of last shm op */
-	pid_t             shm_cpid;       /* process ID of creator */
-	short             shm_nattch;     /* number of current attaches */
-	time_t __ALIGN2__ shm_atime;      /* time of last shmat() */
-	time_t __ALIGN2__ shm_dtime;      /* time of last shmdt() */
-	time_t __ALIGN2__ shm_ctime;      /* time of last change by shmctl() */
-	void  *__ALIGN2__ shm_internal;   /* sysv stupidity */
-} __PACKED__;
+	struct ipc_perm	shm_perm;	/* operation permission structure */
+	int		shm_segsz;	/* size of segment in bytes */
+	pid_t		shm_lpid;	/* process ID of last shm op */
+	pid_t		shm_cpid;	/* process ID of creator */
+	short		shm_nattch;	/* number of current attaches */
+	time_t		shm_atime;	/* time of last shmat() */
+	time_t		shm_dtime;	/* time of last shmdt() */
+	time_t		shm_ctime;	/* time of last change by shmctl() */
+	void		*shm_internal;	/* sysv stupidity */
+};
 
 #include <sys/cdefs.h>
 
@@ -70,10 +70,10 @@ struct shm_list
   struct shm_list       *next;
 };
 
-#define SHMSEG_FREE             0x0200
-#define SHMSEG_REMOVED          0x0400
-#define SHMSEG_ALLOCATED        0x0800
-#define SHMSEG_WANTED           0x1000
+#define	SHMSEG_FREE     	0x0200
+#define	SHMSEG_REMOVED  	0x0400
+#define	SHMSEG_ALLOCATED	0x0800
+#define	SHMSEG_WANTED		0x1000
 
 #define IPC_SHMID(perm) (((perm).seq << 18) | (((long)&(perm)) & 0x3fffc))
 

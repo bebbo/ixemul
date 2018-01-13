@@ -1,8 +1,8 @@
-/*      $NetBSD: vscanf.c,v 1.5 1995/02/02 02:10:52 jtc Exp $   */
+/*	$NetBSD: vscanf.c,v 1.5 1995/02/02 02:10:52 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Donn Seeley at UUNET Technologies, Inc.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,42 +38,22 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vscanf.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vscanf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vscanf.c,v 1.5 1995/02/02 02:10:52 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
-#include <stdio.h>
 
-#ifdef NATIVE_MORPHOS
-#define __svfscanf my___svfscanf
-int __svfscanf(FILE *, const char *, my_va_list);
-#endif
+#include <stdio.h>
 
 int
 vscanf(fmt, ap)
 	const char *fmt;
-	va_list ap;
+	_BSD_VA_LIST_ ap;
 {
 	usetup;
-	my_va_list ap1;
-	my_va_init(ap1, ap);
-	return (__svfscanf(stdin, fmt, ap1));
+
+	return (__svfscanf(stdin, fmt, ap));
 }
-
-#ifdef NATIVE_MORPHOS
-
-int
-_varargs68k_vscanf(const char *fmt, char *ap)
-{
-	usetup;
-	my_va_list ap1;
-	my_va_init_68k(ap1, ap);
-	return __svfscanf(stdin, fmt, ap1);
-}
-
-#endif
-

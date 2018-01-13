@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)calloc.c    5.5 (Berkeley) 5/17/90";
+static char sccsid[] = "@(#)calloc.c	5.5 (Berkeley) 5/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL

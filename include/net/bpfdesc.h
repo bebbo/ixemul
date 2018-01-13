@@ -16,8 +16,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -34,7 +34,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)bpfdesc.h   7.1 (Berkeley) 5/7/91
+ *	@(#)bpfdesc.h	7.1 (Berkeley) 5/7/91
  *
  * @(#) soft:cvs/ixemul/include/net/bpfdesc.h,v 1.1.1.1 1994/04/04 04:33:11 amiga Exp (LBL)
  */
@@ -43,7 +43,7 @@
  * Descriptor associated with each open bpf file.
  */
 struct bpf_d {
-	struct bpf_d    *bd_next;       /* Linked list of descriptors */
+	struct bpf_d	*bd_next;	/* Linked list of descriptors */
 	/*
 	 * Buffer slots: two mbuf clusters buffer the incoming packets.
 	 *   The model has three slots.  Sbuf is always occupied.
@@ -53,35 +53,35 @@ struct bpf_d {
 	 *   fbuf (free) - When read is done, put cluster here.
 	 * On receiving, if sbuf is full and fbuf is 0, packet is dropped.
 	 */
-	caddr_t         bd_sbuf;        /* store slot */
-	caddr_t         bd_hbuf;        /* hold slot */
-	caddr_t         bd_fbuf;        /* free slot */
-	int             bd_slen;        /* current length of store buffer */
-	int             bd_hlen;        /* current length of hold buffer */
+	caddr_t		bd_sbuf;	/* store slot */
+	caddr_t		bd_hbuf;	/* hold slot */
+	caddr_t		bd_fbuf;	/* free slot */
+	int 		bd_slen;	/* current length of store buffer */
+	int 		bd_hlen;	/* current length of hold buffer */
 
-	int             bd_bufsize;     /* absolute length of buffers */
+	int		bd_bufsize;	/* absolute length of buffers */
 
-	struct bpf_if * bd_bif;         /* interface descriptor */
-	u_long          bd_rtout;       /* Read timeout in 'ticks' */
-	struct bpf_insn *bd_filter;     /* filter code */
-	u_long          bd_rcount;      /* number of packets received */
-	u_long          bd_dcount;      /* number of packets dropped */
-	struct proc *   bd_selproc;     /* process that last selected us */
+	struct bpf_if *	bd_bif;		/* interface descriptor */
+	u_long		bd_rtout;	/* Read timeout in 'ticks' */
+	struct bpf_insn *bd_filter; 	/* filter code */
+	u_long		bd_rcount;	/* number of packets received */
+	u_long		bd_dcount;	/* number of packets dropped */
+	struct proc *	bd_selproc;	/* process that last selected us */
 
-	u_char          bd_promisc;     /* true if listening promiscuously */
-	u_char          bd_state;       /* idle, waiting, or timed out */
-	u_char          bd_selcoll;     /* true if selects collide */
-	u_char          bd_immediate;   /* true to return on packet arrival */
+	u_char		bd_promisc;	/* true if listening promiscuously */
+	u_char		bd_state;	/* idle, waiting, or timed out */
+	u_char		bd_selcoll;	/* true if selects collide */
+	u_char		bd_immediate;	/* true to return on packet arrival */
 };
 
 /*
  * Descriptor associated with each attached hardware interface.
  */
 struct bpf_if {
-	struct bpf_if *bif_next;        /* list of all interfaces */
-	struct bpf_d *bif_dlist;        /* descriptor list */
-	struct bpf_if **bif_driverp;    /* pointer into softc */
-	u_int bif_dlt;                  /* link layer type */
-	u_int bif_hdrlen;               /* length of header (with padding) */
-	struct ifnet *bif_ifp;          /* correspoding interface */
+	struct bpf_if *bif_next;	/* list of all interfaces */
+	struct bpf_d *bif_dlist;	/* descriptor list */
+	struct bpf_if **bif_driverp;	/* pointer into softc */
+	u_int bif_dlt;			/* link layer type */
+	u_int bif_hdrlen;		/* length of header (with padding) */
+	struct ifnet *bif_ifp;		/* correspoding interface */
 };

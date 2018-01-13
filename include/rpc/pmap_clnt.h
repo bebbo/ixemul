@@ -1,4 +1,4 @@
-/*      $NetBSD: pmap_clnt.h,v 1.5 1994/12/04 01:12:42 cgd Exp $        */
+/*	$NetBSD: pmap_clnt.h,v 1.5 1994/12/04 01:12:42 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)pmap_clnt.h 1.11 88/02/08 SMI 
- *      @(#)pmap_clnt.h 2.1 88/07/29 4.0 RPCSRC
+ *	from: @(#)pmap_clnt.h 1.11 88/02/08 SMI 
+ *	@(#)pmap_clnt.h	2.1 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -41,24 +41,24 @@
 
 /*
  * Usage:
- *      success = pmap_set(program, version, protocol, port);
- *      success = pmap_unset(program, version);
- *      port = pmap_getport(address, program, version, protocol);
- *      head = pmap_getmaps(address);
- *      clnt_stat = pmap_rmtcall(address, program, version, procedure,
- *              xdrargs, argsp, xdrres, resp, tout, port_ptr)
- *              (works for udp only.) 
- *      clnt_stat = clnt_broadcast(program, version, procedure,
- *              xdrargs, argsp, xdrres, resp, eachresult)
- *              (like pmap_rmtcall, except the call is broadcasted to all
- *              locally connected nets.  For each valid response received,
- *              the procedure eachresult is called.  Its form is:
- *      done = eachresult(resp, raddr)
- *              bool_t done;
- *              caddr_t resp;
- *              struct sockaddr_in raddr;
- *              where resp points to the results of the call and raddr is the
- *              address if the responder to the broadcast.
+ *	success = pmap_set(program, version, protocol, port);
+ *	success = pmap_unset(program, version);
+ *	port = pmap_getport(address, program, version, protocol);
+ *	head = pmap_getmaps(address);
+ *	clnt_stat = pmap_rmtcall(address, program, version, procedure,
+ *		xdrargs, argsp, xdrres, resp, tout, port_ptr)
+ *		(works for udp only.) 
+ * 	clnt_stat = clnt_broadcast(program, version, procedure,
+ *		xdrargs, argsp,	xdrres, resp, eachresult)
+ *		(like pmap_rmtcall, except the call is broadcasted to all
+ *		locally connected nets.  For each valid response received,
+ *		the procedure eachresult is called.  Its form is:
+ *	done = eachresult(resp, raddr)
+ *		bool_t done;
+ *		caddr_t resp;
+ *		struct sockaddr_in raddr;
+ *		where resp points to the results of the call and raddr is the
+ *		address if the responder to the broadcast.
  */
 
 #ifndef _RPC_PMAPCLNT_H
@@ -66,20 +66,20 @@
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-extern bool_t           pmap_set        __P((u_long, u_long, int, int));
-extern bool_t           pmap_unset      __P((u_long, u_long));
-extern struct pmaplist  *pmap_getmaps   __P((struct sockaddr_in *));
-extern enum clnt_stat   pmap_rmtcall    __P((struct sockaddr_in *,
+extern bool_t		pmap_set	__P((u_long, u_long, int, int));
+extern bool_t		pmap_unset	__P((u_long, u_long));
+extern struct pmaplist	*pmap_getmaps	__P((struct sockaddr_in *));
+extern enum clnt_stat	pmap_rmtcall	__P((struct sockaddr_in *,
 					     u_long, u_long, u_long,
 					     xdrproc_t, caddr_t,
 					     xdrproc_t, caddr_t,
 					     struct timeval, u_long *));
-extern enum clnt_stat   clnt_broadcast  __P((u_long, u_long, u_long,
+extern enum clnt_stat	clnt_broadcast	__P((u_long, u_long, u_long,
 					     xdrproc_t, char *,
 					     xdrproc_t, char *,
 					     bool_t (*) __P((caddr_t,
 						struct sockaddr_in *))));
-extern u_short          pmap_getport    __P((struct sockaddr_in *,
+extern u_short		pmap_getport	__P((struct sockaddr_in *,
 					     u_long, u_long, u_int));
 __END_DECLS
 

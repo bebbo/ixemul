@@ -1,8 +1,8 @@
-/*      $NetBSD: findfp.c,v 1.6 1995/02/02 02:09:17 jtc Exp $   */
+/*	$NetBSD: findfp.c,v 1.6 1995/02/02 02:09:17 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)findfp.c    8.2 (Berkeley) 1/4/94";
+static char sccsid[] = "@(#)findfp.c	8.2 (Berkeley) 1/4/94";
 #endif
 static char rcsid[] = "$NetBSD: findfp.c,v 1.6 1995/02/02 02:09:17 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -54,7 +54,7 @@ static char rcsid[] = "$NetBSD: findfp.c,v 1.6 1995/02/02 02:09:17 jtc Exp $";
 #include <string.h>
 #include "local.h"
 
-#define NDYNAMIC 10             /* add ten more whenever necessary */
+#define	NDYNAMIC 10		/* add ten more whenever necessary */
 
 void
 __init_stdinouterr (void)
@@ -139,18 +139,18 @@ __sfp()
 	}
 	return (NULL);
 found:
-	fp->_flags = 1;         /* reserve this slot; caller sets real flags */
-	fp->_p = NULL;          /* no current pointer */
-	fp->_w = 0;             /* nothing to read or write */
+	fp->_flags = 1;		/* reserve this slot; caller sets real flags */
+	fp->_p = NULL;		/* no current pointer */
+	fp->_w = 0;		/* nothing to read or write */
 	fp->_r = 0;
-	fp->_bf._base = NULL;   /* no buffer */
+	fp->_bf._base = NULL;	/* no buffer */
 	fp->_bf._size = 0;
-	fp->_lbfsize = 0;       /* not line buffered */
-	fp->_file = -1;         /* no file */
-/*      fp->_cookie = <any>; */ /* caller sets cookie, _read/_write etc */
-	fp->_ub._base = NULL;   /* no ungetc buffer */
+	fp->_lbfsize = 0;	/* not line buffered */
+	fp->_file = -1;		/* no file */
+/*	fp->_cookie = <any>; */	/* caller sets cookie, _read/_write etc */
+	fp->_ub._base = NULL;	/* no ungetc buffer */
 	fp->_ub._size = 0;
-	fp->_lb._base = NULL;   /* no line buffer */
+	fp->_lb._base = NULL;	/* no line buffer */
 	fp->_lb._size = 0;
 	return (fp);
 }
@@ -166,7 +166,7 @@ f_prealloc()
 	register struct glue *g;
 	int n;
 
-	n = getdtablesize() - FOPEN_MAX + 20;           /* 20 for slop. */
+	n = getdtablesize() - FOPEN_MAX + 20;		/* 20 for slop. */
 	for (g = &__sglue; (n -= g->niobs) > 0 && g->next; g = g->next)
 		/* void */;
 	if (n > 0)
@@ -184,5 +184,5 @@ void
 _cleanup()
 {
 	/* (void) _fwalk(fclose); */
-	(void) _fwalk(__sflush);                /* `cheating' */
+	(void) _fwalk(__sflush);		/* `cheating' */
 }

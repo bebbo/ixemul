@@ -1,8 +1,8 @@
-/*      $NetBSD: res_send.c,v 1.4 1995/02/25 06:21:01 cgd Exp $ */
+/*	$NetBSD: res_send.c,v 1.4 1995/02/25 06:21:01 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1985, 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_send.c  8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)res_send.c	8.1 (Berkeley) 6/4/93";
 static char rcsid[] = "$Id: res_send.c,v 4.9.1.1 1993/05/02 22:43:03 vixie Rel ";
 #else
 static char rcsid[] = "$NetBSD: res_send.c,v 1.4 1995/02/25 06:21:01 cgd Exp $";
@@ -79,19 +79,19 @@ static char rcsid[] = "$NetBSD: res_send.c,v 1.4 1995/02/25 06:21:01 cgd Exp $";
 #include <unistd.h>
 #include <string.h>
 
-/*static int s = -1;*/  /* socket used for communications */
+/*static int s = -1;*/	/* socket used for communications */
 extern int _res_socket;
 #define s _res_socket
 
 static struct sockaddr no_addr;
 
 #ifndef FD_SET
-#define NFDBITS         32
-#define FD_SETSIZE      32
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
-#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
+#define	NFDBITS		32
+#define	FD_SETSIZE	32
+#define	FD_SET(n, p)	((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define	FD_CLR(n, p)	((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define	FD_ISSET(n, p)	((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define FD_ZERO(p)	bzero((char *)(p), sizeof(*(p)))
 #endif
 
 int
@@ -111,7 +111,7 @@ res_send(buf, buflen, answer, anslen)
 	struct timeval timeout;
 	HEADER *hp = (HEADER *) buf;
 	HEADER *anhp = (HEADER *) answer;
-	u_int badns;            /* XXX NSMAX can't exceed #/bits per this */
+	u_int badns;		/* XXX NSMAX can't exceed #/bits per this */
 	struct iovec iov[2];
 	int terrno = ETIMEDOUT;
 	char junk[512];
@@ -198,7 +198,7 @@ res_send(buf, buflen, answer, anslen)
 			cp = answer;
 			len = sizeof(short);
 			while (len != 0 &&
-			    (n = read(s, (char *)cp, (int)len)) > 0,0) {
+			    (n = read(s, (char *)cp, (int)len)) > 0) {
 				cp += n;
 				len -= n;
 			}
@@ -237,7 +237,7 @@ res_send(buf, buflen, answer, anslen)
 			} else
 				len = resplen;
 			while (len != 0 &&
-			   (n = read(s, (char *)cp, (int)len)) > 0,0) {
+			   (n = read(s, (char *)cp, (int)len)) > 0) {
 				cp += n;
 				len -= n;
 			}
@@ -454,9 +454,9 @@ wait:
 	}
 	if (v_circuit == 0)
 		if (gotsomewhere == 0)
-			errno = ECONNREFUSED;   /* no nameservers found */
+			errno = ECONNREFUSED;	/* no nameservers found */
 		else
-			errno = ETIMEDOUT;      /* no answer obtained */
+			errno = ETIMEDOUT;	/* no answer obtained */
 	else
 		errno = terrno;
 	return (-1);

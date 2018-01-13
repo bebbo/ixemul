@@ -41,7 +41,7 @@ extern int __read(), __aread(), __write(), __awrite();
 
 int
 __fioctl(struct file *f, unsigned int cmd, unsigned int inout,
-	 unsigned int arglen, unsigned int arg)
+         unsigned int arglen, unsigned int arg)
 {
   usetup;
   int omask;
@@ -69,7 +69,7 @@ __fioctl(struct file *f, unsigned int cmd, unsigned int inout,
 	      {
 		/* fine, the device seems at least to understand the
 		 * Seek-Packet */
-		eof_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
+	        eof_pos = Seek(CTOBPTR(f->f_fh), 0, OFFSET_END);
 
 		/* since this was a real seek, the device could have
 		 * signaled an error, if it just can't seek .. */
@@ -81,7 +81,7 @@ __fioctl(struct file *f, unsigned int cmd, unsigned int inout,
 		    goto ret;
 		  }
 	      }
-	    /* well, since the device can't seek, AND it's not      
+	    /* well, since the device can't seek, AND it's not	    
 	     * interactive, chances are bad, we ever will get at the
 	     * right result, but we'll try nevertheless the WaitForChar
 	     * Packet, it can only fail... */
@@ -91,7 +91,7 @@ __fioctl(struct file *f, unsigned int cmd, unsigned int inout,
 	 * its actually in micro/s.. who knows.. */
 	*pt = WaitForChar(CTOBPTR(f->f_fh), 0) != 0;
 	result = 0;
-	goto ret;
+        goto ret;
       }
 
     case FIONBIO:

@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)heapsort.c  5.1 (Berkeley) 6/4/91";
+static char sccsid[] = "@(#)heapsort.c	5.1 (Berkeley) 6/4/91";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -49,7 +49,7 @@ static char sccsid[] = "@(#)heapsort.c  5.1 (Berkeley) 6/4/91";
  * isn't worth optimizing; the SWAP's get sped up by the cache, and pointer
  * arithmetic gets lost in the time required for comparison function calls.
  */
-#define SWAP(a, b) { \
+#define	SWAP(a, b) { \
 	cnt = size; \
 	do { \
 		ch = *a; \
@@ -68,7 +68,7 @@ static char sccsid[] = "@(#)heapsort.c  5.1 (Berkeley) 6/4/91";
  * The initial value depends on if we're building the initial heap or
  * reconstructing it after saving a value.
  */
-#define HEAP(initval) { \
+#define	HEAP(initval) { \
 	for (i = initval; (j = i * 2) <= nmemb; i = j) { \
 		p = (char *)bot + j * size; \
 		if (j < nmemb && compar(p, p + size) < 0) { \

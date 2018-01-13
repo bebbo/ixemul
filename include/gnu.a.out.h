@@ -7,14 +7,14 @@
 
 struct exec
 {
-  unsigned long a_info;         /* Use macros N_MAGIC, etc for access */
-  unsigned a_text;              /* length of text, in bytes */
-  unsigned a_data;              /* length of data, in bytes */
-  unsigned a_bss;               /* length of uninitialized data area for file, in bytes */
-  unsigned a_syms;              /* length of symbol table data in file, in bytes */
-  unsigned a_entry;             /* start address */
-  unsigned a_trsize;            /* length of relocation info for text, in bytes */
-  unsigned a_drsize;            /* length of relocation info for data, in bytes */
+  unsigned long a_info;		/* Use macros N_MAGIC, etc for access */
+  unsigned a_text;		/* length of text, in bytes */
+  unsigned a_data;		/* length of data, in bytes */
+  unsigned a_bss;		/* length of uninitialized data area for file, in bytes */
+  unsigned a_syms;		/* length of symbol table data in file, in bytes */
+  unsigned a_entry;		/* start address */
+  unsigned a_trsize;		/* length of relocation info for text, in bytes */
+  unsigned a_drsize;		/* length of relocation info for data, in bytes */
 };
 
 #endif /* __STRUCT_EXEC_OVERRIDE__ */
@@ -73,13 +73,13 @@ enum machine_type {
 #define ZMAGIC 0413
 
 #if !defined (N_BADMAG)
-#define N_BADMAG(x)                                     \
- (N_MAGIC(x) != OMAGIC && N_MAGIC(x) != NMAGIC          \
+#define N_BADMAG(x)					\
+ (N_MAGIC(x) != OMAGIC && N_MAGIC(x) != NMAGIC		\
   && N_MAGIC(x) != ZMAGIC)
 #endif
 
-#define _N_BADMAG(x)                                    \
- (N_MAGIC(x) != OMAGIC && N_MAGIC(x) != NMAGIC          \
+#define _N_BADMAG(x)					\
+ (N_MAGIC(x) != OMAGIC && N_MAGIC(x) != NMAGIC		\
   && N_MAGIC(x) != ZMAGIC)
 
 #define _N_HDROFF(x) (1024 - sizeof (struct exec))
@@ -120,9 +120,9 @@ enum machine_type {
 #if defined(vax) || defined(hp300) || defined(pyr)
 #define SEGMENT_SIZE page_size
 #endif
-#ifdef  sony
-#define SEGMENT_SIZE    0x2000
-#endif  /* Sony.  */
+#ifdef	sony
+#define	SEGMENT_SIZE	0x2000
+#endif	/* Sony.  */
 #ifdef is68k
 #define SEGMENT_SIZE 0x20000
 #endif
@@ -214,13 +214,13 @@ struct nlist {
    in that it can satisfy undefined external references.  */
 
 /* These appear as input to LD, in a .o file.  */
-#define N_SETA  0x14            /* Absolute set element symbol */
-#define N_SETT  0x16            /* Text set element symbol */
-#define N_SETD  0x18            /* Data set element symbol */
-#define N_SETB  0x1A            /* Bss set element symbol */
+#define	N_SETA	0x14		/* Absolute set element symbol */
+#define	N_SETT	0x16		/* Text set element symbol */
+#define	N_SETD	0x18		/* Data set element symbol */
+#define	N_SETB	0x1A		/* Bss set element symbol */
 
 /* This is output from LD.  */
-#define N_SETV  0x1C            /* Pointer to set vector in data area.  */
+#define N_SETV	0x1C		/* Pointer to set vector in data area.  */
 
 #if !defined (N_RELOCATION_INFO_DECLARED)
 /* This structure describes a single relocation to be performed.
@@ -242,10 +242,10 @@ struct relocation_info
      Thus, a value of 2 indicates 1<<2 bytes.  */
   unsigned int r_length:2;
   /* 1 => relocate with value of symbol.
-	  r_symbolnum is the index of the symbol
+          r_symbolnum is the index of the symbol
 	  in file's the symbol table.
      0 => relocate with the address of a segment.
-	  r_symbolnum is N_TEXT, N_DATA, N_BSS or N_ABS
+          r_symbolnum is N_TEXT, N_DATA, N_BSS or N_ABS
 	  (the N_EXT bit may be set also, but signifies nothing).  */
   unsigned int r_extern:1;
   /* Four bits that aren't used, but when writing an object file

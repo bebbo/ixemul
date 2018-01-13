@@ -1,9 +1,9 @@
-/*      $NetBSD: ipc.h,v 1.15 1996/02/09 18:25:12 christos Exp $        */
+/*	$NetBSD: ipc.h,v 1.15 1996/02/09 18:25:12 christos Exp $	*/
 
 /*
  * Copyright (c) 1988 University of Utah.
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  * (c) UNIX System Laboratories, Inc.
  * All or some portions of this file are derived from material licensed
  * to the University of California by American Telephone and Telegraph
@@ -24,8 +24,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -42,7 +42,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)ipc.h       8.3 (Berkeley) 1/21/94
+ *	@(#)ipc.h	8.3 (Berkeley) 1/21/94
  */
 
 /*
@@ -52,37 +52,37 @@
 #define _SYS_IPC_H_
 
 struct ipc_perm {
-	ushort  cuid;   /* creator user id */
-	ushort  cgid;   /* creator group id */
-	ushort  uid;    /* user id */
-	ushort  gid;    /* group id */
-	ushort  mode;   /* r/w permission */
-	ushort  seq;    /* sequence # (to generate unique msg/sem/shm id) */
-	key_t   key;    /* user specified msg/sem/shm key */
+	ushort	cuid;	/* creator user id */
+	ushort	cgid;	/* creator group id */
+	ushort	uid;	/* user id */
+	ushort	gid;	/* group id */
+	ushort	mode;	/* r/w permission */
+	ushort	seq;	/* sequence # (to generate unique msg/sem/shm id) */
+	key_t	key;	/* user specified msg/sem/shm key */
 };
 
 /* common mode bits */
-#define IPC_R           000400  /* read permission */
-#define IPC_W           000200  /* write/alter permission */
-#define IPC_M           010000  /* permission to change control info */
+#define	IPC_R		000400	/* read permission */
+#define	IPC_W		000200	/* write/alter permission */
+#define	IPC_M		010000	/* permission to change control info */
 
 /* SVID required constants (same values as system 5) */
-#define IPC_CREAT       001000  /* create entry if key does not exist */
-#define IPC_EXCL        002000  /* fail if key exists */
-#define IPC_NOWAIT      004000  /* error if request must wait */
+#define	IPC_CREAT	001000	/* create entry if key does not exist */
+#define	IPC_EXCL	002000	/* fail if key exists */
+#define	IPC_NOWAIT	004000	/* error if request must wait */
 
-#define IPC_PRIVATE     (key_t)0 /* private key */
+#define	IPC_PRIVATE	(key_t)0 /* private key */
 
-#define IPC_RMID        0       /* remove identifier */
-#define IPC_SET         1       /* set options */
-#define IPC_STAT        2       /* get options */
+#define	IPC_RMID	0	/* remove identifier */
+#define	IPC_SET		1	/* set options */
+#define	IPC_STAT	2	/* get options */
 #define IPC_GETLIST     3       /* get internal list */
 
 #ifdef _KERNEL
 /* Macros to convert between ipc ids and array indices or sequence ids */
-#define IPCID_TO_IX(id)         ((id) & 0xffff)
-#define IPCID_TO_SEQ(id)        (((id) >> 16) & 0xffff)
-#define IXSEQ_TO_IPCID(ix,perm) (((perm.seq) << 16) | (ix & 0xffff))
+#define	IPCID_TO_IX(id)		((id) & 0xffff)
+#define	IPCID_TO_SEQ(id)	(((id) >> 16) & 0xffff)
+#define	IXSEQ_TO_IPCID(ix,perm)	(((perm.seq) << 16) | (ix & 0xffff))
 
 int ipcperm __P((struct ucred *, struct ipc_perm *, int));
 #endif /* _KERNEL */
@@ -91,7 +91,7 @@ int ipcperm __P((struct ucred *, struct ipc_perm *, int));
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-key_t   ftok __P((const char *, char));
+key_t	ftok __P((const char *, char));
 __END_DECLS
 #endif
 #endif /* !_SYS_IPC_H_ */

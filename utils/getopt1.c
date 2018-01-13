@@ -51,7 +51,7 @@
 char *getenv ();
 #endif
 
-#ifndef NULL
+#ifndef	NULL
 #define NULL 0
 #endif
 
@@ -83,7 +83,7 @@ getopt_long_only (argc, argv, options, long_options, opt_index)
 }
 
 
-#endif  /* _LIBC or not __GNU_LIBRARY__.  */
+#endif	/* _LIBC or not __GNU_LIBRARY__.  */
 
 #ifdef TEST
 

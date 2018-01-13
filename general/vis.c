@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)vis.c       5.3 (Berkeley) 6/26/90";
+static char sccsid[] = "@(#)vis.c	5.3 (Berkeley) 6/26/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -27,7 +27,7 @@ static char sccsid[] = "@(#)vis.c       5.3 (Berkeley) 6/26/90";
 #include <ctype.h>
 #include <vis.h>
 
-#define isoctal(c)      (((u_char)(c)) >= '0' && ((u_char)(c)) <= '7')
+#define	isoctal(c)	(((u_char)(c)) >= '0' && ((u_char)(c)) <= '7')
 
 /*
  * vis - visually encode characters
@@ -91,7 +91,7 @@ vis(char *dst, char c, int flag, char nextc)
 			goto done;
 		}
 	}
-	if (((c & 0177) == ' ') || (flag & VIS_OCTAL)) {        
+	if (((c & 0177) == ' ') || (flag & VIS_OCTAL)) {	
 		*dst++ = '\\';
 		*dst++ = ((u_char)c >> 6 & 07) + '0';
 		*dst++ = ((u_char)c >> 3 & 07) + '0';
@@ -121,13 +121,13 @@ done:
 
 /*
  * strvis, strvisx - visually encode characters from src into dst
- *      
- *      Dst must be 4 times the size of src to account for possible
- *      expansion.  The length of dst, not including the trailing NULL,
- *      is returned. 
+ *	
+ *	Dst must be 4 times the size of src to account for possible
+ *	expansion.  The length of dst, not including the trailing NULL,
+ *	is returned. 
  *
- *      Strvisx encodes exactly len bytes from src into dst.
- *      This is useful for encoding a block of data.
+ *	Strvisx encodes exactly len bytes from src into dst.
+ *	This is useful for encoding a block of data.
  */
 int
 strvis(char *dst, const char *src, int flag)

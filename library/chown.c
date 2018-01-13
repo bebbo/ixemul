@@ -24,7 +24,6 @@
 #include "kprintf.h"
 #include <stdlib.h>
 
-#if 0
 int
 __chown_func (struct lockinfo *info, int ugid, int *error)
 {
@@ -67,74 +66,12 @@ chown(const char *name, uid_t uid, gid_t gid)
   if (result == 0)
     {
       errno = __ioerr_to_errno (IoErr ());
-
+      
       // If device doesn't support this action, then just let it succeed
       if (errno == ENODEV)
-	return 0;
+        return 0;
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
     }
 
   return result ? 0 : -1;
 }
-
-#else
-
-char *ix_to_ados(char *, const char *);
-char *check_root(char *);
-
-int
-chown(const char *name, uid_t uid, gid_t gid)
-{
-  int user;
-  int result;
-  struct stat stb;
-  usetup;
-  int omask;
-  char *buf = alloca(strlen(name) + 4);
-  LONG err;
-
-  if (syscall (SYS_lstat, name, &stb) == -1) return -1;
-  if (stb.st_mode & 0600)
-    {
-      if (syscall (SYS_chmod, name, stb.st_mode & ~0176000) == -1) return -1;
-    }
-
-  if (uid == (uid_t)(-1)) uid = stb.st_uid;
-  if (gid == (gid_t)(-1)) gid = stb.st_gid;
-
-  user = (__unix2amigaid(uid) << 16) | __unix2amigaid(gid);
-
-  buf = ix_to_ados(buf, name);
-
-  omask = syscall(SYS_sigsetmask, ~0);
-  result = SetOwner(buf, user);
-  if (!result)
-    {
-      err = IoErr();
-      if (err == ERROR_OBJECT_NOT_FOUND)
-        {
-	  buf = check_root(buf);
-	  if (buf && *buf)
-	    {
-	      result = SetOwner(buf, user);
-	      if (!result)
-		err = IoErr();
-	    }
-	}
-    }
-  syscall(SYS_sigsetmask, omask);
-
-  if (result == 0)
-    {
-      errno = __ioerr_to_errno (err);
-
-      // If device doesn't support this action, then just let it succeed
-      if (errno == ENODEV)
-	return 0;
-      KPRINTF (("chown(%s): &errno = %lx, errno = %ld\n", name, &errno, errno));
-    }
-
-  return result ? 0 : -1;
-}
-
-#endif

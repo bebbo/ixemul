@@ -25,33 +25,14 @@
 
 #include "defs.h"
 
-#ifndef mc68000
-
-struct node1 {
-    struct node1 *next;
-    struct node1 *prev;
-};
-
-void insque(struct node1 *new, struct node1 *pred)
-{
-  new->next = pred->next;
-  new->prev = pred;
-  pred->next = new;
-  new->next->prev = new;
-}
-
-#else
-
 ENTRY(insque)
-asm(" \n\
-	movl    sp@(8),a0 \n\
-	movl    sp@(4),a1 \n\
-	movl    a0@,a1@ \n\
-	movl    a0,a1@(4) \n\
-	movl    a1,a0@ \n\
-	movl    a1@,a0 \n\
-	movl    a1,a0@(4) \n\
-	rts \n\
+asm("
+	movl	sp@(8),a0
+	movl	sp@(4),a1
+	movl	a0@,a1@
+	movl	a0,a1@(4)
+	movl	a1,a0@
+	movl	a1@,a0
+	movl	a1,a0@(4)
+	rts
 ");
-
-#endif

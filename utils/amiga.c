@@ -1,6 +1,6 @@
 /*
-    Ixprefs v.2.6--ixemul.library configuration program
-    Copyright © 1995,1996 Kriton Kyrimis
+    Ixprefs v.2.8--ixemul.library configuration program
+    Copyright © 1995-2001 Kriton Kyrimis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include <graphics/gfxbase.h>
 #include <intuition/intuitionbase.h>
 #include <exec/libraries.h>
-#include <dos/dos.h>
 #include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/gadtools.h>
@@ -141,9 +140,6 @@ DisplayPrefs(void)
   ShowChecked(GDX_mufs, mufs);
   ShowCycle(GDX_networking, networking);
   ShowCycle(GDX_profilemethod, profilemethod);
-  ShowChecked(GDX_watchAvailMem, watchAvailMem);
-  ShowChecked(GDX_catchfailedallocs, catchfailedallocs);
-  ShowChecked(GDX_killappallocerr, killappallocerr);
 }
 
 int
@@ -195,23 +191,12 @@ EraseGadget(struct Window *win, struct Gadget *gad)
   }else{
     ht = win->IFont->tf_YSize;
   }
-#if 0
-  SetAPen(win->RPort, 255);
-  RectFill(win->RPort,
-	    gad->LeftEdge + gad->GadgetText->LeftEdge,
-	    gad->TopEdge + gad->GadgetText->TopEdge,
-	    gad->LeftEdge + gad->GadgetText->LeftEdge +
-	      IntuiTextLength(gad->GadgetText) - 1,
-	    gad->TopEdge + gad->GadgetText->TopEdge + ht - 1);
-  SetAPen(win->RPort, 1);
-#else
   EraseRect(win->RPort,
 	    gad->LeftEdge + gad->GadgetText->LeftEdge,
 	    gad->TopEdge + gad->GadgetText->TopEdge,
 	    gad->LeftEdge + gad->GadgetText->LeftEdge +
 	      IntuiTextLength(gad->GadgetText) - 1,
 	    gad->TopEdge + gad->GadgetText->TopEdge + ht - 1);
-#endif
 }
 
 #endif /* NO_AmigaOS_SUPPORT */

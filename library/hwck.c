@@ -36,7 +36,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <proto/intuition.h>
-#include <intuition/intuition.h>
 
 int has_fpu = 0;
 int has_68010_or_up = 0;
@@ -82,12 +81,12 @@ static int show_msg(char *title, const char *msg, va_list ap, char *gadgetformat
 
   if (ixemulbase && (ix.ix_flags & ix_create_enforcer_hit) && has_68020_or_up)
     {
-      asm ("movel #0,d0 \n\
-            move.l d0,0xdeaddead \n\
-            nop \n\
-            add.l #2,sp \n\
-            move.l d0,0xdeaddead \n\
-            nop \n\
+      asm ("movel #0,d0
+            move.l d0,0xdeaddead
+            nop
+            add.l #2,sp
+            move.l d0,0xdeaddead
+            nop
             sub.l #2,sp" : /* no output */ : );
     }
   me->tc_Flags = old_flags;
@@ -119,20 +118,8 @@ void ix_warning(const char *msg, ...)
         
   va_start(ap, msg);
   if (!show_msg(NULL, msg, ap, "Continue|Abort"))
-    exit(0);
+    exit(20);
   va_end(ap);
-}
-
-int ix_reqtry(const char *msg, ...)
-{
-  va_list ap;
-  int rc;
-  
-  va_start(ap, msg);
-  rc = show_msg(NULL, msg, ap, "Try Again|Ignore");
-  va_end(ap);
-  
-  return(rc);
 }
 
 int ix_req(char *title, char *button1, char *button2, char *msg, ...)

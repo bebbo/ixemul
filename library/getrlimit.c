@@ -36,7 +36,7 @@
 int
 getrlimit(int resource, struct rlimit *rlp)
 {
-  struct Task *me = SysBase->ThisTask;
+  struct Task *me = FindTask(0);
   struct user *u_ptr = getuser(me);
 
   if (resource < RLIMIT_CPU || resource > RLIMIT_RSS || !rlp)
@@ -56,7 +56,7 @@ getrlimit(int resource, struct rlimit *rlp)
 	rlp->rlim_cur = rlp->rlim_max = RLIM_INFINITY;
 	break;
       case RLIMIT_STACK:
-	rlp->rlim_cur = rlp->rlim_max = me->tc_SPUpper - me->tc_SPLower;
+        rlp->rlim_cur = rlp->rlim_max = me->tc_SPUpper - me->tc_SPLower;
 	break;
     }
 

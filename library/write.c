@@ -37,9 +37,8 @@ write (int fd, char *buf, int len)
   usetup;
   struct file *f;
   int result;
-  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
-  else f = u.u_ofile[fd];
-  if (fd < 0 || fd >= NOFILE || !(f))
+
+  if (fd < 0 || fd >= NOFILE || !(f = u.u_ofile[fd]))
     errno_return(EBADF, -1);
 
   if (f->f_write == NULL)

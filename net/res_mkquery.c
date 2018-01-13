@@ -1,8 +1,8 @@
-/*      $NetBSD: res_mkquery.c,v 1.5 1995/02/25 06:20:58 cgd Exp $      */
+/*	$NetBSD: res_mkquery.c,v 1.5 1995/02/25 06:20:58 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1985, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)res_mkquery.c       8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)res_mkquery.c	8.1 (Berkeley) 6/4/93";
 static char rcsid[] = "$Id: res_mkquery.c,v 4.9.1.2 1993/05/17 10:00:01 vixie Exp ";
 #else
 static char rcsid[] = "$NetBSD: res_mkquery.c,v 1.5 1995/02/25 06:20:58 cgd Exp $";
@@ -75,14 +75,14 @@ static char rcsid[] = "$NetBSD: res_mkquery.c,v 1.5 1995/02/25 06:20:58 cgd Exp 
  */
 int
 res_mkquery(op, dname, class, type, data, datalen, newrr_in, buf, buflen)
-	int op;                 /* opcode of query */
-	const char *dname;              /* domain name */
-	int class, type;        /* class and type of query */
-	const char *data;               /* resource record data */
-	int datalen;            /* length of data */
-	const char *newrr_in;   /* new rr for modify or append */
-	char *buf;              /* buffer to put query */
-	int buflen;             /* size of buffer */
+	int op;			/* opcode of query */
+	const char *dname;		/* domain name */
+	int class, type;	/* class and type of query */
+	const char *data;		/* resource record data */
+	int datalen;		/* length of data */
+	const char *newrr_in;	/* new rr for modify or append */
+	char *buf;		/* buffer to put query */
+	int buflen;		/* size of buffer */
 {
 	register HEADER *hp;
 	register char *cp;
@@ -160,7 +160,7 @@ res_mkquery(op, dname, class, type, data, datalen, newrr_in, buf, buflen)
 		 */
 		if (buflen < 1 + RRFIXEDSZ + datalen)
 			return (-1);
-		*cp++ = '\0';   /* no domain name */
+		*cp++ = '\0';	/* no domain name */
 		__putshort(type, (u_char *)cp);
 		cp += sizeof(u_int16_t);
 		__putshort(class, (u_char *)cp);
@@ -196,13 +196,13 @@ res_mkquery(op, dname, class, type, data, datalen, newrr_in, buf, buflen)
 			return (-1);
 		cp += n;
 		__putshort(type, cp);
-		cp += sizeof(u_int16_t);
-		__putshort(class, cp);
-		cp += sizeof(u_int16_t);
+                cp += sizeof(u_int16_t);
+                __putshort(class, cp);
+                cp += sizeof(u_int16_t);
 		__putlong(0, cp);
 		cp += sizeof(u_int32_t);
 		__putshort(datalen, cp);
-		cp += sizeof(u_int16_t);
+                cp += sizeof(u_int16_t);
 		if (datalen) {
 			bcopy(data, cp, datalen);
 			cp += datalen;
@@ -213,19 +213,19 @@ res_mkquery(op, dname, class, type, data, datalen, newrr_in, buf, buflen)
 		}
 		/* Else UPDATEM/UPDATEMA, so drop into code for UPDATEA */
 
-	case UPDATEA:   /* Add new resource record */
+	case UPDATEA:	/* Add new resource record */
 		buflen -= RRFIXEDSZ + datalen;
 		if ((n = dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
 			return (-1);
 		cp += n;
 		__putshort(newrr->r_type, cp);
-		cp += sizeof(u_int16_t);
-		__putshort(newrr->r_class, cp);
-		cp += sizeof(u_int16_t);
+                cp += sizeof(u_int16_t);
+                __putshort(newrr->r_class, cp);
+                cp += sizeof(u_int16_t);
 		__putlong(0, cp);
 		cp += sizeof(u_int32_t);
 		__putshort(newrr->r_size, cp);
-		cp += sizeof(u_int16_t);
+                cp += sizeof(u_int16_t);
 		if (newrr->r_size) {
 			bcopy(newrr->r_data, cp, newrr->r_size);
 			cp += newrr->r_size;

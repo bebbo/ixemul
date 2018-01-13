@@ -1,4 +1,4 @@
-/*      $NetBSD: krpc.h,v 1.3 1995/04/24 21:54:56 gwr Exp $     */
+/*	$NetBSD: krpc.h,v 1.3 1995/04/24 21:54:56 gwr Exp $	*/
 
 #include <sys/cdefs.h>
 
@@ -18,22 +18,22 @@ struct mbuf * xdr_inaddr_decode __P((struct mbuf *m, struct in_addr *ia));
 /*
  * RPC definitions for the portmapper
  */
-#define PMAPPORT                111
-#define PMAPPROG                100000
-#define PMAPVERS                2
-#define PMAPPROC_NULL           0
-#define PMAPPROC_SET            1
-#define PMAPPROC_UNSET          2
-#define PMAPPROC_GETPORT        3
-#define PMAPPROC_DUMP           4
-#define PMAPPROC_CALLIT         5
+#define	PMAPPORT		111
+#define	PMAPPROG		100000
+#define	PMAPVERS		2
+#define	PMAPPROC_NULL		0
+#define	PMAPPROC_SET		1
+#define	PMAPPROC_UNSET		2
+#define	PMAPPROC_GETPORT	3
+#define	PMAPPROC_DUMP		4
+#define	PMAPPROC_CALLIT		5
 
 
 /*
  * RPC definitions for bootparamd
  */
-#define BOOTPARAM_PROG          100026
-#define BOOTPARAM_VERS          1
-#define BOOTPARAM_WHOAMI        1
-#define BOOTPARAM_GETFILE       2
+#define	BOOTPARAM_PROG		100026
+#define	BOOTPARAM_VERS		1
+#define BOOTPARAM_WHOAMI	1
+#define BOOTPARAM_GETFILE	2
 

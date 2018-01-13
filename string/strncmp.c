@@ -21,26 +21,6 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-#ifdef __PPC__
-#include <string.h>
-
-int strncmp(const char *s1,const char *s2,size_t n)
-{
-  const unsigned char *p1=s1,*p2=s2;
-  unsigned long r,c;
-
-  if((r=n))
-  {
-    c=0;
-    do
-    {
-      r=*p1++;
-      ((unsigned char)c)=*p2++;
-    } while (!(r-=c) && (unsigned char)c && --n);
-  }
-  return r;
-}
-#else
 #include "defs.h"
 
 /*
@@ -50,26 +30,25 @@ int strncmp(const char *s1,const char *s2,size_t n)
  * right??
  */
 ENTRY(strncmp)
-asm(" \n\
-	movl    sp@(12),d1      /* count */ \n\
-	jeq     strncmpdone     /* nothing to do */ \n\
-	movl    sp@(4),a0       /* a0 = string1 */ \n\
-	movl    sp@(8),a1       /* a1 = string2 */ \n\
-strncmploop: \n\
-	movb    a0@+,d0         /* get *string1 */ \n\
-	cmpb    a1@+,d0         /* compare a byte */ \n\
-	jne     strncmpexit     /* not equal, break out */ \n\
-	tstb    d0              /* at end of string1? */ \n\
-	jeq     strncmpdone     /* yes, all done */ \n\
-	subql   #1,d1           /* no, adjust count */ \n\
-	jne     strncmploop     /* more to do, keep going */ \n\
-strncmpdone: \n\
-	moveq   #0,d0           /* strings are equal */ \n\
-	rts \n\
-strncmpexit: \n\
-	subb    a1@-,d0         /* *string1 - *string2 */ \n\
-	extw    d0 \n\
-	extl    d0 \n\
-	rts \n\
+asm("
+	movl	sp@(12),d1	/* count */
+	jeq	strncmpdone	/* nothing to do */
+	movl	sp@(4),a0	/* a0 = string1 */
+	movl	sp@(8),a1	/* a1 = string2 */
+strncmploop:
+	movb	a0@+,d0		/* get *string1 */
+	cmpb	a1@+,d0		/* compare a byte */
+	jne	strncmpexit	/* not equal, break out */
+	tstb	d0		/* at end of string1? */
+	jeq	strncmpdone	/* yes, all done */
+	subql	#1,d1		/* no, adjust count */
+	jne	strncmploop	/* more to do, keep going */
+strncmpdone:
+	moveq	#0,d0		/* strings are equal */
+	rts
+strncmpexit:
+	subb	a1@-,d0		/* *string1 - *string2 */
+	extw	d0
+	extl	d0
+	rts
 ");
-#endif

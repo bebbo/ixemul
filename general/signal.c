@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)signal.c    5.5 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)signal.c	5.5 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -40,30 +40,3 @@ signal(int s, sig_t a)
 		return (BADSIG);
 	return (osa.sa_handler);
 }
-
-#ifdef NATIVE_MORPHOS
-
-sig_t
-_trampoline_signal(void)
-{
-	int *p = (int *)REG_A7;
-	int s = p[1];
-	sig_t a = (sig_t)p[2];
-
-	if (a != SIG_DFL && a != SIG_IGN && a != SIG_ERR)
-		a = (sig_t)((int)a ^ 1);
-
-	a = signal(s, a);
-
-	if (a != SIG_DFL && a != SIG_IGN && a != SIG_ERR)
-		a = (sig_t)((int)a ^ 1);
-
-	return a;
-}
-
-struct EmulLibEntry _gate_signal = {
-  TRAP_LIB, 0, (void(*)())_trampoline_signal
-};
-
-#endif
-

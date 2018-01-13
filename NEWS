@@ -1,0 +1,892 @@
+============
+VERSION 48.2
+============
+
+Removed all pOS code and references.
+
+Fixed error reporting in __extend_file().
+
+Fixed potential problem of reading from freed memory, and enforcer hits
+caused from running non-ixemul programs under ixemul control (ie. make).
+Patches supplied by Emmanuel Lesueur.
+
+============
+VERSION 48.1
+============
+
+Interim release.
+
+============
+VERSION 48.0
+============
+
+Fixed a bug in ftruncate reported by Niels Froehling (incorrect
+interpretation of the SetFileSize return value).
+
+Fixed a malloc bug (it no longer accepts sizes < 0).
+
+Added a few things for Holger Jakob's ppc ixemul support.
+
+p.OS is no longer supported. While 99% of the code is still there
+it is no longer compiled, nor supported. Binaries compiled for
+ixemul 48.0 will no longer work under a p.OS system, nor do you
+need the p.OS headers anymore to compile ixemul.library.
+
+============
+VERSION 47.3
+============
+
+Fixed a bug in getUserPasswd where certain strings weren't properly
+0-terminated.
+
+Fixed a bug in setpriority and getpriority: these functions always failed
+due to an wrong test.
+
+Fixed a bug in ctype.h: all macros (e.g. isspace and friends) failed to
+work properly with character code >= 128. Now cast everything to unsigned
+char first.
+
+Applied patch from David Zaroski to uname.c. Improved OS version number
+reporting.
+
+============
+VERSION 47.2
+============
+
+Fixed a bug in handling of "/". Thanks to Norbert Pueschel for providing me
+with a fix.
+
+Updated ixprefs from Kriton Kyrimis.
+
+Fixed problems with vfork() and sockets when the program was started from
+inetd.
+
+============
+VERSION 47.1
+============
+
+Fixed ixtrace bug that made it impossible to set the stacksize.
+
+Fixed bug in crt0.c which caused a crash under p.OS.
+
+============
+VERSION 47.0
+============
+
+It was possible to kill a process with a SIGKILL signal when that process
+was already in the exit() function: this can cause major crashes.
+
+Fixed more bugs in wait4(): the list of child processes could contain
+processes whose 'getuser()' pointer was NULL, causing enforcer hits and
+general mayhem.
+
+Signalling processes that were asleep waiting for some event would not wake
+these processes.
+
+Fixed a bug in wait4: if there are no longer any childs available that
+meet the criteria of wait4, then wait4 should exit. In previous versions
+this test was only done for the zombie processes, and not for all other
+childs.
+
+Updated timezone sources and databases.
+
+Kriton Kyrimis supplied patches to port ixprefs to p.OS.
+
+David Zaroski supplied patches to upgrade ixtrace to this ixemul version.
+
+vfork() will now copy any open sockets to the child, previously the
+sockets inherited by the child from the parent were always invalid.
+
+Added Unix Sys V semaphore and message support (sem* and msg* functions).
+
+Added low-level mutex (semaphore) functions: ix_mutex_lock(),
+ix_mutex_attempt_lock() and ix_mutex_unlock(). These functions are
+wrappers for the AmigaOS or p.OS kernel semaphore functions. See ix.h for
+more info.
+
+Fixed several nasty bugs in the shm support code.
+
+Added a new checkbox to ixprefs: Enable MuFS support. By default the
+support for the Multi-user File System is turned off. One reason for adding
+this checkbox is that apparently the MuFS support isn't bug-free.
+
+ade -> gg
+
+Added workaround for AFS bug with symlink("", "").
+
+The resolv.conf keyword scan is now case-insensitive: the AmiTCP
+resolv.conf file is uppercase, while NetBSD assumes lowercase.
+
+Applied patches from Norbert Pueschel fixing argv[0] when starting a
+script: it was the name of the scripts, now it is the name of the
+interpreter. This conforms to NetBSD and fixes problems with dld.
+
+ttyname() in libc.a now always returns "/dev/tty" if the device is a tty
+and NULL otherwise.
+
+"#!shell arg" handling has been changed to be consistent with NetBSD: all
+arguments after the shell name are now passed as the first argument to the
+shell.
+
+munmap() now calls msync().
+
+Ixemul now fully supports pOS.
+
+chown() will succeed if the device doesn't support this action instead of
+reporting an error.
+
+The -enforcer flag of gdb now also supports the 68060.
+
+Improved getppid and added hstrerror thanks to Norbert Pueschel.
+
+Added ix_obtain_socket and ix_release_socket thanks to Jeff Shepherd.
+Added __flush_cache for gcc trampoline handling.
+Added ix_flush_insn_cache, ix_flush_caches and ix_flush_data_cache for OS
+independent cache flushing.
+Added ix_get_first_segment and ix_get_next_segment.
+Added ix_select.
+Added isascii, isiso, toascii and toiso.
+Added ix_get_long, ix_set_long.
+
+Removed aselect.
+Removed CreatePort, CreateExtIO, CreateStdIO, CreateTask.
+Removed DeletePort, DeleteExtIO, DeleteStdIO, DeleteTask.
+Removed ix_get_vars.
+Removed _wb_parse, _cli_parse and _main.
+
+Renamed achmod to ix_chmod.
+Renamed ix_get_vars2 to ix_get_vars.
+Renamed vfork2 to ix_vfork.
+Renamed vfork_resume to ix_vfork_resume.
+Renamed __amiga_filehandle to ix_filehandle.
+Renamed tracecntl to ix_tracecntl.
+Renamed ix_amiga.h to ix.h.
+
+============
+VERSION 46.1
+============
+
+Renamed __os to ix_os as a preparation for ixemul-47.0. Also renamed
+expand_cmd_line to ix_expand_cmd_line and default_wb_window to
+ix_default_wb_window.
+
+============
+VERSION 46.0
+============
+
+Copied basic pOS support from ixemul-47.0 especially for GeekGadgets 2. The
+ixemul.library does *not* support pOS, you have to use ixemul-47.0 for
+that, but all programs compiled with the new libc.a and *crt0.o will also
+run on pOS using ixemul-47.0. Unless Amiga kernel functions are used, of
+course. See README.pOS for more information.
+
+Added ipcs and ipcrm to manage the shm functionality.
+
+Upgraded db to version 1.85.
+
+Added an ixprefs option to show the stack usage of all the programs that
+use ixemul.library.
+
+chmod() now also checks if someone else has the same file open, and makes
+sure that when that file is closed the same mode flags are written instead
+of the flags specified when the file was opened.
+
+Added shared memory support (shmget, shmat, shmdt and shmctl) and the ftok
+function.
+
+Fixed a bug in memccpy (the wrong pointer was returned).
+
+Added a patch from Marc Espie to correctly setup the program name and
+directory in the CLI structure so that GetProgramName and GetProgramDir do
+the right thing.
+
+============
+VERSION 45.1
+============
+
+Fixed a bug in the Unix Domain socket code that would occasionally cause a
+client to wait indefinately for a connection to be granted, while in fact
+the server had already accepted the connection.
+
+getdtablesize() now returns FD_SETSIZE instead of NOFILE (256 instead of
+512). The result of this function was used by several X clients to discover
+the number of filehandles select() can test. And if that value is too large,
+you'll get unexpected and hard to find crashes. The same change was made to
+sysconf(_SC_OPEN_MAX).
+
+shutdown() could close down the whole Unix domain socket, causing a
+crash when the socket was closed a second time by the 'real' close.
+
+rename() now tests for a rename across devices and returns the correct
+error code.
+
+Applied patch from Norbert Pueschel to improve delayed unlink.
+
+Closing of Unix domain sockets is now atomic (between Forbid/Permit),
+otherwise the Amiga could crash if the X server was running at a higher
+priority than the client.
+
+Fixed a bug in ixemul.trace that caused Enforcer hits in gcc.
+
+Fixed a bug with 'du -ks /volume'. The convert_dir() function stored the
+directory name in Amiga format instead of Unix format.
+
+Norbert Pueschel greatly improved uid/gid handling in ixemul.library. See
+the README for detailed information.
+
+Fixed a bug in handling volumes/devices named "dev:". Ixemul handles the
+volume /dev specially (e.g., /dev/console is translated to console:) and
+that interfered with the handling of the DEV:  device or any volume named
+DEV:.  To circumvent the /dev handling you can now use "dev:" instead of
+"/dev" or write "DEV" instead of "dev" (in other words, the open() function
+tests for the string "/dev/" in a case-sensitive way).
+
+Due to a clumsy design of the ENV: notification a signal was occasionally
+left unfreed. WShell gives warnings for that, so I changed the design and
+that should take care of the warning. The unfreed signal warning was
+harmless, but annoying.
+
+Now fill the file type in the dirent struct. Thanks to Lars Hecking for
+reporting this.
+
+Some AmigaOS programs started from an ixemul program set Signals that were
+allocated by ixemul. This can happen because ixemul resets the allocated
+signal mask in the Task structure.  Because of that a handshake between the
+child and the parent when the child process is dying failed, and Enforcer
+hits (usually followed by a crash) were the result.  Fixed by resetting all
+Signals.
+
+Fixed a bug in the trap.s supervisor() code: you cannot safely pass data on
+the stack to the function to be executed in supervisor mode. In fact, this
+failed with a beta version of the 68060.library from Phase 5. Now pass the
+data through registers.
+
+Fixed bug in frexp(0.0, &i) where i was set to 1 instead of 0.
+
+Fixed 32 Kb memory leak.
+
+Added tty CRMOD support.
+
+Fixed serious bug in unix domain sockets where a kind of deadlock situation
+could occur.
+
+system() now searches the whole path for 'sh' and doesn't use /bin/sh only.
+Also the paths in paths.h have been adjusted for Geek Gadgets.  Thanks to
+Robert Davis for pointing out the system() problem.
+
+select() on a small file that was stored in memory if the user selected a
+non-zero Membuf size in ixprefs didn't produce the expected results. Thanks
+to Stefan Grosse Pawig for reporting this.
+
+============
+VERSION 45.0
+============
+
+Moved popen() and pclose() into ixemul.library from libc.a. These functions
+are used regularly by libraries, and having them in ixemul.library makes
+the conversion of those static libraries into shared libraries easier.
+Besides, these functions are used frequently enough to warrant their
+integration into ixemul.library.
+
+Added a patch from Kamil Iskra that fixes problems with -mstackextend and
+vfork2(). However, such programs *must* call vfork_setup_child().
+
+Thanks to Lars Hecking, a new fnmatch(3) with extended functionality is
+available. The fnmatch code is copied from the NetBSD sources.
+
+Added new manual pages.
+
+Upgraded ixemul to the new structure passing scheme of gcc (A1 contains a
+pointer to the return structure). This involved ldiv(), div() and
+inet_makeaddr(). Thanks to Kamil Iskra for providing me with patches to
+implement this.
+
+Upgraded the timezone stuff to the latest version.
+
+Implemented Unix Domain sockets. Missing features: datagrams aren't
+(yet?) supported, and connect() doesn't have a timeout.
+
+Removed stack watcher code. It was seldom used, and it was never very
+reliable.
+
+Implemented sessions. This improves Ctrl-C handling, and is required to
+make full use of xterm.
+
+Fixed an unlink bug (it has to check all open files for the given filename)
+and a bug in ix_lock_base/ix_unlock_base: if these calls were nested, the
+signal masked was restored to ~0 instead of the original value.
+
+Added a new utility, ixstack, and a new global variable, __stack, to allow
+the user and programmer to specify a minimum stacksize. If the current
+stack is too small, a new stack is automatically allocated. Thanks to Kamil
+Iskra for implementing this.
+
+ioctl(fd, TIOCGPGRP, ...) now returns something useful. NcFtp didn't show
+the progress bar anymore because of this.
+
+Added large-baserel libraries and startup-code.
+
+============
+VERSION 44.0
+============
+
+Kriton Kyrimis updated ixprefs.
+
+David Zaroski updated ixtrace.
+
+Fixed link count for directories. Thanks to Norbert Pueschel.
+
+umask implemented for for open() and mkdir(). Thanks to Norbert Pueschel.
+
+Added muFIBB_SET_GID, which will be implemented in the next version
+of MultiUser. The old way of handling setgid was confusing and even
+potentially dangerous.  Thanks to Norbert Pueschel.
+
+Added the translation unix sticky bit -> AmigaOS h bit. This one is
+more for aestaethical reasons, as the h bit is no longer supported in 3.x.
+Thanks to Norbert Pueschel.
+
+Added a field 'void *u_user;' near the beginning of the user struct which
+everybody is free to (ab)use. It can be handy to store task private data
+in the user struct, at least, I had to use it recently.
+
+Added an ix_amiga.h header, which will contain all amiga specific functions
+and macros in ixemul.library and libc.a, together with a description.
+
+Profiling has been enhanced. Ixprefs adds a new profiling preference:
+either take samples only while your program is running and the PC is within
+your program, or take samples while your program is running and if the PC
+is outside your program code (e.g. in ixemul or in intuition.library), use
+the last function your program entered before calling ixemul or whatever,
+or always take samples, even if other programs are running.  Again, the
+last recorded function gets the hit in those cases.
+
+An array of 100 longs to store the A4 register of shared libraries has been
+added to the user struct. This array can be easily increased in future
+releases, should the need arise. The first 20 slots are for your own free
+use, the other slots should be registered. See the file REGISTRY in the
+ixemul source distribution for more details.
+
+Fixed yet another path bug. Running a shell script that's placed somewhere
+in your PATH from 'make' failed, unless the filename of the script was
+absolute.
+
+Added vfork_setup_child to libc.a. This is a wrapper intended to make life
+just a little bit easier for those who need to use the vfork2()/vfork_resume()
+trick. It replaces the old 'ix_resident()/ix_get_vars2()' pair.
+
+Fixed more problems with the routines that start a shell script. This time
+problems with symbolic links have been fixed.
+
+Fixed problems when parsing a pathname of a shell script, preventing the
+execution of that script.
+
+Replaced the stdio-sources by the NetBSD 44.0 versions, which incidentally
+fixed the broken fgetpos function. This change also adds printf() and scanf()
+support for the 'long long' datatype.
+
+Added support for the O_CASE open() flag: this will open an existing file
+only if the filenames match using a case-sensitive comparison.
+
+fstat() didn't compensate the file time for the current timezone offset.
+
+Ixemul now supports the 68010 CPU. Thanks to Pascal Eeftinck for pointing
+out that the 68010 uses a 68020-like stackframe.
+
+Build the version.[ch] files in the build directory instead of in the
+source directory.
+
+Fixed fchdir().
+
+Changed the machine name as returned by uname() to "m68k". Thanks to Lars
+Hecking for this.
+
+O_ASYNC I/O is now partially supported: select() will test for this
+situation.
+
+/dev/tty is now translated to console:.
+
+Implemented pseudo-terminals support using the FIFO device.
+
+Many, mostly small, changes to become more NetBSD compatible. Where
+possible, I've replaced the old sources with the NetBSD 1.1 sources.
+
+The select() function has been improved: it is now much faster and works
+much better.
+
+Using F_SETFL with fcntl() failed if the file wasn't a regular file. It now
+also works for pipes and sockets.
+
+Requesters that are from ixemul.library or ixnet.library now have the name
+of the library as their title, so that you can see that they are from the
+library, and not from the application. Thanks to Udo Schnurpfeil for
+suggesting this.
+
+The tty database functions unfortunately slipped through and weren't
+included with 43.1. They are back in 44.0.
+
+Implemented mmap() and friends. Of course, any mmap feature that actually
+requires a MMU will return an error. But if mmap() is used to load a file
+into memory, then it works fine.
+
+============
+VERSION 43.2
+============
+
+Applied patch from Kamil Iskra to improve ixemul stack extension
+handling.
+
+============
+VERSION 43.1
+============
+
+Ixemul no longer uses async writes. All I/O is now synchronous. This
+allowed me to remove several Disable()/Enable() pairs, and actually made
+ixemul faster. Apparently the overhead in handling async I/O was
+substantial.
+
+Applied patches from Jeff Shepherd fixing various problems in the
+ixnet.library. Among them improved AS225 passwd handling.
+
+Moved the resolver functions out of ixnet.library into libc.a. All programs
+that used these functions will have to be recompiled. Very few programs use
+these functions, and since they are really higher level functions and do
+not belong in a low level library like ixnet, I've moved them.
+
+Also moved tty database functions (getttyent() and friends, ttyname() and
+ttyslot()) to libc.a, for much the same reason.
+
+Added the NetBSD DB sources to libc.a and removed the hacked versions from
+ixnet.
+
+Replaced various headers with the NetBSD versions. Important for certain
+socket-related ioctl defines that were incorrect in the old headers.
+
+Added ptrace(GETA4, pid, 0, 0) to obtain the value of the a4 register if
+this executable was compiled with -fbaserel or -resident. Needed by gdb to
+find out where the data section is.
+
+Added ptrace(GETEXENAME, pid, 0, 0) to obtain the name of the current
+executable. Useful in scripts that start with '#!/bin/sh' or something
+similar. 'argv[0]' as seen by sh is the name of the script, but if you want
+to get the pathname of 'sh' itself, you can use this ptrace call.
+
+Added setlocale() and ctermid() to libc.a.
+
+It is now possible to unlink() a file that is owned by another process
+(just like Unix). Gcc uses this to remove temporary files that are actually
+owned by cpp (or as). Of course, on the Amiga this is implemented as a
+delayed delete, i.e. a flag is set in the 'struct file' to tell ixemul to
+delete the file when it is closed by the owner process.
+
+Added support for a root ('/') directory. This will only work for programs
+that use ixemul.library. So if you start pdksh, 'cd' to the root (cd /) and
+use the AmigaOS command 'list' to view this directory, then you won't get
+what you expect. If you use the Unix ls command however, then you will see
+all the volumes that you have as top level directories.
+
+Removed an old hack in __wait_packet.c that interfered with Ctrl-F
+handling.
+
+Fixed a bug in fnctl(), F_SETFL.
+
+Added AFS, AFSFloppy and PFS support.  Many thanks to the AFS author,
+Michiel Pelt, who provided me with the necessary technical information, and
+to Kriton Kyrimis for giving some very useful suggestions.
+
+Added MultiUserFileSystem support, contributed by Mike Krings. Thanks Mike!
+
+Added new function ix_warning: similar to ix_panic, but allows the user to
+choose between "Continue" and "Abort". This to work around a case like:
+
+	for (;;) crypt();
+
+where one couldn't break out of the program because the requester kept
+popping up.
+
+Fixed -mstackcheck support and fixed buggy baserel-stackextend support.
+
+The call socket(AF_UNIX, SOCK_STREAM, 0) no longer crashes if ixnet.library
+is not installed.
+
+Reorganized Makefiles. I've removed the option to compile each source
+separately, instead they are always catenated together. Also, 'make' no
+longer starts itself two more times in order to make the library. I've
+used GNU make wizardry to let 'make' figure out all the targets by itself.
+
+Sigsetjmp and siglongjmp were broken. Fixed.
+
+Replaced the old man pages with the new NetBSD manual pages in the original
+troff form.
+
+Replaced the nice() stub in ix_stub with nice.c from NetBSD.
+
+Removed a Delay(100) that was called just before a vfork()ed program finally
+terminated.
+
+Made h_errno a global variable like errno.
+
+At several places in the library the errno variable was reset to 0.
+However, the library should (almost) never set errno to 0. This caused
+problems with the 'ping' program, where recvfrom set errno to 4, but the
+library changed it back to 0 before 'ping' got to see it.
+
+Now sets st_uid and st_gid from a 'stat' structure to the effective UID and
+GID. Some programs tested these fields and they failed when using
+networking support. These fields used to be 0.
+
+Reread the global environment variables only when 1) a new program is
+started, and 2) the ENV: directory has been changed (i.e., a new setting
+was added to ENV:). ENV: used to be read every time a program was started,
+whether it was needed or not.
+
+Given the shell script s.sh in /ram/t:
+
+	#!/bin/sh
+	/bin/echo $0
+
+'sh /ram/t/s.sh' produced '/ram/t/s.sh', while typing '/ram/t/s.sh' from
+within the pdksh shell produced 'Ram:t/s.sh'. Fixed.
+
+Removed a dubious CurrentDir() to a *file* instead of a directory.  While
+this is apparently supported for the standard AmigaOS filesystems, not all
+third-party filesystems supported this.
+
+When you try to use a >68020 ixemul.library on a 68000 Amiga, you now get a
+decent message instead of a crash.
+
+============
+VERSION 43.0
+============
+
+Integrated Jeff Shepherd's networking code. If ixnet.library is installed,
+then ixemul.library will use the networking functions from the
+ixnet.library, instead of the default dummy implementation. Ixnet.library
+works with AS225 and with AmiTCP. It supports both clients and daemons.
+A program that uses networking functions is completely shielded from the
+AS225 and AmiTCP differences by ixnet.library. That library will take care
+of all the details for you. That means that there is no longer any need to
+provide two different binaries, one for AS225 and one for AmiTCP.
+Furthermore, it is relatively easy to add support for other network
+packages. Thanks, Jeff!
+
+Added stackchecking and extension code, thanks to Matthias Fleischer.
+
+Finalized GDB support.
+
+============
+VERSION 42.1
+============
+
+Fixed bugs when running non-ixemul programs from tools like pdksh or make.
+You could get Enforcer hits and the Ctrl-C support also crashed the Amiga.
+
+Use the NetBSD code for the system() function instead of using the Amiga
+kernel function SystemTagList. This was the cause of several
+incompatibilities when porting Unix programs.
+
+Improved termios support (added OPORT and ONLCR flags and the INLCR flag).
+
+Fixed ptrace handling. Almost none of Leonard's code has survived, I used a
+completely different method.
+
+Fixed a problem where the name of the current directory, as is visible
+by the shell, wasn't changed when a program terminated and ixemul reset the
+current directory to its original place.
+
+Improved performance somewhat by no longer going through address 4 to get
+to the ExecBase structure. Instead, it's copied once to the SysBase
+variable, and thereafter only that variable is used. The Enforcer manual
+warned against accessing address 4 too often, and ixemul.library did that
+a lot.
+
+Also improved performance by fixing a busy wait. At one point in the
+ixemul, the program cannot continue until a context switch has taken place.
+So ixemul waits until the dispatch count of ExecBase has changed,
+indicating that a context switch has taken place. By installing a small,
+high priority (9) task with body "for (;;) Wait(1 << 31);" and signalling
+that task whenever a context switch is needed, I was able to circumvent the
+busy wait loop. Because of the high priority of the Task, a context switch
+would take place immediately. The task itself goes back to sleep at once,
+so there is no time lost there.
+
+============
+VERSION 42.0
+============
+
+Installed patch in arith.c to work around bug in IEEEDPCmp.  If the first
+32 bits of both doubles are equal, and both doubles are negative, then
+the result can no longer be trusted.  Discovered by Bart Van Assche.
+
+Ixtrace has been updated to recognize all 42.0 syscalls, thanks to David
+Zaroski.
+
+Ctrl-C handling worked with KingCON, but not with the standard AmigaOS
+CON-handler (since I use KingCON I never noticed this until it was pointed
+out to me by Fred Fish :-). This has now been fixed. See the comments in
+library/__read.c for more information.
+
+Added the uname() function, written by Lars Hecking.
+
+The termios code now properly recognizes the ICRNL input flag for '\r' to
+'\n' translation.
+
+Fixed a bug in the fcntl() function (actually, in the fcntl.h and
+sys/fcntl.h headers).
+
+Moved several static variables to user.h, so they are now process-specific.
+
+Added profiling support. It was always there, but it was never actually
+used.
+
+The write() function writes its buffer line-by-line instead of in one big
+chunk if the filehandle is the handle of an interactive stream (for
+example, a console window). This allows the user to interrupt the output by
+pressing a key and it also allows the use of Ctrl-C to break the program.
+In previous versions you were unable to stop the output if you forgot to
+redirect it to a file. E.g., 'cat /libs/ixemul.library' would essentially
+take over the computer.
+
+Changed default stack size handling when a new process is launched. It is
+either the value of the environment variable IXSTACK, or it inherits the
+size from its parent, but if that size is less than 16384, it uses a stack
+of 16384 bytes instead.
+
+Replaced ixconfig by ixprefs (written by Kriton Kyrimis).
+
+Integrated the partial ptrace support from Leonard Norrgard.
+
+Removed the gnulib, gnulib-68881 and gnulib-soft-float directories.
+
+Compiled with -Wall and fixed (nearly) all warnings. Some warnings are
+inevitable and cannot be avoided. -Wall already caught one illegal memory
+access bug in __Close()!
+
+Added functions to set and get ixemulbase-private information. This will
+break older ixconfig's but is much cleaner. Nearly all of the ixemulbase
+structure is now off-limits and liable to change without notice! You are
+warned! In fact, the structure has been changed already. The library will
+complain if a program called 'ixconfig' tries to use it to prevent the user
+from using an old ixconfig with the new library.
+
+Removed several arithmetic functions dealing with 'long long' types. They
+didn't belong in the library, link with libgcc.a instead. Also removed some
+arithmetic functions that are never called because they are compiled
+directly in 68000 assembly. Don't know why they were ever added.
+
+Fixed gen_glue.c so that it no longer generates glue for obsolete functions.
+
+Removed ssystem(). ssystem() was the precursor of vfork/execve, and is no
+longer needed. NOTE: it is still used in gcc. But this fails spectacularly
+once you use Ctrl-C! Delete gcc and replace it by gccv, this one uses
+vfork/execve as it should and works perfectly.
+
+ixemul.library now uses the new-style inlines.
+
+qsort() is now re-entrant and no longer uses the horrible Semaphore hack.
+
+Moved general/fts.c to the static library. These directory-tree traversal
+functions are rarely, if ever used, so they belong in libc.a and not in a
+shared library.
+
+Reorganized the Makefiles. The makefiles now use several GNU make-only
+features to make them smaller and easier to maintain.  'make clean' and
+'make clobber' now work correctly.  It is also no longer nessecary to add
+the -srcdir option to 'sh configure' in order to create valid Makefiles.
+
+The top level Makefile contains the line 'export CATENATE = 1'. If this
+line is present, the compilation speed is greatly improved by catenating
+several small C-sources together into one bigger C-source, and then the
+bigger one is compiled. By commenting this line each separate source is 
+compiled. Note that besides improving compilation speed, the library also
+gets smaller as the compiler can now determine whether a call can be made
+relative or should remain absolute.
+
+Fixed a symlink-bug (ln -s /ram/t created a symlink to /am/t, removing the
+first character of the volumename).
+
+Moved ixtrace to the new utils directory, together with the small ixrun
+utility.  ixrun can be used to run Amiga batch files from /bin/sh (just put
+';!ixrun' at the second line (!) of the batch file).  Also added manual
+page for ixrun.
+
+Cleaned up the static directory:  removed xmalloc.c and alloca.c as they do
+not belong in the standard C library.  Also replaced the ctime.c source by
+the version from elsie.nci.nih.gov, which is the official version used by
+NetBSD and Linux, among others.  Finally, errlst.c and siglist.c now just
+include their counterparts in the general directory.
+
+The version information is placed in the version.in file in the
+top-level directory. The version.c and version.h sources are created from
+this file.
+
+The print_base_size.c and print_user.c sources have been replaced by
+create_header.c, which creates a header containing a few defines that are
+used by start.s and trap.s. These used to be hard-coded, but now they are
+generated, preventing future mistakes.
+
+Added the raise function. For some reason, raise.c was never compiled into
+the library. It is now.
+
+Removed ALL sources that were not needed for compilation.
+
+Added timezone handling. The timezone databases from elsie.nci.nih.gov are
+used and installed in etc:zoneinfo. The new ixtimezone utility should be
+added to the startup-sequence. This utility determines the correct offset
+for Greenwich Mean Time. Read the manual page (Yes! Documentation at last!)
+for more information.
+
+Merged the ixpipe-handler into the ixemul-distribution. It has been placed
+in the utils-directory.
+
+Added hack to allow ixemul to run AmigaOS scripts without breaking them
+when run from the AmigaOS shell. The problem is that the ".KEY" string
+must be at the first line of the script, while ixemul also looks for "#!"
+and ";!" in the first line. If a file starts with ".KEY", ixemul will now
+skip the first line, before checking for "#!" and ";!".
+
+============
+VERSION 41.4
+============
+
+Integrated patches from Hans Verkuil that fix CTRL-C handling, fix another
+signal bug, fix problem with "rm -f", prepare for proper timezone handling,
+and remove '@' hack in argument parsing.
+
+Applied patch from Kamil Iskra to avoid incompatibility between ixemul
+and the popular KingCON 1.3.  This is KingCON's fault because it makes
+invalid assumptions about the nature of reply port contained in "dp_Port"
+of packets sent to it.  Also applied patch (duplicated in Hans' patches)
+to crt0.c that fixes bug where the revision requester was not working
+properly if the current revision is 0.
+
+Applied patch from Rask Lambertsen (duplicated in Hans' patches) that makes
+ixemul.library open "CONSOLE:" instead of "*".
+
+Added implementation from Kriton Kyrimis for srand48, seed48, lcong48,
+lrand48, nrand48, mrand48, jrand48, drand48, and erand48.
+
+Added "#include <sys/types.h>" to <dirent.h> to be more compatible
+with most current systems that do this inclusion for you.  This change
+should be backwards compatible with code that does the inclusion
+explicitly.  Suggested by Lars Hecking.
+
+Changed prototype in <unistd.h> for getpgrp() to take a pid_t argument,
+which matches the implementation in library/getcrap.c.  Suggested by
+Lars Hecking.
+
+Made change to <math-68881.h> in pow() so that if x<0 the code does
+log(-x) rather than log(x).  Suggested by Thomas Radtke and implemented
+by Lars Hecking.
+
+Disable definitions of F_GETLK, F_SETLK, F_SETLKW, F_RDLCK, F_UNLCK, and
+F_WRLCK in <fcntl.h> since they are unimplemented and thus might have misled
+autoconfiguration schemes into thinking they were available.  Also fix
+ixtrace.c so it will still compile without these defined.  Suggested by
+Robert Ramiega.
+
+Integrated patch from Joop van de Wege (duplicated in Hans' patches) for
+setting up fpu on 68060.
+
+============
+VERSION 41.3
+============
+
+Updated DBL_MIN and DBL_MAX in float.h to include one additional digit
+of precision.  Enclose negative constants in parens to avoid unexpected
+conversion to subtraction via cpp macros.
+
+Applied patch from Hans Verkuil to fix serious bug in signal handling,
+to reset all signal handlers after an execve, except for those which are
+being ignored (SIG_IGN).
+
+Applied patch from Joop van de Wege to trap.s to set 68881 rounding mode
+back to truncation instead of "round to nearest", as required by the
+ANSI C standard which specifies truncation.
+
+Integrated ixtrace into source tree and arranged for it to be built and
+installed.
+
+============
+VERSION 41.2
+============
+
+Added "#include <sys/types.h>" to <sys/stat.h> to be more compatible
+with most current systems that do this inclusion for you.  This change
+should be backwards compatible with code that does the inclusion
+explicitly.
+
+Changed version string to be style guide compliant.  Also arranged that
+version.o gets linked in, since it has the $VER: string and is otherwise
+unreferenced by any ixemul.library code.
+
+Merged patches from Hans Verkuil to fix execve environment passing,
+always open the console for stderr if no other file handle is provided,
+move AmigaOS style filename matching into glob(), and fix a small problem
+with "open(NULL,...) that caused enforcer hits.
+
+============
+VERSION 41.1
+============
+
+A 68040 version of the library with soft floating point is now built,
+since there are apparently systems that use the versions of the 68040
+without FPUs.
+
+Fixed crt0 files to use "jra _ENTRY" as first instruction rather than
+"jmp pc@(_ENTRY)" which was getting assembled by gas 2.5.2 as a 68020+
+instruction.  Note "jmp pc@(_ENTRY:W)" seems to generate the 68000
+instruction but a bad jump offset.  Added corresponding change to
+execve.c to recognize ixemul using executables with this change.
+
+Fixed cpu.h, machdep.c, trap.s to avoid pc relative assembly instruction
+that was getting compiled as 68020+ instruction and causing crashes on
+68000 machines.
+
+Fixed numerous files that did "#include" of "DEFS.H" rather than "defs.h".
+This is an innocuous bug on the Amiga, which is case independent, but
+it kills cross compilations.
+
+============
+VERSION 41.0
+============
+
+No significant changes since the 40.6 beta release other than the
+mechanism (and macros) for building debug versions has been cleaned
+up and the version number has been bumped to 41.0.
+
+Did include the cat'able man pages back in the source tree, but no
+work has been done yet to track down the sources for the man pages
+and arrange for them to be properly integrated into the tree and
+have the cat'able versions generated from those sources.
+
+============
+VERSION 40.6
+============
+
+Many bugs have been fixed since the 40.4 release, including a serious
+one that was causing memory corruption and many enforcer or mungwall
+hits.
+
+Network support has been reintegrated into the library, however it is
+still mostly untested.  In particular, many functions are only
+available for static linking from the libnet.a library.  By the next
+release, it is expected that libnet.a will be incorporated in libc.a.
+
+Work is underway to merge the best features from at least two
+different strains of the ixemul library.  Many more changes are
+expected by the 41.0 release.
+
+An environment variable called "IXSTACK" is now used to control the
+stack size of programs started by system().  If the current stack is
+smaller than the value in IXSTACK, the stack is raised to the value
+specified in IXSTACK.  So IXSTACK is a minimum value.
+
+Automatic stack checking, with a requestor if the stack overflows, is
+available for executables compiled with a version of gcc that supports
+the -mstackcheck option.  This also requires linking with new crt0 and
+libc.a.
+
+Automatic stack extension as necessary is available for executables
+compiled with a version of gcc that supports the -mstackextend option.
+This also requires linking with new crt0 and libc.a.

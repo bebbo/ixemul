@@ -1,6 +1,6 @@
 /*
-    Ixprefs v.2.7--ixemul.library configuration program
-    Copyright © 1995,1996 Kriton Kyrimis
+    Ixprefs v.2.8--ixemul.library configuration program
+    Copyright © 1995-2001 Kriton Kyrimis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -156,42 +156,42 @@ parse_cli_commands(int argc, char *argv[])
   while (1) {
     int option_index = 0;
     static struct option long_options[] = {
-      {"insert-disk-requester", 0, &suppress, 0},               /* -v */
+      {"insert-disk-requester", 0, &suppress, 0},		/* -v */
       {"no-insert-disk-requester", 0, &suppress, 1},
-      {"unix-pattern-matching-case-sensitive", 0, &cases, 1},   /* -s */
+      {"unix-pattern-matching-case-sensitive", 0, &cases, 1},	/* -s */
       {"no-unix-pattern-matching-case-sensitive", 0, &cases, 0},
-      {"translate-slash", 0, &translateslash, 1},               /* -/ */
+      {"translate-slash", 0, &translateslash, 1},		/* -/ */
       {"no-translate-slash", 0, &translateslash, 0},
-      {"allow-amiga-wildcard", 0, &amigawildcard, 1},           /* -a */
+      {"allow-amiga-wildcard", 0, &amigawildcard, 1},		/* -a */
       {"no-allow-amiga-wildcard", 0, &amigawildcard, 0},
-      {"flush-library", 0, &noflush, 0},                        /* -f */
+      {"flush-library", 0, &noflush, 0},			/* -f */
       {"no-flush-library", 0, &noflush, 1},
-      {"ignore-global-env", 0, &ignoreenv, 1},                  /* -i */
+      {"ignore-global-env", 0, &ignoreenv, 1},			/* -i */
       {"no-ignore-global-env", 0, &ignoreenv, 0},
-      {"stack-usage", 0, &stackusage, 1},                       /* -u */
+      {"stack-usage", 0, &stackusage, 1},			/* -u */
       {"no-stack-usage", 0, &stackusage, 0},
-      {"support-mufs", 0, &mufs, 1},                            /* -M */
+      {"support-mufs", 0, &mufs, 1},				/* -M */
       {"no-support-mufs", 0, &mufs, 0},
-      {"enforcer-hit", 0, &enforcerhit, 1},                     /* -e */
+      {"enforcer-hit", 0, &enforcerhit, 1},			/* -e */
       {"no-enforcer-hit", 0, &enforcerhit, 0},
-      {"auto-detect", 0, &networking, 0},                       /* -n */
+      {"auto-detect", 0, &networking, 0},			/* -n */
       {"no-networking", 0, &networking, 1},
       {"as225", 0, &networking, 2},
       {"amitcp", 0, &networking, 3},
       {"auto-detect", 0, &networking, 0},
       {"no-networking", 0, &networking, 1},
       {"as225", 0, &networking, 2},
-      {"profile-program", 0, &profilemethod, 0},                /* -p */
+      {"profile-program", 0, &profilemethod, 0},		/* -p */
       {"profile-task", 0, &profilemethod, 1},
       {"profile-always", 0, &profilemethod, 2},
-      {"membuf-limit", 1, 0, 'm'},                              /* -m */
-      {"fs-buf-factor", 1, 0, 'b'},                             /* -b */
-      {"default", 0, &reset_defaults, 1},                       /* -d */
-      {"save", 0, &save_config, 1},                             /* -S */
-      {"report", 0, &report, 1},                                /* -R */
-      {"last-saved", 0, &last, 1},                              /* -L */
-      {"version", 0, &version, 1},                              /* -V */
-      {"help", 0, &help, 1},                                    /* -h */
+      {"membuf-limit", 1, 0, 'm'},				/* -m */
+      {"fs-buf-factor", 1, 0, 'b'},				/* -b */
+      {"default", 0, &reset_defaults, 1},			/* -d */
+      {"save", 0, &save_config, 1},				/* -S */
+      {"report", 0, &report, 1},				/* -R */
+      {"last-saved", 0, &last, 1},				/* -L */
+      {"version", 0, &version, 1},				/* -V */
+      {"help", 0, &help, 1},					/* -h */
       {0, 0, 0, 0}
     };
     c = getopt_long (argc, argv, "v:s:x:a:/:f:i:e:u:m:n:b:p:dShRLM:V",
@@ -215,16 +215,16 @@ parse_cli_commands(int argc, char *argv[])
 	translateslash = (atoi(optarg) ? 1 : 0);
 	break;
       case 'f':
-	noflush = (atoi(optarg) ? 0 : 1);
+        noflush = (atoi(optarg) ? 0 : 1);
 	break;
       case 'i':
-	ignoreenv = atoi(optarg);
+        ignoreenv = atoi(optarg);
 	break;
       case 'u':
 	stackusage = atoi(optarg);
 	break;
       case 'e':
-	enforcerhit = atoi(optarg);
+        enforcerhit = atoi(optarg);
 	break;
       case 'm':
 	membuf = atoi(optarg);
@@ -245,19 +245,19 @@ parse_cli_commands(int argc, char *argv[])
 	save_config = 1;
 	break;
       case 'h':
-	help = 1;
+        help = 1;
 	break;
       case 'R':
-	report = 1;
+        report = 1;
 	break;
       case 'L':
-	last = 1;
+        last = 1;
 	break;
       case 'M':
 	mufs = atoi(optarg);
 	break;
       case 'V':
-	version = 1;
+        version = 1;
 	break;
       default:
 	error = 1;

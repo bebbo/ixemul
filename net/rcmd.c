@@ -1,8 +1,8 @@
-/*      $NetBSD: rcmd.c,v 1.12 1995/06/03 22:33:34 mycroft Exp $        */
+/*	$NetBSD: rcmd.c,v 1.12 1995/06/03 22:33:34 mycroft Exp $	*/
 
 /*
  * Copyright (c) 1983, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rcmd.c      8.3 (Berkeley) 3/26/94";
+static char sccsid[] = "@(#)rcmd.c	8.3 (Berkeley) 3/26/94";
 #else
 static char *rcsid = "$NetBSD: rcmd.c,v 1.12 1995/06/03 22:33:34 mycroft Exp $";
 #endif
@@ -59,7 +59,7 @@ static char *rcsid = "$NetBSD: rcmd.c,v 1.12 1995/06/03 22:33:34 mycroft Exp $";
 #include <ctype.h>
 #include <string.h>
 
-int     __ivaliduser __P((FILE *, u_long, const char *, const char *));
+int	__ivaliduser __P((FILE *, u_long, const char *, const char *));
 static int __icheckhost __P((u_long, const char *));
 
 int
@@ -188,7 +188,7 @@ rcmd(ahost, rport, locuser, remuser, cmd, fd2p)
 	(void)write(s, locuser, strlen(locuser)+1);
 	(void)write(s, remuser, strlen(remuser)+1);
 	(void)write(s, cmd, strlen(cmd)+1);
-	if (read(s, &c, 1) != 1) { 
+	if (read(s, &c, 1) != 1) {
 		(void)fprintf(stderr,
 		    "rcmd: %s: %s\n", *ahost, strerror(errno));
 		goto bad2;
@@ -236,14 +236,14 @@ rresvport(alport)
 		(*alport)--;
 		if (*alport == IPPORT_RESERVED/2) {
 			(void)close(s);
-			errno = EAGAIN;         /* close */
+			errno = EAGAIN;		/* close */
 			return (-1);
 		}
 	}
 }
 
-int     __check_rhosts_file = 1;
-char    *__rcmd_errstr;
+int	__check_rhosts_file = 1;
+char	*__rcmd_errstr;
 
 int
 ruserok(rhost, superuser, ruser, luser)
@@ -253,7 +253,7 @@ ruserok(rhost, superuser, ruser, luser)
 	struct hostent *hp;
 	char **ap;
 	int i;
-#define MAXADDRS        35
+#define MAXADDRS	35
 	u_long addrs[MAXADDRS + 1];
 
 	if ((hp = gethostbyname(rhost)) == NULL)
@@ -360,7 +360,7 @@ __ivaliduser(hostf, raddr, luser, ruser)
 {
 	register char *user, *p;
 	int ch;
-	char buf[MAXHOSTNAMELEN + 128];         /* host + login */
+	char buf[MAXHOSTNAMELEN + 128];		/* host + login */
 	const char *auser, *ahost;
 	int hostok, userok;
 	char rhost[MAXHOSTNAMELEN];

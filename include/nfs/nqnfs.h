@@ -1,8 +1,8 @@
-/*      $NetBSD: nqnfs.h,v 1.4 1994/12/13 17:17:08 mycroft Exp $        */
+/*	$NetBSD: nqnfs.h,v 1.4 1994/12/13 17:17:08 mycroft Exp $	*/
 
 /*
  * Copyright (c) 1992, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Rick Macklem at The University of Guelph.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)nqnfs.h     8.2 (Berkeley) 8/18/94
+ *	@(#)nqnfs.h	8.2 (Berkeley) 8/18/94
  */
 
 /*
@@ -43,29 +43,29 @@
  */
 
 /* Tunable constants */
-#define NQ_CLOCKSKEW    3       /* Clock skew factor (sec) */
-#define NQ_WRITESLACK   5       /* Delay for write cache flushing */
-#define NQ_MAXLEASE     60      /* Max lease duration (sec) */
-#define NQ_MINLEASE     5       /* Min lease duration (sec) */
-#define NQ_DEFLEASE     30      /* Default lease duration (sec) */
-#define NQ_RENEWAL      3       /* Time before expiry (sec) to renew */
-#define NQ_TRYLATERDEL  15      /* Initial try later delay (sec) */
-#define NQ_MAXNUMLEASE  2048    /* Upper bound on number of server leases */
-#define NQ_DEADTHRESH   NQ_NEVERDEAD    /* Default nm_deadthresh */
-#define NQ_NEVERDEAD    9       /* Greater than max. nm_timeouts */
-#define NQLCHSZ         256     /* Server hash table size */
+#define	NQ_CLOCKSKEW	3	/* Clock skew factor (sec) */
+#define	NQ_WRITESLACK	5	/* Delay for write cache flushing */
+#define	NQ_MAXLEASE	60	/* Max lease duration (sec) */
+#define	NQ_MINLEASE	5	/* Min lease duration (sec) */
+#define	NQ_DEFLEASE	30	/* Default lease duration (sec) */
+#define	NQ_RENEWAL	3	/* Time before expiry (sec) to renew */
+#define	NQ_TRYLATERDEL	15	/* Initial try later delay (sec) */
+#define	NQ_MAXNUMLEASE	2048	/* Upper bound on number of server leases */
+#define	NQ_DEADTHRESH	NQ_NEVERDEAD	/* Default nm_deadthresh */
+#define	NQ_NEVERDEAD	9	/* Greater than max. nm_timeouts */
+#define	NQLCHSZ		256	/* Server hash table size */
 
-#define NQNFS_PROG      300105  /* As assigned by Sun */
-#define NQNFS_VER1      1
-#define NQNFS_EVICTSIZ  156     /* Size of eviction request in bytes */
+#define	NQNFS_PROG	300105	/* As assigned by Sun */
+#define	NQNFS_VER1	1
+#define	NQNFS_EVICTSIZ	156	/* Size of eviction request in bytes */
 
 /*
  * Definitions used for saving the "last lease expires" time in Non-volatile
  * RAM on the server. The default definitions below assume that NOVRAM is not
  * available.
  */
-#define NQSTORENOVRAM(t)
-#define NQLOADNOVRAM(t)
+#define	NQSTORENOVRAM(t)
+#define	NQLOADNOVRAM(t)
 
 /*
  * Defn and structs used on the server to maintain state for current leases.
@@ -77,13 +77,13 @@
  * ordered by increasing expiry time for nqsrv_timer() and the second is a chain
  * hashed on lc_fh.
  */
-#define LC_MOREHOSTSIZ  10
+#define	LC_MOREHOSTSIZ	10
 
 struct nqhost {
 	union {
 		struct {
 			u_short udp_flag;
-			u_short udp_port;
+			u_short	udp_port;
 			union nethostaddr udp_haddr;
 		} un_udp;
 		struct {
@@ -98,62 +98,62 @@ struct nqhost {
 		} un_conn;
 	} lph_un;
 };
-#define lph_flag        lph_un.un_udp.udp_flag
-#define lph_port        lph_un.un_udp.udp_port
-#define lph_haddr       lph_un.un_udp.udp_haddr
-#define lph_inetaddr    lph_un.un_udp.udp_haddr.had_inetaddr
-#define lph_claddr      lph_un.un_connless.connless_haddr
-#define lph_nam         lph_un.un_connless.connless_haddr.had_nam
-#define lph_slp         lph_un.un_conn.conn_slp
+#define	lph_flag	lph_un.un_udp.udp_flag
+#define	lph_port	lph_un.un_udp.udp_port
+#define	lph_haddr	lph_un.un_udp.udp_haddr
+#define	lph_inetaddr	lph_un.un_udp.udp_haddr.had_inetaddr
+#define	lph_claddr	lph_un.un_connless.connless_haddr
+#define	lph_nam		lph_un.un_connless.connless_haddr.had_nam
+#define	lph_slp		lph_un.un_conn.conn_slp
 
 struct nqlease {
-	LIST_ENTRY(nqlease) lc_hash;    /* Fhandle hash list */
+	LIST_ENTRY(nqlease) lc_hash;	/* Fhandle hash list */
 	CIRCLEQ_ENTRY(nqlease) lc_timer; /* Timer queue list */
-	time_t          lc_expiry;      /* Expiry time (sec) */
-	struct nqhost   lc_host;        /* Host that got lease */
-	struct nqm      *lc_morehosts;  /* Other hosts that share read lease */
-	fsid_t          lc_fsid;        /* Fhandle */
-	char            lc_fiddata[MAXFIDSZ];
-	struct vnode    *lc_vp;         /* Soft reference to associated vnode */
+	time_t		lc_expiry;	/* Expiry time (sec) */
+	struct nqhost	lc_host;	/* Host that got lease */
+	struct nqm	*lc_morehosts;	/* Other hosts that share read lease */
+	fsid_t		lc_fsid;	/* Fhandle */
+	char		lc_fiddata[MAXFIDSZ];
+	struct vnode	*lc_vp;		/* Soft reference to associated vnode */
 };
-#define lc_flag         lc_host.lph_un.un_udp.udp_flag
+#define	lc_flag		lc_host.lph_un.un_udp.udp_flag
 
 /* lc_flag bits */
-#define LC_VALID        0x0001  /* Host address valid */
-#define LC_WRITE        0x0002  /* Write cache */
-#define LC_NONCACHABLE  0x0004  /* Non-cachable lease */
-#define LC_LOCKED       0x0008  /* Locked */
-#define LC_WANTED       0x0010  /* Lock wanted */
-#define LC_EXPIREDWANTED 0x0020 /* Want lease when expired */
-#define LC_UDP          0x0040  /* Host address for udp socket */
-#define LC_CLTP         0x0080  /* Host address for other connectionless */
-#define LC_LOCAL        0x0100  /* Host is server */
-#define LC_VACATED      0x0200  /* Host has vacated lease */
-#define LC_WRITTEN      0x0400  /* Recently wrote to the leased file */
-#define LC_SREF         0x0800  /* Holds a nfssvc_sock reference */
+#define	LC_VALID	0x0001	/* Host address valid */
+#define	LC_WRITE	0x0002	/* Write cache */
+#define	LC_NONCACHABLE	0x0004	/* Non-cachable lease */
+#define	LC_LOCKED	0x0008	/* Locked */
+#define	LC_WANTED	0x0010	/* Lock wanted */
+#define	LC_EXPIREDWANTED 0x0020	/* Want lease when expired */
+#define	LC_UDP		0x0040	/* Host address for udp socket */
+#define	LC_CLTP		0x0080	/* Host address for other connectionless */
+#define	LC_LOCAL	0x0100	/* Host is server */
+#define	LC_VACATED	0x0200	/* Host has vacated lease */
+#define	LC_WRITTEN	0x0400	/* Recently wrote to the leased file */
+#define	LC_SREF		0x0800	/* Holds a nfssvc_sock reference */
 
 struct nqm {
-	struct nqm      *lpm_next;
-	struct nqhost   lpm_hosts[LC_MOREHOSTSIZ];
+	struct nqm	*lpm_next;
+	struct nqhost	lpm_hosts[LC_MOREHOSTSIZ];
 };
 
 /*
  * Flag bits for flags argument to nqsrv_getlease.
  */
-#define NQL_READ        LEASE_READ      /* Read Request */
-#define NQL_WRITE       LEASE_WRITE     /* Write Request */
-#define NQL_CHECK       0x4             /* Check for lease */
-#define NQL_NOVAL       0xffffffff      /* Invalid */
+#define	NQL_READ	LEASE_READ	/* Read Request */
+#define	NQL_WRITE	LEASE_WRITE	/* Write Request */
+#define	NQL_CHECK	0x4		/* Check for lease */
+#define	NQL_NOVAL	0xffffffff	/* Invalid */
 
 /*
  * Special value for slp for local server calls.
  */
-#define NQLOCALSLP      ((struct nfssvc_sock *) -1)
+#define	NQLOCALSLP	((struct nfssvc_sock *) -1)
 
 /*
  * Server side macros.
  */
-#define nqsrv_getl(v, l) \
+#define	nqsrv_getl(v, l) \
 		(void) nqsrv_getlease((v), &nfsd->nd_duration, \
 		 ((nfsd->nd_nqlflag != 0 && nfsd->nd_nqlflag != NQL_NOVAL) ? nfsd->nd_nqlflag : \
 		 ((l) | NQL_CHECK)), \
@@ -162,18 +162,18 @@ struct nqm {
 /*
  * Client side macros that check for a valid lease.
  */
-#define NQNFS_CKINVALID(v, n, f) \
+#define	NQNFS_CKINVALID(v, n, f) \
  ((time.tv_sec > (n)->n_expiry && \
  VFSTONFS((v)->v_mount)->nm_timeouts < VFSTONFS((v)->v_mount)->nm_deadthresh) \
   || ((f) == NQL_WRITE && ((n)->n_flag & NQNFSWRITE) == 0))
 
-#define NQNFS_CKCACHABLE(v, f) \
+#define	NQNFS_CKCACHABLE(v, f) \
  ((time.tv_sec <= VTONFS(v)->n_expiry || \
   VFSTONFS((v)->v_mount)->nm_timeouts >= VFSTONFS((v)->v_mount)->nm_deadthresh) \
    && (VTONFS(v)->n_flag & NQNFSNONCACHE) == 0 && \
    ((f) == NQL_READ || (VTONFS(v)->n_flag & NQNFSWRITE)))
 
-#define NQNFS_NEEDLEASE(v, p) \
+#define	NQNFS_NEEDLEASE(v, p) \
 		(time.tv_sec > VTONFS(v)->n_expiry ? \
 		 ((VTONFS(v)->n_flag & NQNFSEVICTED) ? 0 : nqnfs_piggy[p]) : \
 		 (((time.tv_sec + NQ_RENEWAL) > VTONFS(v)->n_expiry && \
@@ -189,7 +189,7 @@ CIRCLEQ_HEAD(, nqlease) nqtimerhead;
 /*
  * List head for the file handle hash table.
  */
-#define NQFHHASH(f) \
+#define	NQFHHASH(f) \
 	(&nqfhhashtbl[(*((u_long *)(f))) & nqfhhash])
 LIST_HEAD(nqfhhashhead, nqlease) *nqfhhashtbl;
 u_long nqfhhash;
@@ -197,6 +197,6 @@ u_long nqfhhash;
 /*
  * Nqnfs return status numbers.
  */
-#define NQNFS_EXPIRED   500
-#define NQNFS_TRYLATER  501
-#define NQNFS_AUTHERR   502
+#define	NQNFS_EXPIRED	500
+#define	NQNFS_TRYLATER	501
+#define NQNFS_AUTHERR	502

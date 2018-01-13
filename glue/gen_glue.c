@@ -1,31 +1,17 @@
 #include <sys/types.h>
 #include <sys/syscall.h>
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
-
-/**
- * May 2009, Diego Casorran: Ixemul is now able to be loaded dinamically
- * depending which functions are used. That means, if you use V49 SDK and
- * only V48 functions are used, the requested ixemul.library will be V48.
- * Unfortunately, this only seems to work with no-baserel code.. Anyhow,
- * thats the 90% of the software, i guess.
- * UPDATE: This does not seems to work properly under GCC 2.x without
- * Weak Attribute support.. hence, disabled by default.. :(
- */
-#define HANDLE_DINAMIC_IXEMUL_OPEN	0
-
-#if HANDLE_DINAMIC_IXEMUL_OPEN
-# define SYSTEM_CALL_APIV( HEXVER, REV ) {(char *)(0xFFFF##HEXVER),REV},
-#endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
 
 struct syscall {
   char *name;
   int   vec;
 } syscalls[] = {
 #define SYSTEM_CALL(func,vec) { #func, vec},
-#include <sys/syscall_68k.def>
+#include <sys/syscall.def>
 #undef SYSTEM_CALL
-#undef SYSTEM_CALL_APIV
 };
 
 int nsyscall = sizeof(syscalls) / sizeof (syscalls[0]);
@@ -69,34 +55,6 @@ static short large_baserel_code[] = {
   0x0000, 0x000e, 0x0100, 0x0000, 0x0000, 0x0000
 };
 
-#if HANDLE_DINAMIC_IXEMUL_OPEN
-
-#define NO_BASEREL_OFFSET1 22
-#define NO_BASEREL_OFFSET2 35
-#define NO_BASEREL_OFFSET3 16
-#define NO_BASEREL_OFFSET4 17
-#define NO_BASEREL_OFFSET5 41
-
-/* The following code is a hexdump of this assembly program:
-
-		.globl	_FUNCTION
-		.globl  _VAR
-_VAR:		.long	(VALUE)
-_FUNCTION:	movel	_ixemulbase,a0
-		jmp	a0@(OFFSET:w)
-*/
-
-static short no_baserel_code[] = {
-  0x0000, 0x0107, 0x0000, 0x0010, 0x0000, 0x0000, 0x0000, 0x0000,
-  0x0000, 0x0024, 0x0000, 0x0000, 0x0000, 0x0008, 0x0000, 0x0000,
-  0x0030, 0x0002, 0x2079, 0x0000, 0x0000, 0x4ee8, 0xffe2, 0x0000,
-  0x0000, 0x0006, 0x0000, 0x0250, 0x0000, 0x0004, 0x0500, 0x0000,
-  0x0000, 0x0004, 0x0000, 0x000B, 0x0500, 0x0000, 0x0000, 0x0000,
-  0x0000, 0x0017, 0x0100, 0x0000, 0x0000, 0x0000
-};
-
-#else /* ! HANDLE_DINAMIC_IXEMUL_OPEN */
-
 #define NO_BASEREL_OFFSET1 20
 #define NO_BASEREL_OFFSET2 33
 
@@ -114,8 +72,6 @@ static short no_baserel_code[] = {
   0x0000, 0x0150, 0x0000, 0x0004, 0x0500, 0x0000, 0x0000, 0x0000,
   0x0000, 0x000b, 0x0100, 0x0000, 0x0000, 0x0000
 };
-
-#endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
 
 #define PROFILING_OFFSET1 29
 #define PROFILING_OFFSET2 51
@@ -151,24 +107,6 @@ static short profiling_code[] = {
   0x0100, 0x0000, 0x0000, 0x0000
 };
 
-#if HANDLE_DINAMIC_IXEMUL_OPEN
-
-#define IXVC_OFFSET1 25
-
-/* The following code is a hexdump of this assembly program:
-
-		.globl	_VAR
-_VAR:		.long (VALUE)
-*/
-
-static short ixv_code[] = {
-  0x0002, 0x0107, 0x0000, 0x0004, 0x0000, 0x0000, 0x0000, 0x0000,
-  0x0000, 0x000C, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-  0x0000, 0x0000, 0x0000, 0x0004, 0x0500, 0x0000, 0x0000, 0x0000,
-  0x0000, 0x0010,
-};
-
-#endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
 
 void usage(void)
 {
@@ -203,12 +141,10 @@ int main(int argc, char **argv)
 {
   FILE *fp;
   struct syscall *sc;
-  int i, v, baserel = 0, profiling = 0, lbaserel = 0, nobaserel = 0;
+  int i, v, baserel = 0, profiling = 0, lbaserel = 0;
   short *code;
-  int offset1, offset2, size, gblfl = 0;
-  char *gblfs;
+  int offset1, offset2, size;
   int zero = 0;
-  short ixv = 48, ixr = 2;
 
   if (argc != 2)
     usage();
@@ -218,26 +154,14 @@ int main(int argc, char **argv)
     lbaserel = 1;
   else if (!strcmp(argv[1], "profiling"))
     profiling = 1;
-  else if (!strcmp(argv[1], "no-baserel"))
-    nobaserel = 1;
-  else
+  else if (strcmp(argv[1], "no-baserel"))
     usage();
   
   for (i = 0, sc = syscalls; i < nsyscall; i++, sc++)
     {
-      int namelen;
-      char name[128];
-      
-      #if HANDLE_DINAMIC_IXEMUL_OPEN
-      if((((unsigned long)sc->name) >> 16) == 0xffff)
-      {
-         ixv = ((unsigned long)sc->name) & 0xffff;
-         ixr = sc->vec;
-         continue;
-      }
-      #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
-      
-      namelen = strlen(sc->name);
+      int namelen = strlen(sc->name);
+      char name[namelen + 3];
+
       if (!memcmp(sc->name, "__obsolete", 10))
         continue;
       if (!memcmp(sc->name, "__must_recompile", 16))
@@ -255,13 +179,12 @@ int main(int argc, char **argv)
           exit (20);
         }
 
-      gblfl += namelen + 1 + 4;
       code = no_baserel_code;
       size = sizeof(no_baserel_code);
       offset1 = NO_BASEREL_OFFSET1;
       offset2 = NO_BASEREL_OFFSET2;
       if (profiling)
-        { 
+        {
           profiling_code[PROFILING_OFFSET1] = v;
           profiling_code[PROFILING_OFFSET2] = 6 + namelen;
           profiling_code[PROFILING_OFFSET3] = 6 + namelen * 2 + 5;
@@ -275,26 +198,6 @@ int main(int argc, char **argv)
           fwrite(sc->name, namelen + 1, 1, fp);
           fwrite("mcount", 7, 1, fp);
         }
-      #if HANDLE_DINAMIC_IXEMUL_OPEN
-      else if ( nobaserel )
-        {
-          int len;
-          
-          code[offset1] = v;
-          code[offset2] = namelen + 4 + 2;
-          code[NO_BASEREL_OFFSET3] = ixv;
-          code[NO_BASEREL_OFFSET4] = ixr;
-          len = ((namelen*2) + 4 + IXEMULBASELEN + 1 + 4 + sizeof("_ixv"));
-          code[NO_BASEREL_OFFSET5] = len - 2 - 4 - 6;
-          write_code(code, size, fp);
-          fwrite(&zero, 3, 1, fp);
-          fputc((char)len, fp);
-          fputc('_', fp);
-          fwrite(sc->name, namelen + 1, 1, fp);
-          fwrite("__ixv_", sizeof("_ixv_"),1,fp);
-          fwrite(sc->name, namelen + 1, 1, fp);
-        }
-      #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
       else
 	{
 	  if (baserel && sc->vec != SYS_ix_geta4)
@@ -321,77 +224,6 @@ int main(int argc, char **argv)
         }
       fwrite(IXEMULBASE, IXEMULBASELEN + 1, 1, fp);
       fclose (fp);
-      
-      #if HANDLE_DINAMIC_IXEMUL_OPEN
-      if( nobaserel )
-      {
-        sprintf(name, "aaa.%s_ixv.u", sc->name);
-        
-        if(!(fp = fopen (name, "w")))
-        {
-          perror (name);
-          exit (20);
-        }
-        
-        code = ixv_code;
-        size = sizeof(ixv_code);
-        code[IXVC_OFFSET1] = strlen(name) + 1 + 4;
-        write_code(code, size, fp);
-        fwrite("__ixv_", sizeof("_ixv_"),1,fp);
-        fwrite(sc->name, namelen + 1, 1, fp);
-        fclose( fp );
-      }
-      #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
     }
-    
-    #if HANDLE_DINAMIC_IXEMUL_OPEN
-    /**
-     * Generate the global-reference version-type variables..
-     */
-    
-    if(!(gblfs = (char *)calloc(gblfl+i,sizeof("_ixv_"))))
-    {
-    	perror("gblfs");
-    	exit(20);
-    }
-    
-    ixv = 0;
-    for (i = 0, sc = syscalls; i < nsyscall; i++, sc++)
-    {
-      if((((unsigned long)sc->name) >> 16) == 0xffff)
-      {
-         if( ixv != 0 )
-         {
-           char fn[40];
-           
-           sprintf( fn, "../../libsrc/varjumbo_%d.%d.h", ixv, ixr );
-           
-           if(!(fp = fopen ( fn, "w")))
-           {
-             perror(fn);
-             exit (20);
-           }
-           
-           sprintf( &gblfs[strlen(gblfs)-3], "END\n");
-           
-           fwrite( gblfs, strlen(gblfs), 1, fp );
-           fclose(fp);
-         }
-         
-         ixv = ((unsigned long)sc->name) & 0xffff;
-         ixr = sc->vec;
-         
-         strcpy( gblfs, "EXTLONG ");
-         
-         continue;
-      }
-      
-      sprintf( &gblfs[strlen(gblfs)], "_ixv_%s OR ", sc->name );
-    }
-    
-    free(gblfs);
-    
-    #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
-    
   exit(0);
 }

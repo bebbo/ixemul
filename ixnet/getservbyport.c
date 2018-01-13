@@ -16,18 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: getservbyport.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: getservbyport.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:44  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:45:01  nobody
- *  Initial import
- *
+ *  $Log:$
  */
 #define _KERNEL
 #include "ixnet.h"
@@ -43,10 +34,10 @@ getservbyport(int port, const char *proto)
 
     switch (network_protocol) {
 
-	case IX_NETWORK_AMITCP:
-	    return TCP_GetServByPort(port,proto);
+        case IX_NETWORK_AMITCP:
+            return TCP_GetServByPort(port,proto);
 
-	default: /*case IX_NETWORK_AS225:*/
-	    return SOCK_getservbyport(port,proto);
+        default: /*case IX_NETWORK_AS225:*/
+            return SOCK_getservbyport(port,proto);
     }
 }

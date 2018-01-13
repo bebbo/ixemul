@@ -1,8 +1,8 @@
-/*      $NetBSD: rec_put.c,v 1.8 1996/05/03 21:38:50 cgd Exp $  */
+/*	$NetBSD: rec_put.c,v 1.8 1996/05/03 21:38:50 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rec_put.c   8.7 (Berkeley) 8/18/94";
+static char sccsid[] = "@(#)rec_put.c	8.7 (Berkeley) 8/18/94";
 #else
 static char rcsid[] = "$NetBSD: rec_put.c,v 1.8 1996/05/03 21:38:50 cgd Exp $";
 #endif
@@ -55,14 +55,14 @@ static char rcsid[] = "$NetBSD: rec_put.c,v 1.8 1996/05/03 21:38:50 cgd Exp $";
  * __REC_PUT -- Add a recno item to the tree.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key
- *      data:   data
- *      flag:   R_CURSOR, R_IAFTER, R_IBEFORE, R_NOOVERWRITE
+ *	dbp:	pointer to access method
+ *	key:	key
+ *	data:	data
+ *	flag:	R_CURSOR, R_IAFTER, R_IBEFORE, R_NOOVERWRITE
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key is
- *      already in the tree and R_NOOVERWRITE specified.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key is
+ *	already in the tree and R_NOOVERWRITE specified.
  */
 int
 __rec_put(dbp, key, data, flags)
@@ -139,7 +139,7 @@ __rec_put(dbp, key, data, flags)
 			return (RET_SPECIAL);
 		break;
 	default:
-einval:         errno = EINVAL;
+einval:		errno = EINVAL;
 		return (RET_ERROR);
 	}
 
@@ -185,12 +185,12 @@ einval:         errno = EINVAL;
  * __REC_IPUT -- Add a recno item to the tree.
  *
  * Parameters:
- *      t:      tree
- *      nrec:   record number
- *      data:   data
+ *	t:	tree
+ *	nrec:	record number
+ *	data:	data
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __rec_iput(t, nrec, data, flags)

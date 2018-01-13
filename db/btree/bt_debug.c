@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_debug.c,v 1.6 1996/05/03 21:50:41 cgd Exp $ */
+/*	$NetBSD: bt_debug.c,v 1.6 1996/05/03 21:50:41 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_debug.c  8.5 (Berkeley) 8/17/94";
+static char sccsid[] = "@(#)bt_debug.c	8.5 (Berkeley) 8/17/94";
 #else
 static char rcsid[] = "$NetBSD: bt_debug.c,v 1.6 1996/05/03 21:50:41 cgd Exp $";
 #endif
@@ -58,7 +58,7 @@ static char rcsid[] = "$NetBSD: bt_debug.c,v 1.6 1996/05/03 21:50:41 cgd Exp $";
  * BT_DUMP -- Dump the tree
  *
  * Parameters:
- *      dbp:    pointer to the DB
+ *	dbp:	pointer to the DB
  */
 void
 __bt_dump(dbp)
@@ -75,18 +75,18 @@ __bt_dump(dbp)
 	if (F_ISSET(t, R_RECNO))
 		(void)fprintf(stderr, " keys %lu", t->bt_nrecs);
 #undef X
-#define X(flag, name) \
+#define	X(flag, name) \
 	if (F_ISSET(t, flag)) { \
 		(void)fprintf(stderr, "%s%s", sep, name); \
 		sep = ", "; \
 	}
 	if (t->flags != 0) {
 		sep = " flags (";
-		X(R_FIXLEN,     "FIXLEN");
-		X(B_INMEM,      "INMEM");
-		X(B_NODUPS,     "NODUPS");
-		X(B_RDONLY,     "RDONLY");
-		X(R_RECNO,      "RECNO");
+		X(R_FIXLEN,	"FIXLEN");
+		X(B_INMEM,	"INMEM");
+		X(B_NODUPS,	"NODUPS");
+		X(B_RDONLY,	"RDONLY");
+		X(R_RECNO,	"RECNO");
 		X(B_METADIRTY,"METADIRTY");
 		(void)fprintf(stderr, ")\n");
 	}
@@ -102,7 +102,7 @@ __bt_dump(dbp)
  * BT_DMPAGE -- Dump the meta page
  *
  * Parameters:
- *      h:      pointer to the PAGE
+ *	h:	pointer to the PAGE
  */
 void
 __bt_dmpage(h)
@@ -119,15 +119,15 @@ __bt_dmpage(h)
 	(void)fprintf(stderr, "nrecs %lu\n", m->nrecs);
 	(void)fprintf(stderr, "flags %lu", m->flags);
 #undef X
-#define X(flag, name) \
+#define	X(flag, name) \
 	if (m->flags & flag) { \
 		(void)fprintf(stderr, "%s%s", sep, name); \
 		sep = ", "; \
 	}
 	if (m->flags) {
 		sep = " (";
-		X(B_NODUPS,     "NODUPS");
-		X(R_RECNO,      "RECNO");
+		X(B_NODUPS,	"NODUPS");
+		X(R_RECNO,	"RECNO");
 		(void)fprintf(stderr, ")");
 	}
 }
@@ -136,7 +136,7 @@ __bt_dmpage(h)
  * BT_DNPAGE -- Dump the page
  *
  * Parameters:
- *      n:      page number to dump.
+ *	n:	page number to dump.
  */
 void
 __bt_dnpage(dbp, pgno)
@@ -157,7 +157,7 @@ __bt_dnpage(dbp, pgno)
  * BT_DPAGE -- Dump the page
  *
  * Parameters:
- *      h:      pointer to the PAGE
+ *	h:	pointer to the PAGE
  */
 void
 __bt_dpage(h)
@@ -172,18 +172,18 @@ __bt_dpage(h)
 
 	(void)fprintf(stderr, "    page %d: (", h->pgno);
 #undef X
-#define X(flag, name) \
+#define	X(flag, name) \
 	if (h->flags & flag) { \
 		(void)fprintf(stderr, "%s%s", sep, name); \
 		sep = ", "; \
 	}
 	sep = "";
-	X(P_BINTERNAL,  "BINTERNAL")            /* types */
-	X(P_BLEAF,      "BLEAF")
-	X(P_RINTERNAL,  "RINTERNAL")            /* types */
-	X(P_RLEAF,      "RLEAF")
-	X(P_OVERFLOW,   "OVERFLOW")
-	X(P_PRESERVE,   "PRESERVE");
+	X(P_BINTERNAL,	"BINTERNAL")		/* types */
+	X(P_BLEAF,	"BLEAF")
+	X(P_RINTERNAL,	"RINTERNAL")		/* types */
+	X(P_RLEAF,	"RLEAF")
+	X(P_OVERFLOW,	"OVERFLOW")
+	X(P_PRESERVE,	"PRESERVE");
 	(void)fprintf(stderr, ")\n");
 #undef X
 
@@ -253,7 +253,7 @@ __bt_dpage(h)
  * BT_STAT -- Gather/print the tree statistics
  *
  * Parameters:
- *      dbp:    pointer to the DB
+ *	dbp:	pointer to the DB
  */
 void
 __bt_stat(dbp)

@@ -21,7 +21,7 @@
 
 #ifndef lint
 #ifndef NOID
-static char     privatehid[] = "@(#)private.h   7.45";
+static char	privatehid[] = "@(#)private.h	7.45";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
@@ -31,42 +31,42 @@ static char     privatehid[] = "@(#)private.h   7.45";
 */
 
 #ifndef HAVE_ADJTIME
-#define HAVE_ADJTIME            1
+#define HAVE_ADJTIME		1
 #endif /* !defined HAVE_ADJTIME */
 
 #ifndef HAVE_GETTEXT
-#define HAVE_GETTEXT            0
+#define HAVE_GETTEXT		0
 #endif /* !defined HAVE_GETTEXT */
 
 #ifndef HAVE_SETTIMEOFDAY
-#define HAVE_SETTIMEOFDAY       3
+#define HAVE_SETTIMEOFDAY	3
 #endif /* !defined HAVE_SETTIMEOFDAY */
 
 #ifndef HAVE_STRERROR
-#define HAVE_STRERROR           0
+#define HAVE_STRERROR		0
 #endif /* !defined HAVE_STRERROR */
 
 #ifndef HAVE_UNISTD_H
-#define HAVE_UNISTD_H           1
+#define HAVE_UNISTD_H		1
 #endif /* !defined HAVE_UNISTD_H */
 
 #ifndef HAVE_UTMPX_H
-#define HAVE_UTMPX_H            0
+#define HAVE_UTMPX_H		0
 #endif /* !defined HAVE_UTMPX_H */
 
 #ifndef LOCALE_HOME
-#define LOCALE_HOME             "/usr/lib/locale"
+#define LOCALE_HOME		"/usr/lib/locale"
 #endif /* !defined LOCALE_HOME */
 
 /*
 ** Nested includes
 */
 #ifdef __amigaos__
-#include "sys/types.h"  /* for time_t */
+#include "sys/types.h"	/* for time_t */
 #include "stdio.h"
 #include "errno.h"
 #include "string.h"
-#include "limits.h"     /* for CHAR_BIT */
+#include "limits.h"	/* for CHAR_BIT */
 #include "time.h"
 #include "stdlib.h"
 #else
@@ -84,15 +84,15 @@ static char     privatehid[] = "@(#)private.h   7.45";
 #endif /* HAVE_GETTEXT - 0 */
 
 #if HAVE_UNISTD_H - 0
-#include "unistd.h"     /* for F_OK and R_OK */
+#include "unistd.h"	/* for F_OK and R_OK */
 #endif /* HAVE_UNISTD_H - 0 */
 
 #if !(HAVE_UNISTD_H - 0)
 #ifndef F_OK
-#define F_OK    0
+#define F_OK	0
 #endif /* !defined F_OK */
 #ifndef R_OK
-#define R_OK    4
+#define R_OK	4
 #endif /* !defined R_OK */
 #endif /* !(HAVE_UNISTD_H - 0) */
 
@@ -119,10 +119,10 @@ static char     privatehid[] = "@(#)private.h   7.45";
 
 #ifndef P
 #ifdef __STDC__
-#define P(x)    x
+#define P(x)	x
 #endif /* defined __STDC__ */
 #ifndef __STDC__
-#define P(x)    ()
+#define P(x)	()
 #endif /* !defined __STDC__ */
 #endif /* !defined P */
 
@@ -131,7 +131,7 @@ static char     privatehid[] = "@(#)private.h   7.45";
 */
 
 #ifndef EXIT_SUCCESS
-#define EXIT_SUCCESS    0
+#define EXIT_SUCCESS	0
 #endif /* !defined EXIT_SUCCESS */
 
 /*
@@ -139,7 +139,7 @@ static char     privatehid[] = "@(#)private.h   7.45";
 */
 
 #ifndef EXIT_FAILURE
-#define EXIT_FAILURE    1
+#define EXIT_FAILURE	1
 #endif /* !defined EXIT_FAILURE */
 
 /*
@@ -155,10 +155,10 @@ static char     privatehid[] = "@(#)private.h   7.45";
 #endif /* !defined MAXPATHLEN */
 
 #ifdef MAXPATHLEN
-#define FILENAME_MAX    MAXPATHLEN
+#define FILENAME_MAX	MAXPATHLEN
 #endif /* defined MAXPATHLEN */
 #ifndef MAXPATHLEN
-#define FILENAME_MAX    1024            /* Pure guesswork */
+#define FILENAME_MAX	1024		/* Pure guesswork */
 #endif /* !defined MAXPATHLEN */
 
 #endif /* !defined FILENAME_MAX */
@@ -168,8 +168,8 @@ static char     privatehid[] = "@(#)private.h   7.45";
 */
 
 #ifndef remove
-extern int      unlink P((const char * filename));
-#define remove  unlink
+extern int	unlink P((const char * filename));
+#define remove	unlink
 #endif /* !defined remove */
 
 /*
@@ -184,13 +184,13 @@ extern int errno;
 /*
 ** Private function declarations.
 */
-char *  icalloc P((int nelem, int elsize));
-char *  icatalloc P((char * old, const char * new));
-char *  icpyalloc P((const char * string));
-char *  imalloc P((int n));
-void *  irealloc P((void * pointer, int size));
-void    icfree P((char * pointer));
-void    ifree P((char * pointer));
+char *	icalloc P((int nelem, int elsize));
+char *	icatalloc P((char * old, const char * new));
+char *	icpyalloc P((const char * string));
+char *	imalloc P((int n));
+void *	irealloc P((void * pointer, int size));
+void	icfree P((char * pointer));
+void	ifree P((char * pointer));
 char *  scheck P((const char *string, char *format));
 
 
@@ -199,15 +199,15 @@ char *  scheck P((const char *string, char *format));
 */
 
 #ifndef TRUE
-#define TRUE    1
+#define TRUE	1
 #endif /* !defined TRUE */
 
 #ifndef FALSE
-#define FALSE   0
+#define FALSE	0
 #endif /* !defined FALSE */
 
 #ifndef TYPE_BIT
-#define TYPE_BIT(type)  (sizeof (type) * CHAR_BIT)
+#define TYPE_BIT(type)	(sizeof (type) * CHAR_BIT)
 #endif /* !defined TYPE_BIT */
 
 #ifndef TYPE_SIGNED
@@ -242,7 +242,7 @@ char *  scheck P((const char *string, char *format));
 
 #ifndef INITIALIZE
 #ifdef GNUC_or_lint
-#define INITIALIZE(x)   ((x) = 0)
+#define INITIALIZE(x)	((x) = 0)
 #endif /* defined GNUC_or_lint */
 #ifndef GNUC_or_lint
 #define INITIALIZE(x)

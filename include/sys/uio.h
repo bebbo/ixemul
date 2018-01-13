@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,49 +30,49 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)uio.h       7.8 (Berkeley) 4/15/91
+ *	@(#)uio.h	7.8 (Berkeley) 4/15/91
  */
 
 #ifndef _UIO_H_
-#define _UIO_H_
+#define	_UIO_H_
 
 struct iovec {
-	caddr_t iov_base;
-	int     iov_len;
+	caddr_t	iov_base;
+	int	iov_len;
 };
 
-enum    uio_rw { UIO_READ, UIO_WRITE };
+enum	uio_rw { UIO_READ, UIO_WRITE };
 
 /*
  * Segment flag values.
  */
-enum    uio_seg {
-	UIO_USERSPACE,          /* from user data space */
-	UIO_SYSSPACE,           /* from system space */
-	UIO_USERISPACE          /* from user I space */
+enum	uio_seg {
+	UIO_USERSPACE,		/* from user data space */
+	UIO_SYSSPACE,		/* from system space */
+	UIO_USERISPACE		/* from user I space */
 };
 
 struct uio {
-	struct  iovec *uio_iov;
-	int     uio_iovcnt;
-	off_t   uio_offset;
-	int     uio_resid;
-	enum    uio_seg uio_segflg;
-	enum    uio_rw uio_rw;
-	struct  proc *uio_procp;
+	struct	iovec *uio_iov;
+	int	uio_iovcnt;
+	off_t	uio_offset;
+	int	uio_resid;
+	enum	uio_seg uio_segflg;
+	enum	uio_rw uio_rw;
+	struct	proc *uio_procp;
 };
 
  /*
   * Limits
   */
-#define UIO_MAXIOV      1024            /* max 1K of iov's */
-#define UIO_SMALLIOV    8               /* 8 on stack, else malloc */
+#define UIO_MAXIOV	1024		/* max 1K of iov's */
+#define UIO_SMALLIOV	8		/* 8 on stack, else malloc */
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int     readv __P((int, const struct iovec *, int));
-int     writev __P((int, const struct iovec *, int));
+int	readv __P((int, const struct iovec *, int));
+int	writev __P((int, const struct iovec *, int));
 __END_DECLS
 
 

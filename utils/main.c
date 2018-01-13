@@ -1,6 +1,6 @@
 /*
-    Ixprefs v.2.7--ixemul.library configuration program
-    Copyright © 1995,1996 Kriton Kyrimis
+    Ixprefs v.2.8--ixemul.library configuration program
+    Copyright © 1995-2001 Kriton Kyrimis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,13 +36,10 @@ int translateslash, membuf, blocks, cases, suppress,
     profilemethod, stackusage, mufs;
 
 int advanced = FALSE;
-int watchAvailMem, catchfailedallocs, killappallocerr;
 
 static int in_wb = FALSE;
 
-/// keeping old version for Legacy reasons..we are updating 12 years later(!)
-//char ixprefs_version[] = "$VER: ixprefs 2.7 (15.08.97)";
-char ixprefs_version[] = "$VER: ixprefs 2.8 (29.05.2009)";
+char ixprefs_version[] = "$VER: ixprefs 2.8 (24.04.2001)";
 
 int
 main(int argc, char *argv[])
@@ -58,14 +55,6 @@ main(int argc, char *argv[])
       GUI = AmigaOSGUI;
       break;
 #endif /* NO_AMIGAOS_SUPPORT */
-#ifndef NO_POS_SUPPORT
-    case OS_IS_POS:
-      OpenLibraries = OpenPOSLibraries;
-      CloseLibraries = ClosePOSLibraries;
-      Cleanup = POSCleanup;
-      GUI = POSGUI;
-      break;
-#endif /* NO_POS_SUPPORT */
     default:
       break;
   }
@@ -79,7 +68,7 @@ main(int argc, char *argv[])
     return FAILURE;
   }
 
-  LoadSettings();       /* load ixprefs settings from ixemulbase */
+  LoadSettings();	/* load ixprefs settings from ixemulbase */
   
   if (argc >= 2) {
     in_wb = FALSE;
@@ -99,13 +88,6 @@ main(int argc, char *argv[])
   if (status != 0) {
     return FAILURE;
   }
-
-#ifndef NO_POS_SUPPORT
-  if (ix_os == OS_IS_POS) {
-    ShowRequester("GUI not implemented under p.OS", 0, "EXIT");
-    return FAILURE;
-  }
-#endif /* NO_POS_SUPPORT */
 
   return GUI();
 }

@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getopt.c    4.13 (Berkeley) 2/23/91";
+static char sccsid[] = "@(#)getopt.c	4.13 (Berkeley) 2/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <stdio.h>
@@ -42,13 +42,13 @@ static char sccsid[] = "@(#)getopt.c    4.13 (Berkeley) 2/23/91";
 /*
  * get option letter from argument vector
  */
-int     opterr = 1,             /* if error message should be printed */
-	optind = 1,             /* index into parent argv vector */
-	optopt;                 /* character checked for validity */
-char    *optarg;                /* argument associated with option */
+int	opterr = 1,		/* if error message should be printed */
+	optind = 1,		/* index into parent argv vector */
+	optopt;			/* character checked for validity */
+char	*optarg;		/* argument associated with option */
 
-#define BADCH   (int)'?'
-#define EMSG    ""
+#define	BADCH	(int)'?'
+#define	EMSG	""
 
 int
 getopt(nargc, nargv, ostr)
@@ -56,21 +56,21 @@ getopt(nargc, nargv, ostr)
 	char * const *nargv;
 	const char *ostr;
 {
-	static char *place = EMSG;              /* option letter processing */
-	register char *oli;                     /* option letter list index */
+	static char *place = EMSG;		/* option letter processing */
+	register char *oli;			/* option letter list index */
 	char *p;
 
-	if (!*place) {                          /* update scanning pointer */
+	if (!*place) {				/* update scanning pointer */
 		if (optind >= nargc || *(place = nargv[optind]) != '-') {
 			place = EMSG;
 			return(EOF);
 		}
-		if (place[1] && *++place == '-') {      /* found "--" */
+		if (place[1] && *++place == '-') {	/* found "--" */
 			++optind;
 			place = EMSG;
 			return(EOF);
 		}
-	}                                       /* option letter okay? */
+	}					/* option letter okay? */
 	if ((optopt = (int)*place++) == (int)':' ||
 	    !(oli = index(ostr, optopt))) {
 		/*
@@ -91,15 +91,15 @@ getopt(nargc, nargv, ostr)
 		}
 		return(BADCH);
 	}
-	if (*++oli != ':') {                    /* don't need argument */
+	if (*++oli != ':') {			/* don't need argument */
 		optarg = NULL;
 		if (!*place)
 			++optind;
 	}
-	else {                                  /* need an argument */
-		if (*place)                     /* no white space */
+	else {					/* need an argument */
+		if (*place)			/* no white space */
 			optarg = place;
-		else if (nargc <= ++optind) {   /* no arg */
+		else if (nargc <= ++optind) {	/* no arg */
 			place = EMSG;
 			if (!(p = rindex(*nargv, '/')))
 				p = *nargv;
@@ -111,10 +111,10 @@ getopt(nargc, nargv, ostr)
 				    p, optopt);
 			return(BADCH);
 		}
-		else                            /* white space */
+	 	else				/* white space */
 			optarg = nargv[optind];
 		place = EMSG;
 		++optind;
 	}
-	return(optopt);                         /* dump back option letter */
+	return(optopt);				/* dump back option letter */
 }

@@ -1,8 +1,8 @@
-/*      $NetBSD: fseek.c,v 1.8 1995/03/05 06:56:09 jtc Exp $    */
+/*	$NetBSD: fseek.c,v 1.8 1995/03/05 06:56:09 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fseek.c     8.3 (Berkeley) 1/2/94";
+static char sccsid[] = "@(#)fseek.c	8.3 (Berkeley) 1/2/94";
 #endif
 static char rcsid[] = "$NetBSD: fseek.c,v 1.8 1995/03/05 06:56:09 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -54,7 +54,7 @@ static char rcsid[] = "$NetBSD: fseek.c,v 1.8 1995/03/05 06:56:09 jtc Exp $";
 #include <errno.h>
 #include "local.h"
 
-#define POS_ERR (-(fpos_t)1)
+#define	POS_ERR	(-(fpos_t)1)
 
 /*
  * Seek the given file to the given offset.
@@ -77,7 +77,7 @@ fseek(fp, offset, whence)
 	 * Have to be able to seek.
 	 */
 	if ((seekfn = fp->_seek) == NULL) {
-		errno = ESPIPE;                 /* historic practice */
+		errno = ESPIPE;			/* historic practice */
 		return (EOF);
 	}
 
@@ -93,7 +93,7 @@ fseek(fp, offset, whence)
 		 * we have to first find the current stream offset a la
 		 * ftell (see ftell for details).
 		 */
-		__sflush(fp);   /* may adjust seek offset on append stream */
+		__sflush(fp);	/* may adjust seek offset on append stream */
 		if (fp->_flags & __SOFF)
 			curoff = fp->_offset;
 		else {
@@ -115,7 +115,7 @@ fseek(fp, offset, whence)
 
 	case SEEK_SET:
 	case SEEK_END:
-		curoff = 0;             /* XXX just to keep gcc quiet */
+		curoff = 0;		/* XXX just to keep gcc quiet */
 		havepos = 0;
 		break;
 
@@ -126,9 +126,9 @@ fseek(fp, offset, whence)
 
 	/*
 	 * Can only optimise if:
-	 *      reading (and not reading-and-writing);
-	 *      not unbuffered; and
-	 *      this is a `regular' Unix file (and hence seekfn==__sseek).
+	 *	reading (and not reading-and-writing);
+	 *	not unbuffered; and
+	 *	this is a `regular' Unix file (and hence seekfn==__sseek).
 	 * We must check __NBF first, because it is possible to have __NBF
 	 * and __SOPT both set.
 	 */
@@ -179,7 +179,7 @@ fseek(fp, offset, whence)
 	 * file offset for the first byte in the current input buffer.
 	 */
 	if (HASUB(fp)) {
-		curoff += fp->_r;       /* kill off ungetc */
+		curoff += fp->_r;	/* kill off ungetc */
 		n = fp->_up - fp->_bf._base;
 		curoff -= n;
 		n += fp->_ur;
@@ -219,7 +219,7 @@ fseek(fp, offset, whence)
 	if ((*seekfn)(fp->_cookie, curoff, SEEK_SET) == POS_ERR)
 		goto dumb;
 	fp->_r = 0;
-	fp->_p = fp->_bf._base;
+ 	fp->_p = fp->_bf._base;
 	if (HASUB(fp))
 		FREEUB(fp);
 	fp->_flags &= ~__SEOF;
@@ -246,7 +246,7 @@ dumb:
 		FREEUB(fp);
 	fp->_p = fp->_bf._base;
 	fp->_r = 0;
-	/* fp->_w = 0; */       /* unnecessary (I think...) */
+	/* fp->_w = 0; */	/* unnecessary (I think...) */
 	fp->_flags &= ~__SEOF;
 	return (0);
 }

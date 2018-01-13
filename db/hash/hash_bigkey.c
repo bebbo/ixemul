@@ -1,8 +1,8 @@
-/*      $NetBSD: hash_bigkey.c,v 1.6 1996/05/03 21:43:49 cgd Exp $      */
+/*	$NetBSD: hash_bigkey.c,v 1.6 1996/05/03 21:43:49 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)hash_bigkey.c       8.3 (Berkeley) 5/31/94";
+static char sccsid[] = "@(#)hash_bigkey.c	8.3 (Berkeley) 5/31/94";
 #else
 static char rcsid[] = "$NetBSD: hash_bigkey.c,v 1.6 1996/05/03 21:43:49 cgd Exp $";
 #endif
@@ -47,19 +47,19 @@ static char rcsid[] = "$NetBSD: hash_bigkey.c,v 1.6 1996/05/03 21:43:49 cgd Exp 
 /*
  * PACKAGE: hash
  * DESCRIPTION:
- *      Big key/data handling for the hashing package.
+ *	Big key/data handling for the hashing package.
  *
  * ROUTINES:
  * External
- *      __big_keydata
- *      __big_split
- *      __big_insert
- *      __big_return
- *      __big_delete
- *      __find_last_page
+ *	__big_keydata
+ *	__big_split
+ *	__big_insert
+ *	__big_return
+ *	__big_delete
+ *	__find_last_page
  * Internal
- *      collect_key
- *      collect_data
+ *	collect_key
+ *	collect_data
  */
 
 #include <sys/param.h>
@@ -101,7 +101,7 @@ __big_insert(hashp, bufp, key, val)
 	u_int16_t space, move_bytes, off;
 	char *cp, *key_data, *val_data;
 
-	cp = bufp->page;                /* Character pointer of p. */
+	cp = bufp->page;		/* Character pointer of p. */
 	p = (u_int16_t *)cp;
 
 	key_data = (char *)key->data;
@@ -222,7 +222,7 @@ __big_delete(hashp, bufp)
 			__free_ovflpage(hashp, last_bfp);
 		last_bfp = rbufp;
 		if (!rbufp)
-			return (-1);            /* Error. */
+			return (-1);		/* Error. */
 		bp = (u_int16_t *)rbufp->page;
 	}
 
@@ -346,7 +346,7 @@ __find_last_page(hashp, bpp)
 		pageno = bp[n - 1];
 		bufp = __get_buf(hashp, pageno, bufp, 0);
 		if (!bufp)
-			return (0);     /* Need to indicate an error! */
+			return (0);	/* Need to indicate an error! */
 		bp = (u_int16_t *)bufp->page;
 	}
 
@@ -415,7 +415,7 @@ __big_return(hashp, bufp, ndx, val, set_current)
 			val->data = (u_char *)tp + off;
 			val->size = bp[1] - off;
 			if (set_current) {
-				if (bp[0] == 2) {       /* No more buckets in
+				if (bp[0] == 2) {	/* No more buckets in
 							 * chain */
 					hashp->cpage = NULL;
 					hashp->cbucket++;
@@ -441,7 +441,7 @@ __big_return(hashp, bufp, ndx, val, set_current)
 		return (-1);
 	if (save_p->addr != save_addr) {
 		/* We are pretty short on buffers. */
-		errno = EINVAL;                 /* OUT OF BUFFERS */
+		errno = EINVAL;			/* OUT OF BUFFERS */
 		return (-1);
 	}
 	memmove(hashp->tmp_buf, (save_p->page) + off, len);
@@ -469,7 +469,7 @@ collect_data(hashp, bufp, len, set)
 	mylen = hashp->BSIZE - bp[1];
 	save_addr = bufp->addr;
 
-	if (bp[2] == FULL_KEY_DATA) {           /* End of Data */
+	if (bp[2] == FULL_KEY_DATA) {		/* End of Data */
 		totlen = len + mylen;
 		if (hashp->tmp_buf)
 			free(hashp->tmp_buf);
@@ -477,7 +477,7 @@ collect_data(hashp, bufp, len, set)
 			return (-1);
 		if (set) {
 			hashp->cndx = 1;
-			if (bp[0] == 2) {       /* No more buckets in chain */
+			if (bp[0] == 2) {	/* No more buckets in chain */
 				hashp->cpage = NULL;
 				hashp->cbucket++;
 			} else {
@@ -498,7 +498,7 @@ collect_data(hashp, bufp, len, set)
 			return (-1);
 	}
 	if (bufp->addr != save_addr) {
-		errno = EINVAL;                 /* Out of buffers. */
+		errno = EINVAL;			/* Out of buffers. */
 		return (-1);
 	}
 	memmove(&hashp->tmp_buf[len], (bufp->page) + bp[1], mylen);
@@ -559,7 +559,7 @@ collect_key(hashp, bufp, len, val, set)
 			return (-1);
 	}
 	if (bufp->addr != save_addr) {
-		errno = EINVAL;         /* MIS -- OUT OF BUFFERS */
+		errno = EINVAL;		/* MIS -- OUT OF BUFFERS */
 		return (-1);
 	}
 	memmove(&hashp->tmp_key[len], (bufp->page) + bp[1], mylen);
@@ -574,11 +574,11 @@ collect_key(hashp, bufp, len, val, set)
 extern int
 __big_split(hashp, op, np, big_keyp, addr, obucket, ret)
 	HTAB *hashp;
-	BUFHEAD *op;    /* Pointer to where to put keys that go in old bucket */
-	BUFHEAD *np;    /* Pointer to new bucket page */
+	BUFHEAD *op;	/* Pointer to where to put keys that go in old bucket */
+	BUFHEAD *np;	/* Pointer to new bucket page */
 			/* Pointer to first page containing the big key/data */
 	BUFHEAD *big_keyp;
-	int addr;       /* Address of big_keyp */
+	int addr;	/* Address of big_keyp */
 	u_int32_t   obucket;/* Old Bucket */
 	SPLIT_RETURN *ret;
 {
@@ -618,7 +618,7 @@ __big_split(hashp, op, np, big_keyp, addr, obucket, ret)
 	    "BIG_SPLIT: %d->ovfl was %d is now %d\n", tmpp->addr,
 	    (tmpp->ovfl ? tmpp->ovfl->addr : 0), (bp ? bp->addr : 0));
 #endif
-	tmpp->ovfl = bp;        /* one of op/np point to big_keyp */
+	tmpp->ovfl = bp;	/* one of op/np point to big_keyp */
 	tp = (u_int16_t *)tmpp->page;
 #ifdef DEBUG
 	assert(FREESPACE(tp) >= OVFLSIZE);

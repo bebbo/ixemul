@@ -1,8 +1,8 @@
-/*      $NetBSD: glob.c,v 1.5 1995/02/27 04:13:35 cgd Exp $     */
+/*	$NetBSD: glob.c,v 1.5 1995/02/27 04:13:35 cgd Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Guido van Rossum.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)glob.c      8.3 (Berkeley) 10/13/93";
+static char sccsid[] = "@(#)glob.c	8.3 (Berkeley) 10/13/93";
 #else
 static char rcsid[] = "$NetBSD: glob.c,v 1.5 1995/02/27 04:13:35 cgd Exp $";
 #endif
@@ -52,21 +52,21 @@ static char rcsid[] = "$NetBSD: glob.c,v 1.5 1995/02/27 04:13:35 cgd Exp $";
  * Optional extra services, controlled by flags not defined by POSIX:
  *
  * GLOB_QUOTE:
- *      Escaping convention: \ inhibits any special meaning the following
- *      character might have (except \ at end of string is retained).
+ *	Escaping convention: \ inhibits any special meaning the following
+ *	character might have (except \ at end of string is retained).
  * GLOB_MAGCHAR:
- *      Set in gl_flags if pattern contained a globbing character.
+ *	Set in gl_flags if pattern contained a globbing character.
  * GLOB_NOMAGIC:
- *      Same as GLOB_NOCHECK, but it will only append pattern if it did
- *      not contain any magic characters.  [Used in csh style globbing]
+ *	Same as GLOB_NOCHECK, but it will only append pattern if it did
+ *	not contain any magic characters.  [Used in csh style globbing]
  * GLOB_ALTDIRFUNC:
- *      Use alternately specified directory access functions.
+ *	Use alternately specified directory access functions.
  * GLOB_TILDE:
- *      expand ~user/foo to the /home/dir/of/user/foo
+ *	expand ~user/foo to the /home/dir/of/user/foo
  * GLOB_BRACE:
- *      expand {1,2}{a,b} to 1a 1b 2a 2b 
+ *	expand {1,2}{a,b} to 1a 1b 2a 2b 
  * gl_matchc:
- *      Number of matches in the current invocation of glob.
+ *	Number of matches in the current invocation of glob.
  */
 
 #define _KERNEL
@@ -86,64 +86,64 @@ static char rcsid[] = "$NetBSD: glob.c,v 1.5 1995/02/27 04:13:35 cgd Exp $";
 #include <string.h>
 #include <unistd.h>
 
-#undef NOT      /* in <intuition/intuition.h> on AmigaOS */
+#undef NOT	/* in <intuition/intuition.h> on AmigaOS */
 
-#define DOLLAR          '$'
-#define DOT             '.'
-#define EOS             '\0'
-#define LBRACKET        '['
-#define NOT             '!'
-#define QUESTION        '?'
-#define QUOTE           '\\'
-#define RANGE           '-'
-#define RBRACKET        ']'
-#define SEP             '/'
-#define STAR            '*'
-#define TILDE           '~'
-#define UNDERSCORE      '_'
-#define LBRACE          '{'
-#define RBRACE          '}'
-#define SLASH           '/'
-#define COMMA           ','
+#define	DOLLAR		'$'
+#define	DOT		'.'
+#define	EOS		'\0'
+#define	LBRACKET	'['
+#define	NOT		'!'
+#define	QUESTION	'?'
+#define	QUOTE		'\\'
+#define	RANGE		'-'
+#define	RBRACKET	']'
+#define	SEP		'/'
+#define	STAR		'*'
+#define	TILDE		'~'
+#define	UNDERSCORE	'_'
+#define	LBRACE		'{'
+#define	RBRACE		'}'
+#define	SLASH		'/'
+#define	COMMA		','
 #define HASH            '#'
 
-#define M_QUOTE         0x8000
-#define M_PROTECT       0x4000
-#define M_MASK          0xffff
-#define M_ASCII         0x00ff
+#define	M_QUOTE		0x8000
+#define	M_PROTECT	0x4000
+#define	M_MASK		0xffff
+#define	M_ASCII		0x00ff
 
 typedef u_short Char;
 
-#define CHAR(c)         ((Char)((c)&M_ASCII))
-#define META(c)         ((Char)((c)|M_QUOTE))
-#define M_ALL           META('*')
-#define M_END           META(']')
-#define M_NOT           META('!')
-#define M_ONE           META('?')
-#define M_RNG           META('-')
-#define M_SET           META('[')
-#define ismeta(c)       (((c)&M_QUOTE) != 0)
+#define	CHAR(c)		((Char)((c)&M_ASCII))
+#define	META(c)		((Char)((c)|M_QUOTE))
+#define	M_ALL		META('*')
+#define	M_END		META(']')
+#define	M_NOT		META('!')
+#define	M_ONE		META('?')
+#define	M_RNG		META('-')
+#define	M_SET		META('[')
+#define	ismeta(c)	(((c)&M_QUOTE) != 0)
 
 
-static int       compare __P((const void *, const void *));
-static int       icompare __P((const void *, const void *));
-static void      g_Ctoc __P((const Char *, char *));
-static int       g_lstat __P((Char *, struct stat *, glob_t *));
-static DIR      *g_opendir __P((Char *, glob_t *));
-static Char     *g_strchr __P((Char *, int));
+static int	 compare __P((const void *, const void *));
+static int	 icompare __P((const void *, const void *));
+static void	 g_Ctoc __P((const Char *, char *));
+static int	 g_lstat __P((Char *, struct stat *, glob_t *));
+static DIR	*g_opendir __P((Char *, glob_t *));
+static Char	*g_strchr __P((Char *, int));
 #ifdef notdef
-static Char     *g_strcat __P((Char *, const Char *));
+static Char	*g_strcat __P((Char *, const Char *));
 #endif
-static int       g_stat __P((Char *, struct stat *, glob_t *));
-static int       glob0 __P((const Char *, glob_t *));
-static int       glob1 __P((Char *, glob_t *));
-static int       glob2 __P((Char *, Char *, Char *, glob_t *));
-static int       glob3 __P((Char *, Char *, Char *, Char *, glob_t *));
-static int       globextend __P((const Char *, glob_t *));
-static const Char *      globtilde __P((const Char *, Char *, glob_t *));
-static int       globexp1 __P((const Char *, glob_t *));
-static int       globexp2 __P((const Char *, const Char *, glob_t *, int *));
-static int       match __P((Char *, Char *, Char *, int));
+static int	 g_stat __P((Char *, struct stat *, glob_t *));
+static int	 glob0 __P((const Char *, glob_t *));
+static int	 glob1 __P((Char *, glob_t *));
+static int	 glob2 __P((Char *, Char *, Char *, glob_t *));
+static int	 glob3 __P((Char *, Char *, Char *, Char *, glob_t *));
+static int	 globextend __P((const Char *, glob_t *));
+static const Char *	 globtilde __P((const Char *, Char *, glob_t *));
+static int	 globexp1 __P((const Char *, glob_t *));
+static int	 globexp2 __P((const Char *, const Char *, glob_t *, int *));
+static int	 match __P((Char *, Char *, Char *, int));
 
 DIR *opendir __P((const char *));
 struct dirent *readdir __P((DIR *));
@@ -160,16 +160,16 @@ glob(pattern, flags, errfunc, pglob)
 	int c;
 	Char *bufnext, *bufend, patbuf[MAXPATHLEN+1];
 
-	if (index(pattern, ':'))
-	  {
-	    char *colon;
+        if (index(pattern, ':'))
+          {
+            char *colon;
 
-	    glob_pattern = alloca(strlen(pattern) + 2);
-	    strcpy(glob_pattern + 1, pattern);
-	    *glob_pattern = '/';
-	    colon = index(glob_pattern, ':');
-	    *colon = '/';
-	  }
+            glob_pattern = alloca(strlen(pattern) + 2);
+            strcpy(glob_pattern + 1, pattern);
+            *glob_pattern = '/';
+            colon = index(glob_pattern, ':');
+            *colon = '/';
+          }
 	patnext = (u_char *) glob_pattern;
 	if (!(flags & GLOB_APPEND)) {
 		pglob->gl_pathc = 0;
@@ -489,7 +489,7 @@ glob0(pattern, pglob)
 	else if (!(pglob->gl_flags & GLOB_NOSORT)) 
 		qsort(pglob->gl_pathv + pglob->gl_offs + oldpathc,
 		    pglob->gl_pathc - oldpathc, sizeof(char *), 
-		    (pglob->gl_flags & GLOB_NOCASE) ? icompare : compare);
+                    (pglob->gl_flags & GLOB_NOCASE) ? icompare : compare);
 	return(0);
 }
 
@@ -539,7 +539,7 @@ glob2(pathbuf, pathend, pattern, pglob)
 	 * segment with meta character found.
 	 */
 	for (anymeta = 0;;) {
-		if (*pattern == EOS) {          /* End of pattern? */
+		if (*pattern == EOS) {		/* End of pattern? */
 			*pathend = EOS;
 			if (g_lstat(pathbuf, &sb, pglob))
 				return(0);
@@ -565,12 +565,12 @@ glob2(pathbuf, pathend, pattern, pglob)
 			*q++ = *p++;
 		}
 
-		if (!anymeta) {         /* No expansion, do next segment. */
+		if (!anymeta) {		/* No expansion, do next segment. */
 			pathend = q;
 			pattern = p;
 			while (*pattern == SEP)
 				*pathend++ = *pattern++;
-		} else                  /* Need expansion, recurse. */
+		} else			/* Need expansion, recurse. */
 			return(glob3(pathbuf, pathend, pattern, p, pglob));
 	}
 	/* NOTREACHED */
@@ -581,7 +581,7 @@ glob3(pathbuf, pathend, pattern, restpattern, pglob)
 	Char *pathbuf, *pathend, *pattern, *restpattern;
 	glob_t *pglob;
 {
-	usetup;
+        usetup;
 	register struct dirent *dp;
 	DIR *dirp;
 	int err;
@@ -602,28 +602,6 @@ glob3(pathbuf, pathend, pattern, restpattern, pglob)
 		/* TODO: don't call for ENOENT or ENOTDIR? */
 		if (pglob->gl_errfunc) {
 			g_Ctoc(pathbuf, buf);
-#ifdef NATIVE_MORPHOS
-			if ((int)pglob->gl_errfunc & 1) {
-				/* code for:
-					movem.l d0-d1,-(sp)
-					jsr     (a0)
-					addq.l  #8,sp
-					rts
-				*/
-				static const UWORD gate[] = {
-				    0x48E7, 0xC000,
-				    0x4E90, 0x508F,
-				    0x4E75
-				};
-				REG_D0 = (ULONG)buf;
-				REG_D1 = (ULONG)errno;
-				REG_A0 = (ULONG)pglob->gl_errfunc & ~1;
-				REG_A4 = (ULONG)u_ptr->u_a4;
-				if (MyEmulHandle->EmulCallDirect68k((APTR)&gate) ||
-				    pglob->gl_flags & GLOB_ERR)
-					return (GLOB_ABEND);
-			}
-#endif
 			if (pglob->gl_errfunc(buf, errno) ||
 			    pglob->gl_flags & GLOB_ERR)
 				return (GLOB_ABEND);
@@ -676,8 +654,8 @@ glob3(pathbuf, pathend, pattern, restpattern, pglob)
  * Return 0 if new item added, error code if memory couldn't be allocated.
  *
  * Invariant of the glob_t structure:
- *      Either gl_pathc is zero and gl_pathv is NULL; or gl_pathc > 0 and
- *      gl_pathv points to (gl_offs + gl_pathc + 1) items.
+ *	Either gl_pathc is zero and gl_pathv is NULL; or gl_pathc > 0 and
+ *	gl_pathv points to (gl_offs + gl_pathc + 1) items.
  */
 static int
 globextend(path, pglob)
@@ -723,7 +701,7 @@ globextend(path, pglob)
 static int
 match(name, pat, patend, nocase)
 	register Char *name, *pat, *patend;
-	int nocase;
+        int nocase;
 {
 	int ok, negate_range;
 	Char c, k;
@@ -752,8 +730,8 @@ match(name, pat, patend, nocase)
 			if ((negate_range = ((*pat & M_MASK) == M_NOT)) != EOS)
 				++pat;
 			while (((c = *pat++) & M_MASK) != M_END) {
-				if (nocase)
-					c = tolower(c);
+			        if (nocase)
+			                c = tolower(c);
 				if ((*pat & M_MASK) == M_RNG) {
 					if (c <= k && k <= (nocase ? tolower(pat[1]) : pat[1]))
 						ok = 1;
@@ -765,12 +743,12 @@ match(name, pat, patend, nocase)
 				return(0);
 			break;
 		default:
-			if (nocase)
-			{
-			  k = *name++;
-			  if (tolower(k) != tolower(c))
-			    return 0;
-			}
+		        if (nocase)
+		        {
+		          k = *name++;
+		          if (tolower(k) != tolower(c))
+		            return 0;
+		        }
 			else if (*name++ != c)
 				return(0);
 			break;
@@ -882,22 +860,3 @@ g_Ctoc(str, buf)
 	for (dc = buf; (*dc++ = *str++) != EOS;)
 		continue;
 }
-
-#ifdef NATIVE_MORPHOS
-int
-_trampoline_glob(void)
-{
-	int *p = (int *)REG_A7;
-	const char *pattern = (void *)p[1];
-	int flags = p[2];
-	int (*errfunc) __P((const char *, int)) = (void *)(p[3] ^ 1);
-	glob_t *pglob = (void *)p[4];
-
-	return glob(pattern, flags, errfunc, pglob);
-}
-
-const struct EmulLibEntry _gate_glob = {
-	TRAP_LIB, 0, (void (*)())_trampoline_glob
-};
-#endif
-

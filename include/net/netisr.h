@@ -14,7 +14,7 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)netisr.h    7.4 (Berkeley) 6/27/88
+ *	@(#)netisr.h	7.4 (Berkeley) 6/27/88
  */
 
 /*
@@ -26,7 +26,7 @@
  * at timeout time).
  */
 #if defined(vax) || defined(tahoe)
-#define setsoftnet()    mtpr(SIRR, 12)
+#define	setsoftnet()	mtpr(SIRR, 12)
 #endif
 
 /*
@@ -35,15 +35,15 @@
  * interrupt used for scheduling the network code to calls
  * on the lowest level routine of each protocol.
  */
-#define NETISR_RAW      0               /* same as AF_UNSPEC */
-#define NETISR_IP       2               /* same as AF_INET */
-#define NETISR_IMP      3               /* same as AF_IMPLINK */
-#define NETISR_NS       6               /* same as AF_NS */
+#define	NETISR_RAW	0		/* same as AF_UNSPEC */
+#define	NETISR_IP	2		/* same as AF_INET */
+#define	NETISR_IMP	3		/* same as AF_IMPLINK */
+#define	NETISR_NS	6		/* same as AF_NS */
 
-#define schednetisr(anisr)      { netisr |= 1<<(anisr); setsoftnet(); }
+#define	schednetisr(anisr)	{ netisr |= 1<<(anisr); setsoftnet(); }
 
 #ifndef LOCORE
 #ifdef _KERNEL
-int     netisr;                         /* scheduling bits for network */
+int	netisr;				/* scheduling bits for network */
 #endif
 #endif

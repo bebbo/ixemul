@@ -21,7 +21,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)atexit.c    5.1 (Berkeley) 5/15/90";
+static char sccsid[] = "@(#)atexit.c	5.1 (Berkeley) 5/15/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -34,10 +34,13 @@ static char sccsid[] = "@(#)atexit.c    5.1 (Berkeley) 5/15/90";
 
 #define __atexit (u.u_atexit)
 
-struct atexit *
-get_atexit_table()
+/*
+ * Register a function to be performed at exit.
+ */
+int
+atexit(void (*fn)())
 {
-	usetup;
+        usetup;
 	register struct atexit *p;
 
 	if ((p = __atexit) == 0)
@@ -50,7 +53,7 @@ get_atexit_table()
 
 	if (p->ind >= ATEXIT_SIZE) {
 		if ((p = (struct atexit *) syscall (SYS_malloc, sizeof(*p))) == NULL)
-			return (NULL);
+			return (-1);
 #if 0
 		/* this was in the original source */
 		__atexit->next = p;
@@ -61,52 +64,6 @@ get_atexit_table()
 		p->ind = 0;
 #endif
 	}
-	return p;
-}
-
-/*
- * Register a function to be performed at exit.
- */
-/* For MorphOS, this is the PPC entry point. Assume that it is
- * called with a pointer to a PPC function.
- */
-int
-atexit(void (*fn)())
-{
-	register struct atexit *p = get_atexit_table();
-	if (!p)
-	    return (-1);
-#ifndef NATIVE_MORPHOS
-	p->fns[p->ind] = fn;
-#else
-	p->fns[p->ind].is_68k = 0;
-	p->fns[p->ind].fn     = fn;
-#endif
-	++p->ind;
+	p->fns[p->ind++] = fn;
 	return (0);
 }
-
-#ifdef NATIVE_MORPHOS
-/* For MorphOS, this is the 68k entry point. Assume that it is
- * called with a pointer to a 68k function.
- */
-
-int
-atexit_68k(void)
-{
-	void (*fn)() = ((void(**)())REG_A7)[1];
-	register struct atexit *p = get_atexit_table();
-	if (!p)
-	    return (-1);
-	p->fns[p->ind].is_68k = 1;
-	p->fns[p->ind].fn     = fn;
-	++p->ind;
-	return (0);
-}
-
-struct EmulLibEntry _gate_atexit = {
-  TRAP_LIB, 0, (void(*)())atexit_68k
-};
-
-#endif
-

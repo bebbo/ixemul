@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_split.c,v 1.6 1996/05/03 21:50:56 cgd Exp $ */
+/*	$NetBSD: bt_split.c,v 1.6 1996/05/03 21:50:56 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_split.c  8.9 (Berkeley) 7/26/94";
+static char sccsid[] = "@(#)bt_split.c	8.9 (Berkeley) 7/26/94";
 #else
 static char rcsid[] = "$NetBSD: bt_split.c,v 1.6 1996/05/03 21:50:56 cgd Exp $";
 #endif
@@ -54,35 +54,35 @@ static char rcsid[] = "$NetBSD: bt_split.c,v 1.6 1996/05/03 21:50:56 cgd Exp $";
 #include <db.h>
 #include "btree.h"
 
-static int       bt_broot __P((BTREE *, PAGE *, PAGE *, PAGE *));
-static PAGE     *bt_page
+static int	 bt_broot __P((BTREE *, PAGE *, PAGE *, PAGE *));
+static PAGE	*bt_page
 		    __P((BTREE *, PAGE *, PAGE **, PAGE **, indx_t *, size_t));
-static int       bt_preserve __P((BTREE *, pgno_t));
-static PAGE     *bt_psplit
+static int	 bt_preserve __P((BTREE *, pgno_t));
+static PAGE	*bt_psplit
 		    __P((BTREE *, PAGE *, PAGE *, PAGE *, indx_t *, size_t));
-static PAGE     *bt_root
+static PAGE	*bt_root
 		    __P((BTREE *, PAGE *, PAGE **, PAGE **, indx_t *, size_t));
-static int       bt_rroot __P((BTREE *, PAGE *, PAGE *, PAGE *));
-static recno_t   rec_total __P((PAGE *));
+static int	 bt_rroot __P((BTREE *, PAGE *, PAGE *, PAGE *));
+static recno_t	 rec_total __P((PAGE *));
 
 #ifdef STATISTICS
-u_long  bt_rootsplit, bt_split, bt_sortsplit, bt_pfxsaved;
+u_long	bt_rootsplit, bt_split, bt_sortsplit, bt_pfxsaved;
 #endif
 
 /*
  * __BT_SPLIT -- Split the tree.
  *
  * Parameters:
- *      t:      tree
- *      sp:     page to split
- *      key:    key to insert
- *      data:   data to insert
- *      flags:  BIGKEY/BIGDATA flags
- *      ilen:   insert length
- *      skip:   index to leave open
+ *	t:	tree
+ *	sp:	page to split
+ *	key:	key to insert
+ *	data:	data to insert
+ *	flags:	BIGKEY/BIGDATA flags
+ *	ilen:	insert length
+ *	skip:	index to leave open
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 int
 __bt_split(t, sp, key, data, flags, ilen, argskip)
@@ -165,7 +165,7 @@ __bt_split(t, sp, key, data, flags, ilen, argskip)
 		if ((h = mpool_get(t->bt_mp, parent->pgno, 0)) == NULL)
 			goto err2;
 
-		/*
+	 	/*
 		 * The new key goes ONE AFTER the index, because the split
 		 * was to the right.
 		 */
@@ -323,10 +323,10 @@ __bt_split(t, sp, key, data, flags, ilen, argskip)
 	 * up the tree and the tree is now inconsistent.  Nothing much we can
 	 * do about it but release any memory we're holding.
 	 */
-err1:   mpool_put(t->bt_mp, lchild, MPOOL_DIRTY);
+err1:	mpool_put(t->bt_mp, lchild, MPOOL_DIRTY);
 	mpool_put(t->bt_mp, rchild, MPOOL_DIRTY);
 
-err2:   mpool_put(t->bt_mp, l, 0);
+err2:	mpool_put(t->bt_mp, l, 0);
 	mpool_put(t->bt_mp, r, 0);
 	__dbpanic(t->bt_dbp);
 	return (RET_ERROR);
@@ -336,15 +336,15 @@ err2:   mpool_put(t->bt_mp, l, 0);
  * BT_PAGE -- Split a non-root page of a btree.
  *
  * Parameters:
- *      t:      tree
- *      h:      root page
- *      lp:     pointer to left page pointer
- *      rp:     pointer to right page pointer
- *      skip:   pointer to index to leave open
- *      ilen:   insert length
+ *	t:	tree
+ *	h:	root page
+ *	lp:	pointer to left page pointer
+ *	rp:	pointer to right page pointer
+ *	skip:	pointer to index to leave open
+ *	ilen:	insert length
  *
  * Returns:
- *      Pointer to page in which to insert or NULL on error.
+ *	Pointer to page in which to insert or NULL on error.
  */
 static PAGE *
 bt_page(t, h, lp, rp, skip, ilen)
@@ -441,15 +441,15 @@ bt_page(t, h, lp, rp, skip, ilen)
  * BT_ROOT -- Split the root page of a btree.
  *
  * Parameters:
- *      t:      tree
- *      h:      root page
- *      lp:     pointer to left page pointer
- *      rp:     pointer to right page pointer
- *      skip:   pointer to index to leave open
- *      ilen:   insert length
+ *	t:	tree
+ *	h:	root page
+ *	lp:	pointer to left page pointer
+ *	rp:	pointer to right page pointer
+ *	skip:	pointer to index to leave open
+ *	ilen:	insert length
  *
  * Returns:
- *      Pointer to page in which to insert or NULL on error.
+ *	Pointer to page in which to insert or NULL on error.
  */
 static PAGE *
 bt_root(t, h, lp, rp, skip, ilen)
@@ -490,13 +490,13 @@ bt_root(t, h, lp, rp, skip, ilen)
  * BT_RROOT -- Fix up the recno root page after it has been split.
  *
  * Parameters:
- *      t:      tree
- *      h:      root page
- *      l:      left page
- *      r:      right page
+ *	t:	tree
+ *	h:	root page
+ *	l:	left page
+ *	r:	right page
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 static int
 bt_rroot(t, h, l, r)
@@ -530,13 +530,13 @@ bt_rroot(t, h, l, r)
  * BT_BROOT -- Fix up the btree root page after it has been split.
  *
  * Parameters:
- *      t:      tree
- *      h:      root page
- *      l:      left page
- *      r:      right page
+ *	t:	tree
+ *	h:	root page
+ *	l:	left page
+ *	r:	right page
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS
+ *	RET_ERROR, RET_SUCCESS
  */
 static int
 bt_broot(t, h, l, r)
@@ -605,15 +605,15 @@ bt_broot(t, h, l, r)
  * BT_PSPLIT -- Do the real work of splitting the page.
  *
  * Parameters:
- *      t:      tree
- *      h:      page to be split
- *      l:      page to put lower half of data
- *      r:      page to put upper half of data
- *      pskip:  pointer to index to leave open
- *      ilen:   insert length
+ *	t:	tree
+ *	h:	page to be split
+ *	l:	page to put lower half of data
+ *	r:	page to put upper half of data
+ *	pskip:	pointer to index to leave open
+ *	ilen:	insert length
  *
  * Returns:
- *      Pointer to page in which to insert.
+ *	Pointer to page in which to insert.
  */
 static PAGE *
 bt_psplit(t, h, l, r, pskip, ilen)
@@ -646,7 +646,7 @@ bt_psplit(t, h, l, r, pskip, ilen)
 	for (nxt = off = 0, top = NEXTINDEX(h); nxt < top; ++off) {
 		if (skip == off) {
 			nbytes = ilen;
-			isbigkey = 0;           /* XXX: not really known. */
+			isbigkey = 0;		/* XXX: not really known. */
 		} else
 			switch (h->flags & P_TYPE) {
 			case P_BINTERNAL:
@@ -718,9 +718,9 @@ bt_psplit(t, h, l, r, pskip, ilen)
 	if (F_ISSET(c, CURS_INIT) && c->pg.pgno == h->pgno) {
 		if (c->pg.index >= skip)
 			++c->pg.index;
-		if (c->pg.index < nxt)                  /* Left page. */
+		if (c->pg.index < nxt)			/* Left page. */
 			c->pg.pgno = l->pgno;
-		else {                                  /* Right page. */
+		else {					/* Right page. */
 			c->pg.pgno = r->pgno;
 			c->pg.index -= nxt;
 		}
@@ -786,11 +786,11 @@ bt_psplit(t, h, l, r, pskip, ilen)
  * internal page.
  *
  * Parameters:
- *      t:      tree
- *      pg:     page number of first page in the chain.
+ *	t:	tree
+ *	pg:	page number of first page in the chain.
  *
  * Returns:
- *      RET_SUCCESS, RET_ERROR.
+ *	RET_SUCCESS, RET_ERROR.
  */
 static int
 bt_preserve(t, pg)
@@ -810,10 +810,10 @@ bt_preserve(t, pg)
  * REC_TOTAL -- Return the number of recno entries below a page.
  *
  * Parameters:
- *      h:      page
+ *	h:	page
  *
  * Returns:
- *      The number of recno entries below a page.
+ *	The number of recno entries below a page.
  *
  * XXX
  * These values could be set by the bt_psplit routine.  The problem is that the

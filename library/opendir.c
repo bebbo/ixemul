@@ -54,7 +54,7 @@ opendir (const char *name)
 	{
 	  if (! S_ISDIR (stb.st_mode))
 	    {
-	      syscall (SYS_close, d->dd_fd);
+              syscall (SYS_close, d->dd_fd);
 	      syscall (SYS_free, d);
 	      errno = ENOTDIR;
 	      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
@@ -63,7 +63,7 @@ opendir (const char *name)
 
 	  return d;
 	}
-
+	
       err = errno;
 
       syscall (SYS_close, d->dd_fd);

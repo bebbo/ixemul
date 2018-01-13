@@ -1,4 +1,4 @@
-/*      $NetBSD: localedef.h,v 1.3 1994/11/30 22:15:58 jtc Exp $        */
+/*	$NetBSD: localedef.h,v 1.3 1994/11/30 22:15:58 jtc Exp $	*/
 
 /*
  * Copyright (c) 1994 Winning Strategies, Inc.

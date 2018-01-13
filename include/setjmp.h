@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,51 +30,32 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)setjmp.h    5.5 (Berkeley) 6/8/91
+ *	@(#)setjmp.h	5.5 (Berkeley) 6/8/91
  */
 
 #ifndef _SETJMP_H_
 #define _SETJMP_H_
 
-#ifdef __ixemul__
-
-/* ixemul */
-
-#ifdef __PPC__
-#define _JBLEN  (7+19+2*18+14+3*6) /* onstack, sigmask, r1, r2, flags, lr, cr, r13-r31, f14-f31, pc, *a7, d2-d7, a2-a7, fp2-fp7 */
-#else
-#define _JBLEN  17  /* onstack, sigmask, sp, a5, flags, pc, 0, d2-d7/a2-a4/a6 */
-#endif
+#define _JBLEN	17
 
 typedef int sigjmp_buf[_JBLEN + 1];
 
 typedef int jmp_buf[_JBLEN];
 
-#else
-
-/* libnix */
-
-#define _JBLEN  59 /* r1,r13-r31,cr,lr,f14-f31,r2 */
-
-typedef int jmp_buf[_JBLEN] __attribute__((aligned(8)));
-typedef int sigjmp_buf[_JBLEN+2] __attribute__((aligned(8)));
-
-#endif
-
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int     setjmp __P((jmp_buf));
+int	setjmp __P((jmp_buf));
 /* FIXME: Perhaps longjmp should use the gcc attribute to specify a "no return" function. */
-void    longjmp __P((jmp_buf, int));
+void	longjmp __P((jmp_buf, int));
 
-int     sigsetjmp __P((sigjmp_buf, int));
-void    volatile siglongjmp __P((sigjmp_buf, int));
+int	sigsetjmp __P((sigjmp_buf, int));
+void	volatile siglongjmp __P((sigjmp_buf, int));
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
-int     _setjmp __P((jmp_buf));
-void    volatile _longjmp __P((jmp_buf, int));
-void    longjmperror __P((void));
+int	_setjmp __P((jmp_buf));
+void	volatile _longjmp __P((jmp_buf, int));
+void	longjmperror __P((void));
 #endif /* neither ANSI nor POSIX */
 __END_DECLS
 

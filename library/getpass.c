@@ -44,7 +44,7 @@ static char sccsid[] = "@(#)getpass.c   5.9 (Berkeley) 5/6/91";
 
 int       tcgetattr __P((int, struct termios *));
 int       tcsetattr __P((int, int, const struct termios *));
-ssize_t  write __P((int, const void *, size_t));
+ssize_t	 write __P((int, const void *, size_t));
 
 char *
 getpass(const char *prompt)
@@ -55,6 +55,7 @@ getpass(const char *prompt)
     FILE *fp, *outfp;
     long omask;
     int echo;
+    static char buf[_PASSWORD_LEN + 1];
     usetup;
 
     outfp = fp = stderr;
@@ -66,20 +67,20 @@ getpass(const char *prompt)
     omask = sigblock(sigmask(SIGINT)|sigmask(SIGTSTP));
     (void)tcgetattr(fileno(fp), &term);
     if ((echo = term.c_lflag) & ECHO) {
-	term.c_lflag &= ~(ECHO|ICANON);
-	(void)tcsetattr(fileno(fp), TCSAFLUSH|TCSASOFT, &term);
+        term.c_lflag &= ~(ECHO|ICANON);
+        (void)tcsetattr(fileno(fp), TCSAFLUSH|TCSASOFT, &term);
     }
     (void)fputs(prompt, outfp);
     rewind(outfp);                  /* implied flush */
-    for (s = u.u_getpass_buf; (ch = getc(fp)) != EOF && ch != '\n' && ch != '\r';)
-	if (s < u.u_getpass_buf + _PASSWORD_LEN)
-	    *s++ = ch;
+    for (s = buf; (ch = getc(fp)) != EOF && ch != '\n' && ch != '\r';)
+        if (s < buf + _PASSWORD_LEN)
+            *s++ = ch;
     *s = '\0';
     write(fileno(outfp), "\n", 1);
     if (echo & ECHO) {
-	term.c_lflag = echo;
-	tcsetattr(fileno(fp), TCSAFLUSH|TCSASOFT, &term);
+        term.c_lflag = echo;
+        tcsetattr(fileno(fp), TCSAFLUSH|TCSASOFT, &term);
     }
     sigsetmask(omask);
-    return u.u_getpass_buf;
+    return buf;
 }

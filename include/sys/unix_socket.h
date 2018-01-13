@@ -26,8 +26,8 @@ struct sock_stream {
   char  buffer[UNIX_SOCKET_SIZE];
   char  *reader, *writer;
   short flags;
-  struct Task *__ALIGN2__ task;
-} __PACKED__;
+  struct Task *task;
+};
 
 struct ix_unix_name {
   struct ix_unix_name *next;
@@ -41,16 +41,16 @@ struct ix_unix_name {
 struct unix_socket {
   char          path[104];       /* size of struct sockaddr_un.sun_path */
   short         state;
-  struct sock_stream *__ALIGN2__ from_server;
-  struct sock_stream *__ALIGN2__ to_server;
-  struct ix_unix_name *__ALIGN2__ unix_name;
-  struct file   *__ALIGN2__ server;
-} __PACKED__;
+  struct sock_stream *from_server;
+  struct sock_stream *to_server;
+  struct ix_unix_name *unix_name;
+  struct file   *server;
+};
 
-#define UNF_NO_READER   (1<<0)
-#define UNF_NO_WRITER   (1<<1)
-#define UNF_LOCKED      (1<<2)
-#define UNF_WANT_LOCK   (1<<3)
+#define UNF_NO_READER	(1<<0)
+#define UNF_NO_WRITER	(1<<1)
+#define UNF_LOCKED	(1<<2)
+#define UNF_WANT_LOCK	(1<<3)
 
 /* waiting for accept() */
 #define UNS_WAITING     (0)

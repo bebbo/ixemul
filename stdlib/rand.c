@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)rand.c      5.3 (Berkeley) 5/15/90";
+static char sccsid[] = "@(#)rand.c	5.3 (Berkeley) 5/15/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -28,14 +28,14 @@ static char sccsid[] = "@(#)rand.c      5.3 (Berkeley) 5/15/90";
 
 int rand(void)
 {
-	usetup;
+        usetup;
 
 	return ((u.u_rand_next = u.u_rand_next * 1103515245 + 12345) % RAND_MAX);
 }
 
 void srand(u_int seed)
 {
-	usetup;
+        usetup;
 
 	u.u_rand_next = seed;
 }

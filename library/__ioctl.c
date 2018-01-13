@@ -40,7 +40,7 @@ __ioctl(struct file *f, unsigned int cmd, unsigned int inout,
     {
     case 'T':  /* termios-interface */
     case 't':  /* old terminal interface */
-	       return __tioctl(f, cmd, inout, arglen, arg);
+    	       return __tioctl(f, cmd, inout, arglen, arg);
     case 'f':  /* file io */
 	       return __fioctl(f, cmd, inout, arglen, arg);
     case 's':  /* socket io */

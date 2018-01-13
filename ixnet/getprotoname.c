@@ -16,18 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: getprotoname.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: getprotoname.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:44  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:44:55  nobody
- *  Initial import
- *
+ *  $Log:$
  *
  */
 
@@ -45,10 +36,10 @@ getprotobyname(const char *name)
 
     switch (network_protocol) {
 
-	case IX_NETWORK_AMITCP:
-	    return TCP_GetProtoByName(name);
+        case IX_NETWORK_AMITCP:
+            return TCP_GetProtoByName(name);
 
-	default: /*case IX_NETWORK_AS225:*/
-	    return SOCK_getprotobyname(name);
+        default: /*case IX_NETWORK_AS225:*/
+            return SOCK_getprotobyname(name);
     }
 }

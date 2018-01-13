@@ -1,8 +1,8 @@
-/*      $NetBSD: vprintf.c,v 1.5 1995/02/02 02:10:51 jtc Exp $  */
+/*	$NetBSD: vprintf.c,v 1.5 1995/02/02 02:10:51 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,53 +38,22 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vprintf.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vprintf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vprintf.c,v 1.5 1995/02/02 02:10:51 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
-
-#ifdef NATIVE_MORPHOS
-#define vprintf my_vprintf
-#define vfprintf my_vfprintf
-int vfprintf(FILE *fp, const char *fmt0, my_va_list ap);
-int vprintf(const char *fmt, my_va_list ap);
-#endif
 
 int
 vprintf(fmt, ap)
 	char const *fmt;
-	my_va_list ap;
+	_BSD_VA_LIST_ ap;
 {
 	usetup;
 
 	return (vfprintf(stdout, fmt, ap));
 }
-
-#ifdef NATIVE_MORPHOS
-#undef vfprintf
-#undef vprintf
-
-int
-vprintf(const char *fmt, va_list ap)
-{
-    my_va_list ap1;
-    my_va_init_ppc(ap1, ap);
-    return my_vprintf(fmt, ap1);
-}
-
-int
-_varargs68k_vprintf(const char *fmt, char *ap)
-{
-    my_va_list ap1;
-    my_va_init_68k(ap1, ap);
-    return my_vprintf(fmt, ap1);
-}
-
-#endif
-

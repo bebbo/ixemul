@@ -33,7 +33,7 @@ void set_dir_name_from_lock(BPTR lock)
        *       same, and a shell that wants to be smart about symlinks,
        *       has to track chdir()s itself as well */
       if (NameFromLock (lock, buf, MAXPATHLEN))
-	SetCurrentDirName (buf);
+        SetCurrentDirName (buf);
 
       kfree (buf);
     }
@@ -152,9 +152,9 @@ int chdir (char *path)
       oldlock = CurrentDir (newlock);
 
       if (u.u_startup_cd == (BPTR)-1)
-	u.u_startup_cd = oldlock;
+        u.u_startup_cd = oldlock;
       else
-	__unlock (oldlock);
+        __unlock (oldlock);
 
       set_dir_name_from_lock(newlock);
 

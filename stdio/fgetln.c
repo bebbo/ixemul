@@ -1,8 +1,8 @@
-/*      $NetBSD: fgetln.c,v 1.2 1995/02/02 02:09:10 jtc Exp $   */
+/*	$NetBSD: fgetln.c,v 1.2 1995/02/02 02:09:10 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -37,8 +37,8 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-/* from: static char sccsid[] = "@(#)fgetline.c 8.1 (Berkeley) 6/4/93"; */
-static char *rcsid = "$Id: fgetln.c,v 1.1.1.1 2005/03/15 15:57:07 laire Exp $";
+/* from: static char sccsid[] = "@(#)fgetline.c	8.1 (Berkeley) 6/4/93"; */
+static char *rcsid = "$Id: fgetln.c,v 1.2 1995/02/02 02:09:10 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -106,7 +106,7 @@ fgetln(fp, lenp)
 		 * `optimising' a backward seek, in case the user stomps on
 		 * the text.
 		 */
-		p++;            /* advance over it */
+		p++;		/* advance over it */
 		ret = (char *)fp->_p;
 		*lenp = len = p - fp->_p;
 		fp->_flags |= __SMOD;
@@ -139,7 +139,7 @@ fgetln(fp, lenp)
 		    len - off);
 		off = len;
 		if (__srefill(fp))
-			break;  /* EOF or error: return partial line */
+			break;	/* EOF or error: return partial line */
 		if ((p = memchr((void *)fp->_p, '\n', fp->_r)) == NULL)
 			continue;
 
@@ -162,6 +162,6 @@ fgetln(fp, lenp)
 	return ((char *)fp->_lb._base);
 
 error:
-	*lenp = 0;              /* ??? */
-	return (NULL);          /* ??? */
+	*lenp = 0;		/* ??? */
+	return (NULL);		/* ??? */
 }

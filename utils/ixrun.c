@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <signal.h>
+
 #include <proto/dos.h>
 #include <utility/tagitem.h>
 #include <ix.h>
@@ -10,15 +10,15 @@ char VERSION[] = "\000$VER: ixrun 1.1 (14.06.97)";
 
 static void usage(void)
 {
-  fprintf(stderr, "Usage: ixrun [-n | -q] filename [arguments...]\n"
-    "-n\tdon't add quotes (\") around the arguments\n"
-    "-q\tadd quotes (\") around the arguments (default)\n"
-    "-nv\tas -n, but print the command line to standard error, don't execute it\n"
-    "-qv\tas -q, but print the command line to standard error, don't execute it\n");
+  fprintf(stderr, "Usage: ixrun [-n | -q] filename [arguments...]
+-n\tdon't add quotes (\") around the arguments
+-q\tadd quotes (\") around the arguments (default)
+-nv\tas -n, but print the command line to standard error, don't execute it
+-qv\tas -q, but print the command line to standard error, don't execute it\n");
   exit(1);
 }
 
-int main(int argc, char **argv)
+main(int argc, char **argv)
 {
   char *p;
   long size, i, first_opt = 1, add_quotes = 2, debug = 0;
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
   p = malloc(size);
   if (p == NULL)
   {
-    fprintf(stderr, "couldn't allocate %ld bytes\n", size);
+    fprintf(stderr, "couldn't allocate %d bytes\n", size);
     exit(1);
   }
   strcpy(p, argv[first_opt]);
@@ -75,5 +75,4 @@ int main(int argc, char **argv)
     sigsetmask(omask);
     exit(result);
   }
-  return 0;
 }

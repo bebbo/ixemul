@@ -4,38 +4,13 @@
  * To compile a version of the library in the free world (IE outside the USA)
  * simply replace this file with the real crypt.c, which should be widely
  * available on ftp servers.
- *
+ * 
  */
 
 #define _KERNEL
 #include "ixemul.h"
 #include <unistd.h>
 #include <clib/alib_protos.h>
-
-#if 0 /* __PPC__ */
-#define BUFSIZE 12
-STRPTR ACrypt(STRPTR buf, CONST_STRPTR key, CONST_STRPTR settings)
-{
-  int i;
-  int k;
-  unsigned buf2[BUFSIZE];
-
-  for (i = 0; i < BUFSIZE; ++i)
-	buf2[i] = 'A' + (*key? *key++ : i) + (*settings? *settings++ : i);
-
-  for (i = 0; i < BUFSIZE; ++i)
-	{
-	  for (k = 0; k < BUFSIZE; ++k)
-	{
-	  buf2[i] += buf2[BUFSIZE - k - 1];
-	  buf2[i] %= 53;
-	}
-	  buf[i] = (char)buf2[i] + 'A' ;
-	}
-  buf[BUFSIZE - 1] = '\0';
-  return buf;
-}
-#endif
 
 /*
  * Return a pointer to static data consisting of the "setting"
@@ -50,7 +25,7 @@ char *crypt (const char *key, const char *setting)
   if (muBase) return 0;
 
   if (u.u_ixnetbase)
-	return (char *)netcall(NET_crypt, key, setting);
+    return (char *)netcall(NET_crypt, key, setting);
 
   setlen = strlen(setting);
   if (setlen != 9 && setlen != 2) return 0;

@@ -43,10 +43,14 @@ static char sccsid[] = "@(#)getnetent.c 5.8 (Berkeley) 2/24/91";
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #define MAXALIASES      35
+
+static FILE *netf;
+static struct netent net;
+static char *net_aliases[MAXALIASES];
+int _net_stayopen;
 
 void
 setnetent(int f)
@@ -56,15 +60,15 @@ setnetent(int f)
     register int network_protocol = p->u_networkprotocol;
 
     if (network_protocol == IX_NETWORK_AS225) {
-	SOCK_setnetent(f);
-	return;
+        SOCK_setnetent(f);
+        return;
     }
     else /* if (network_protocol == IX_NETWORK_AMITCP) */ {
-	if (u.u_net_fp == NULL)
-	    u.u_net_fp = fopen(_TCP_PATH_NETWORKS, "r" );
-	else
-	    rewind(u.u_net_fp);
-	u.u_net_stayopen |= f;
+        if (netf == NULL)
+            netf = fopen(_TCP_PATH_NETWORKS, "r" );
+        else
+            rewind(netf);
+        _net_stayopen |= f;
     }
 }
 
@@ -75,15 +79,15 @@ endnetent(void)
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     if (p->u_networkprotocol == IX_NETWORK_AS225) {
-	SOCK_endnetent();
-	return;
+        SOCK_endnetent();
+        return;
     }
 
-    if (u.u_net_fp) {
-	fclose(u.u_net_fp);
-	u.u_net_fp = NULL;
+    if (netf) {
+        fclose(netf);
+        netf = NULL;
     }
-    u.u_net_stayopen = 0;
+    _net_stayopen = 0;
 }
 
 struct netent *
@@ -92,68 +96,53 @@ getnetent(void)
     usetup;
     char *s;
     register char *cp, **q;
+    static char line[BUFSIZ+1];
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     register int network_protocol = p->u_networkprotocol;
 
     if (network_protocol == IX_NETWORK_AS225) {
-	return SOCK_getnetent();
+        return SOCK_getnetent();
     }
     else /* if (network_protocol == IX_NETWORK_AMITCP) */ {
-	if (u.u_net_line == NULL)
-	  u.u_net_line = malloc(BUFSIZ + 1);
-	if (u.u_net_aliases == NULL)
-	  u.u_net_aliases = malloc(MAXALIASES * sizeof(char *));
-	if (u.u_net_line == NULL || u.u_net_aliases == NULL)
-	  {
-	    errno = ENOMEM;
-	    return NULL;
-	  }
-	if (u.u_net_fp == NULL && (u.u_net_fp = fopen(_TCP_PATH_NETWORKS, "r" )) == NULL)
-	    return (NULL);
+        if (netf == NULL && (netf = fopen(_TCP_PATH_NETWORKS, "r" )) == NULL)
+            return (NULL);
 again:
-	if ((s = fgets(u.u_net_line, BUFSIZ, u.u_net_fp)) == NULL)
-	    return (NULL);
-
-	if (*s == '#')
-	    goto again;
-
-	cp = strpbrk(s, "#\n");
-	if (cp == NULL)
-	    goto again;
-
-	*cp = '\0';
-	u.u_net.n_name = s;
-	cp = strpbrk(s, " \t");
-	if (cp == NULL)
-	    goto again;
-
-	*cp++ = '\0';
-	while (*cp == ' ' || *cp == '\t')
-	    cp++;
-
-	s = strpbrk(cp, " \t");
-	if (s != NULL)
-	    *s++ = '\0';
-
-	u.u_net.n_net = ntohl(inet_makeaddr(inet_network(cp), 0).s_addr);
-	u.u_net.n_addrtype = AF_INET;
-	q = u.u_net.n_aliases = u.u_net_aliases;
-	if (s != NULL) {
-	    cp = s;
-	    while (cp && *cp) {
-		if (*cp == ' ' || *cp == '\t') {
-		    cp++;
-		    continue;
-		}
-		if (q < &u.u_net_aliases[MAXALIASES - 1])
-		    *q++ = cp;
-
-		cp = strpbrk(cp, " \t");
-		if (cp != NULL)
-		    *cp++ = '\0';
-	    }
-	}
-	*q = NULL;
-	return (&u.u_net);
+        s = fgets(line, BUFSIZ, netf);
+        if (s == NULL)
+            return (NULL);
+        if (*s == '#')
+            goto again;
+        cp = strpbrk(s, "#\n");
+        if (cp == NULL)
+            goto again;
+        *cp = '\0';
+        net.n_name = s;
+        cp = strpbrk(s, " \t");
+        if (cp == NULL)
+            goto again;
+        *cp++ = '\0';
+        while (*cp == ' ' || *cp == '\t')
+            cp++;
+        s = strpbrk(cp, " \t");
+        if (s != NULL)
+            *s++ = '\0';
+        net.n_net = inet_network(cp);
+        net.n_addrtype = AF_INET;
+        q = net.n_aliases = net_aliases;
+        if (s != NULL)
+            cp = s;
+        while (cp && *cp) {
+            if (*cp == ' ' || *cp == '\t') {
+                cp++;
+                continue;
+            }
+            if (q < &net_aliases[MAXALIASES - 1])
+                *q++ = cp;
+            cp = strpbrk(cp, " \t");
+            if (cp != NULL)
+                *cp++ = '\0';
+        }
+        *q = NULL;
+        return (&net);
     }
 }

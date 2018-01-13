@@ -1,8 +1,8 @@
-/*      $NetBSD: nfsm_subs.h,v 1.6 1995/05/23 06:25:30 mycroft Exp $    */
+/*	$NetBSD: nfsm_subs.h,v 1.6 1995/05/23 06:25:30 mycroft Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Rick Macklem at The University of Guelph.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)nfsm_subs.h 8.1 (Berkeley) 6/16/93
+ *	@(#)nfsm_subs.h	8.1 (Berkeley) 6/16/93
  */
 
 /*
@@ -49,16 +49,16 @@
  */
 extern struct mbuf *nfsm_reqh();
 
-#define M_HASCL(m)      ((m)->m_flags & M_EXT)
-#define NFSMINOFF(m) \
+#define	M_HASCL(m)	((m)->m_flags & M_EXT)
+#define	NFSMINOFF(m) \
 		if (M_HASCL(m)) \
 			(m)->m_data = (m)->m_ext.ext_buf; \
 		else if ((m)->m_flags & M_PKTHDR) \
 			(m)->m_data = (m)->m_pktdat; \
 		else \
 			(m)->m_data = (m)->m_dat
-#define NFSMADV(m, s)   (m)->m_data += (s)
-#define NFSMSIZ(m)      ((M_HASCL(m))?MCLBYTES: \
+#define	NFSMADV(m, s)	(m)->m_data += (s)
+#define	NFSMSIZ(m)	((M_HASCL(m))?MCLBYTES: \
 				(((m)->m_flags & M_PKTHDR)?MHLEN:MLEN))
 
 /*
@@ -74,7 +74,7 @@ extern struct mbuf *nfsm_reqh();
  * unions.
  */
 
-#define nfsm_build(a,c,s) \
+#define	nfsm_build(a,c,s) \
 		{ if ((s) > M_TRAILINGSPACE(mb)) { \
 			MGET(mb2, M_WAIT, MT_DATA); \
 			if ((s) > MLEN) \
@@ -88,7 +88,7 @@ extern struct mbuf *nfsm_reqh();
 		mb->m_len += (s); \
 		bpos += (s); }
 
-#define nfsm_dissect(a,c,s) \
+#define	nfsm_dissect(a,c,s) \
 		{ t1 = mtod(md, caddr_t)+md->m_len-dpos; \
 		if (t1 >= (s)) { \
 			(a) = (c)(dpos); \
@@ -119,7 +119,7 @@ extern struct mbuf *nfsm_reqh();
 		nfsm_loadattr(v, (struct vattr *)0); \
 		}
 
-#define nfsm_loadattr(v,a) \
+#define	nfsm_loadattr(v,a) \
 		{ struct vnode *tvp = (v); \
 		if (error = nfs_loadattrcache(&tvp, &md, &dpos, (a))) { \
 			m_freem(mrep); \
@@ -127,7 +127,7 @@ extern struct mbuf *nfsm_reqh();
 		} \
 		(v) = tvp; }
 
-#define nfsm_strsiz(s,m) \
+#define	nfsm_strsiz(s,m) \
 		{ nfsm_dissect(tl,u_long *,NFSX_UNSIGNED); \
 		if (((s) = fxdr_unsigned(long,*tl)) > (m)) { \
 			m_freem(mrep); \
@@ -135,7 +135,7 @@ extern struct mbuf *nfsm_reqh();
 			goto nfsmout; \
 		} }
 
-#define nfsm_srvstrsiz(s,m) \
+#define	nfsm_srvstrsiz(s,m) \
 		{ nfsm_dissect(tl,u_long *,NFSX_UNSIGNED); \
 		if (((s) = fxdr_unsigned(long,*tl)) > (m) || (s) <= 0) { \
 			error = EBADRPC; \
@@ -155,20 +155,20 @@ extern struct mbuf *nfsm_reqh();
 			goto nfsmout; \
 		}
 
-#define nfsm_reqhead(v,a,s) \
+#define	nfsm_reqhead(v,a,s) \
 		mb = mreq = nfsm_reqh((v),(a),(s),&bpos)
 
-#define nfsm_reqdone    m_freem(mrep); \
+#define nfsm_reqdone	m_freem(mrep); \
 		nfsmout: 
 
-#define nfsm_rndup(a)   (((a)+3)&(~0x3))
+#define nfsm_rndup(a)	(((a)+3)&(~0x3))
 
-#define nfsm_request(v, t, p, c)        \
+#define	nfsm_request(v, t, p, c)	\
 		if (error = nfs_request((v), mreq, (t), (p), \
 		   (c), &mrep, &md, &dpos)) \
 			goto nfsmout
 
-#define nfsm_strtom(a,s,m) \
+#define	nfsm_strtom(a,s,m) \
 		if ((s) > (m)) { \
 			m_freem(mreq); \
 			error = ENAMETOOLONG; \
@@ -185,11 +185,11 @@ extern struct mbuf *nfsm_reqh();
 			goto nfsmout; \
 		}
 
-#define nfsm_srvdone \
+#define	nfsm_srvdone \
 		nfsmout: \
 		return(error)
 
-#define nfsm_reply(s) \
+#define	nfsm_reply(s) \
 		{ \
 		nfsd->nd_repstat = error; \
 		if (error) \
@@ -204,7 +204,7 @@ extern struct mbuf *nfsm_reqh();
 			return(0); \
 		}
 
-#define nfsm_adv(s) \
+#define	nfsm_adv(s) \
 		t1 = mtod(md, caddr_t)+md->m_len-dpos; \
 		if (t1 >= (s)) { \
 			dpos += (s); \
@@ -217,7 +217,7 @@ extern struct mbuf *nfsm_reqh();
 		nfsm_dissect(tl, u_long *, NFSX_FH); \
 		bcopy((caddr_t)tl, (caddr_t)f, NFSX_FH)
 
-#define nfsm_clget \
+#define	nfsm_clget \
 		if (bp >= be) { \
 			if (mp == mb) \
 				mp->m_len += bp-bpos; \
@@ -231,7 +231,7 @@ extern struct mbuf *nfsm_reqh();
 		} \
 		tl = (u_long *)bp
 
-#define nfsm_srvfillattr \
+#define	nfsm_srvfillattr \
 	fp->fa_type = vtonfs_type(va.va_type); \
 	fp->fa_mode = vtonfs_mode(va.va_type, va.va_mode); \
 	fp->fa_nlink = txdr_unsigned(va.va_nlink); \

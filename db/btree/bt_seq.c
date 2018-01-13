@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_seq.c,v 1.7 1996/05/03 21:50:54 cgd Exp $   */
+/*	$NetBSD: bt_seq.c,v 1.7 1996/05/03 21:50:54 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_seq.c    8.7 (Berkeley) 7/20/94";
+static char sccsid[] = "@(#)bt_seq.c	8.7 (Berkeley) 7/20/94";
 #else
 static char rcsid[] = "$NetBSD: bt_seq.c,v 1.7 1996/05/03 21:50:54 cgd Exp $";
 #endif
@@ -68,16 +68,16 @@ static int __bt_seqset __P((BTREE *, EPG *, DBT *, int));
 
 /*
  * __bt_seq --
- *      Btree sequential scan interface.
+ *	Btree sequential scan interface.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key for positioning and return value
- *      data:   data return value
- *      flags:  R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV.
+ *	dbp:	pointer to access method
+ *	key:	key for positioning and return value
+ *	data:	data return value
+ *	flags:	R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV.
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
+ *	RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
  */
 int
 __bt_seq(dbp, key, data, flags)
@@ -140,19 +140,19 @@ __bt_seq(dbp, key, data, flags)
 
 /*
  * __bt_seqset --
- *      Set the sequential scan to a specific key.
+ *	Set the sequential scan to a specific key.
  *
  * Parameters:
- *      t:      tree
- *      ep:     storage for returned key
- *      key:    key for initial scan position
- *      flags:  R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV
+ *	t:	tree
+ *	ep:	storage for returned key
+ *	key:	key for initial scan position
+ *	flags:	R_CURSOR, R_FIRST, R_LAST, R_NEXT, R_PREV
  *
  * Side effects:
- *      Pins the page the cursor references.
+ *	Pins the page the cursor references.
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
+ *	RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
  */
 static int
 __bt_seqset(t, ep, key, flags)
@@ -171,7 +171,7 @@ __bt_seqset(t, ep, key, flags)
 	 * been found.
 	 */
 	switch (flags) {
-	case R_CURSOR:                          /* Keyed scan. */
+	case R_CURSOR:				/* Keyed scan. */
 		/*
 		 * Find the first instance of the key or the smallest key
 		 * which is greater than or equal to the specified key.
@@ -181,7 +181,7 @@ __bt_seqset(t, ep, key, flags)
 			return (RET_ERROR);
 		}
 		return (__bt_first(t, key, ep, &exact));
-	case R_FIRST:                           /* First record. */
+	case R_FIRST:				/* First record. */
 	case R_NEXT:
 		/* Walk down the left-hand side of the tree. */
 		for (pg = P_ROOT;;) {
@@ -202,7 +202,7 @@ __bt_seqset(t, ep, key, flags)
 		ep->page = h;
 		ep->index = 0;
 		break;
-	case R_LAST:                            /* Last record. */
+	case R_LAST:				/* Last record. */
 	case R_PREV:
 		/* Walk down the right-hand side of the tree. */
 		for (pg = P_ROOT;;) {
@@ -230,17 +230,17 @@ __bt_seqset(t, ep, key, flags)
 
 /*
  * __bt_seqadvance --
- *      Advance the sequential scan.
+ *	Advance the sequential scan.
  *
  * Parameters:
- *      t:      tree
- *      flags:  R_NEXT, R_PREV
+ *	t:	tree
+ *	flags:	R_NEXT, R_PREV
  *
  * Side effects:
- *      Pins the page the new key/data record is on.
+ *	Pins the page the new key/data record is on.
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
+ *	RET_ERROR, RET_SUCCESS or RET_SPECIAL if there's no next key.
  */
 static int
 __bt_seqadv(t, ep, flags)
@@ -276,11 +276,11 @@ __bt_seqadv(t, ep, flags)
 		return (RET_ERROR);
 
 	/*
-	 * Find the next/previous record in the tree and point the cursor at
+ 	 * Find the next/previous record in the tree and point the cursor at
 	 * it.  The cursor may not be moved until a new key has been found.
 	 */
 	switch (flags) {
-	case R_NEXT:                    /* Next record. */
+	case R_NEXT:			/* Next record. */
 		/*
 		 * The cursor was deleted in duplicate records, and moved
 		 * forward to a record that has yet to be returned.  Clear
@@ -299,14 +299,14 @@ __bt_seqadv(t, ep, flags)
 			index = 0;
 		}
 		break;
-	case R_PREV:                    /* Previous record. */
+	case R_PREV:			/* Previous record. */
 		/*
 		 * The cursor was deleted in duplicate records, and moved
 		 * backward to a record that has yet to be returned.  Clear
 		 * that flag, and return the record.
 		 */
 		if (F_ISSET(c, CURS_BEFORE)) {
-usecurrent:             F_CLR(c, CURS_AFTER | CURS_BEFORE);
+usecurrent:		F_CLR(c, CURS_AFTER | CURS_BEFORE);
 			ep->page = h;
 			ep->index = c->pg.index;
 			return (RET_SUCCESS);
@@ -332,17 +332,17 @@ usecurrent:             F_CLR(c, CURS_AFTER | CURS_BEFORE);
 
 /*
  * __bt_first --
- *      Find the first entry.
+ *	Find the first entry.
  *
  * Parameters:
- *      t:      the tree
- *    key:      the key
- *  erval:      return EPG
- * exactp:      pointer to exact match flag
+ *	t:	the tree
+ *    key:	the key
+ *  erval:	return EPG
+ * exactp:	pointer to exact match flag
  *
  * Returns:
- *      The first entry in the tree greater than or equal to key,
- *      or RET_SPECIAL if no such key exists.
+ *	The first entry in the tree greater than or equal to key,
+ *	or RET_SPECIAL if no such key exists.
  */
 static int
 __bt_first(t, key, erval, exactp)
@@ -438,12 +438,12 @@ __bt_first(t, key, erval, exactp)
 
 /*
  * __bt_setcur --
- *      Set the cursor to an entry in the tree.
+ *	Set the cursor to an entry in the tree.
  *
  * Parameters:
- *      t:      the tree
- *   pgno:      page number
- *  index:      page index
+ *	t:	the tree
+ *   pgno:	page number
+ *  index:	page index
  */
 void
 __bt_setcur(t, pgno, index)

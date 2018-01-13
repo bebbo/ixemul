@@ -17,23 +17,29 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: ix_sleep.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id: ix_sleep.c,v 1.4 1994/06/19 15:13:19 rluebbert Exp $
  *
+ *  $Log: ix_sleep.c,v $
+ *  Revision 1.4  1994/06/19  15:13:19  rluebbert
+ *  *** empty log message ***
+ *
+ * 
+ * 
  */
 
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
-#define KPRINTF //kprintf
+
 #define __time_req (u.u_time_req)
 #define __tport    (u.u_sync_mp)
 
 /* this is the `message' we queue on the sleep queues. */
 struct sleep_msg {
-  struct ixnode         sm_node;
-  short                 sm_signal;
-  struct Task*          sm_sigtask;
-  u_int                 sm_waitchan;
+  struct ixnode 	sm_node;
+  short			sm_signal;
+  struct Task*		sm_sigtask;
+  u_int			sm_waitchan;
 };
 
 
@@ -44,7 +50,7 @@ ix_hash (u_int waitchan)
 
   res = (waitchan >> 16) ^ (waitchan & 0xffff);
   res %= IX_NUM_SLEEP_QUEUES;
-  return res;
+  return res; 
 }
 
 int
@@ -57,10 +63,8 @@ tsleep(caddr_t waitchan, char *wmesg, int timo)
   struct ixlist *the_list;
   u_int wait_sigs;
   int res = -1;
-  struct Task *me = SysBase->ThisTask;
+  struct Task *me = FindTask(0);
   struct user *u_ptr = getuser(me);
-
-KPRINTF(("tsleep(%s, %lx), p_sig = %lx, mask = %lx\n", wmesg, waitchan, u.p_sig, u.p_sigmask));
 
   if (CURSIG(&u))
     {
@@ -72,37 +76,29 @@ KPRINTF(("tsleep(%s, %lx), p_sig = %lx, mask = %lx\n", wmesg, waitchan, u.p_sig,
   sm.sm_sigtask = me;
   sm.sm_waitchan = (u_int)waitchan;
 
-  u.p_stat = SSLEEP;    /* so that machdep.c can interrupt us */
+  u.p_stat = SSLEEP;	/* so that machdep.c can interrupt us */
   u.p_wchan = (caddr_t) waitchan;
   u.p_wmesg = wmesg;
   the_list = &ixemulbase->ix_sleep_queues[ix_hash((u_int)waitchan)];
-
+  
   sm.sm_signal = u.u_sleep_sig;
 
   wait_sigs =  (1 << sm.sm_signal) | SIGBREAKF_CTRL_C;
-  //Delay(1);
-#if 1
+  
   if (timo)
     {
-      #warning "This looks all wrong. Apparently timo is always 0 though. - Piru"
-	
-      __time_req->tr_time.tv_sec = timo / 1000;
-      __time_req->tr_time.tv_usec = timo % 1000;
+      __time_req->tr_time.tv_sec = timo % 60;
+      __time_req->tr_time.tv_usec = timo / 60;
       __time_req->tr_node.io_Command = TR_ADDREQUEST;
       SetSignal (0, 1 << __tport->mp_SigBit);
       SendIO((struct IORequest *)__time_req);
       wait_sigs |= 1 << __tport->mp_SigBit;
     }
-#endif
-
-KPRINTF(("forbid\n"));
   Forbid();
   ixaddtail ((struct ixlist *)the_list, (struct ixnode *)&sm);
 
   /* this will break the Disable () and reestablish it afterwards */
-KPRINTF(("wait(%lx), TDNestCnt = %ld\n", wait_sigs, SysBase->TDNestCnt));
   res = Wait (wait_sigs);
-KPRINTF(("... wait() = %08lx, TDNestCnt = %ld\n", res, SysBase->TDNestCnt));
   /* this conversion is inhibited in the Launch handler as long as we're
      in SSLEEP state. Since the SetSignal() below will remove all traces
      of a perhaps present SIGBREAKF_CTRL_C, we'll have to do the conversion
@@ -113,23 +109,18 @@ KPRINTF(("... wait() = %08lx, TDNestCnt = %ld\n", res, SysBase->TDNestCnt));
       struct Process *proc = (struct Process *)(u.u_session ? u.u_session->pgrp : getpid());
       _psignalgrp(proc, SIGINT);
     }
-
   SetSignal (0, res);
-
   res = CURSIG (&u) ? -1 : 0;
 
   ixremove ((struct ixlist *)the_list, (struct ixnode *)&sm);
-KPRINTF(("permit\n"));
   Permit();
 
-#if 1
   if (timo)
     {
       if (! CheckIO ((struct IORequest *)__time_req))
-      AbortIO ((struct IORequest *)__time_req);
+        AbortIO ((struct IORequest *)__time_req);
       WaitIO ((struct IORequest *)__time_req);
     }
-#endif
 
   u.p_wchan = 0;
   u.p_wmesg = 0;
@@ -156,19 +147,15 @@ ix_wakeup (u_int waitchan)
 {
   struct ixlist *the_list = &ixemulbase->ix_sleep_queues[ix_hash (waitchan)];
   struct sleep_msg *sm;
-
+  
   Forbid();
-  KPRINTF(("ix_wakeup(%lx)\n", waitchan));
 
   for (sm = (struct sleep_msg *)the_list->head;
        sm;
        sm = (struct sleep_msg *)sm->sm_node.next)
     {
       if (sm->sm_waitchan == waitchan)
-	{
-	  KPRINTF(("Signal(%lx, %08lx)\n", sm->sm_sigtask, 1 << sm->sm_signal));
-	  Signal (sm->sm_sigtask, 1 << sm->sm_signal);
-	}
+        Signal (sm->sm_sigtask, 1 << sm->sm_signal);
     }
 
   Permit();

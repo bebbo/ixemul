@@ -1,8 +1,8 @@
-/*      $NetBSD: getttyent.c,v 1.9 1995/06/16 07:05:31 jtc Exp $        */
+/*	$NetBSD: getttyent.c,v 1.9 1995/06/16 07:05:31 jtc Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)getttyent.c 8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)getttyent.c	8.1 (Berkeley) 6/4/93";
 #else
 static char rcsid[] = "$NetBSD: getttyent.c,v 1.9 1995/06/16 07:05:31 jtc Exp $";
 #endif
@@ -63,17 +63,15 @@ getttynam(tty)
 	return (t);
 }
 
-static char *skip();
-static char *value();
-
 struct ttyent *
 getttyent()
 {
 	static struct ttyent tty;
 	register int c;
 	register char *p;
-#define MAXLINELENGTH   200
+#define	MAXLINELENGTH	200
 	static char line[MAXLINELENGTH];
+	static char *skip(), *value();
 
 	if (!tf && !setttyent())
 		return (NULL);
@@ -107,8 +105,8 @@ getttyent()
 	tty.ty_status = 0;
 	tty.ty_window = NULL;
 
-#define scmp(e) !strncmp(p, e, sizeof(e) - 1) && isspace(p[sizeof(e) - 1])
-#define vcmp(e) !strncmp(p, e, sizeof(e) - 1) && p[sizeof(e) - 1] == '='
+#define	scmp(e)	!strncmp(p, e, sizeof(e) - 1) && isspace(p[sizeof(e) - 1])
+#define	vcmp(e)	!strncmp(p, e, sizeof(e) - 1) && p[sizeof(e) - 1] == '='
 	for (; *p; p = skip(p)) {
 		if (scmp(_TTYS_OFF))
 			tty.ty_status &= ~TTY_ON;
@@ -141,7 +139,7 @@ getttyent()
 	return (&tty);
 }
 
-#define QUOTED  1
+#define	QUOTED	1
 
 /*
  * Skip over the current field, removing quotes, and return a pointer to
@@ -156,7 +154,7 @@ skip(p)
 
 	for (q = 0, t = p; (c = *p) != '\0'; p++) {
 		if (c == '"') {
-			q ^= QUOTED;    /* obscure, but nice */
+			q ^= QUOTED;	/* obscure, but nice */
 			continue;
 		}
 		if (q == QUOTED && *p == '\\' && *(p+1) == '"')

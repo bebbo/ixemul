@@ -49,36 +49,36 @@ getUserPasswd(char *name)
   if ((passwddir = muGetPasswdDirLock())) {
     if (NameFromLock(passwddir, passdir, MAXPATHLEN)) {
       if (AddPart(passdir, muPasswd_FileName, MAXPATHLEN)) {
-	FILE *fi = (FILE *)syscall(SYS_fopen,passdir,"r");
-	char passwdline[1024];
-	char username[muUSERNAMESIZE];
-	char passwd[muPASSWORDSIZE];
-	int found_it = 0;
+        FILE *fi = (FILE *)syscall(SYS_fopen,passdir,"r");
+        char passwdline[1024];
+        char username[muUSERNAMESIZE];
+        char passwd[muPASSWORDSIZE];
+        int found_it = 0;
 
-	username[0] = passwd[0] = '\0';
+        username[0] = passwd[0] = '\0';
 
-	if (fi) {
-	  while (fgets(passwdline,1024,fi)) {
-	    char *sep = strchr(passwdline,'|');
-	    char *old;
-	    strncpy(username,passwdline,sep-passwdline);
-	    username[sep-passwdline] = '\0';
+        if (fi) {
+          while (fgets(passwdline,1024,fi)) {
+            char *sep = strchr(passwdline,'|');
+            char *old;
+            strncpy(username,passwdline,sep-passwdline);
+            username[sep-passwdline] = '\0';
 
-	    old = ++sep;
-	    sep = strchr(old,'|');
-	    strncpy(passwd,old,sep - old);
-	    passwd[sep-old] = '\0';
+            old = ++sep;
+            sep = strchr(old,'|');
+            strncpy(passwd,old,sep - old);
+            passwd[sep-old] = '\0';
 
-	    if (!strcmp(username,name)) {
-	      found_it = 1;
-	      break;
-	    }
-	  }
-	  if (found_it) {
-	    retval = strdup(passwd);
-	  }
-	  fclose(fi);
-	}
+            if (!strcmp(username,name)) {
+              found_it = 1;
+              break;
+            }
+          }
+          if (found_it) {
+            retval = strdup(passwd);
+          }
+          fclose(fi);
+        }
       }
     }
     UnLock(passwddir);
@@ -116,7 +116,7 @@ UserInfo2pw (struct muUserInfo *UI)
 
 /* builtin passwd file parsing */
 
-#define MAXLINELENGTH   1024
+#define MAXLINELENGTH	1024
 #define UNIX_STRSEP     ":\n"
 #define AMIGAOS_STRSEP  "|\n"
 
@@ -229,26 +229,26 @@ setreuid (int ruid, int euid)
     if (syscall(SYS_geteuid) == 0)
     {
       if (euid != -1)
-	{
-	  struct muUserInfo *UI = u.u_UserInfo;
+        {
+          struct muUserInfo *UI = u.u_UserInfo;
 
-	  UI->uid = __unix2amigaid(euid);
-	  if ((UI = muGetUserInfo (UI, muKeyType_uid)))
-	    {
+          UI->uid = __unix2amigaid(euid);
+          if ((UI = muGetUserInfo (UI, muKeyType_uid)))
+            {
 
-	      if (muLogin(muT_Task, (ULONG)SysBase->ThisTask,
-			  muT_UserID, (ULONG)UI->UserID,
-			  muT_NoLog, TRUE,
-			  TAG_DONE)) {
-		u.u_setuid++;
+              if (muLogin(muT_Task, (ULONG)FindTask(NULL),
+                          muT_UserID, (ULONG)UI->UserID,
+                          muT_NoLog, TRUE,
+                          TAG_DONE)) {
+                u.u_setuid++;
 	    }
-	  }
+          }
        }
     }
     else
       {
-	errno = EPERM;
-	retval = -1;
+        errno = EPERM;
+        retval = -1;
       }
 
     return retval;
@@ -256,10 +256,10 @@ setreuid (int ruid, int euid)
   else
     {
       if (ruid != -1)
-	u.u_ruid = (uid_t)ruid;
+        u.u_ruid = (uid_t)ruid;
 
       if (euid != -1)
-	u.u_euid = (uid_t)euid;
+        u.u_euid = (uid_t)euid;
 
       /* just always succeed... */
       return 0;
@@ -307,7 +307,7 @@ struct passwd *getpwuid (uid_t uid)
 
       rval = pwscan(1, uid, NULL);
       if (!u.u_pwd_stayopen)
-	syscall(SYS_endpwent);
+        syscall(SYS_endpwent);
 
       return (rval ? &u.u_passwd : NULL);
     }
@@ -319,11 +319,11 @@ struct passwd *getpwuid (uid_t uid)
       ((u.u_passwd.pw_name = (char *)syscall(SYS_getlogin))))
     {
       if (!(u.u_passwd.pw_dir = (char *)syscall(SYS_getenv, "HOME"))) {
-	u.u_passwd.pw_dir = "SYS:";
+        u.u_passwd.pw_dir = "SYS:";
       }
 
       if (!(u.u_passwd.pw_gecos = (char *)syscall(SYS_getenv, "REALNAME"))) {
-	u.u_passwd.pw_gecos = "Amiga User";
+        u.u_passwd.pw_gecos = "Amiga User";
       }
 
       u.u_passwd.pw_uid = uid;
@@ -358,10 +358,10 @@ struct passwd *getpwnam (const char *name)
        */
     
       if (name == NULL)
-	return NULL;
+        return NULL;
     
       if ((muUSERIDSIZE - 1) < strlen (name))
-	return NULL;
+        return NULL;
 
       strcpy (UI->UserID, name);
       UI = muGetUserInfo (UI, muKeyType_UserID);
@@ -378,7 +378,7 @@ struct passwd *getpwnam (const char *name)
 
       rval = pwscan(1, 0, (char *)name);
       if (!u.u_pwd_stayopen)
-	syscall(SYS_endpwent);
+        syscall(SYS_endpwent);
 
       return (rval ? &u.u_passwd : NULL);
     }
@@ -390,11 +390,11 @@ struct passwd *getpwnam (const char *name)
       !strcmp(name,u.u_passwd.pw_name))
     {
       if (!(u.u_passwd.pw_dir = (char *)syscall(SYS_getenv, "HOME"))) {
-	u.u_passwd.pw_dir = "SYS:";
+        u.u_passwd.pw_dir = "SYS:";
       }
 
       if (!(u.u_passwd.pw_gecos = (char *)syscall(SYS_getenv, "REALNAME"))) {
-	u.u_passwd.pw_gecos = "Amiga User";
+        u.u_passwd.pw_gecos = "Amiga User";
       }
 
       u.u_passwd.pw_uid = syscall(SYS_getuid);
@@ -442,7 +442,7 @@ getpwent(void)
       u.u_nextuid = -2;
      
       if ((name = (char *)syscall(SYS_getlogin)))
-	return (struct passwd *)syscall(SYS_getpwnam, name);
+        return (struct passwd *)syscall(SYS_getpwnam, name);
     case (uid_t)(-2):
       u.u_nextuid = -1;
       return (struct passwd *)&builtin_nobody;

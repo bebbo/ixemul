@@ -1,8 +1,8 @@
-/*      $NetBSD: sprintf.c,v 1.5 1995/02/02 02:10:37 jtc Exp $  */
+/*	$NetBSD: sprintf.c,v 1.5 1995/02/02 02:10:37 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,101 +38,47 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)sprintf.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)sprintf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: sprintf.c,v 1.5 1995/02/02 02:10:37 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
-#include "my_varargs.h"
 
 #include <stdio.h>
+#if __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+#include <limits.h>
 #include "local.h"
 
-#ifdef NATIVE_MORPHOS
-#define vfprintf my_vfprintf
-int vfprintf(FILE *fp, const char *fmt0, my_va_list ap);
-#endif
-
 int
+#if __STDC__
 sprintf(char *str, char const *fmt, ...)
-{
-	int ret;
-	my_va_list ap;
-	FILE f;
-	f._flags = __SWR | __SSTR;
-	f._bf._base = f._p = (unsigned char *)str;
-	f._bf._size = f._w = INT_MAX;
-	my_va_start(ap, fmt);
-	ret = vfprintf(&f, fmt, ap);
-	my_va_end(ap);
-	*f._p = 0;
-	return (ret);
-}
-
-#ifdef NATIVE_MORPHOS
-
-int
-_varargs68k_sprintf(char *str, char const *fmt, char *ap1)
-{
-	int ret;
-	my_va_list ap;
-	FILE f;
-
-	f._flags = __SWR | __SSTR;
-	f._bf._base = f._p = (unsigned char *)str;
-	f._bf._size = f._w = INT_MAX;
-	my_va_init_68k(ap, ap1);
-	ret = vfprintf(&f, fmt, ap);
-	*f._p = 0;
-	return (ret);
-}
-
-asm("	.section \".text\"
-	.type	_stk_sprintf,@function
-	.globl	_stk_sprintf
-_stk_sprintf:
-	andi.	11,1,15
-	mr	12,1
-	bne-	.align_sprintf
-	b	sprintf
-.align_sprintf:
-	addi	11,11,128
-	mflr	0
-	neg	11,11
-	stw	0,4(1)
-	stwux	1,1,11
-
-	stw	5,16(1)
-	stw	6,20(1)
-	stw	7,24(1)
-	stw	8,28(1)
-	stw	9,32(1)
-	stw	10,36(1)
-	bc	4,6,.nofloat_sprintf
-	stfd	1,40(1)
-	stfd	2,48(1)
-	stfd	3,56(1)
-	stfd	4,64(1)
-	stfd	5,72(1)
-	stfd	6,80(1)
-	stfd	7,88(1)
-	stfd	8,96(1)
-.nofloat_sprintf:
-
-	addi	5,1,104
-	lis	0,0x200
-	addi	12,12,8
-	addi	11,1,8
-	stw	0,0(5)
-	stw	12,4(5)
-	stw	11,8(5)
-	bl	vsprintf
-	lwz	1,0(1)
-	lwz	0,4(1)
-	mtlr	0
-	blr
-");
+#else
+sprintf(str, fmt, va_alist)
+	char *str;
+	char *fmt;
+	va_dcl
 #endif
+{
+	int ret;
+	va_list ap;
+	FILE f;
 
+	f._flags = __SWR | __SSTR;
+	f._bf._base = f._p = (unsigned char *)str;
+	f._bf._size = f._w = INT_MAX;
+#if __STDC__
+	va_start(ap, fmt);
+#else
+	va_start(ap);
+#endif
+	ret = vfprintf(&f, fmt, ap);
+	va_end(ap);
+	*f._p = 0;
+	return (ret);
+}

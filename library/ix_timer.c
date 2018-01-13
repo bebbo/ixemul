@@ -1,4 +1,4 @@
-/* 
+/*
  *  This file is part of ixemul.library for the Amiga.
  *  Copyright (C) 1991, 1992  Markus M. Wild
  *  Portions Copyright (C) 1994 Rafael W. Luebbert

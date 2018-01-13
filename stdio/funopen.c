@@ -1,8 +1,8 @@
-/*      $NetBSD: funopen.c,v 1.4 1995/02/02 02:09:44 jtc Exp $  */
+/*	$NetBSD: funopen.c,v 1.4 1995/02/02 02:09:44 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)funopen.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)funopen.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: funopen.c,v 1.4 1995/02/02 02:09:44 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -66,16 +66,16 @@ funopen(cookie, readfn, writefn, seekfn, closefn)
 	usetup;
 
 	if (readfn == NULL) {
-		if (writefn == NULL) {          /* illegal */
+		if (writefn == NULL) {		/* illegal */
 			errno = EINVAL;
 			return (NULL);
 		} else
-			flags = __SWR;          /* write only */
+			flags = __SWR;		/* write only */
 	} else {
 		if (writefn == NULL)
-			flags = __SRD;          /* read only */
+			flags = __SRD;		/* read only */
 		else
-			flags = __SRW;          /* read-write */
+			flags = __SRW;		/* read-write */
 	}
 	if ((fp = __sfp()) == NULL)
 		return (NULL);

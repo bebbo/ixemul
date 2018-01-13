@@ -1,4 +1,4 @@
-/*      $NetBSD: inet.h,v 1.4 1994/10/26 00:56:44 cgd Exp $     */
+/*	$NetBSD: inet.h,v 1.4 1994/10/26 00:56:44 cgd Exp $	*/
 
 /*
  * Copyright (c) 1983 Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,24 +32,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)inet.h      5.7 (Berkeley) 4/3/91
+ *	@(#)inet.h	5.7 (Berkeley) 4/3/91
  */
 
 #ifndef _INET_H_
-#define _INET_H_
+#define	_INET_H_
 
 /* External definitions for functions in inet(3) */
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-unsigned long   inet_addr __P((const char *));
-int             inet_aton __P((const char *, struct in_addr *));
-unsigned long   inet_lnaof __P((struct in_addr));
-struct in_addr  inet_makeaddr __P((u_long, u_long));
-unsigned long   inet_netof __P((struct in_addr));
-unsigned long   inet_network __P((const char *));
-char            *inet_ntoa __P((struct in_addr));
+unsigned long	inet_addr __P((const char *));
+int		inet_aton __P((const char *, struct in_addr *));
+unsigned long	inet_lnaof __P((struct in_addr));
+struct in_addr	inet_makeaddr __P((u_long, u_long));
+unsigned long	inet_netof __P((struct in_addr));
+unsigned long	inet_network __P((const char *));
+char		*inet_ntoa __P((struct in_addr));
 __END_DECLS
 
 #endif /* !_INET_H_ */

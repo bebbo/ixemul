@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -48,8 +48,8 @@ static char sccsid[] = "@(#)getgrent.c  5.9 (Berkeley) 4/1/91";
 
 static int grscan(), start_gr();
 
-#define MAXGRP          200
-#define MAXLINELENGTH   1024
+#define MAXGRP		200
+#define MAXLINELENGTH	1024
 
 struct group *
 getgrent(void)
@@ -193,8 +193,8 @@ grscan(int search, int gid, char *name)
       u.u_members = malloc(MAXGRP * sizeof(char *));
     if (u.u_grp_line == NULL || u.u_members == NULL)
       {
-	errno = ENOMEM;
-	return 0;
+        errno = ENOMEM;
+        return 0;
       }
     for (;;) {
 	if (!fgets(u.u_grp_line, MAXLINELENGTH, u.u_grp_fp))

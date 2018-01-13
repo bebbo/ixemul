@@ -236,16 +236,16 @@
 #define muT_Task           (TAG_USER+5)   /* task (NOT the name!!) */
 #define muT_Own            (TAG_USER+6)   /* make a task owned by this user */
 #define muT_Global         (TAG_USER+7)   /* change it for all tasks on the */
-					  /* same level as this one */
+                                          /* same level as this one */
 #define muT_Quiet          (TAG_USER+8)   /* for muLogoutA(), don't give a */
-					  /* login prompt, simply logout */
+                                          /* login prompt, simply logout */
 #define muT_UserID         (TAG_USER+9)   /* UserID for muLoginA() */
 #define muT_Password       (TAG_USER+10)  /* Password for muLoginA(), must */
-					  /* be combined with muT_UserID!! */
+                                          /* be combined with muT_UserID!! */
 #define muT_DefProtection  (TAG_USER+11)  /* Default protection bits */
-					  /* default is RWED GROUP R OTHER R */
+                                          /* default is RWED GROUP R OTHER R */
 #define muT_All            (TAG_USER+12)  /* for muLogoutA(), logout until */
-					  /* user stack is empty */
+                                          /* user stack is empty */
 #define muT_NoLog          (TAG_USER+13)  /* for muLoginA(), only root */
 
 
@@ -264,9 +264,9 @@ struct muUserInfo {
    char UserName[muUSERNAMESIZE];
    char HomeDir[muHOMEDIRSIZE];
    UWORD NumSecGroups;              /* Number of Secondary Groups this */
-				    /* user belongs to */
+                                    /* user belongs to */
    UWORD *SecGroups;                /* Points to an array of NumSecGroups */
-				    /* Secondary Group Numbers */
+                                    /* Secondary Group Numbers */
    char Shell[muSHELLSIZE];
 };
 
@@ -335,7 +335,7 @@ struct muExtOwner {
    UWORD uid;
    UWORD gid;
    UWORD NumSecGroups;              /* Number of Secondary Groups this */
-				    /* user belongs too. */
+                                    /* user belongs too. */
 };
 
    /* NOTE: This structure is followed by a UWORD array containing
@@ -459,12 +459,12 @@ struct muMonitor {
    ULONG Triggers;                  /* see definitions below */
    union {
       struct {                      /* for SEND_SIGNAL */
-	 struct Task *Task;
-	 ULONG SignalNum;
+         struct Task *Task;
+         ULONG SignalNum;
       } Signal;
 
       struct {                      /* for SEND_MESSAGE */
-	 struct MsgPort *Port;
+         struct MsgPort *Port;
       } Message;
    } s;
 
@@ -501,23 +501,23 @@ struct muMonMsg {
     */
 
 #define muTrgB_OwnerChange       (0)   /* Task Owner Change */
-				       /*    From:    uid of old user */
-				       /*    To:      uid of new user */
+                                       /*    From:    uid of old user */
+                                       /*    To:      uid of new user */
 #define muTrgB_Login             (1)   /* successful Login/Logout */
-				       /*    From:    uid of old user */
-				       /*    To:      uid of new user */
-				       /*    UserID:  UserID of new user */
+                                       /*    From:    uid of old user */
+                                       /*    To:      uid of new user */
+                                       /*    UserID:  UserID of new user */
 #define muTrgB_LoginFail         (2)   /* unsuccessful Login/Logout */
-				       /*    From:    uid of old user */
-				       /*    UserID:  UserID of new user */
+                                       /*    From:    uid of old user */
+                                       /*    UserID:  UserID of new user */
 #define muTrgB_Passwd            (3)   /* successful Passwd */
-				       /*    From:    uid of user */
+                                       /*    From:    uid of user */
 #define muTrgB_PasswdFail        (4)   /* unsuccessful Passwd */
-				       /*    From:    uid of user */
+                                       /*    From:    uid of user */
 #define muTrgB_CheckPasswd       (5)   /* successful CheckPasswd */
-				       /*    From:    uid of user */
+                                       /*    From:    uid of user */
 #define muTrgB_CheckPasswdFail   (6)   /* unsuccessful CheckPasswd */
-				       /*    From:    uid of user */
+                                       /*    From:    uid of user */
 
 #define muTrgF_OwnerChange       (1<<muTrgB_OwnerChange)
 #define muTrgF_Login             (1<<muTrgB_Login)

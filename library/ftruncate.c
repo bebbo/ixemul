@@ -35,15 +35,11 @@
 #define ACTION_SET_FILE_SIZE 1022
 #endif
 
-#define USE_SETFILESIZE_SEEK_WORKAROUND 1
-
 int
 ftruncate (int fd, off_t len)
 {
   usetup;
-  struct file *f;
-  if (u.u_parent_userdata)f = u.u_parent_userdata->u_ofile[fd];
-  else f = u.u_ofile[fd]; 
+  struct file *f = u.u_ofile[fd];
   int err, res;
   int omask;
 
@@ -55,12 +51,7 @@ ftruncate (int fd, off_t len)
     {
       if (f->f_type == DTYPE_FILE)
 	{
-	  #if USE_SETFILESIZE_SEEK_WORKAROUND
-	  BPTR fh;
-	  LONG opos;
-	  #endif
-
-	  if (HANDLER_NIL (f))
+          if (HANDLER_NIL (f))
 	    {
 	      errno = EINVAL;
 	      KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
@@ -70,32 +61,11 @@ ftruncate (int fd, off_t len)
 	  err = 0;
 	  omask = syscall (SYS_sigsetmask, ~0);
 	  __get_file (f);
-	  #if USE_SETFILESIZE_SEEK_WORKAROUND
-	  fh = CTOBPTR(f->f_fh);
-	  opos = Seek(fh, 0, OFFSET_BEGINNING);
-	  res = SetFileSize(fh, len, OFFSET_BEGINNING);
-	  if (res == -1)
-	    err = __ioerr_to_errno(IoErr());
-	  else if (res < opos)
-	    opos = res;
-	  if (opos != -1)
-	    Seek(fh, opos, OFFSET_BEGINNING);
-
-	  if (res != -1)
-	  #else
 	  res = SetFileSize(CTOBPTR(f->f_fh), len, OFFSET_BEGINNING);
 	  if (res == -1)
-	    err = __ioerr_to_errno(IoErr());
-	  else
-	  #endif
-	  {
-	    /* 15-Jul-2003 bugfix: 0 indicates success! used to return
-	     * whatever SetFileSize returned (new filesize) - Piru
-	     */
-	    res = 0;
-
-	    err = 0;
-	  }
+            err = __ioerr_to_errno(IoErr());
+          else
+            err = 0;
 	  __release_file (f);
 	  syscall (SYS_sigsetmask, omask);
 	  errno = err;

@@ -1,8 +1,8 @@
-/*      $NetBSD: hash.c,v 1.9 1996/05/03 21:43:47 cgd Exp $     */
+/*	$NetBSD: hash.c,v 1.9 1996/05/03 21:43:47 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)hash.c      8.9 (Berkeley) 6/16/94";
+static char sccsid[] = "@(#)hash.c	8.9 (Berkeley) 6/16/94";
 #else
 static char rcsid[] = "$NetBSD: hash.c,v 1.9 1996/05/03 21:43:47 cgd Exp $";
 #endif
@@ -82,14 +82,14 @@ static void  swap_header_copy __P((HASHHDR *, HASHHDR *));
 #endif
 
 /* Fast arithmetic, relying on powers of 2, */
-#define MOD(x, y)               ((x) & ((y) - 1))
+#define MOD(x, y)		((x) & ((y) - 1))
 
-#define RETURN_ERROR(ERR, LOC)  { save_errno = ERR; goto LOC; }
+#define RETURN_ERROR(ERR, LOC)	{ save_errno = ERR; goto LOC; }
 
 /* Return values */
-#define SUCCESS  (0)
-#define ERROR   (-1)
-#define ABNORMAL (1)
+#define	SUCCESS	 (0)
+#define	ERROR	(-1)
+#define	ABNORMAL (1)
 
 #ifdef HASH_STATISTICS
 int hash_accesses, hash_collisions, hash_expansions, hash_overflows;
@@ -102,7 +102,7 @@ extern DB *
 __hash_open(file, flags, mode, info, dflags)
 	const char *file;
 	int flags, mode, dflags;
-	const HASHINFO *info;   /* Special directives for create */
+	const HASHINFO *info;	/* Special directives for create */
 {
 	HTAB *hashp;
 	struct stat statbuf;
@@ -159,7 +159,7 @@ __hash_open(file, flags, mode, info, dflags)
 		/* Verify file type, versions and hash function */
 		if (hashp->MAGIC != HASHMAGIC)
 			RETURN_ERROR(EFTYPE, error1);
-#define OLDHASHVERSION  1
+#define	OLDHASHVERSION	1
 		if (hashp->VERSION != HASHVERSION &&
 		    hashp->VERSION != OLDHASHVERSION)
 			RETURN_ERROR(EFTYPE, error1);
@@ -225,7 +225,7 @@ __hash_open(file, flags, mode, info, dflags)
 	    "SEGMENT SHIFT   ", hashp->SSHIFT,
 	    "FILL FACTOR     ", hashp->FFACTOR,
 	    "MAX BUCKET      ", hashp->MAX_BUCKET,
-	    "OVFL POINT      ", hashp->OVFL_POINT,
+	    "OVFL POINT	     ", hashp->OVFL_POINT,
 	    "LAST FREED      ", hashp->LAST_FREED,
 	    "HIGH MASK       ", hashp->HIGH_MASK,
 	    "LOW  MASK       ", hashp->LOW_MASK,
@@ -423,7 +423,7 @@ hdestroy(hashp)
 	if (__buf_free(hashp, 1, hashp->save_file))
 		save_errno = errno;
 	if (hashp->dir) {
-		free(*hashp->dir);      /* Free initial segments */
+		free(*hashp->dir);	/* Free initial segments */
 		/* Free extra segments */
 		while (hashp->exsegs--)
 			free(hashp->dir[--hashp->nsegs]);
@@ -451,8 +451,8 @@ hdestroy(hashp)
  * Write modified pages to disk
  *
  * Returns:
- *       0 == OK
- *      -1 ERROR
+ *	 0 == OK
+ *	-1 ERROR
  */
 static int
 hash_sync(dbp, flags)
@@ -480,8 +480,8 @@ hash_sync(dbp, flags)
 
 /*
  * Returns:
- *       0 == OK
- *      -1 indicates that errno should be set
+ *	 0 == OK
+ *	-1 indicates that errno should be set
  */
 static int
 flush_meta(hashp)
@@ -527,9 +527,9 @@ flush_meta(hashp)
  * All the access routines return
  *
  * Returns:
- *       0 on SUCCESS
- *       1 to indicate an external ERROR (i.e. key not found, etc)
- *      -1 to indicate an internal ERROR (i.e. out of memory, etc)
+ *	 0 on SUCCESS
+ *	 1 to indicate an external ERROR (i.e. key not found, etc)
+ *	-1 to indicate an internal ERROR (i.e. out of memory, etc)
  */
 static int
 hash_get(dbp, key, data, flag)
@@ -574,7 +574,7 @@ static int
 hash_delete(dbp, key, flag)
 	const DB *dbp;
 	const DBT *key;
-	u_int32_t flag;         /* Ignored */
+	u_int32_t flag;		/* Ignored */
 {
 	HTAB *hashp;
 
@@ -653,7 +653,7 @@ hash_access(hashp, action, key, val)
 				    __find_last_page(hashp, &bufp))) {
 					ndx = 0;
 					rbufp = bufp;
-					break;  /* FOR */
+					break;	/* FOR */
 				}
 				rbufp = __get_buf(hashp, pageno, bufp, 0);
 				if (!rbufp) {
@@ -809,8 +809,8 @@ hash_seq(dbp, key, data, flag)
 
 /*
  * Returns:
- *       0 ==> OK
- *      -1 ==> Error
+ *	 0 ==> OK
+ *	-1 ==> Error
  */
 extern int
 __expand_table(hashp)

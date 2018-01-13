@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)mktemp.c    5.9 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)mktemp.c	5.9 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -36,7 +36,7 @@ _gettemp(char *path, int *doopen)
 	usetup;
 
 	pid = syscall (SYS_getpid);
-	for (trv = path; *trv; ++trv);          /* extra X's get set to 0's */
+	for (trv = path; *trv; ++trv);		/* extra X's get set to 0's */
 	while (*--trv == 'X') {
 		*trv = (pid % 10) + '0';
 		pid /= 10;
@@ -55,7 +55,7 @@ _gettemp(char *path, int *doopen)
 				return(0);
 			if (!S_ISDIR(sbuf.st_mode)) {
 				errno = ENOTDIR;
-				KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
+  				KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 				return(0);
 			}
 			*trv = '/';

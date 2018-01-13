@@ -47,15 +47,6 @@
  * handling async writes turned out to be bigger than the gain.
  */
 
-#ifdef USE_VMEM
-#define PUBBUFSIZE   16384
-extern char pub_buf[];
-#  ifndef MEMF_SWAP
-#     define MEMF_SWAP   (1L<<11)
-#  endif
-#endif
-
-
 int __read(struct file *f, char *buf, int len)
 {
   usetup;
@@ -85,19 +76,17 @@ int __read(struct file *f, char *buf, int len)
 	  /* shudder.. this is the most inefficient part of the whole
 	   * library, but I don't know of another way of doing it... */
 	  while (res < len)
-	    {
-	      char c;
-
-	      if (!WaitForChar(CTOBPTR(f->f_fh), 0))
-	      {
-		if (!res)
-		{
-		  res = -1;
-		  err = EAGAIN;
-		}
-		break;
-	      }
-	      if (Read(CTOBPTR(f->f_fh), &c, 1) != 1)
+            {
+              if (!WaitForChar(CTOBPTR(f->f_fh), 0))
+              {
+                if (!res)
+                {
+                  res = -1;
+                  err = EAGAIN;
+                }
+                break;
+              }
+              if (Read(CTOBPTR(f->f_fh), buf, 1) != 1)
 		{
 		  err = __ioerr_to_errno(IoErr());
 		  /* if there really was no character to read, we should
@@ -105,39 +94,13 @@ int __read(struct file *f, char *buf, int len)
 		  res = -1;
 		  break;
 		}
-	      *buf++ = c;
+	      buf++;
 	      res++;
 	    }
-	}         
+	}	  
       else
 	{
-#ifdef USE_VMEM
-	  if (TypeOfMem(buf) & MEMF_SWAP)
-	    {
-	      while (len)
-		{
-		  int l = len > PUBBUFSIZE ? PUBBUFSIZE : len;
-		  int r;
-
-		  r = Read(CTOBPTR(f->f_fh), pub_buf, l);
-		  if (r == -1)
-		    {
-		      res = -1;
-		      break;
-		    }
-		  memcpy(buf, pub_buf, r);
-		  buf += r;
-		  len -= r;
-		  res += r;
-		  if (r < l)
-		    break;
-		}
-	    }
-	  else
-	    res = Read(CTOBPTR(f->f_fh), buf, len);
-#else
 	  res = Read(CTOBPTR(f->f_fh), buf, len);
-#endif
 	  if (res == -1)
 	    err = __ioerr_to_errno(IoErr());
 	}
@@ -168,18 +131,18 @@ int __read(struct file *f, char *buf, int len)
       char match, subst;
 
       if (f->f_ttyflags & IXTTY_INLCR)
-	{
-	  match = '\n';
+        {
+          match = '\n';
 	  subst = '\r';
-	}
+        }
       else
-	{
-	  match = '\r';
+        {
+          match = '\r';
 	  subst = '\n';
-	}
+        }
       for (i = 0; i < res; i++)
-	if (orig_buf[i] == match)
-	  orig_buf[i] = subst;
+        if (orig_buf[i] == match)
+          orig_buf[i] = subst;
     }
   if (res > 0 && (f->f_ttyflags & IXTTY_PKT))
     res++;

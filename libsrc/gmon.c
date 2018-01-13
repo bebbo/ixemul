@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -42,36 +42,36 @@
 
 extern void start_text () asm ("exec");
 
-asm (" \n\
-	.globl  mcount \n\
-mcount: movel   a1,sp@-         | Save A1 as it might be used to store the \n\
-	jsr     _mcount         | address of a structure \n\
-	movel   sp@+,a1 \n\
-	rts \n\
+asm ("
+	.globl	mcount
+mcount:	movel	a1,sp@-		| Save A1 as it might be used to store the
+	jsr	_mcount		| address of a structure
+	movel	sp@+,a1
+	rts
 ");
 
 void moncontrol(int mode);
 
-static unsigned int     *store_last_pc;
-static unsigned int     dummy;
+static unsigned int	*store_last_pc;
+static unsigned int	dummy;
     /*
-     *  froms is actually a bunch of unsigned shorts indexing tos
+     *	froms is actually a bunch of unsigned shorts indexing tos
      */
-static int              profiling = 3;
-static unsigned short   *froms;
-static struct tostruct  *tos = 0;
-static long             tolimit = 0;
-static char             *s_lowpc = 0;
-static char             *s_highpc = 0;
-static unsigned long    s_textsize = 0;
+static int		profiling = 3;
+static unsigned short	*froms;
+static struct tostruct	*tos = 0;
+static long		tolimit = 0;
+static char		*s_lowpc = 0;
+static char		*s_highpc = 0;
+static unsigned long	s_textsize = 0;
 
-static int      ssiz;
-static char     *sbuf;
-static int      s_scale;
+static int	ssiz;
+static char	*sbuf;
+static int	s_scale;
     /* see profil(2) where this is describe (incorrectly) */
-#define         SCALE_1_TO_1    0x10000L
+#define		SCALE_1_TO_1	0x10000L
 
-#define MSG "No space for profiling buffer(s)\n"
+#define	MSG "No space for profiling buffer(s)\n"
 
 static inline void *
 alloc(int s)
@@ -84,13 +84,13 @@ alloc(int s)
 
 void monstartup(char *lowpc, char *highpc)
 {
-    int                 monsize;
-    char                *buffer;
-    register int        o;
+    int			monsize;
+    char		*buffer;
+    register int	o;
 
 	/*
-	 *      round lowpc and highpc to multiples of the density we're using
-	 *      so the rest of the scaling (here and in gprof) stays in ints.
+	 *	round lowpc and highpc to multiples of the density we're using
+	 *	so the rest of the scaling (here and in gprof) stays in ints.
 	 */
     lowpc = (char *)
 	    ROUNDDOWN((unsigned)lowpc, HISTFRACTION*sizeof(HISTCOUNTER));
@@ -154,12 +154,12 @@ void monstartup(char *lowpc, char *highpc)
 
 void _mcleanup(void)
 {
-    int                 fd;
-    int                 fromindex;
-    int                 endfrom;
-    char                *frompc;
-    int                 toindex;
-    struct rawarc       rawarc;
+    int			fd;
+    int			fromindex;
+    int			endfrom;
+    char		*frompc;
+    int			toindex;
+    struct rawarc	rawarc;
 
     moncontrol(0);
     fd = creat( "gmon.out" , 0666 );
@@ -194,15 +194,15 @@ void _mcleanup(void)
 
 void mcount(void)
 {
-	register char                   *selfpc;
-	register unsigned short         *frompcindex;
-	register struct tostruct        *top;
-	register struct tostruct        *prevtop;
-	register long                   toindex;
+	register char			*selfpc;
+	register unsigned short		*frompcindex;
+	register struct tostruct	*top;
+	register struct tostruct	*prevtop;
+	register long			toindex;
 
 	/*
-	 *      find the return address for mcount,
-	 *      and the return address for mcount's caller.
+	 *	find the return address for mcount,
+	 *	and the return address for mcount's caller.
 	 */
 
 	/* selfpc = pc pushed by mcount call.
@@ -212,8 +212,8 @@ void mcount(void)
 	   This identifies the caller of the function just entered.  */
 	frompcindex = (void *) __builtin_return_address (1);
 	/*
-	 *      check that we are profiling
-	 *      and that we aren't recursively invoked.
+	 *	check that we are profiling
+	 *	and that we aren't recursively invoked.
 	 */
 	if (profiling) {
 		goto out;
@@ -222,9 +222,9 @@ void mcount(void)
 	*store_last_pc = (unsigned)selfpc;
 	selfpc = selfpc - (int)((char *)start_text - 4);
 	/*
-	 *      check that frompcindex is a reasonable pc value.
-	 *      for example:    signal catchers get called from the stack,
-	 *                      not from text space.  too bad.
+	 *	check that frompcindex is a reasonable pc value.
+	 *	for example:	signal catchers get called from the stack,
+	 *			not from text space.  too bad.
 	 */
 #ifdef DEBUG_VERSION
 		fprintf (stderr, "from $%lx, self $%lx (low = $%lx)\n",
@@ -240,7 +240,7 @@ void mcount(void)
 	toindex = *frompcindex;
 	if (toindex == 0) {
 		/*
-		 *      first time traversing this arc
+		 *	first time traversing this arc
 		 */
 		toindex = ++tos[0].link;
 		if (toindex >= tolimit) {
@@ -256,24 +256,24 @@ void mcount(void)
 	top = &tos[toindex];
 	if (top->selfpc == selfpc) {
 		/*
-		 *      arc at front of chain; usual case.
+		 *	arc at front of chain; usual case.
 		 */
 		top->count++;
 		goto done;
 	}
 	/*
-	 *      have to go looking down chain for it.
-	 *      top points to what we are looking at,
-	 *      prevtop points to previous top.
-	 *      we know it is not at the head of the chain.
+	 *	have to go looking down chain for it.
+	 *	top points to what we are looking at,
+	 *	prevtop points to previous top.
+	 *	we know it is not at the head of the chain.
 	 */
 	for (; /* goto done */; ) {
 		if (top->link == 0) {
 			/*
-			 *      top is end of the chain and none of the chain
-			 *      had top->selfpc == selfpc.
-			 *      so we allocate a new tostruct
-			 *      and link it to the head of the chain.
+			 *	top is end of the chain and none of the chain
+			 *	had top->selfpc == selfpc.
+			 *	so we allocate a new tostruct
+			 *	and link it to the head of the chain.
 			 */
 			toindex = ++tos[0].link;
 			if (toindex >= tolimit) {
@@ -287,15 +287,15 @@ void mcount(void)
 			goto done;
 		}
 		/*
-		 *      otherwise, check the next arc on the chain.
+		 *	otherwise, check the next arc on the chain.
 		 */
 		prevtop = top;
 		top = &tos[top->link];
 		if (top->selfpc == selfpc) {
 			/*
-			 *      there it is.
-			 *      increment its count
-			 *      move it to the head of the chain.
+			 *	there it is.
+			 *	increment its count
+			 *	move it to the head of the chain.
 			 */
 			top->count++;
 			toindex = prevtop->link;
@@ -310,19 +310,19 @@ done:
 	profiling--;
 	/* and fall through */
 out:
-	return;         /* normal return restores saved registers */
+	return;		/* normal return restores saved registers */
 
 overflow:
 	profiling++; /* halt further profiling */
-#   define      TOLIMIT "mcount: tos overflow\n"
+#   define	TOLIMIT	"mcount: tos overflow\n"
 	write(2, TOLIMIT, sizeof(TOLIMIT));
 	goto out;
 }
 
 /*
  * Control profiling
- *      profiling is what mcount checks to see if
- *      all the data structures are ready.
+ *	profiling is what mcount checks to see if
+ *	all the data structures are ready.
  */
 void moncontrol(int mode)
 {
@@ -330,8 +330,8 @@ void moncontrol(int mode)
 	/* start */
 	store_last_pc = (unsigned *)profil(sbuf + sizeof(struct phdr),
 			       ssiz - sizeof(struct phdr), (int)s_lowpc, s_scale);
-	if (store_last_pc == NULL)
-	    store_last_pc = &dummy;
+        if (store_last_pc == NULL)
+            store_last_pc = &dummy;
 	profiling = 0;
     } else {
 	/* stop */

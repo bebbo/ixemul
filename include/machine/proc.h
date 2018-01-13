@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,18 +30,18 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)proc.h      7.1 (Berkeley) 5/15/91
+ *	@(#)proc.h	7.1 (Berkeley) 5/15/91
  */
 
 /*
  * Machine-dependent part of the proc structure for AmigaOS.
  */
 struct mdproc {
-	int     md_flags;               /* machine-dependent flags */
-	int     md_sched_sig;           /* Exec signal used for scheduling */
-	int     *md_errno;
-	BPTR    md_startup_cd;          /* original CD if changed, else -1 */
+	int	md_flags;		/* machine-dependent flags */
+	int	md_sched_sig;		/* Exec signal used for scheduling */
+	int	*md_errno;
+	BPTR	md_startup_cd;		/* original CD if changed, else -1 */
 };
 
 /* md_flags */
-#define MDP_EXEC_WAIT   0x0001  /* process is calling Wait() */
+#define MDP_EXEC_WAIT	0x0001	/* process is calling Wait() */

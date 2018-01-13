@@ -1,4 +1,4 @@
-/*      $NetBSD: rpc.h,v 1.5 1994/12/04 01:15:30 cgd Exp $      */
+/*	$NetBSD: rpc.h,v 1.5 1994/12/04 01:15:30 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)rpc.h 1.9 88/02/08 SMI 
- *      @(#)rpc.h       2.4 89/07/11 4.0 RPCSRC
+ *	from: @(#)rpc.h 1.9 88/02/08 SMI 
+ *	@(#)rpc.h	2.4 89/07/11 4.0 RPCSRC
  */
 
 /*
@@ -41,32 +41,32 @@
 #ifndef _RPC_RPC_H
 #define _RPC_RPC_H
 
-#include <rpc/types.h>          /* some typedefs */
+#include <rpc/types.h>		/* some typedefs */
 #include <netinet/in.h>
 
 /* external data representation interfaces */
-#include <rpc/xdr.h>            /* generic (de)serializer */
+#include <rpc/xdr.h>		/* generic (de)serializer */
 
 /* Client side only authentication */
-#include <rpc/auth.h>           /* generic authenticator (client side) */
+#include <rpc/auth.h>		/* generic authenticator (client side) */
 
 /* Client side (mostly) remote procedure call */
-#include <rpc/clnt.h>           /* generic rpc stuff */
+#include <rpc/clnt.h>		/* generic rpc stuff */
 
 /* semi-private protocol headers */
-#include <rpc/rpc_msg.h>        /* protocol for rpc messages */
-#include <rpc/auth_unix.h>      /* protocol for unix style cred */
+#include <rpc/rpc_msg.h>	/* protocol for rpc messages */
+#include <rpc/auth_unix.h>	/* protocol for unix style cred */
 /*
  *  Uncomment-out the next line if you are building the rpc library with    
  *  DES Authentication (see the README file in the secure_rpc/ directory).
  */
 #ifdef notdef
-#include <rpc/auth_des.h>       /* protocol for des style cred */
+#include <rpc/auth_des.h>	/* protocol for des style cred */
 #endif
 
 /* Server side only remote procedure callee */
-#include <rpc/svc.h>            /* service manager and multiplexer */
-#include <rpc/svc_auth.h>       /* service side authenticator */
+#include <rpc/svc.h>		/* service manager and multiplexer */
+#include <rpc/svc_auth.h>	/* service side authenticator */
 
 /*
  * COMMENT OUT THE NEXT INCLUDE (or add to the #ifndef) IF RUNNING ON
@@ -82,9 +82,9 @@ struct rpcent {
 };
 
 __BEGIN_DECLS
-extern struct rpcent *getrpcbyname      __P((char *));
-extern struct rpcent *getrpcbynumber    __P((int));
-extern struct rpcent *getrpcent         __P((void));
+extern struct rpcent *getrpcbyname	__P((char *));
+extern struct rpcent *getrpcbynumber	__P((int));
+extern struct rpcent *getrpcent		__P((void));
 extern void setrpcent __P((int));
 extern void endrpcent __P((void));
 __END_DECLS

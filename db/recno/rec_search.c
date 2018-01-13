@@ -1,8 +1,8 @@
-/*      $NetBSD: rec_search.c,v 1.7 1996/05/03 21:38:52 cgd Exp $       */
+/*	$NetBSD: rec_search.c,v 1.7 1996/05/03 21:38:52 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)rec_search.c        8.4 (Berkeley) 7/14/94";
+static char sccsid[] = "@(#)rec_search.c	8.4 (Berkeley) 7/14/94";
 #else
 static char rcsid[] = "$NetBSD: rec_search.c,v 1.7 1996/05/03 21:38:52 cgd Exp $";
 #endif
@@ -53,18 +53,18 @@ static char rcsid[] = "$NetBSD: rec_search.c,v 1.7 1996/05/03 21:38:52 cgd Exp $
  * __REC_SEARCH -- Search a btree for a key.
  *
  * Parameters:
- *      t:      tree to search
- *      recno:  key to find
- *      op:     search operation
+ *	t:	tree to search
+ *	recno:	key to find
+ *	op: 	search operation
  *
  * Returns:
- *      EPG for matching record, if any, or the EPG for the location of the
- *      key, if it were inserted into the tree.
+ *	EPG for matching record, if any, or the EPG for the location of the
+ *	key, if it were inserted into the tree.
  *
  * Returns:
- *      The EPG for matching record, if any, or the EPG for the location
- *      of the key, if it were inserted into the tree, is entered into
- *      the bt_cur field of the tree.  A pointer to the field is returned.
+ *	The EPG for matching record, if any, or the EPG for the location
+ *	of the key, if it were inserted into the tree, is entered into
+ *	the bt_cur field of the tree.  A pointer to the field is returned.
  */
 EPG *
 __rec_search(t, recno, op)
@@ -116,7 +116,7 @@ __rec_search(t, recno, op)
 
 	}
 	/* Try and recover the tree. */
-err:    sverrno = errno;
+err:	sverrno = errno;
 	if (op != SEARCH)
 		while  ((parent = BT_POP(t)) != NULL) {
 			if ((h = mpool_get(t->bt_mp, parent->pgno, 0)) == NULL)
@@ -125,8 +125,8 @@ err:    sverrno = errno;
 				--GETRINTERNAL(h, parent->index)->nrecs;
 			else
 				++GETRINTERNAL(h, parent->index)->nrecs;
-			mpool_put(t->bt_mp, h, MPOOL_DIRTY);
-		}
+                        mpool_put(t->bt_mp, h, MPOOL_DIRTY);
+                }
 	errno = sverrno;
 	return (NULL);
 }

@@ -29,16 +29,16 @@ long gethostid(void)
     register int network_protocol = p->u_networkprotocol;
 
     if (network_protocol == IX_NETWORK_AMITCP)
-	return (long)TCP_GetHostId();
+        return (long)TCP_GetHostId();
     else /* if (network_protocol == IX_NETWORK_AS225) */ {
-	char hostname[MAXPATHLEN];
-	struct hostent *ht;
-	gethostname(hostname,MAXPATHLEN);
-	ht = gethostbyname(hostname);
-	if (ht) {
-	    return (int)ht->h_addr;
-	}
-	return 0;
+        char hostname[MAXPATHLEN];
+        struct hostent *ht;
+        gethostname(hostname,MAXPATHLEN);
+        ht = gethostbyname(hostname);
+        if (ht) {
+            return (int)ht->h_addr;
+        }
+        return 0;
     }
 }
 

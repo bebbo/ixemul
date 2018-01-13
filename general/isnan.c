@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,10 +32,10 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)isinf.c     5.1 (Berkeley) 3/18/91";
+static char sccsid[] = "@(#)isinf.c	5.1 (Berkeley) 3/18/91";
 #endif /* LIBC_SCCS and not lint */
 
-/* the original BSD file isinf.c contained both functions.      mw */
+/* the original BSD file isinf.c contained both functions.	mw */
 
 #include <sys/types.h>
 

@@ -17,7 +17,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)stdc.h      7.3 (Berkeley) 6/28/90
+ *	@(#)stdc.h	7.3 (Berkeley) 6/28/90
  */
 
 /*
@@ -27,14 +27,14 @@
  */
 
 #if defined(__STDC__) || c_plusplus
-#define CONCAT(x,y)     x ## y
-#define PROTOTYPE(p)    p
-#define STRING(x)       #x
+#define	CONCAT(x,y)	x ## y
+#define	PROTOTYPE(p)	p
+#define	STRING(x)	#x
 #else
-#define const
-#define volatile
-#define signed
-#define CONCAT(x,y)     x/**/y
-#define PROTOTYPE(p)    ()
-#define STRING(x)       "x"
+#define	const
+#define	volatile
+#define	signed
+#define	CONCAT(x,y)	x/**/y
+#define	PROTOTYPE(p)	()
+#define	STRING(x)	"x"
 #endif

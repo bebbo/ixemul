@@ -25,14 +25,14 @@
 
 extern int __mread (), __mclose ();
 
-#define BUFINCR 512
+#define BUFINCR	512
 
 /* we're writing records that look like this to the `file' */
 struct file_dir {
-  long  fd_key;
+  long	fd_key;
   long  fd_isdir;
-  long  fd_namelen;     /* padded to even size, thus perhaps zero padded */
-  char  fd_name[0];     /* fd_namelen bytes of filename */
+  long	fd_namelen;	/* padded to even size, thus perhaps zero padded */
+  char	fd_name[0];	/* fd_namelen bytes of filename */
 };
 
 struct buffer {
@@ -52,7 +52,7 @@ static int add_item(struct buffer *buf, long key, char *name, int is_dir)
 
       tmp = krealloc (buf->buf, buf->buf_size + BUFINCR);
       if (!tmp)
-	{
+        {
 	  ix_warning("ixemul.library: out of memory!");
 	  kfree (buf->buf);
 	  errno = ENOMEM;
@@ -61,7 +61,7 @@ static int add_item(struct buffer *buf, long key, char *name, int is_dir)
 
       buf->buf_size += BUFINCR;
       buf->bp = tmp + (buf->bp - buf->buf);
-      buf->buf = tmp;
+      buf->buf = tmp; 
       buf->bend = tmp + buf->buf_size;
     }
 
@@ -70,7 +70,7 @@ static int add_item(struct buffer *buf, long key, char *name, int is_dir)
   fd->fd_isdir = is_dir;
   fd->fd_namelen = len;
   /* watch out for mc68000: don't let bp ever get odd ! */
-  if (fd->fd_namelen & 1)
+  if (fd->fd_namelen & 1) 
     /* in that case zero pad the name */
     fd->fd_name[fd->fd_namelen++] = 0;
 
@@ -83,9 +83,9 @@ static int add_item(struct buffer *buf, long key, char *name, int is_dir)
  * Convert a directory into a DTYPE_MEM file.
  *
  * NOTE: function assumes:
- *       o f is allocated and locked, it's packet is initialized
+ *	 o f is allocated and locked, it's packet is initialized
  *       o name is an existing directory (S_IFDIR from a previous stat)
- *       o signals are blocked (important! convert_dir() doesn't block them!)
+ *	 o signals are blocked (important! convert_dir() doesn't block them!)
  */
 
 char *convert_dir (struct file *f, char *name, int omask)
@@ -111,29 +111,24 @@ char *convert_dir (struct file *f, char *name, int omask)
       /* put two dummy entries here.. some BSD code relies on the fact that
        * it can safely skip the first two `.' and `..' entries ;-)) */
       if (add_item(&buf, 1, ".", 1))
-	goto do_return;
+        goto do_return;
       if (add_item(&buf, 2, "..", 1))
-	goto do_return;
+        goto do_return;
 
-      dl = LockDosList(LDF_ASSIGNS | LDF_VOLUMES | LDF_READ);
-      while ((dl = NextDosEntry(dl, LDF_ASSIGNS | LDF_VOLUMES)))
-	{
-	  char name[256];
-	  u_char *s = BTOCPTR(dl->dol_Name);
+      dl = LockDosList(LDF_VOLUMES | LDF_READ);
+      while ((dl = NextDosEntry(dl, LDF_VOLUMES)))
+        {
+          char name[256];
+          u_char *s = BTOCPTR(dl->dol_Name);
 
-#if 1
-	  /* hack, convert "Ram Disk:" -> "RAM:" */
-	  if (*s == 8 && !strncasecmp(s + 1, "Ram Disk", 8))
-	    s = "\003""RAM";
-#endif
-	  memcpy(name, s + 1, *s);
-	  name[*s] = 0;
-	  if (add_item(&buf, i++, name, 1))
-	    break;
-	}
-      UnLockDosList(LDF_ASSIGNS | LDF_VOLUMES | LDF_READ);
+          memcpy(name, s + 1, *s);
+          name[*s] = 0;
+          if (add_item(&buf, i++, name, 1))
+            break;
+        }
+      UnLockDosList(LDF_VOLUMES | LDF_READ);
       if (dl)
-	goto do_return;
+        goto do_return;
       strcpy(pathname, "/");
       goto read_directory;
     }
@@ -145,10 +140,10 @@ char *convert_dir (struct file *f, char *name, int omask)
       /* put two dummy entries here.. some BSD code relies on the fact that
        * it can safely skip the first two `.' and `..' entries ;-)) */
       if (add_item(&buf, 1, ".", 1))
-	goto do_return;
+        goto do_return;
       if (add_item(&buf, 2, "..", 1))
-	goto do_return;
-
+        goto do_return;
+      
       /* don't include the dir-information into the file, *ix doesn't either. */
       if (rc0)
 	for (;;)
@@ -165,48 +160,48 @@ char *convert_dir (struct file *f, char *name, int omask)
 
 	    rc0 = ExNext (lock, fib);
 
-	    if (!rc0)
+    	    if (!rc0)
 	      break;
 
-	    if (add_item(&buf, (long)get_unique_id(lock, NULL),
-			 fib->fib_FileName, fib->fib_DirEntryType > 0))
-	      goto do_return;
+            if (add_item(&buf, (long)get_unique_id(lock, NULL),
+                         fib->fib_FileName, fib->fib_DirEntryType > 0))
+              goto do_return;
 	  }
 
-read_directory:
+read_directory:      
       /* fine.. fill out the memory file object */
-      f->f_type         = DTYPE_MEM;
+      f->f_type		= DTYPE_MEM;
       f->f_mf.mf_offset = 0;
       f->f_mf.mf_buffer = buf.buf;
-      f->f_read         = __mread;
-      f->f_close        = __mclose;
-      f->f_ioctl        = 0;
-      f->f_select       = 0;
-      f->f_stb.st_size  = buf.bp - buf.buf;
+      f->f_read		= __mread;
+      f->f_close	= __mclose;
+      f->f_ioctl	= 0;
+      f->f_select	= 0;
+      f->f_stb.st_size	= buf.bp - buf.buf;
       /*
        * have to use kmalloc() instead of malloc(), because this is no task-private
-       * data, it could (in the future) be shared by other tasks
+       * data, it could (in the future) be shared by other tasks 
        */
       f->f_name = (void *)kmalloc(strlen(pathname) + 2);
       if (f->f_name)
       {
-	char *p = strchr(pathname, ':');
+        char *p = strchr(pathname, ':');
 
-	if (p)
-	{
-	  *p = f->f_name[0] = '/';
-	  strcpy(f->f_name + 1, pathname);
-	}
-	else
-	{
-	  strcpy(f->f_name, pathname);
-	}
+        if (p)
+        {
+          *p = f->f_name[0] = '/';
+          strcpy(f->f_name + 1, pathname);
+        }
+        else
+        {
+          strcpy(f->f_name, pathname);
+        }
       }
 
       /* NOTE: the rest of the stb should be ok from the previous stat() in
        *       open() */
       if (lock)
-	__unlock(lock);
+        __unlock(lock);
       return f->f_name;
     }
   else
@@ -217,8 +212,8 @@ read_directory:
     }
 
   /* NOTE: granted, this is a bit spaghetti here.. the else above guarantees that
-	   we won't unlock a lock we never got. So it's safe to unconditionally
-	   unlock at the end. */
+           we won't unlock a lock we never got. So it's safe to unconditionally
+           unlock at the end. */
 
 do_return:
   if (lock)

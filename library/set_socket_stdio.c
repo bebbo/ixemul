@@ -1,12 +1,12 @@
 /*
- *      set_socket_stdio.c - redirect stdio to/from a socket
+ *	set_socket_stdio.c - redirect stdio to/from a socket
  *
- *      Copyright © 1994 AmiTCP/IP Group,
- *                       Network Solutions Development Inc.
- *                       All rights reserved.
- *      Portions Copyright © 1995 Jeff Shepherd
+ *	Copyright © 1994 AmiTCP/IP Group,
+ *			 Network Solutions Development Inc.
+ *			 All rights reserved.
+ *	Portions Copyright © 1995 Jeff Shepherd
  *
- *      $Id: set_socket_stdio.c,v 1.1.1.1 2005/03/15 15:57:08 laire Exp $
+ *	$Id: set_socket_stdio.c,v 4.2 1994/09/30 00:35:04 jraja Exp $
  */
 
 /****** net.lib/set_socket_stdio ****************************************

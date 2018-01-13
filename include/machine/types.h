@@ -1,4 +1,4 @@
-/*      $NetBSD: types.h,v 1.9 1995/07/06 03:39:38 cgd Exp $    */
+/*	$NetBSD: types.h,v 1.9 1995/07/06 03:39:38 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990 The Regents of the University of California.
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,12 +32,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)types.h     7.9 (Berkeley) 3/9/91
+ *	@(#)types.h	7.9 (Berkeley) 3/9/91
  */
-#ifndef _M68K_TYPES_H_
-#define _M68K_TYPES_H_
-//for jump in debugger for postmortem put here so can use everywhere
-#define TRAP __asm__("trap #0\n");
+#ifndef	_M68K_TYPES_H_
+#define	_M68K_TYPES_H_
 
 #include <sys/cdefs.h>
 
@@ -46,28 +44,28 @@ typedef struct _physadr {
 	short r[1];
 } *physadr;
 
-typedef struct label_t {                /* consistent with HP-UX */
+typedef struct label_t {		/* consistent with HP-UX */
 	int val[15];
 } label_t;
 #endif
 
-typedef unsigned long   vm_offset_t;
-typedef unsigned long   vm_size_t;
+typedef	unsigned long	vm_offset_t;
+typedef	unsigned long	vm_size_t;
 
 /*
  * Basic integral types.  Omit the typedef if
  * not possible for a machine/compiler combination.
  */
-#define __BIT_TYPES_DEFINED__
-typedef signed char                int8_t;
-typedef unsigned char            u_int8_t;
-typedef short                     int16_t;
-typedef unsigned short          u_int16_t;
-typedef int                       int32_t;
-typedef unsigned int            u_int32_t;
-typedef long long                 int64_t;
-typedef unsigned long long      u_int64_t;
+#define	__BIT_TYPES_DEFINED__
+typedef	signed char		   int8_t;
+typedef	unsigned char		 u_int8_t;
+typedef	short			  int16_t;
+typedef	unsigned short		u_int16_t;
+typedef	int			  int32_t;
+typedef	unsigned int		u_int32_t;
+typedef	long long		  int64_t;
+typedef	unsigned long long	u_int64_t;
 
-typedef int32_t                 register_t;
+typedef int32_t			register_t;
 
-#endif  /* !_M68K_TYPES_H_ */
+#endif	/* !_M68K_TYPES_H_ */

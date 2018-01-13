@@ -1,8 +1,8 @@
-/*      $NetBSD: herror.c,v 1.6 1996/02/02 15:22:22 mrg Exp $   */
+/*	$NetBSD: herror.c,v 1.6 1996/02/02 15:22:22 mrg Exp $	*/
 
 /*-
  * Copyright (c) 1987, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -55,7 +55,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)herror.c    8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)herror.c	8.1 (Berkeley) 6/4/93";
 static char rcsid[] = "$Id: herror.c,v 8.2 1995/06/19 08:35:01 vixie Exp ";
 #else
 static char rcsid[] = "$NetBSD: herror.c,v 1.6 1996/02/02 15:22:22 mrg Exp $";
@@ -72,18 +72,18 @@ static char rcsid[] = "$NetBSD: herror.c,v 1.6 1996/02/02 15:22:22 mrg Exp $";
 #include <string.h>
 #include <amitcp/socketbasetags.h>
 
-char    *h_errlist[] = {
+char	*h_errlist[] = {
 	"Resolver Error 0 (no error)",
-	"Unknown host",                         /* 1 HOST_NOT_FOUND */
-	"Host name lookup failure",             /* 2 TRY_AGAIN */
-	"Unknown server error",                 /* 3 NO_RECOVERY */
-	"No address associated with name",      /* 4 NO_ADDRESS */
+	"Unknown host",				/* 1 HOST_NOT_FOUND */
+	"Host name lookup failure",		/* 2 TRY_AGAIN */
+	"Unknown server error",			/* 3 NO_RECOVERY */
+	"No address associated with name",	/* 4 NO_ADDRESS */
 };
-int     h_nerr = { sizeof(h_errlist)/sizeof(h_errlist[0]) };
+int	h_nerr = { sizeof(h_errlist)/sizeof(h_errlist[0]) };
 
 /*
  * herror --
- *      print the error indicated by the h_errno value.
+ *	print the error indicated by the h_errno value.
  */
 void
 herror(const char *s)

@@ -23,7 +23,6 @@ struct WBStartup;
 extern int ix_os;
 
 #define OS_IS_AMIGAOS   0
-#define OS_IS_POS       0x704F5300      /* 'pOS\0' */
 
 
 /* This is the name of the program without the path. E.g., if argv[0] is
@@ -56,10 +55,10 @@ int ix_vfork(void);
  * function from crt0.c is used instead (see below).
  */
 void ix_get_vars(int argc, char **ctype, int *_sys_nerr, 
-		 struct Library **sysbase, struct Library **dosbase,
-		 FILE ***fpp, char ***environ_out, char ***environ_in,
-		 int *real_errno, int *real_h_errno, struct __res_state *_res,
-		 int *_res_socket, int *ExecLib);
+ 	         struct Library **sysbase, struct Library **dosbase,
+ 	         FILE ***fpp, char ***environ_out, char ***environ_in,
+ 	         int *real_errno, int *real_h_errno, struct __res_state *_res,
+ 	         int *_res_socket, int *ExecLib);
 
 
 /* A wrapper function for ix_get_vars(). This is not an ixemul function,
@@ -117,7 +116,7 @@ int ix_chmod(char *name, int mode);
  * to the signals that arrived.
  */
 int ix_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd,
-	      struct timeval *timeout, long *mask);
+              struct timeval *timeout, long *mask);
 
 /* Use ix_wait instead of Wait(): this way ixemul will handle Ctrl-C correctly
  * for you and will also take care of ASYNC file streams, sending a SIGIO
@@ -140,7 +139,7 @@ long ix_filehandle(int fd);
  *
  *      ix_segment *seg;
  *
- *      for (seg = ix_get_first_segment(seglist);
+ *	for (seg = ix_get_first_segment(seglist);
  *           seg;
  *           seg = ix_get_next_segment())
  *      {
@@ -207,24 +206,24 @@ long ix_set_long(unsigned long id, long value);
 
 /* The version number of the library, output only
  */
-#define IXID_VERSION            0
+#define IXID_VERSION      	0
 
 /* The revision number of the library, output only
  */
-#define IXID_REVISION           1
+#define IXID_REVISION     	1
 
 /* Get/set the per-task freely usable user field, input/output
  */
-#define IXID_USERDATA           2
+#define IXID_USERDATA     	2
 
 /* Get the pointer to the user struct, output only
  */
-#define IXID_USER               3
+#define IXID_USER     		3
 
 /* Get the number of reserved a4 pointers (for the shared ixlibraries),
  * output only.
  */
-#define IXID_A4_PTRS            4
+#define IXID_A4_PTRS   		4
 
 /* Return TRUE if an FPU is present
  */
@@ -252,12 +251,12 @@ long ix_set_long(unsigned long id, long value);
 
 
 /* CPU identifications: */
-#define IX_CPU_68000            0
-#define IX_CPU_68010            1
-#define IX_CPU_68020            2
-#define IX_CPU_68030            3
-#define IX_CPU_68040            4
-#define IX_CPU_68060            6
+#define IX_CPU_68000		0
+#define IX_CPU_68010		1
+#define IX_CPU_68020		2
+#define IX_CPU_68030		3
+#define IX_CPU_68040		4
+#define IX_CPU_68060		6
 
 
 /* Duplicates and releases the socket "fd" to the TCP/IP stack so
@@ -309,7 +308,7 @@ void ix_mutex_unlock(struct ix_mutex *mutex);
 char **__ix_get_environ(void);
 void __ix_init_ids(void);
 void __ix_cli_parse(struct Process *this_proc, long alen, char *_aptr, int *argc, char ***argv);
-int  __ix_wb_parse(struct Process *ThisProcess, struct WBStartup *WBenchMsg, const char *default_wb_window);
+int  __ix_wb_parse(struct Process *ThisProcess, struct WBStartup *WBenchMsg, char *default_wb_window);
 void __ix_install_sigwinch (void);
 void __ix_remove_sigwinch (void);
 

@@ -23,35 +23,18 @@
 
 /* bit = ffs(value) */
 
-#ifdef __PPC__
-
-asm("
-	.text
-	.globl  ffs
-ffs:
-	addi    4,3,-1
-	xor     3,4,3
-	cntlzw  4,3
-	li      3,32
-	subf    3,4,3
-	andi.   3,3,31
-	blr
-");
-
-#else
 #include "defs.h"
 
 ENTRY(ffs)
-asm(" \n\
-	moveq   #-1,d0 \n\
-	movl    sp@(4),d1 \n\
-	beq     done \n\
-again: \n\
-	addql   #1,d0 \n\
-	btst    d0,d1 \n\
-	beq     again \n\
-done: \n\
-	addql   #1,d0 \n\
-	rts \n\
+asm("
+	moveq	#-1,d0
+	movl	sp@(4),d1
+	beq	done
+again:
+	addql	#1,d0
+	btst	d0,d1
+	beq	again
+done:
+	addql	#1,d0
+	rts
 ");
-#endif

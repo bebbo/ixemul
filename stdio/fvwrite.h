@@ -1,8 +1,8 @@
-/*      $NetBSD: fvwrite.h,v 1.3 1995/02/02 02:09:47 jtc Exp $  */
+/*	$NetBSD: fvwrite.h,v 1.3 1995/02/02 02:09:47 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)fvwrite.h   8.1 (Berkeley) 6/4/93
+ *	@(#)fvwrite.h	8.1 (Berkeley) 6/4/93
  */
 
 #ifndef __FVWRITE_H_
@@ -45,13 +45,13 @@
  * I/O descriptors for __sfvwrite().
  */
 struct __siov {
-	void    *iov_base;
-	size_t  iov_len;
+	void	*iov_base;
+	size_t	iov_len;
 };
 struct __suio {
-	struct  __siov *uio_iov;
-	int     uio_iovcnt;
-	int     uio_resid;
+	struct	__siov *uio_iov;
+	int	uio_iovcnt;
+	int	uio_resid;
 };
 
 #if __STDC__ || c_plusplus

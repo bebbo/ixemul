@@ -1,4 +1,4 @@
-/*      $NetBSD: types.h,v 1.8 1995/04/29 05:28:05 cgd Exp $    */
+/*	$NetBSD: types.h,v 1.8 1995/04/29 05:28:05 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)types.h 1.18 87/07/24 SMI
- *      @(#)types.h     2.3 88/08/15 4.0 RPCSRC
+ *	from: @(#)types.h 1.18 87/07/24 SMI
+ *	@(#)types.h	2.3 88/08/15 4.0 RPCSRC
  */
 
 /*
@@ -38,22 +38,22 @@
 #ifndef _RPC_TYPES_H
 #define _RPC_TYPES_H
 
-#define bool_t  int32_t
-#define enum_t  int32_t
-#define __dontcare__    -1
+#define	bool_t	int32_t
+#define	enum_t	int32_t
+#define __dontcare__	-1
 
 #ifndef FALSE
-#       define FALSE    (0)
+#	define FALSE	(0)
 #endif
 #ifndef TRUE
-#       define TRUE     (1)
+#	define TRUE	(1)
 #endif
 #ifndef NULL
-#       define NULL     0
+#	define NULL	0
 #endif
 
-#define mem_alloc(bsize)        malloc(bsize)
-#define mem_free(ptr, bsize)    free(ptr)
+#define mem_alloc(bsize)	malloc(bsize)
+#define mem_free(ptr, bsize)	free(ptr)
 
 #ifndef makedev /* ie, we haven't already included it */
 #include <sys/types.h>

@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strmode.c   5.3 (Berkeley) 5/18/90";
+static char sccsid[] = "@(#)strmode.c	5.3 (Berkeley) 5/18/90";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -46,32 +46,32 @@ strmode(mode, p)
 {
 	 /* print type */
 	switch (mode & S_IFMT) {
-	case S_IFDIR:                   /* directory */
+	case S_IFDIR:			/* directory */
 		*p++ = 'd';
 		break;
-	case S_IFCHR:                   /* character special */
+	case S_IFCHR:			/* character special */
 		*p++ = 'c';
 		break;
-	case S_IFBLK:                   /* block special */
+	case S_IFBLK:			/* block special */
 		*p++ = 'b';
 		break;
-	case S_IFREG:                   /* regular */
+	case S_IFREG:			/* regular */
 		*p++ = '-';
 		break;
-	case S_IFLNK:                   /* symbolic link */
+	case S_IFLNK:			/* symbolic link */
 		*p++ = 'l';
 		break;
 #ifdef S_IFSOCK
-	case S_IFSOCK:                  /* socket */
+	case S_IFSOCK:			/* socket */
 		*p++ = 's';
 		break;
 #endif
 #ifdef S_IFIFO
-	case S_IFIFO:                   /* fifo */
+	case S_IFIFO:			/* fifo */
 		*p++ = 'p';
 		break;
 #endif
-	default:                        /* unknown */
+	default:			/* unknown */
 		*p++ = '?';
 		break;
 	}
@@ -144,6 +144,6 @@ strmode(mode, p)
 		*p++ = 't';
 		break;
 	}
-	*p++ = ' ';             /* will be a '+' if ACL's implemented */
+	*p++ = ' ';		/* will be a '+' if ACL's implemented */
 	*p = '\0';
 }

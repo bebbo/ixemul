@@ -25,17 +25,17 @@
 #endif
 
 struct utsname {
-	char    sysname[__SYS_NMLN];
-	char    nodename[__SYS_NMLN];
-	char    release[__SYS_NMLN];
-	char    version[__SYS_NMLN];
-	char    machine[__SYS_NMLN];
+	char	sysname[__SYS_NMLN];
+	char	nodename[__SYS_NMLN];
+	char	release[__SYS_NMLN];
+	char	version[__SYS_NMLN];
+	char	machine[__SYS_NMLN];
 };
 
-#ifdef  _KERNEL
+#ifdef	_KERNEL
 extern struct utsname utsname;
 #else
-int     uname(struct utsname *name);
+int	uname(struct utsname *name);
 #endif
 
 #endif /* _SYS_UTSNAME_H_ */

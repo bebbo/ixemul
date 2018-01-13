@@ -1,4 +1,4 @@
-/* 
+/*
  *  This file is part of ixemul.library for the Amiga.
  *  Copyright (C) 1991, 1992  Markus M. Wild
  *
@@ -54,7 +54,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)kern_descrip.c      7.16 (Berkeley) 6/28/90
+ *	@(#)kern_descrip.c	7.16 (Berkeley) 6/28/90
  */
 
 #define _KERNEL
@@ -99,7 +99,7 @@ dup (unsigned i)
   struct file *fp;
   int fd, error;
   usetup;
-  //if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;TRAP;}
+
   if (i >= NOFILE || (fp = u.u_ofile[i]) == NULL)
     errno_return(EBADF, -1);
 
@@ -110,15 +110,15 @@ dup (unsigned i)
       int err;
 
       if ((err = falloc (&fp2, &fd2)))
-	errno_return(err, -1);
+        errno_return(err, -1);
 
       fp2->f_so = netcall(NET__dup, fp);
       if (fp2->f_so == -1)
       {
-	/* free the allocated fd */
-	u.u_ofile[fd2] = 0;
-	fp2->f_count = 0;
-	return -1;
+        /* free the allocated fd */
+        u.u_ofile[fd2] = 0;
+        fp2->f_count = 0;
+        return -1;
       }
       fp2->f_socket_domain = fp->f_socket_domain;
       fp2->f_socket_type = fp->f_socket_type;
@@ -150,7 +150,7 @@ dup2 (unsigned i, unsigned j)
   register struct file *fp;
   int old_err;
   usetup;
-  //if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;TRAP;}
+
   if (i >= NOFILE || (fp = u.u_ofile[i]) == NULL)
     errno_return(EBADF, -1);
 
@@ -176,7 +176,7 @@ dup2 (unsigned i, unsigned j)
   /*
    * dup2() must suceed even though the close had an error.
    */
-  errno = old_err;      /* XXX */
+  errno = old_err;	/* XXX */
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
   return (int)j;
 }
@@ -192,16 +192,16 @@ fcntl(int fdes, int cmd, int arg)
   register char *pop;
   int i, error;
   usetup;
-  if (u.u_parent_userdata){u_ptr = u.u_parent_userdata;}
+
   /* F_INTERNALIZE doesn't need a valid descriptor. Check for this first */
   if (cmd == F_INTERNALIZE)
     {
       if ((error = ufalloc (0, &i)))
-	{
-	  errno = error;
+        {
+          errno = error;
 	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	  return -1;
-	}
+          return -1;
+        }
       fp = (struct file *) arg;
       u.u_ofile[i] = fp;
       u.u_pofile[i] = 0;
@@ -264,10 +264,10 @@ fcntl(int fdes, int cmd, int arg)
 	return 0;
 
       case F_EXTERNALIZE:
-	return (int)fp;
+        return (int)fp;
 
       default:
-	errno = EINVAL;
+        errno = EINVAL;
 	KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 	return -1;
     }
@@ -283,9 +283,8 @@ fstat (int fdes, struct stat *sb)
 {
   struct file *fp;
   usetup;
-  if (u.u_parent_userdata)fp = u.u_parent_userdata->u_ofile[fdes];
-  else fp = u.u_ofile[fdes];
-  if (fdes >= NOFILE || (fp == NULL))
+
+  if (fdes >= NOFILE || (fp = u.u_ofile[fdes]) == NULL)
     {
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
       errno = EBADF;
@@ -313,11 +312,11 @@ int
 ufalloc(int want, int *result)
 {
   usetup;
-  if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
+
   for (; want < NOFILE; want++) 
     {
       if (u.u_ofile[want] == NULL) 
-	{
+        {
 	  u.u_pofile[want] = 0;
 	  if (want > u.u_lastfile) u.u_lastfile = want;
 			
@@ -340,38 +339,11 @@ falloc(struct file **resultfp, int *resultfd)
   register struct file *fp;
   int error, i;
   usetup;
-  if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
+
   if ((error = ufalloc(0, &i)))
     return (error);
 
   ix_lock_base ();
-
-#if USE_DYNFILETAB
-
-  {
-    struct MinNode *node;
-    node = REMHEAD(&ix.ix_free_file_list);
-    if (node)
-    {
-      fp = (void *) (node + 1);
-      ADDHEAD(&ix.ix_used_file_list, node);
-      goto slot;
-    }
-
-    node = kmalloc(sizeof(struct MinNode) + sizeof(struct file));
-    if (node)
-    {
-      fp = (void *) (node + 1);
-      memset(fp, 0, sizeof(struct file));
-      ADDHEAD(&ix.ix_used_file_list, node);
-      goto slot;
-    }
-
-    //ix_warning("ixemul.library out of memory!");
-    error = ENOMEM;
-  }
-
-#else
 
   if (ix.ix_lastf == 0)
     ix.ix_lastf = ix.ix_file_tab;
@@ -388,12 +360,8 @@ falloc(struct file **resultfp, int *resultfd)
    * unfortunately all code accessing file structures will then have
    * to be changed as well, and this is a job for later improvement,
    * first goal is to get this baby working... */
-
   ix_warning("ixemul.library file table full!");
   error = ENFILE;
-
-#endif
-
   goto do_ret;
 
 slot:
@@ -401,11 +369,9 @@ slot:
   fp->f_stb_dirty = 0;
   fp->f_name = 0;
   fp->f_count = 1;
-  fp->f_type = 0;               /* inexistant type ;-) */
+  fp->f_type = 0;		/* inexistant type ;-) */
   memset(&fp->f__fh, 0, sizeof(fp->f__fh));
-#if !USE_DYNFILETAB
   ix.ix_lastf = fp + 1;
-#endif
   if (resultfp)
     *resultfp = fp;
   if (resultfd)
@@ -417,132 +383,6 @@ do_ret:
   ix_unlock_base();
 
   return error;
-}
-
-int
-ufalloc2(int want, int *result)
-{
-  usetup;
-  //if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
-  for (; want < NOFILE; want++) 
-    {
-      if (u.u_ofile[want] == NULL) 
-	{
-	  u.u_pofile[want] = 0;
-	  if (want > u.u_lastfile) u.u_lastfile = want;
-			
-	  *result = want;
-	  return 0;
-	}
-    }
-  return EMFILE;
-}
-
-/*
- * Allocate a user file descriptor
- * and a file structure.
- * Initialize the descriptor
- * to point at the file structure.
- */
-int
-falloc2(struct file **resultfp, int *resultfd)
-{
-  register struct file *fp;
-  int error, i;
-  usetup;
-  //if (u.u_parent_userdata)u_ptr = u.u_parent_userdata;
-  if ((error = ufalloc(0, &i)))
-    return (error);
-
-  ix_lock_base ();
-
-#if USE_DYNFILETAB
-
-  {
-    struct MinNode *node;
-    node = REMHEAD(&ix.ix_free_file_list);
-    if (node)
-    {
-      fp = (void *) (node + 1);
-      ADDHEAD(&ix.ix_used_file_list, node);
-      goto slot;
-    }
-
-    node = kmalloc(sizeof(struct MinNode) + sizeof(struct file));
-    if (node)
-    {
-      fp = (void *) (node + 1);
-      memset(fp, 0, sizeof(struct file));
-      ADDHEAD(&ix.ix_used_file_list, node);
-      goto slot;
-    }
-
-    //ix_warning("ixemul.library out of memory!");
-    error = ENOMEM;
-  }
-
-#else
-
-  if (ix.ix_lastf == 0)
-    ix.ix_lastf = ix.ix_file_tab;
-
-  for (fp = ix.ix_lastf; fp < ix.ix_fileNFILE; fp++)
-    if (fp->f_count == 0)
-      goto slot;
-
-  for (fp = ix.ix_file_tab; fp < ix.ix_lastf; fp++)
-    if (fp->f_count == 0)
-      goto slot;
-
-  /* YES I know.. it's not optimal, we should resize the table...
-   * unfortunately all code accessing file structures will then have
-   * to be changed as well, and this is a job for later improvement,
-   * first goal is to get this baby working... */
-
-  ix_warning("ixemul.library file table full!");
-  error = ENFILE;
-
-#endif
-
-  goto do_ret;
-
-slot:
-  u.u_ofile[i] = fp;
-  fp->f_stb_dirty = 0;
-  fp->f_name = 0;
-  fp->f_count = 1;
-  fp->f_type = 0;               /* inexistant type ;-) */
-  memset(&fp->f__fh, 0, sizeof(fp->f__fh));
-#if !USE_DYNFILETAB
-  ix.ix_lastf = fp + 1;
-#endif
-  if (resultfp)
-    *resultfp = fp;
-  if (resultfd)
-    *resultfd = i;
-
-  error = 0;
-
-do_ret:
-  ix_unlock_base();
-
-  return error;
-}
-
-
-void ffree(struct file *f)
-{
-#if USE_DYNFILETAB
-  if (f)
-  {
-    struct MinNode *node = ((struct MinNode *) f) - 1;
-
-    /* Remove from ix_used_file_list */
-    REMOVE(node);
-
-    ADDHEAD(&ix.ix_free_file_list, node);
-  }
-#endif
 }
 
 
@@ -553,6 +393,6 @@ void ffree(struct file *f)
 int
 flock (int fdes, int how)
 {
-  return 0;     /* always succeed */
+  return 0;	/* always succeed */
 }
 

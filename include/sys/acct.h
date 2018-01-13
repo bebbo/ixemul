@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)acct.h      7.3 (Berkeley) 2/15/91
+ *	@(#)acct.h	7.3 (Berkeley) 2/15/91
  */
 
 /*
@@ -41,30 +41,30 @@
 typedef u_short comp_t;
 
 struct acct {
-	char    ac_comm[10];    /* command name */
-	comp_t  ac_utime;       /* user time */
-	comp_t  ac_stime;       /* system time */
-	comp_t  ac_etime;       /* elapsed time */
-	time_t  ac_btime;       /* starting time */
-	uid_t   ac_uid;         /* user id */
-	gid_t   ac_gid;         /* group id */
-	short   ac_mem;         /* average memory usage */
-	comp_t  ac_io;          /* count of IO blocks */
-	dev_t   ac_tty;         /* controlling tty */
-#define AFORK   0x01                    /* forked but not execed */
-#define ASU     0x02                    /* used super-user permissions */
-#define ACOMPAT 0x04                    /* used compatibility mode */
-#define ACORE   0x08                    /* dumped core */
-#define AXSIG   0x10                    /* killed by a signal */
-	char    ac_flag;        /* accounting flags */
+	char	ac_comm[10];	/* command name */
+	comp_t	ac_utime;	/* user time */
+	comp_t	ac_stime;	/* system time */
+	comp_t	ac_etime;	/* elapsed time */
+	time_t	ac_btime;	/* starting time */
+	uid_t	ac_uid;		/* user id */
+	gid_t	ac_gid;		/* group id */
+	short	ac_mem;		/* average memory usage */
+	comp_t	ac_io;		/* count of IO blocks */
+	dev_t	ac_tty;		/* controlling tty */
+#define	AFORK	0x01			/* forked but not execed */
+#define	ASU	0x02			/* used super-user permissions */
+#define	ACOMPAT	0x04			/* used compatibility mode */
+#define	ACORE	0x08			/* dumped core */
+#define	AXSIG	0x10			/* killed by a signal */
+	char	ac_flag;	/* accounting flags */
 };
 
 /*
  * 1/AHZ is the granularity of the data encoded in the comp_t fields.
  * This is not necessarily equal to hz.
  */
-#define AHZ     64
+#define	AHZ	64
 
 #ifdef _KERNEL
-struct vnode    *acctp;
+struct vnode	*acctp;
 #endif

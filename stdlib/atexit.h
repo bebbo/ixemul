@@ -19,37 +19,20 @@
  * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)atexit.h    5.1 (Berkeley) 5/15/90
+ *	@(#)atexit.h	5.1 (Berkeley) 5/15/90
  */
 
 /* must be at least 32 to guarantee ANSI conformance */
-#define ATEXIT_SIZE     32
-
-#ifndef NATIVE_MORPHOS
+#define	ATEXIT_SIZE	32
 
 struct atexit {
-	struct atexit *next;            /* next in list */
-	int ind;                        /* next index in this table */
-	void (*fns[ATEXIT_SIZE])();     /* the table itself */
+	struct atexit *next;		/* next in list */
+	int ind;			/* next index in this table */
+	void (*fns[ATEXIT_SIZE])();	/* the table itself */
 };
-
-#else
-
-struct atexit_entry {
-	int is_68k;
-	void (*fn)();
-};
-
-struct atexit {
-	struct atexit *next;                  /* next in list */
-	int ind;                              /* next index in this table */
-	struct atexit_entry fns[ATEXIT_SIZE]; /* the table itself */
-};
-
-#endif
 
 #if 0
-struct atexit *__atexit;        /* points to head of LIFO stack */
+struct atexit *__atexit;	/* points to head of LIFO stack */
 #endif
 
 #endif

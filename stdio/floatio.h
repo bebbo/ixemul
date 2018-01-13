@@ -1,8 +1,8 @@
-/*      $NetBSD: floatio.h,v 1.3 1995/02/02 02:09:21 jtc Exp $  */
+/*	$NetBSD: floatio.h,v 1.3 1995/02/02 02:09:21 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)floatio.h   8.1 (Berkeley) 6/4/93
+ *	@(#)floatio.h	8.1 (Berkeley) 6/4/93
  */
 
 /*
@@ -43,6 +43,6 @@
  */
 
 /* 11-bit exponent (VAX G floating point) is 308 decimal digits */
-#define MAXEXP          308
+#define	MAXEXP		308
 /* 128 bit fraction takes up 39 decimal digits; max reasonable precision */
-#define MAXFRACT        39
+#define	MAXFRACT	39

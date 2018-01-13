@@ -1,5 +1,5 @@
-/*      $NetBSD: sysv_ipc.c,v 1.10 1995/06/03 05:53:28 mycroft Exp $    */
- 
+/*	$NetBSD: sysv_ipc.c,v 1.10 1995/06/03 05:53:28 mycroft Exp $	*/
+
 /*
  * Copyright (c) 1995 Charles M. Hannum.  All rights reserved.
  *

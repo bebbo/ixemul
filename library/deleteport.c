@@ -31,28 +31,6 @@
 #include "ixemul.h"
 #include <exec/ports.h>
 
-#ifdef TRACK_MALLOCS
-#undef FreeMem
-#define FreeMem(x,y) debug_FreeMem(x,y)
-void debug_FreeMem(int,int);
-#endif
-
-#if 0 //def NATIVE_MORPHOS
-
-void DeletePort(struct MsgPort *port)
-{ int i;
-
-  if (port->mp_Node.ln_Name != NULL)
-    RemPort(port);
-  i=-1;
-  port->mp_Node.ln_Type=i;
-  port->mp_MsgList.lh_Head=(struct Node *)i;
-  FreeSignal(port->mp_SigBit);
-  FreeMem(port,sizeof(struct MsgPort));
-}
-
-#endif
-
 void
 ix_delete_port (struct MsgPort *port)
 {

@@ -1,8 +1,8 @@
-/*      $NetBSD: fnmatch.c,v 1.11 1995/02/27 03:43:06 cgd Exp $ */
+/*	$NetBSD: fnmatch.c,v 1.11 1995/02/27 03:43:06 cgd Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Guido van Rossum.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)fnmatch.c   8.2 (Berkeley) 4/16/94";
+static char sccsid[] = "@(#)fnmatch.c	8.2 (Berkeley) 4/16/94";
 #else
 static char rcsid[] = "$NetBSD: fnmatch.c,v 1.11 1995/02/27 03:43:06 cgd Exp $";
 #endif
@@ -55,7 +55,7 @@ static char rcsid[] = "$NetBSD: fnmatch.c,v 1.11 1995/02/27 03:43:06 cgd Exp $";
 #include <fnmatch.h>
 #include <string.h>
 
-#define EOS     '\0'
+#define	EOS	'\0'
 
 static const char *rangematch __P((const char *, int, int));
 

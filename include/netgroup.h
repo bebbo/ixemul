@@ -12,7 +12,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by Christos Zoulas.
+ *	This product includes software developed by Christos Zoulas.
  * 4. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
@@ -28,40 +28,40 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $Id: netgroup.h,v 1.1.1.1 2005/03/15 15:57:11 laire Exp $
+ * $Id: netgroup.h,v 1.1 1994/12/03 00:00:58 christos Exp $
  */
 #ifndef _NETGROUP_H_
-#define _NETGROUP_H_
+#define	_NETGROUP_H_
 
-#define _PATH_NETGROUP          "/etc/netgroup"
+#define	_PATH_NETGROUP		"/etc/netgroup"
 
-#define _PATH_NETGROUP_DB       "/etc/netgroup.db"
+#define	_PATH_NETGROUP_DB	"/etc/netgroup.db"
 
-#define _PATH_NETGROUP_MKDB     "/usr/sbin/netgroup_mkdb"
+#define	_PATH_NETGROUP_MKDB	"/usr/sbin/netgroup_mkdb"
 
-#define _NG_KEYBYNAME           '1'     /* stored by name */
-#define _NG_KEYBYUSER           '2'     /* stored by user */
-#define _NG_KEYBYHOST           '3'     /* stored by host */
+#define	_NG_KEYBYNAME		'1'	/* stored by name */
+#define	_NG_KEYBYUSER		'2'	/* stored by user */
+#define	_NG_KEYBYHOST		'3'	/* stored by host */
 
-#define _NG_ERROR       -1
-#define _NG_NONE         0
-#define _NG_NAME         1
-#define _NG_GROUP        2
+#define _NG_ERROR	-1
+#define _NG_NONE	 0
+#define _NG_NAME	 1
+#define _NG_GROUP	 2
 
 struct netgroup {
-	char            *ng_host;       /* host name */
-	char            *ng_user;       /* user name */
-	char            *ng_domain;     /* domain name */
-	struct netgroup *ng_next;       /* thread */
+	char		*ng_host;	/* host name */
+	char		*ng_user;	/* user name */
+	char		*ng_domain;	/* domain name */
+	struct netgroup	*ng_next;	/* thread */
 };
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-void    setnetgrent     __P((const char *));
-int     getnetgrent     __P((const char **, const char **, const char **));
-void    endnetgrent     __P((void));
-int     innetgr         __P((const char *, const char *, const char *,
+void	setnetgrent	__P((const char *));
+int	getnetgrent	__P((const char **, const char **, const char **));
+void	endnetgrent	__P((void));
+int	innetgr		__P((const char *, const char *, const char *,
 			     const char *));
 __END_DECLS
 

@@ -18,46 +18,14 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)bsearch.c   5.3 (Berkeley) 5/17/90";
+static char sccsid[] = "@(#)bsearch.c	5.3 (Berkeley) 5/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
 
-#include <stddef.h>             /* size_t */
+#include <stddef.h>		/* size_t */
 #include <stdlib.h>
-
-#ifdef NATIVE_MORPHOS
-#define bsearch   _bsearch
-#define FLAGPRM     ,int is68k
-
-/* code for:
-	movem.l d0-d1,-(sp)
-	jsr     (a0)
-	addq.l  #8,sp
-	rts
-*/
-static const UWORD compar_gate[] = {
-	0x48E7,0xC000,0x4E90,0x508F,0x4E75
-};
-
-static inline int my_compar(const void *p, const void *q, int (*qcmp)(), int is68k) {
-	if (is68k) {
-		REG_D0 = (ULONG)p;
-		REG_D1 = (ULONG)q;
-		REG_A0 = (ULONG)qcmp;
-		//REG_A4 = REG_A4;
-		return MyEmulHandle->EmulCallDirect68k((APTR)compar_gate);
-	} else {
-		return qcmp(p, q);
-	}
-}
-#define CMP(x, y)   my_compar(x, y, compar, is68k)
-
-#else
-#define FLAGPRM
-#define CMP(x, y)   compar(x, y)
-#endif
 
 /*
  * Perform a binary search.
@@ -77,7 +45,7 @@ static inline int my_compar(const void *p, const void *q, int (*qcmp)(), int is6
  */
 void *
 bsearch(const void *key, const void *base0, 
-	size_t nmemb, size_t size, int (*compar)()  FLAGPRM)
+	size_t nmemb, size_t size, int (*compar)())
 {
 	register char *base = (char *)base0;
 	register int lim, cmp;
@@ -85,46 +53,13 @@ bsearch(const void *key, const void *base0,
 
 	for (lim = nmemb; lim != 0; lim >>= 1) {
 		p = base + (lim >> 1) * size;
-		cmp = CMP(key, p);
+		cmp = (*compar)(key, p);
 		if (cmp == 0)
 			return (p);
-		if (cmp > 0) {  /* key > p: move right */
+		if (cmp > 0) {	/* key > p: move right */
 			base = (char *)p + size;
 			lim--;
 		} /* else move left */
 	}
 	return (NULL);
 }
-
-
-#ifdef NATIVE_MORPHOS
-#undef bsearch
-#undef FLAGPRM
-#undef CMP
-
-void *
-bsearch(const void *key, const void *base0, 
-	size_t nmemb, size_t size, int (*compar)())
-{
-	return _bsearch(key, base0, nmemb, size, compar, 0);
-}
-
-void *
-_trampoline_bsearch(void)
-{
-	int *p = (int *)REG_A7;
-	const void *key = (void *)p[1];
-	const void *base0 = (const void *)p[2];
-	size_t nmemb = p[3];
-	size_t size = p[4];
-	int (*compar)() = (int(*)())p[5];
-
-	return _bsearch(key, base0, nmemb, size, compar, 1);
-}
-
-const struct EmulLibEntry _gate_bsearch = {
-	TRAP_LIB, 0, (void(*)())_trampoline_bsearch
-};
-
-#endif
-

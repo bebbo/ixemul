@@ -20,7 +20,7 @@
 #ifndef _SYS_SYSCALL_H
 #define _SYS_SYSCALL_H
 
-#define SYSTEM_CALL(func, vec, args, stk) SYS_##func = vec,
+#define SYSTEM_CALL(func, vec) SYS_##func = vec,
 
 enum _syscall_ {
 #include <sys/syscall.def>
@@ -28,15 +28,10 @@ enum _syscall_ {
 };
 
 #ifndef _KERNEL
-#ifdef NATIVE_MORPHOS
-extern int (**_ixbasearray)();
-#define syscall(vec, args...) \
-  ((_ixbasearray[vec-1])(args))
-#else
 extern void *ixemulbase;
+
 #define syscall(vec, args...) \
   ({register int (*_sc)()=(void *)(&((char *)ixemulbase)[-((vec)+4)*6]); _sc(args);})
-#endif
 #endif
 
 #endif /* _SYS_SYSCALL_H */

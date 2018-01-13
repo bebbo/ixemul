@@ -1,8 +1,8 @@
-/*      $NetBSD: mpool.c,v 1.6 1996/05/03 21:29:48 cgd Exp $    */
+/*	$NetBSD: mpool.c,v 1.6 1996/05/03 21:29:48 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)mpool.c     8.5 (Berkeley) 7/26/94";
+static char sccsid[] = "@(#)mpool.c	8.5 (Berkeley) 7/26/94";
 #else
 static char rcsid[] = "$NetBSD: mpool.c,v 1.6 1996/05/03 21:29:48 cgd Exp $";
 #endif
@@ -53,7 +53,7 @@ static char rcsid[] = "$NetBSD: mpool.c,v 1.6 1996/05/03 21:29:48 cgd Exp $";
 
 #include <db.h>
 
-#define __MPOOLINTERFACE_PRIVATE
+#define	__MPOOLINTERFACE_PRIVATE
 #include <mpool.h>
 
 static BKT *mpool_bkt __P((MPOOL *));
@@ -62,7 +62,7 @@ static int  mpool_write __P((MPOOL *, BKT *));
 
 /*
  * mpool_open --
- *      Initialize a memory pool.
+ *	Initialize a memory pool.
  */
 MPOOL *
 mpool_open(key, fd, pagesize, maxcache)
@@ -102,7 +102,7 @@ mpool_open(key, fd, pagesize, maxcache)
 
 /*
  * mpool_filter --
- *      Initialize input/output filters.
+ *	Initialize input/output filters.
  */
 void
 mpool_filter(mp, pgin, pgout, pgcookie)
@@ -118,7 +118,7 @@ mpool_filter(mp, pgin, pgout, pgcookie)
 	
 /*
  * mpool_new --
- *      Get a new page of memory.
+ *	Get a new page of memory.
  */
 void *
 mpool_new(mp, pgnoaddr)
@@ -153,13 +153,13 @@ mpool_new(mp, pgnoaddr)
 
 /*
  * mpool_get
- *      Get a page.
+ *	Get a page.
  */
 void *
 mpool_get(mp, pgno, flags)
 	MPOOL *mp;
 	pgno_t pgno;
-	u_int flags;                            /* XXX not used? */
+	u_int flags;				/* XXX not used? */
 {
 	struct _hqh *head;
 	BKT *bp;
@@ -238,7 +238,7 @@ mpool_get(mp, pgno, flags)
 
 /*
  * mpool_put
- *      Return a page.
+ *	Return a page.
  */
 int
 mpool_put(mp, page, flags)
@@ -266,7 +266,7 @@ mpool_put(mp, page, flags)
 
 /*
  * mpool_close
- *      Close the buffer pool.
+ *	Close the buffer pool.
  */
 int
 mpool_close(mp)
@@ -287,7 +287,7 @@ mpool_close(mp)
 
 /*
  * mpool_sync
- *      Sync the pool to disk.
+ *	Sync the pool to disk.
  */
 int
 mpool_sync(mp)
@@ -308,7 +308,7 @@ mpool_sync(mp)
 
 /*
  * mpool_bkt
- *      Get a page from the cache (or create one).
+ *	Get a page from the cache (or create one).
  */
 static BKT *
 mpool_bkt(mp)
@@ -351,7 +351,7 @@ mpool_bkt(mp)
 			return (bp);
 		}
 
-new:    if ((bp = (BKT *)malloc(sizeof(BKT) + mp->pagesize)) == NULL)
+new:	if ((bp = (BKT *)malloc(sizeof(BKT) + mp->pagesize)) == NULL)
 		return (NULL);
 #ifdef STATISTICS
 	++mp->pagealloc;
@@ -366,7 +366,7 @@ new:    if ((bp = (BKT *)malloc(sizeof(BKT) + mp->pagesize)) == NULL)
 
 /*
  * mpool_write
- *      Write a page to disk.
+ *	Write a page to disk.
  */
 static int
 mpool_write(mp, bp)
@@ -395,7 +395,7 @@ mpool_write(mp, bp)
 
 /*
  * mpool_look
- *      Lookup a page in the cache.
+ *	Lookup a page in the cache.
  */
 static BKT *
 mpool_look(mp, pgno)
@@ -422,7 +422,7 @@ mpool_look(mp, pgno)
 #ifdef STATISTICS
 /*
  * mpool_stat
- *      Print out cache statistics.
+ *	Print out cache statistics.
  */
 void
 mpool_stat(mp)

@@ -1,8 +1,8 @@
-/*      $NetBSD: nice.c,v 1.5 1995/02/27 04:35:24 cgd Exp $     */
+/*	$NetBSD: nice.c,v 1.5 1995/02/27 04:35:24 cgd Exp $	*/
 
 /*
  * Copyright (c) 1983, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)nice.c      8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)nice.c	8.1 (Berkeley) 6/4/93";
 #else
 static char rcsid[] = "$NetBSD: nice.c,v 1.5 1995/02/27 04:35:24 cgd Exp $";
 #endif
@@ -55,7 +55,7 @@ nice(incr)
 	int incr;
 {
 	int prio;
-	usetup;
+        usetup;
 
 	errno = 0;
 	prio = getpriority(PRIO_PROCESS, 0);

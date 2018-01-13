@@ -28,29 +28,33 @@
  */
 
 #define _KERNEL
-#define ioctl _ioctl
 #include "ixemul.h"
 #include "kprintf.h"
+
 #include <sys/ioctl.h>
-#undef ioctl
+#include <stdarg.h>
 
 int
-ioctl (int fd, unsigned long cmd, void *arg)
+ioctl (int fd, unsigned long cmd, ...)
 {
   usetup;
   struct file *f = u.u_ofile[fd];
+  va_list ap;
+  void *arg;
 
   /* if this is an open fd */
   if (fd >= 0 && fd < NOFILE && f)
       if (f->f_ioctl)
-	{
+        {
 	  /* split the ioctl-cmd into its subparts */
 	  int arglen, inout;
 	  
 	  inout  = cmd >> 30; /* this ignores IOC_VOID */
 	  arglen = (cmd >> 16) & IOCPARM_MASK;
 	  
-	  return (*f->f_ioctl)(f, cmd, inout, arglen, arg);
+	  va_start(ap, cmd);
+	  arg = va_arg(ap, void *);
+ 	  return (*f->f_ioctl)(f, cmd, inout, arglen, arg);
 	}
       else
 	{

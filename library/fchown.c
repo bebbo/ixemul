@@ -35,9 +35,9 @@ fchown(int fd, uid_t uid, gid_t gid)
     {
       if (syscall (SYS_fstat, fd, &stb) == -1) return -1;
       if (stb.st_mode & 0600)
-	{
-	  if (syscall (SYS_fchmod, fd, stb.st_mode & ~0176000) == -1) return -1;
-	}
+        {
+          if (syscall (SYS_fchmod, fd, stb.st_mode & ~0176000) == -1) return -1;
+        }
 
       if (uid == (uid_t)(-1)) uid = stb.st_uid;
       if (gid == (gid_t)(-1)) gid = stb.st_gid;

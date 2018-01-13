@@ -1,4 +1,4 @@
-/*      $NetBSD: pmap_rmt.h,v 1.4 1994/10/26 00:57:01 cgd Exp $ */
+/*	$NetBSD: pmap_rmt.h,v 1.4 1994/10/26 00:57:01 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)pmap_rmt.h 1.2 88/02/08 SMI 
- *      @(#)pmap_rmt.h  2.1 88/07/29 4.0 RPCSRC
+ *	from: @(#)pmap_rmt.h 1.2 88/02/08 SMI 
+ *	@(#)pmap_rmt.h	2.1 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -57,8 +57,8 @@ struct rmtcallres {
 };
 
 __BEGIN_DECLS
-extern bool_t xdr_rmtcall_args  __P((XDR *, struct rmtcallargs *));
-extern bool_t xdr_rmtcallres    __P((XDR *, struct rmtcallres *));
+extern bool_t xdr_rmtcall_args	__P((XDR *, struct rmtcallargs *));
+extern bool_t xdr_rmtcallres	__P((XDR *, struct rmtcallres *));
 __END_DECLS
 
 #endif /* !_RPC_PMAPRMT_H */

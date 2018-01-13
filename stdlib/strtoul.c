@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strtoul.c   5.2 (Berkeley) 5/17/90";
+static char sccsid[] = "@(#)strtoul.c	5.2 (Berkeley) 5/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -43,7 +43,7 @@ strtoul(const char *nptr, char **endptr, int base)
 	register int c;
 	register unsigned long cutoff;
 	register int neg = 0, any, cutlim;
-	usetup;
+        usetup;
 
 	/*
 	 * See strtol for comments as to the logic used.

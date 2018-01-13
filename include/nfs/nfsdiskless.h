@@ -1,8 +1,8 @@
-/*      $NetBSD: nfsdiskless.h,v 1.7 1994/06/29 06:42:31 cgd Exp $      */
+/*	$NetBSD: nfsdiskless.h,v 1.7 1994/06/29 06:42:31 cgd Exp $	*/
 
 /*
  * Copyright (c) 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Rick Macklem at The University of Guelph.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)nfsdiskless.h       8.1 (Berkeley) 6/10/93
+ *	@(#)nfsdiskless.h	8.1 (Berkeley) 6/10/93
  */
 
 /*
@@ -50,11 +50,11 @@
  * client/server byte ordering differences.
  */
 struct nfs_dlmount {
-	struct sockaddr_in ndm_saddr;           /* Address of file server */
-	char            ndm_host[MNAMELEN];     /* Host name for mount pt */
-	u_char          ndm_fh[NFS_FHSIZE];     /* The file's file handle */
+	struct sockaddr_in ndm_saddr;  		/* Address of file server */
+	char		ndm_host[MNAMELEN]; 	/* Host name for mount pt */
+	u_char		ndm_fh[NFS_FHSIZE]; 	/* The file's file handle */
 };
 struct nfs_diskless {
-	struct nfs_dlmount nd_root;     /* Mount info for root */
-	struct nfs_dlmount nd_swap;     /* Mount info for swap */
+	struct nfs_dlmount nd_root; 	/* Mount info for root */
+	struct nfs_dlmount nd_swap; 	/* Mount info for swap */
 };

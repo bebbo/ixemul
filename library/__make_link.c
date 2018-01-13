@@ -16,7 +16,15 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: __make_link.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  __make_link.c,v 1.1.1.1 1994/04/04 04:30:10 amiga Exp
+ *
+ *  __make_link.c,v
+ * Revision 1.1.1.1  1994/04/04  04:30:10  amiga
+ * Initial CVS check in.
+ *
+ *  Revision 1.1  1992/05/14  19:55:40  mwild
+ *  Initial revision
+ *
  */
 
 #define _KERNEL
@@ -25,8 +33,6 @@
 #ifndef ACTION_MAKE_LINK
 #define ACTION_MAKE_LINK 1021
 #endif
-
-#if 0
 
 struct link_vec {
   BPTR target;
@@ -43,52 +49,24 @@ __link_func (struct lockinfo *info, struct link_vec *lv, int *error)
   sp->sp_Pkt.dp_Arg2 = info->bstr;
   sp->sp_Pkt.dp_Arg3 = lv->target;
   sp->sp_Pkt.dp_Arg4 = lv->link_mode;
-
+  
   PutPacket (info->handler, sp);
   __wait_sync_packet (sp);
   info->result = sp->sp_Pkt.dp_Res1;
-
+  
   *error = info->result != -1;
-
+  
   /* shouldn't be possible to get the ERR_SOFT_LINK here.. */
   return 0;
 }
 
-int
+int 
 __make_link (char *path, BPTR targ, int mode)
 {
   struct link_vec lv;
-
+  
   lv.target = targ;
   lv.link_mode = mode;
-
+  
   return __plock (path, __link_func, &lv);
 }
-
-#else
-
-char *ix_to_ados(char *, const char *);
-
-int
-__make_link (char *path, BPTR targ, int mode)
-{
-  usetup;
-  int omask;
-  char *buf = alloca(strlen(path) + 3);
-  LONG result;
-
-  buf = ix_to_ados(buf, path);
-
-  omask = syscall (SYS_sigsetmask, ~0);
-  result = MakeLink(buf, targ, mode);
-  syscall (SYS_sigsetmask, omask);
-
-  if (result == 0)
-    {
-      errno = __ioerr_to_errno (IoErr ());
-    }
-
-  return result ? 0 : -1;
-}
-
-#endif

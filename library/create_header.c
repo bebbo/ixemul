@@ -2,10 +2,10 @@
 #include "ixemul.h"
 #include <stddef.h>
 #include <stdio.h>
-  
+
 #define LIB struct Library
 #define TASK struct Task
- 
+
 int main(int argc, char **argv)
 {
   int extra = 0;
@@ -34,7 +34,6 @@ int main(int argc, char **argv)
   printf ("#define IXFAKEBASE_SIZE %d\n", extra * 6);
 
 #ifdef NOTRAP
-  //printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_TrapData));
   printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_UserData));
 #else  
   printf ("#define USERPTR_OFFSET %ld\n", offsetof (TASK, tc_TrapData));

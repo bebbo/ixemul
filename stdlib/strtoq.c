@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,11 +32,9 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)strtoq.c    5.1 (Berkeley) 6/26/92";
+static char sccsid[] = "@(#)strtoq.c	5.1 (Berkeley) 6/26/92";
 #endif /* LIBC_SCCS and not lint */
 
-#define _KERNEL
-#include "ixemul.h"
 #include <sys/types.h>
 
 #include <limits.h>
@@ -61,7 +59,7 @@ strtoq(nptr, endptr, base)
 	register int c;
 	register u_quad_t qbase, cutoff;
 	register int neg, any, cutlim;
-	usetup;
+        usetup;
 
 	/*
 	 * Skip white space and pick up leading +/- sign if any.

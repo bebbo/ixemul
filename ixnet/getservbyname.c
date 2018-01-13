@@ -16,18 +16,9 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: getservbyname.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
+ *  $Id:$
  *
- *  $Log: getservbyname.c,v $
- *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
- *  a new beginning
- *
- *  Revision 1.1.1.1  2000/05/07 19:37:44  emm
- *  Imported sources
- *
- *  Revision 1.1.1.1  2000/04/29 00:44:59  nobody
- *  Initial import
- *
+ *  $Log:$
  */
 
 #define _KERNEL
@@ -45,10 +36,10 @@ getservbyname(const char *name, const char *proto)
     register int network_protocol = p->u_networkprotocol;
 
     switch (network_protocol) {
-	case IX_NETWORK_AMITCP:
-	    return TCP_GetServByName(name,proto);
+        case IX_NETWORK_AMITCP:
+            return TCP_GetServByName(name,proto);
 
-	default: /*case IX_NETWORK_AS225:*/
-	    return SOCK_getservbyname(name,proto);
+        default: /*case IX_NETWORK_AS225:*/
+            return SOCK_getservbyname(name,proto);
     }
 }

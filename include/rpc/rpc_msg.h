@@ -1,4 +1,4 @@
-/*      $NetBSD: rpc_msg.h,v 1.5 1995/04/29 05:28:00 cgd Exp $  */
+/*	$NetBSD: rpc_msg.h,v 1.5 1995/04/29 05:28:00 cgd Exp $	*/
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *      from: @(#)rpc_msg.h 1.7 86/07/16 SMI
- *      @(#)rpc_msg.h   2.1 88/07/29 4.0 RPCSRC
+ *	from: @(#)rpc_msg.h 1.7 86/07/16 SMI
+ *	@(#)rpc_msg.h	2.1 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -42,8 +42,8 @@
 #ifndef _RPC_RPCMSG_H
 #define _RPC_RPCMSG_H
 
-#define RPC_MSG_VERSION         ((u_long) 2)
-#define RPC_SERVICE_PORT        ((u_short) 2048)
+#define RPC_MSG_VERSION		((u_long) 2)
+#define RPC_SERVICE_PORT	((u_short) 2048)
 
 /*
  * Bottom up definition of an rpc message.
@@ -85,21 +85,21 @@ enum reject_stat {
  * accepted.
  */
 struct accepted_reply {
-	struct opaque_auth      ar_verf;
-	enum accept_stat        ar_stat;
+	struct opaque_auth	ar_verf;
+	enum accept_stat	ar_stat;
 	union {
 		struct {
 			u_int32_t low;
 			u_int32_t high;
 		} AR_versions;
 		struct {
-			caddr_t where;
+			caddr_t	where;
 			xdrproc_t proc;
 		} AR_results;
 		/* and many other null cases */
 	} ru;
-#define ar_results      ru.AR_results
-#define ar_vers         ru.AR_versions
+#define	ar_results	ru.AR_results
+#define	ar_vers		ru.AR_versions
 };
 
 /*
@@ -114,8 +114,8 @@ struct rejected_reply {
 		} RJ_versions;
 		enum auth_stat RJ_why;  /* why authentication did not work */
 	} ru;
-#define rj_vers ru.RJ_versions
-#define rj_why  ru.RJ_why
+#define	rj_vers	ru.RJ_versions
+#define	rj_why	ru.RJ_why
 };
 
 /*
@@ -127,15 +127,15 @@ struct reply_body {
 		struct accepted_reply RP_ar;
 		struct rejected_reply RP_dr;
 	} ru;
-#define rp_acpt ru.RP_ar
-#define rp_rjct ru.RP_dr
+#define	rp_acpt	ru.RP_ar
+#define	rp_rjct	ru.RP_dr
 };
 
 /*
  * Body of an rpc request call.
  */
 struct call_body {
-	u_int32_t cb_rpcvers;   /* must be equal to two */
+	u_int32_t cb_rpcvers;	/* must be equal to two */
 	u_int32_t cb_prog;
 	u_int32_t cb_vers;
 	u_int32_t cb_proc;
@@ -147,50 +147,50 @@ struct call_body {
  * The rpc message
  */
 struct rpc_msg {
-	u_int32_t               rm_xid;
-	enum msg_type           rm_direction;
+	u_int32_t		rm_xid;
+	enum msg_type		rm_direction;
 	union {
 		struct call_body RM_cmb;
 		struct reply_body RM_rmb;
 	} ru;
-#define rm_call         ru.RM_cmb
-#define rm_reply        ru.RM_rmb
+#define	rm_call		ru.RM_cmb
+#define	rm_reply	ru.RM_rmb
 };
-#define acpted_rply     ru.RM_rmb.ru.RP_ar
-#define rjcted_rply     ru.RM_rmb.ru.RP_dr
+#define	acpted_rply	ru.RM_rmb.ru.RP_ar
+#define	rjcted_rply	ru.RM_rmb.ru.RP_dr
 
 __BEGIN_DECLS
 /*
  * XDR routine to handle a rpc message.
  * xdr_callmsg(xdrs, cmsg)
- *      XDR *xdrs;
- *      struct rpc_msg *cmsg;
+ * 	XDR *xdrs;
+ * 	struct rpc_msg *cmsg;
  */
-extern bool_t   xdr_callmsg     __P((XDR *, struct rpc_msg *));
+extern bool_t	xdr_callmsg	__P((XDR *, struct rpc_msg *));
 
 /*
  * XDR routine to pre-serialize the static part of a rpc message.
  * xdr_callhdr(xdrs, cmsg)
- *      XDR *xdrs;
- *      struct rpc_msg *cmsg;
+ * 	XDR *xdrs;
+ * 	struct rpc_msg *cmsg;
  */
-extern bool_t   xdr_callhdr     __P((XDR *, struct rpc_msg *));
+extern bool_t	xdr_callhdr	__P((XDR *, struct rpc_msg *));
 
 /*
  * XDR routine to handle a rpc reply.
  * xdr_replymsg(xdrs, rmsg)
- *      XDR *xdrs;
- *      struct rpc_msg *rmsg;
+ * 	XDR *xdrs;
+ * 	struct rpc_msg *rmsg;
  */
-extern bool_t   xdr_replymsg    __P((XDR *, struct rpc_msg *));
+extern bool_t	xdr_replymsg	__P((XDR *, struct rpc_msg *));
 
 /*
  * Fills in the error part of a reply message.
  * _seterr_reply(msg, error)
- *      struct rpc_msg *msg;
- *      struct rpc_err *error;
+ * 	struct rpc_msg *msg;
+ * 	struct rpc_err *error;
  */
-extern void     _seterr_reply   __P((struct rpc_msg *, struct rpc_err *));
+extern void	_seterr_reply	__P((struct rpc_msg *, struct rpc_err *));
 __END_DECLS
 
 #endif /* !_RPC_RPCMSG_H */

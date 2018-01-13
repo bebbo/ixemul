@@ -2,11 +2,11 @@
 #include <exec/libraries.h>
 #include <exec/execbase.h>
 
+#include <inline/exec.h>
 #include <libraries/dosextens.h>
 #include <proto/intuition.h>
 #include <limits.h>
 #include "kprintf.h"
-#include "ixemul.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -15,84 +15,37 @@
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
-#include <proto/dos.h>
-#include <proto/exec.h>
-//#include <inline/exec.h>
-//#include <inline/dos.h>
+#include <inline/dos.h>
 
 #include <sys/syscall.h>
 #include <sys/exec.h>
-
-#ifdef SHAREDL
-#include <setjmp.h>
-#include <stdio.h>
-#include <powerup/gcclib/powerup_protos.h>
-#include <powerup/ppclib/interface.h>
-#include <powerup/ppclib/message.h>
-#include <powerup/ppclib/object.h>
-#include <powerup/ppclib/tasks.h>
-
-#include <powerup/ppcproto/intuition.h>
-#include <powerup/ppcproto/exec.h>
-#include <powerup/ppcproto/dos.h>
-#endif
-
-#ifdef NATIVE_MORPHOS
-#include <emul/emulinterface.h>
-#include <emul/emulregs.h>
-#endif
 
 #define FROM_CRT0
 
 #include <ix.h>
 
 /* get the current revision number. Version control is automatically done by
- * OpenLibrary(), I just have to check the revision number
+ * OpenLibrary(), I just have to check the revision number 
  */
 #undef IX_VERSION
-#include "ix_internals_backup.h"
+#include "version.h"
 
 #define MSTRING(x) STRING(x)
 #define STRING(x) #x
 
-struct ixemul_base *ixemulbase; // Used by the glue functions
-#ifdef NATIVE_MORPHOS
-int (**_ixbasearray)();
-int __amigappc__ = 1;
-int __abox__ = 1;
-#ifdef SUPPORT_CTORS
-extern void (*__ctrslist[])() __attribute__((section(".ctors")));
-extern void (*__dtrslist[])() __attribute__((section(".dtors")));
-#endif /* SUPPORT_CTORS */
-#ifdef SUPPORT_INIT
-static void call_init();
-static void call_fini();
-#endif /* SUPPORT_INIT */
-#else
+void *ixemulbase;               // Used by the glue functions
 struct Library *ixrealbase;     // The real ixemul base (may be identical to ixemulbase, though)
-#endif /* NATIVE_MORPHOS */
 
-/*static*/ int start_stdio(int, char **, char **);
-static int exec_entry(struct ixemul_base *ixembase, int argc, char *argv[], char *env[], long os);
+static int start_stdio(int, char **, char **);
+static int exec_entry(struct Library *ixembase, int argc, char *argv[], char *env[], long os);
 static int ENTRY();
 
-int extend_stack_ix_exec_entry(int argc, char **argv, char **environ, int *real_errno,
-			       int (*main)(int, char **, char **));
+int extend_stack_ix_exec_entry(int argc, char **argv, char **environ, int *real_errno, 
+	                       int (*main)(int, char **, char **));
 int extend_stack_ix_startup(char *aline, int alen, int expand,
-			    char *wb_default_window, unsigned main, int *real_errno);
+		            char *wb_default_window, unsigned main, int *real_errno);
 void monstartup(char *lowpc, char *highpc);
 void __init_stk_limit(void **limit, unsigned long argbytes);
-
-/**
- * May 2009, Diego Casorran: Ixemul is now able to be loaded dinamically
- * depending which functions are used. That means, if you use V49 SDK and
- * only V48 functions are used, the requested ixemul.library will be V48.
- * Unfortunately, this only seems to work with no-baserel code.. Anyhow,
- * thats the 90% of the software, i guess.
- */
-#ifdef CRT0
-# define HANDLE_DINAMIC_IXEMUL_OPEN	1
-#endif
 
 /*
  * Have to take care.. I may not use any library functions in this file,
@@ -123,127 +76,59 @@ extern int main();
  */
 
 
-#ifdef SHAREDL
 asm("
+	.text
 
-");
+	jra	_ENTRY		| by default jump to normal AmigaOS startup
+	.align	2		| ensure exec starts at byte offset 4
 
-// Not used by ELF loader
-#define STACKSIZE 100000
-#define str(s) #s
-#define sstr(s) str(s)
-asm("
-      .text
-
-extend_stack_ix_startup:
-/*    stwu    1,-16(1)
-      stw     5,12(1)
-      lis     5,___stack@ha
-      lwz     5,___stack@l(5)
-      lwz     5,0(5)
-      bl      __stkext_startup
-      lwz     5,12(1)
-      addi    1,1,16*/
-no_stkext1:
-      b       ix_startup
-
-      .type   extend_stack_ix_startup,@function
-      .size   extend_stack_ix_startup,$-extend_stack_ix_startup
-
-      .data
-      .globl  ___stack
-      .ascii  \"StCk\"
-___stack:
-      .long   " sstr(STACKSIZE) "
-      .ascii  \"sTcK\"
-");
-#elif defined(NATIVE_MORPHOS)
-asm("
-	.section    \".text\"
-
-	b       ENTRY           /* by default jump to normal AmigaOS startup */
-
-	/* this is a struct exec, for now only OMAGIC is supported */
-	.globl  exec
+	| this is a struct exec, for now only OMAGIC is supported
+	.globl	exec
 exec:
-	.short  1 /*__machtype      /* a_mid */
-	.short  0407            /* a_magic = OMAGIC */
-	.long   __text_size     /* a_text */
-data_size:
-	.long   __sdata_size    /* a_data */
-bss_size:
-	.long   __sbss_size     /* a_bss */
-	.long   0               /* a_syms */
-	.long   exec_entry      /* a_entry */
-	.long   0               /* a_trsize */
-	.long   0               /* a_drsize */
+	.word	___machtype	| a_mid
+	.word	0407		| a_magic = OMAGIC
+	.long	___text_size	| a_text
+	.long	___data_size	| a_data
+	.long	___bss_size	| a_bss
+	.long	0		| a_syms
+	.long	_exec_entry	| a_entry
+	.long	0		| a_trsize
+	.long	0		| a_drsize
 
-	/* word alignment is guaranteed */
-	.section    \".sdata\"
-
+	| word alignment is guaranteed
 ");
-#else
-asm(" \n\
-	.text \n\
- \n\
-	jra     _ENTRY          | by default jump to normal AmigaOS startup \n\
-	.align  2               | ensure exec starts at byte offset 4 \n\
- \n\
-	| this is a struct exec, for now only OMAGIC is supported \n\
-	.globl  exec \n\
-exec: \n\
-	.word   ___machtype     | a_mid \n\
-	.word   0407            | a_magic = OMAGIC \n\
-	.long   ___text_size    | a_text \n\
-	.long   ___data_size    | a_data \n\
-	.long   ___bss_size     | a_bss \n\
-	.long   0               | a_syms \n\
-	.long   _exec_entry     | a_entry \n\
-	.long   0               | a_trsize \n\
-	.long   0               | a_drsize \n\
- \n\
-	| word alignment is guaranteed \n\
-");
-#endif
 
-extern  int ix_expand_cmd_line; /* expand wildcards ? */
-int     h_errno = 0;            /* networking error code */
-struct  __res_state _res = {    /* Resolver state default settings */
+extern  int ix_expand_cmd_line;	/* expand wildcards ? */
+int     h_errno = 0;		/* networking error code */
+struct  __res_state _res = {	/* Resolver state default settings */
 	RES_TIMEOUT,            /* retransmition time interval */
 	4,                      /* number of times to retransmit */
-	RES_DEFAULT,            /* options flags */
+	RES_DEFAULT,		/* options flags */
 	1                       /* number of name servers */
 };
-int     _res_socket = -1;       /* resolv socket used for communications */
+int     _res_socket = -1;	/* resolv socket used for communications */
 char    *ix_default_wb_window = 0; /* Default Workbench output window name. */
-int     errno = 0;              /* error results from the library come in here.. */
-char    *_ctype_;               /* we use a pointer into the library, this is static anyway */
-int     sys_nerr;               /* number of system error codes */
-struct  ExecBase *SysBase;      /* ExecBase or pOS_ExecBase pointer */
-struct  DosLibrary *DOSBase;    /* DOSBase or pOS_DosBase pointer */
+int     errno = 0;		/* error results from the library come in here.. */
+char    *_ctype_;		/* we use a pointer into the library, this is static anyway */
+int     sys_nerr;		/* number of system error codes */
+struct  ExecBase *SysBase;      /* ExecBase pointer */
+struct  Library *DOSBase;       /* DOSBase pointer */
 
 struct  __sFILE **__sF;         /* pointer to stdin/out/err */
 static  char *dummy_environ = 0;        /* dummy environment */
-char    **environ = { &dummy_environ }; /* this is a default for programs not started via exec_entry */
+char    **environ = { &dummy_environ };	/* this is a default for programs not started via exec_entry */
 char    *__progname = "";       /* program name */
 int     ix_os = 0;              /* the OS that the program is running under */
-				/* AmigaOS: 0 */
-				/* pOS: 'pOS\0' */
+                                /* AmigaOS: 0 */
 
 extern  void *__stk_limit;
 extern  unsigned long __stk_argbytes;
 
-#ifdef __MORPHOS__
-#define GET_VA_ARRAY(x) __va_overflow(x)
-#else
-#define GET_VA_ARRAY(x) x
-#endif
-
 static void ix_panic(void *SysBase, const char *msg, ...)
 {
-  struct IntuitionBase *IntuitionBase;
+  struct IntuitionBase *IntuitionBase = 0;
   va_list ap;
-
+        
 /* Use address 4 instead of the SysBase global as globals may not yet be
    available (a4-handling) */
 #undef EXEC_BASE_NAME
@@ -255,16 +140,16 @@ static void ix_panic(void *SysBase, const char *msg, ...)
 
   if (IntuitionBase)
     {
-      struct EasyStruct panic = {
-	sizeof(struct EasyStruct),
-	0,
-	"startup message",
-	(char *)msg,
-	"Abort"
+      static struct EasyStruct panic = {
+        sizeof(struct EasyStruct),
+        0,
+        "startup message",
+        0,
+        "Abort"
       };
-
-      EasyRequestArgs(NULL, &panic, NULL, GET_VA_ARRAY(ap));
-
+       
+      panic.es_TextFormat = (char *)msg;
+      EasyRequestArgs(NULL, &panic, NULL, ap);
       CloseLibrary((struct Library *) IntuitionBase);
     }
   va_end(ap);
@@ -276,171 +161,64 @@ static void ix_panic(void *SysBase, const char *msg, ...)
 
 #ifdef BASECRT0
 extern int __datadata_relocs();
-/*#ifdef NATIVE_MORPHOS
-extern int __sdata_size, __sbss_size;
-#else
 extern int __data_size, __bss_size;
-#endif*/
 
 #ifdef RCRT0
 /* have to do this this way, or it is done base-relative.. */
-#ifdef __PPC__
-int __dbsize(void);
-asm("
-      .section  \".text\"
-      .type	__dbsize,@function
-      .globl    __dbsize
-__dbsize:
-      lis 3,data_size@ha
-      lis 4,bss_size@ha
-      lwz 3,data_size@l(3)
-      lwz 4,bss_size@l(4)
-      add 3,3,4
-      blr
-__end__dbsize:
-      .size	__dbsize,__end__dbsize-__dbsize
-");
-#else
-int __dbsize(void)
+static inline int dbsize(void) 
 {
   int res;
+
   asm ("movel #___data_size,%0; addl #___bss_size,%0" : "=r" (res));
   return res;
 }
-#endif
 
 static void inline
-ix_resident(struct ixemul_base *base, int num, int a4, int size, void *relocs)
+ix_resident(void *base, int num, int a4, int size, void *relocs)
 {
-#ifdef NATIVE_MORPHOS
-  base->basearray[SYS_ix_resident-1](num, a4, size, relocs);
-#else
   typedef void (*func)(int, int, int, void *);
 
   ((func)((int)base - 6*(SYS_ix_resident + 4))) (num, a4, size, relocs);
-#endif
 }
 
 #else
-
 static void inline
-ix_resident(struct ixemul_base *base, int num, int a4)
+ix_resident(void *base, int num, int a4)
 {
-#ifdef NATIVE_MORPHOS
-  base->basearray[SYS_ix_resident-1](num, a4);
-#else
   typedef void (*func)(int, int);
 
   ((func)((int)base - 6*(SYS_ix_resident + 4))) (num, a4);
-#endif
 }
 #endif
 #endif /* BASECRT0 */
 
-#if HANDLE_DINAMIC_IXEMUL_OPEN
-#define EXTLONG	extern unsigned long
-#define OR	,
-#define END	;
-#include "varjumbo_48.2.h"
-#include "varjumbo_49.17.h"
-#include "varjumbo_49.30.h"
-#undef END
-#undef OR
-#undef EXTLONG
-
-static __inline long RequiredIxemulLibrary(void *SysBase, struct ixemul_base *ibase)
-{
-	struct Library * l = (struct Library *) ibase;
-	long ixv = 48, ixr = 2, rc = 0;
-	
-	#define EXTLONG
-	#define OR ||
-	#define END
-	if ( 
-	#include "varjumbo_49.30.h"
-	) {
-		ixv = 49;
-		ixr = 30;
-	}
-	else if ( 
-	#include "varjumbo_49.17.h"
-	) {
-		ixv = 49;
-		ixr = 30;
-	}
-	/*if ( 
-	#include "varjumbo_48.2.h"
-	) {
-		
-	}*/
-	#undef END
-	#undef OR
-	#undef EXTLONG
-	
-	if((ixv > 48) && ((struct Library *)SysBase)->lib_Version > 49 && !FindResident("MorphOS"))
-	{
-		ix_panic(SysBase, "This Ixemul program cannot be run under AmigaOS 4.x");
-	}
-	else if((!l)||( l->lib_Version < ixv ) || (( l->lib_Version == ixv ) && ( l->lib_Revision < ixr )))
-	{
-		ix_panic(SysBase, "Need at least version %ld.%ld of " IX_NAME ".",ixv,ixr);
-	}
-	else
-	{
-		rc = 1;
-	}
-	
-	return(rc);
-}
-#endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
-
 static int
-exec_entry(struct ixemul_base *ixembase, int argc, char *argv[], char *env[], long os)
+exec_entry(struct Library *ixembase, int argc, char *argv[], char *env[], long os)
 {
-  struct ixemul_base *base = ixembase;
+  void *base = ixembase;
 
 #ifdef BASECRT0
   register int a4 = 0;
   /* needed, so that data can be accessed. ix_resident might change this
      again afterwards */
-#ifdef NATIVE_MORPHOS
-  asm volatile ("lis 13,__r13_init@ha; addi 13,13,__r13_init@l" : "=r" (a4) : "0" (a4));
-  asm volatile ("mr  %0,13" : "=r" (a4) : "0" (a4));
-#else
-  asm volatile ("lea    ___a4_init,a4" : "=r" (a4) : "0" (a4));
-  asm volatile ("movel  a4,%0" : "=r" (a4) : "0" (a4));
-#endif
+  asm volatile ("lea	___a4_init,a4" : "=r" (a4) : "0" (a4));
+  asm volatile ("movel	a4,%0" : "=r" (a4) : "0" (a4));
 
 #ifdef RCRT0
-  ix_resident(base, 4, a4, __dbsize(), __datadata_relocs);
+  ix_resident(base, 4, a4, dbsize(), __datadata_relocs);
 #else
   ix_resident(base, 2, a4);
 #endif
 #endif /* BASECRT0 */
   ixemulbase = base;
-#ifndef NATIVE_MORPHOS
   ixrealbase = ixembase;
-#else
-  _ixbasearray = base->basearray;
-#endif
 
-  SysBase = *(void **)4;
-  
-  #if HANDLE_DINAMIC_IXEMUL_OPEN
-  
-  if( ! RequiredIxemulLibrary( SysBase, ixembase ))
-  {
-  	return W_EXITCODE(20, 0);
-  }
-  #else /* HANDLE_DINAMIC_IXEMUL_OPEN */
-  
-  if (ixembase->ix_lib.lib_Version < IX_VERSION)
+  if (ixrealbase->lib_Version < IX_VERSION)
   {
     ix_panic(SysBase, "Need at least version " MSTRING (IX_VERSION) " of " IX_NAME ".");
     return W_EXITCODE(20, 0);
   }
-  #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
-
+  
   ix_os = os;
 
 /*
@@ -468,7 +246,7 @@ itoa(int num)
      or
 	ceiling ( number_of_binary_digits * 0.301029996 )
 
-     Since sizeof evaluates to the number of bytes a given type takes
+     Since sizeof evaluates to the number of bytes a given type takes 
      instead of the number of bits, we need to multiply sizeof (type) by
      CHAR_BIT to obtain the number of bits.  Since an array size specifier
      needs to be integer type, we multiply by 302 and divide by 1000 instead
@@ -482,7 +260,7 @@ itoa(int num)
 
   static char buf[sizeof snum * CHAR_BIT * 302 / 1000 + 1 + 1];
   char *cp;
-
+  
   buf[sizeof buf - 1] = 0;
   cp = &buf[sizeof buf - 1];
   do
@@ -506,36 +284,24 @@ pstrcpy(char *start, char *arg)
    will generate the right instruction pattern that execve() is looking
    for to know that this is a program that uses the ixemul.library. */
 
-#ifdef NATIVE_MORPHOS
-static int
-ENTRY(UBYTE *aline, ULONG alen)
-{
-#else
 static int
 ENTRY(void)
 {
   register unsigned char *rega0  asm("a0");
   register unsigned long  regd0  asm("d0");
-  UBYTE *aline = rega0;
-  ULONG alen = regd0;
-#endif
-
 #ifdef BASECRT0
   register int a4 = 0;
 #endif /* BASECRT0 */
-  struct ixemul_base *ibase;
+  struct Library *ibase;
+  UBYTE *aline = rega0;
+  ULONG alen = regd0;
   int res;
 
 #ifdef BASECRT0
   /* needed, so that data can be accessed. ix_resident() might change this
      again afterwards */
-#ifdef NATIVE_MORPHOS
-  asm volatile ("lis 13,__r13_init@ha; addi 13,13,__r13_init@l" : "=r" (a4) : "0" (a4));
-  asm volatile ("mr  %0,13" : "=r" (a4) : "0" (a4));
-#else
-  asm volatile("lea     ___a4_init,a4" : "=r" (a4) : "0" (a4));
+  asm volatile("lea	___a4_init,a4" : "=r" (a4) : "0" (a4));
   asm volatile("movel a4,%0" : "=r" (a4) : "0" (a4));
-#endif
 #endif /* BASECRT0 */
 
 /* Use address 4 instead of the SysBase global as globals may not yet be
@@ -543,74 +309,50 @@ ENTRY(void)
 #undef EXEC_BASE_NAME
 #define EXEC_BASE_NAME *(void **)4
 
-  #if HANDLE_DINAMIC_IXEMUL_OPEN
-  
-  ibase = (struct ixemul_base *)OpenLibrary(IX_NAME,0);
-  if( ! RequiredIxemulLibrary(*(void **)4, ibase ))
-  {
-  	CloseLibrary((struct Library *) ibase );
-  	ibase = NULL;
-  }
-  #else /* HANDLE_DINAMIC_IXEMUL_OPEN */
-  
-  ibase = (struct ixemul_base *)OpenLibrary(IX_NAME, IX_VERSION);
-  
-  #endif /* HANDLE_DINAMIC_IXEMUL_OPEN */
+  ibase = OpenLibrary(IX_NAME, IX_VERSION);
 
   if (ibase)
     {
-      struct ixemul_base *base = ibase;
+      void *base = ibase;
 
 #ifdef BASECRT0
 #ifdef RCRT0
-      ix_resident(base, 4, a4, __dbsize(), __datadata_relocs);
+      ix_resident(base, 4, a4, dbsize(), __datadata_relocs);
 #else
       ix_resident(base, 2, a4);
 #endif
 #endif /* BASECRT0 */
 
-#ifdef NATIVE_MORPHOS
-      _ixbasearray = base->basearray;
-#endif
-
-#ifndef NATIVE_MORPHOS
       ixrealbase = ibase;
-#endif
       ixemulbase = base;
-
-      SysBase = *(void **)4;
-
+      
       ix_os = 0;
 
 /*
  * Set the limit variable to finish the initialization of the stackextend code.
  */
-	 
       __init_stk_limit(&__stk_limit,__stk_argbytes);
 
       res = extend_stack_ix_startup(aline, alen, ix_expand_cmd_line,
-				    ix_default_wb_window, (int)start_stdio, &errno);
+                                    ix_default_wb_window, (int)start_stdio, &errno);
 
-      CloseLibrary((struct Library *)base);
-	 
+      CloseLibrary(ixemulbase);
     }
   else
     {
       struct Process *me = (struct Process *)((*(struct ExecBase **)4)->ThisTask);
 
-    #if !HANDLE_DINAMIC_IXEMUL_OPEN
       ix_panic(SysBase, "Need at least version " MSTRING (IX_VERSION) " of " IX_NAME ".");
-    #endif
-
+      
       /* quickly deal with the WB startup message, as the library couldn't do
        * this for us. Nothing at all is done that isn't necessary to just shutup
        * workbench..*/
       if (!me->pr_CLI)
-	{
-	  Forbid();
+        {
+	  Forbid(); 
 	  ReplyMsg((WaitPort(&me->pr_MsgPort), GetMsg(&me->pr_MsgPort)));
 	}
-
+      
       res = 20;
     }
 
@@ -624,27 +366,10 @@ void ix_get_variables(int from_vfork_setup_child)
 {
   /* more to follow ;-) */
   ix_get_vars(12, &_ctype_, &sys_nerr, (struct Library **)&SysBase, &DOSBase, &__sF,
-	      &environ, (from_vfork_setup_child ? &environ : NULL),
-	      (from_vfork_setup_child ? &errno : NULL), &h_errno,
-	      &_res, &_res_socket, NULL);
+              &environ, (from_vfork_setup_child ? &environ : NULL),
+              (from_vfork_setup_child ? &errno : NULL), &h_errno,
+              &_res, &_res_socket, NULL);
 }
-
-#ifdef NATIVE_MORPHOS
-#ifdef SUPPORT_CTORS
-void call_dtors(void)
-{
-  int i, size;
-
-  size = (int)__dtrslist[-2] / sizeof(__dtrslist[0]) - 2;
-
-  for (i = 0; i < size; ++i) {
-    if (__dtrslist[i])
-      __dtrslist[i]();
-  }
-}
-#endif
-#endif
-
 
 int
 start_stdio(int argc, char **argv, char **env)
@@ -665,7 +390,7 @@ start_stdio(int argc, char **argv, char **env)
 #endif /* not BASECRT0 */
 
   if (argv[0])
-    if ((__progname = "" /*strrchr(argv[0], '/')*/))
+    if ((__progname = strrchr(argv[0], '/')))
       __progname++;
     else
       __progname = argv[0];
@@ -676,118 +401,47 @@ start_stdio(int argc, char **argv, char **env)
       __progname = "";
   }
 
-#ifdef NATIVE_MORPHOS
-#ifdef SUPPORT_CTORS
-  atexit(call_dtors);
-  {
-    int i, size;
-
-    size = (int)__ctrslist[-2] / sizeof(__ctrslist[0]) - 2;
-
-    for (i = 0; i < size; ++i) {
-      if (__ctrslist[i])
-	__ctrslist[i]();
-    }
-  }
-#endif
-#endif
-
-#ifdef SUPPORT_INIT
-  atexit(call_fini);
-  call_init();
-#endif
-
   return main(argc, argv, env);
 }
 
-#ifdef NATIVE_MORPHOS
 asm("
-	.section \".text\"
-	.type	extend_stack_ix_startup,@function
-extend_stack_ix_startup:
-"
-#ifdef BASECRT0
-  #ifdef LBASE
-"       addis   11,13,__stack@drelha
-	lwz     11,__stack@drell(11)"
-  #else
-"       lwz     11,__stack@sdarel(13)"
-  #endif
-#else
-"       lis     11,__stack@ha
-	lwz     11,__stack@l(11)"
-#endif
-"
-	lis     10,ix_startup@ha
-	addi    10,10,ix_startup@l
-	b       __stkext_startup
-__end_extend_stack_ix_startup:
-	.size	extend_stack_ix_startup,__end_extend_stack_ix_startup-extend_stack_ix_startup
+	.text
 
-	.type	extend_stack_ix_exec_entry,@function
-extend_stack_ix_exec_entry:
+_extend_stack_ix_startup:
 "
 #ifdef BASECRT0
   #ifdef LBASE
-"       addis   11,13,__stack@drelha
-	lwz     11,__stack@drell(11)"
+"	movel	a4@(___stack:L),d0"
   #else
-"       lwz     11,__stack@sdarel(13)"
+"	movel	a4@(___stack:W),d0"
   #endif
 #else
-"       lis     11,__stack@ha
-	lwz     11,__stack@l(11)"
+"	movel	___stack,d0"
 #endif
 "
-	lis     10,ix_exec_entry@ha
-	addi    10,10,ix_exec_entry@l
-	b       __stkext_startup
-__end_extend_stack_ix_exec_entry:
-	.size	extend_stack_ix_exec_entry,__end_extend_stack_ix_exec_entry-extend_stack_ix_exec_entry
-");
-#else
-asm(" \n\
-	.text \n\
- \n\
-_extend_stack_ix_startup: \n\
-"); 
-#ifdef BASECRT0 
-  #ifdef LBASE 
-asm(" \n\
-	movel   a4@(___stack:L),d0 \n");
-  #else 
-asm(" \n\
-	movel   a4@(___stack:W),d0 \n");
-  #endif 
-#else 
-asm("       movel   ___stack,d0 \n");
-#endif 
-asm (" \n\
-	beq     no_stkext1 \n\
-	jbsr    ___stkext_startup \n\
-no_stkext1: \n\
-	jmp     _ix_startup \n\
-\n\
-_extend_stack_ix_exec_entry: \n\
-");
-#ifdef BASECRT0
-  #ifdef LBASE
-asm("       movel   a4@(___stack:L),d0 \n");
-  #else
-asm("       movel   a4@(___stack:W),d0 \n");
-  #endif
-#else
-asm("       movel   ___stack,d0 \n");
-#endif
-asm (" \n\
-	beq     no_stkext2 \n\
-	jbsr    ___stkext_startup \n\
-no_stkext2: \n\
-	jmp     _ix_exec_entry \n\
-");
-#endif
+	beq	no_stkext1
+	jbsr	___stkext_startup
+no_stkext1:
+	jmp	_ix_startup
 
-#ifdef NATIVE_MORPHOS
+_extend_stack_ix_exec_entry:
+"
+#ifdef BASECRT0
+  #ifdef LBASE
+"	movel	a4@(___stack:L),d0"
+  #else
+"	movel	a4@(___stack:W),d0"
+  #endif
+#else
+"	movel	___stack,d0"
+#endif
+"
+	beq	no_stkext2
+	jbsr	___stkext_startup
+no_stkext2:
+	jmp	_ix_exec_entry
+");
+
 #ifndef BASECRT0
 #ifdef CRT0
 /*
@@ -797,61 +451,12 @@ no_stkext2: \n\
 asm(".globl mcount");
 asm(".globl _moncontrol");
 asm("_moncontrol:");
-asm("mcount: blr");
+asm("mcount: rts");
 #endif /* CRT0 */
 #endif /* not BASECRT0 */
-#else /* NATIVE_MORPHOS */
-#ifndef BASECRT0
-#ifdef CRT0
-/*
- * null mcount and moncontrol,
- * just in case some routine is compiled for profiling
- */
-asm(".globl mcount \n");
-asm(".globl _moncontrol \n");
-	asm("_moncontrol: \n");
-asm("mcount: rts \n");
-#endif /* CRT0 */
-#endif /* not BASECRT0 */
-#endif /* NATIVE_MORPHOS */
 
 #ifndef BASECRT0
 #ifdef MCRT0
 #include "gmon.c"
 #endif
 #endif /* not BASECRT0 */
-
-#ifdef NATIVE_MORPHOS
-#ifdef SUPPORT_CTORS
-asm("
-	.section \".ctors\",\"a\",@progbits
-__ctrslist:
-	.long 0
-");
-asm("
-	.section \".dtors\",\"a\",@progbits
-__dtrslist:
-	.long 0
-");
-#endif
-
-#ifdef SUPPORT_INIT
-asm("\n\
-	.section \".text\",\"ax\",@progbits\n\
-	.globl	__init
-	.globl	__fini
-
-call_init:
-	lis	9,__init@ha
-	addi	9,9,__init@l
-	mtctr	9
-	bctr
-
-call_fini:
-	lis	9,__fini@ha
-	addi	9,9,__fini@l
-	mtctr	9
-	bctr
-	");
-#endif
-#endif

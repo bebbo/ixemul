@@ -16,7 +16,21 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: buddy-alloc.c,v 1.1.1.1 2005/03/15 15:57:08 laire Exp $
+ *  $Id: buddy-alloc.c,v 1.4 1994/06/19 15:02:51 rluebbert Exp $
+ *
+ *  $Log: buddy-alloc.c,v $
+ *  Revision 1.4  1994/06/19  15:02:51  rluebbert
+ *  *** empty log message ***
+ *
+ *  Revision 1.2  1992/09/14  01:40:24  mwild
+ *  change from using aligned blocks (obtained thru an AllocMem/FreeMem/AllocAbs
+ *  hack) to using non-aligned blocks. The price for this is an additional
+ *  field in every allocated block.
+ *
+ *  In the same run, change Forbid/Permit into Semaphore locking.
+ *
+ *  Revision 1.1  1992/05/22  01:42:33  mwild
+ *  Initial revision
  *
  */
 #define _KERNEL
@@ -25,155 +39,56 @@
 #include <exec/memory.h>
 #include <stddef.h>
 
-#if 0 //ndef DEBUG_VERSION
-#define BUDDY_DEBUG if (0)
-#else
-#define BUDDY_DEBUG
-#endif
-
-#ifdef USE_VMEM
-#  ifndef MEMF_SWAP
-#     define MEMF_SWAP   (1L<<11)
-#  endif
-#else
-#  undef MEMF_SWAP
-#  define MEMF_SWAP      0
-#endif
-
-#ifdef TRACK_ALLOCS
-
-#undef AllocMem
-#undef FreeMem
-
-#define AllocMem(x,y)    debug_AllocMem("malloc",x,y)
-#define FreeMem(x,y)     debug_FreeMem(x,y)
-
-#define MEMMAGIC 0x45134384
-
-struct mem_tracker {
-  struct ixnode node;
-  int magic;
-  int size;
-  const char *id;
-};
-
-struct ixlist memlist;
-
-void
-dump_memlist(void)
-{
-  struct mem_tracker *p;
-  dprintf("---------- Allocated memory ----------\n");
-  Forbid();
-  for (p = (struct mem_tracker *)memlist.head; p; p = (struct mem_tracker *)p->node.next)
-  {
-    dprintf("0x%08lx 0x%08lx %s\n", p + 1, p->size, p->id);
-  }
-  Permit();
-  dprintf("--------------------------------------\n");
-}
-
-void *
-debug_AllocMem(const char *id, int size, int reqs)
-{
-  struct mem_tracker *p;
-
-  Forbid();
-  p = AllocVec(size + sizeof(*p), reqs);
-  if (p)
-  {
-    ixaddtail(&memlist, &p->node);
-    p->magic = MEMMAGIC;
-    p->size = size;
-    p->id = id;
-    ++p;
-  }
-  Permit();
-
-  return p;
-}
-
-void
-debug_FreeMem(void *p, int size)
-{
-  if (p)
-  {
-    struct mem_tracker *q = (struct mem_tracker *)p - 1;
-
-    Forbid();
-    if (q->magic != MEMMAGIC)
-    {
-      dprintf("FreeMem a bad block: 0x%x size %d\n", p, size);
-      *(char *)0 = 0;
-    }
-    else if (q->size != size)
-    {
-      dprintf("FreeMem with bad size: 0x%x size %d old %d\n", p, size, q->size);
-      *(char *)0 = 0;
-    }
-    else
-    {
-      ixremove(&memlist, &q->node);
-      q->magic = 0;
-      FreeVec(q);
-    }
-    Permit();
-  }
-}
-
-#endif
-
-
 /* this provides a straight replacement for AllocMem() and FreeMem().
    Being this, it does *not* remember the size of allocation, the
    clients have to do this instead. */
 
 /* NOTE: currently only two pools are supported, MEMF_PUBLIC and
-	 ! MEMF_PUBLIC. No MEMF_CHIP pools are needed by the library
-	 and are thus not supported */
+         ! MEMF_PUBLIC. No MEMF_CHIP pools are needed by the library
+         and are thus not supported */
 
 
 /* TUNING: The two parameters that can be adjusted to fine tune
-	   allocation strategy are MAXSIZE and BUDDY_LIMIT. By setting
-	   MAXSIZE larger than BUDDY_LIMIT results in less Exec
-	   overhead, since blocks stay longer in the buddy system.
-	   Setting MAXSIZE==BUDDY_LIMIT sets memory usage to the
-	   minimum, at the cost of more Exec calls. */
+           allocation strategy are MAXSIZE and BUDDY_LIMIT. By setting
+           MAXSIZE larger than BUDDY_LIMIT results in less Exec
+           overhead, since blocks stay longer in the buddy system.
+           Setting MAXSIZE==BUDDY_LIMIT sets memory usage to the
+           minimum, at the cost of more Exec calls. */
 
 
 /* no request for memory can be lower than this */
-#define MINLOG2         4
-#define MINSIZE         (1 << MINLOG2)
+#define MINLOG2		4
+#define MINSIZE		(1 << MINLOG2)
 
 /* this is the size the buddy system gets memory pieces from Exec */
-#define MAXLOG2         16      /* get 64K chunks */
-#define MAXSIZE         (1 << MAXLOG2)
+#define MAXLOG2		15	/* get 32K chunks */
+#define MAXSIZE		(1 << MAXLOG2)
 
 /* this is the limit for b_alloc to go straight to Exec */
-#define BUDDY_LIMIT     (1 << (MAXLOG2 - 5))    /* but serve only upto 1K */
-//#define BUDDY_LIMIT     8
-#define PRIVATE_POOL    0
-#define PUBLIC_POOL     1
-#define NUMPOOLS        2       /* public and !public */
+#define BUDDY_LIMIT	(1 << (MAXLOG2 - 5))	/* but serve only upto 1K */
+
+#define PRIVATE_POOL	0
+#define PUBLIC_POOL	1
+#define NUMPOOLS	2	/* public and !public */
 /* attention: don't go larger than 3 pools, or you'll have to change the
-	      encoding in free_block (only 2 bits for now) */
+              encoding in free_block (only 2 bits for now) */
 
 struct free_list {
   u_int  exec_attr;
   struct ix_mutex sem;
   struct ixlist buckets[MAXLOG2 - MINLOG2];
-} free_list[NUMPOOLS] = { { MEMF_SWAP, }, { MEMF_PUBLIC, } };
+} free_list[NUMPOOLS] = { { 0, }, { MEMF_PUBLIC, } };
 
 
 struct free_block {
   /* to make the smallest allocatable block 16, and not 32 byte, stuff both
      the freelist information and the exec-block address into one long. */
-  u_int pool:2,         /* 0: block is free, > 0: POOL + 1 */
-	exec_block:30;  /* shift left twice to get the real address */
+  u_int	pool:2,		/* 0: block is free, > 0: POOL + 1 */
+  	exec_block:30;	/* shift left twice to get the real address */
 
   /* from here on, fields only exist while the block is on the free list.
      The application sees a block as a chunk of memory starting at &next */
-  struct free_block *next, *prev;       /* ixnode compatible */
+  struct free_block *next, *prev;	/* ixnode compatible */
   int index;
 };
 
@@ -181,7 +96,7 @@ struct free_block {
 void
 init_buddy (void)
 {
-  int i, l;
+  int i, l; 
 
   /* don't want such a nightmare of bug-hunt any more... */
   if (sizeof (struct free_block) > MINSIZE)
@@ -210,14 +125,14 @@ unlink_block (u_int free_pool, u_char ind, void *block)
 	{
 	  fb = (struct free_block *) ((int)fb - offsetof (struct free_block, next));
 	  fb->pool = free_pool + 1;
-	  BUDDY_DEBUG KPRINTF(("    unlink_block (%s, %ld) == $%lx\n",
+	  KPRINTF(("    unlink_block (%s, %ld) == $%lx\n", 
 	     free_pool == PRIVATE_POOL ? "PRIVATE" : (free_pool == PUBLIC_POOL ? "PUBLIC" : "BOGOUS"), ind, fb));
 
 	}
     }
   else
     {
-      BUDDY_DEBUG KPRINTF(("    unlink_block (%s, %ld, $%lx)\n",
+      KPRINTF(("    unlink_block (%s, %ld, $%lx)\n", 
 	 free_pool == PRIVATE_POOL ? "PRIVATE" : (free_pool == PUBLIC_POOL ? "PUBLIC" : "BOGOUS"), ind, fb));
 
       fb->pool = free_pool + 1;
@@ -233,10 +148,10 @@ link_block (u_int free_pool, u_char ind, void *block)
   struct free_block *fb = (struct free_block *) block;
   struct free_list *fl = free_list + free_pool;
 
-  BUDDY_DEBUG KPRINTF(("    link_block (%s, %ld, $%lx)\n",
+  KPRINTF(("    link_block (%s, %ld, $%lx)\n", 
      free_pool == PRIVATE_POOL ? "PRIVATE" : (free_pool == PUBLIC_POOL ? "PUBLIC" : "BOGOUS"), ind, fb));
 
-  fb->pool = 0; /* we're on the freelist of this pool */
+  fb->pool = 0;	/* we're on the freelist of this pool */
   fb->index = ind; /* and of this size */
   ixaddhead ((struct ixlist *)&fl->buckets[ind], (struct ixnode *)&fb->next);
 }
@@ -254,7 +169,7 @@ log2 (int size)
   for (;;)
     {
       if (size > lower_bound)
-	return pow;
+        return pow;
 
       lower_bound >>= 1;
       pow--;
@@ -268,27 +183,24 @@ get_block (u_int free_pool, u_char index)
   struct free_block *fb, *buddy;
   struct free_list *fl = free_list + free_pool;
 
-  BUDDY_DEBUG KPRINTF(("  get_block (%s, %ld)\n",
+  KPRINTF(("  get_block (%s, %ld)\n", 
      free_pool == PRIVATE_POOL ? "PRIVATE" : (free_pool == PUBLIC_POOL ? "PUBLIC" : "BOGOUS"), index, fb));
 
   if (index == (MAXLOG2 - MINLOG2))
     {
       fb = (struct free_block *) AllocMem (MAXSIZE, fl->exec_attr);
       if (! fb)
-      {
-	KPRINTF(("get_bloc: AllocMem(%ld, %lx) failed\n", MAXSIZE, fl->exec_attr));
-	return 0;
-      }
+        return 0;
 
       fb->exec_block = (int)fb >> 2; /* buddies are relative to this base address */
       fb->pool = free_pool + 1; /* not free */
 
       return fb;
     }
-  else
+  else 
     {
       if ((fb = unlink_block (free_pool, index, 0)))
-	return fb;
+        return fb;
     }
 
 
@@ -297,8 +209,8 @@ get_block (u_int free_pool, u_char index)
   if (fb)
     {
       /* when splitting a block, we always free the upper buddy. So
-	 we can just add the size, instead of or'ing the offset to the
-	 Exec memory block */
+         we can just add the size, instead of or'ing the offset to the
+         Exec memory block */
       buddy = (struct free_block *)((int)fb + (1 << (index + MINLOG2)));
 
       buddy->exec_block = fb->exec_block;
@@ -347,7 +259,7 @@ b_alloc (int size, unsigned pool)
   struct free_block *block;
   struct free_list *fl = free_list + pool;
 
-  if (size < 0) /* Ridiculous size */
+  if (size < 0)	/* Ridiculous size */
     return 0;
   if (size < MINSIZE)
     size = MINSIZE;
@@ -357,25 +269,25 @@ b_alloc (int size, unsigned pool)
      obtained from Exec. */
 
   if (size >= BUDDY_LIMIT - offsetof (struct free_block, next))
-    return AllocMem (size, fl->exec_attr);
+    return AllocMem (size, pool == PUBLIC_POOL ? MEMF_PUBLIC : 0);
 
   size += offsetof (struct free_block, next);
 
   bucket = log2 (size) - MINLOG2;
 
-  /* have to differentiate between PUBLIC and PRIVATE memory here, sigh.
+  /* have to differentiate between PUBLIC and PRIVATE memory here, sigh. 
      PRIVATE memory can safely be accessed by using a semaphore, PUBLIC
      memory however is allocated and free'd inside Forbid(), and using a
      semaphore there would possibly break a Forbid..
      Note: this is safe for use in GigaMem, as GigaMem only uses non-PUBLIC
 	   memory, if you don't fiddle with attribute masks.. */
-  /*if (pool == PRIVATE_POOL)
+  if (pool == PRIVATE_POOL)
   {
     ix_mutex_lock(&fl->sem);
     block = get_block (pool, bucket);
     ix_mutex_unlock(&fl->sem);
   }
-  else*/
+  else
   {
     Forbid();
     block = get_block (pool, bucket);
@@ -399,10 +311,10 @@ b_free (void *mem, int size)
 
   if (size < MINSIZE)
     size = MINSIZE;
-
+    
   if (size >= BUDDY_LIMIT - offsetof (struct free_block, next))
     {
-      FreeMem(mem, size);
+      FreeMem (mem, size);
       return;
     }
 
@@ -413,20 +325,16 @@ b_free (void *mem, int size)
   free_pool = fb->pool - 1;
   fl = free_list + free_pool;
 
-	  /*if (free_pool == PRIVATE_POOL)
-	  {
-		ix_mutex_lock(&fl->sem);
-		free_block (free_pool, bucket, fb);
-		ix_mutex_unlock(&fl->sem);
-	  }
-	  else*/
+  if (free_pool == PRIVATE_POOL)
+  {
+    ix_mutex_lock(&fl->sem);
+    free_block (free_pool, bucket, fb);
+    ix_mutex_unlock(&fl->sem);
+  }
+  else
   {
     Forbid();
     free_block (free_pool, bucket, fb);
     Permit();
   }
-}
-
-void cleanup_buddy(void)
-{
 }

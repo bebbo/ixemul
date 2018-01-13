@@ -15,14 +15,14 @@
    parm[6] is the value of c.
 */
 #define X0 0x1234 /* MSB * Initial value for Xn, obtained using seed48() */
-#define X1 0xABCD       /* on SunOS 4.1.3 */
+#define X1 0xABCD	/* on SunOS 4.1.3 */
 #define X2 0x330E
 
 #define A0 0x0005 /* MSB * Default value for a, taken from the man page */
 #define A1 0xDEEC
 #define A2 0xE66D
 
-#define C0 0x000B       /* Default value for c, taken from the man page */
+#define C0 0x000B	/* Default value for c, taken from the man page */
 
 static unsigned short parm[7] = {
   X2, X1, X0,
@@ -38,7 +38,7 @@ static unsigned short parm[7] = {
    we want to return the smallest double that is less than 1.0.
    Therefore:
 
-	ULONG_MAX
+        ULONG_MAX
    --------------------- = (1.0 - DBL_EPSILON)
    (ULONG_MAX + EPSILON)
 
@@ -46,7 +46,7 @@ static unsigned short parm[7] = {
 
 */
 
-#define EPSILON (double)ULONG_MAX*(1.0/(1.0-DBL_EPSILON)-1.0)
+#define EPSILON	(double)ULONG_MAX*(1.0/(1.0-DBL_EPSILON)-1.0)
 
 
 /*--------------------------------------------------------------------------*

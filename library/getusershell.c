@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -47,7 +47,7 @@ static char sccsid[] = "@(#)getusershell.c      5.7 (Berkeley) 2/23/91";
 /*
  * Do not add local shells here.  They should be added in /etc/shells
  */
-static const char *okshells[] =
+static char *okshells[] =
     { "/bin/sh", "/bin/csh", 0 };
 
 static char **shells = NULL, *strings = NULL;
@@ -104,16 +104,16 @@ initshells(void) {
 
     strings = NULL;
     if ((fp = (FILE *)syscall(SYS_fopen,SHELLS, "r")) == (FILE *)0)
-	return((char **)okshells);
+	return(okshells);
 
     if (syscall(SYS_fstat,fileno(fp), &statb) == -1) {
 	(void)syscall(SYS_fclose,fp);
-	return((char **)okshells);
+	return(okshells);
     }
 
     if ((strings = (char *)syscall(SYS_malloc,(unsigned)statb.st_size + 1)) == NULL) {
 	(void)syscall(SYS_fclose,fp);
-	return((char **)okshells);
+	return(okshells);
     }
 
     shells = (char **)syscall(SYS_calloc,(unsigned)statb.st_size / 3, sizeof (char *));
@@ -121,7 +121,7 @@ initshells(void) {
 	(void)syscall(SYS_fclose,fp);
 	syscall(SYS_free,strings);
 	strings = NULL;
-	return((char **)okshells);
+	return(okshells);
     }
 
     sp = shells;

@@ -46,25 +46,25 @@ access(const char *name, int mode)
        * the write-permission on the file doesn't count.. HOW should
        * I get at this information?? */
        if (!muBase || stb.st_uid == (uid_t)syscall(SYS_geteuid) ||
-	   (uid_t)syscall(SYS_geteuid) == 0)
-	 {
-	   res = (((stb.st_mode >> 6) & 07) & mode) == mode ? 0 : -1;
-	 }
+           (uid_t)syscall(SYS_geteuid) == 0)
+         {
+           res = (((stb.st_mode >> 6) & 07) & mode) == mode ? 0 : -1;
+         }
        else
-	 {
-	   int i, ngroups, gidset[NGROUPS_MAX];
+         {
+           int i, ngroups, gidset[NGROUPS_MAX];
  
-	   ngroups = syscall(SYS_getgroups, NGROUPS_MAX, gidset);
+           ngroups = syscall(SYS_getgroups, NGROUPS_MAX, gidset);
  
-	   for (i = 0; i < ngroups; i++)
-	     if (stb.st_gid == (gid_t)gidset[i])
-	       break;
+           for (i = 0; i < ngroups; i++)
+             if (stb.st_gid == (gid_t)gidset[i])
+               break;
  
-	   if (i != ngroups)
-	     res = (((stb.st_mode >> 3) & 07) & mode) == mode ? 0 : -1;
-	   else
-	     res = ((stb.st_mode & 07) & mode) == mode ? 0 : -1;
-	 }
+           if (i != ngroups)
+             res = (((stb.st_mode >> 3) & 07) & mode) == mode ? 0 : -1;
+           else
+             res = ((stb.st_mode & 07) & mode) == mode ? 0 : -1;
+         }
 
       if (res) errno = EACCES;
     }

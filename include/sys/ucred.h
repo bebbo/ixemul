@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,29 +30,29 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)ucred.h     7.5 (Berkeley) 2/5/91
+ *	@(#)ucred.h	7.5 (Berkeley) 2/5/91
  */
 
 #ifndef _UCRED_H_
-#define _UCRED_H_
+#define	_UCRED_H_
 
 /*
  * Credentials.
  */
 struct ucred {
-	u_short cr_ref;                 /* reference count */
-	uid_t   cr_uid;                 /* effective user id */
-	short   cr_ngroups;             /* number of groups */
-	gid_t   cr_groups[NGROUPS];     /* groups */
+	u_short	cr_ref;			/* reference count */
+	uid_t	cr_uid;			/* effective user id */
+	short	cr_ngroups;		/* number of groups */
+	gid_t	cr_groups[NGROUPS];	/* groups */
 };
 #define cr_gid cr_groups[0]
 #define NOCRED ((struct ucred *)-1)
 
 #ifdef _KERNEL
-#define crhold(cr)      (cr)->cr_ref++
+#define	crhold(cr)	(cr)->cr_ref++
 struct ucred *crget();
 struct ucred *crcopy();
 struct ucred *crdup();
-#endif //_KERNEL
+#endif _KERNEL
 
 #endif /* !_UCRED_H_ */

@@ -1,4 +1,4 @@
-/*      $NetBSD: regexp.h,v 1.3 1994/10/26 00:56:15 cgd Exp $   */
+/*	$NetBSD: regexp.h,v 1.3 1994/10/26 00:56:15 cgd Exp $	*/
 
 /*
  * Copyright (c) 1986 by University of Toronto.
@@ -18,8 +18,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -36,11 +36,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)regexp.h    5.2 (Berkeley) 4/3/91
+ *	@(#)regexp.h	5.2 (Berkeley) 4/3/91
  */
 
-#ifndef _REGEXP_H_
-#define _REGEXP_H_
+#ifndef	_REGEXP_H_
+#define	_REGEXP_H_
 
 /*
  * Definitions etc. for regexp(3) routines.
@@ -52,12 +52,12 @@
 typedef struct regexp {
 	char *startp[NSUBEXP];
 	char *endp[NSUBEXP];
-	char regstart;          /* Internal use only. */
-	char reganch;           /* Internal use only. */
-	char *__ALIGN2__ regmust;/* Internal use only. */
-	int __ALIGN2__ regmlen; /* Internal use only. */
-	char program[1];        /* Unwarranted chumminess with compiler. */
-} __PACKED__ regexp;
+	char regstart;		/* Internal use only. */
+	char reganch;		/* Internal use only. */
+	char *regmust;		/* Internal use only. */
+	int regmlen;		/* Internal use only. */
+	char program[1];	/* Unwarranted chumminess with compiler. */
+} regexp;
 
 #include <sys/cdefs.h>
 

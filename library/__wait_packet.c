@@ -60,12 +60,12 @@ __wait_sync_packet(struct StandardPacket *sp)
   for (;;)
     {
       if ((prw = GetPacket(u.u_sync_mp)))
-	{
+        {
 	  PACKET_IN_USE (prw) = 0;
-	  if (prw == sp) break;
-	}
+          if (prw == sp) break;
+        }
       else
-	{
+        {
 	  Wait(1<<u.u_sync_mp->mp_SigBit);
 	}
     }
@@ -90,12 +90,12 @@ __wait_select_packet(struct StandardPacket *sp)
   for (;;)
     {
       if ((prw = GetPacket(u.u_select_mp)))
-	{
+        {
 	  PACKET_IN_USE (prw) = 0;
-	  if (prw == sp) break;
-	}
+          if (prw == sp) break;
+        }
       else
-	{
+        {
 	  Wait(1<<u.u_select_mp->mp_SigBit);
 	}
     }

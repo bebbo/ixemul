@@ -1,7 +1,3 @@
-#define _KERNEL
-#include "ixemul.h"
-#include <user.h>
-
 void ixnewlist(struct ixlist *list)
 {
   list->head = list->tail = NULL;

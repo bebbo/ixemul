@@ -1,8 +1,8 @@
-/*      $NetBSD: scandir.c,v 1.6 1995/02/25 08:51:42 cgd Exp $  */
+/*	$NetBSD: scandir.c,v 1.6 1995/02/25 08:51:42 cgd Exp $	*/
 
 /*
  * Copyright (c) 1983, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)scandir.c   8.3 (Berkeley) 1/2/94";
+static char sccsid[] = "@(#)scandir.c	8.3 (Berkeley) 1/2/94";
 #else
 static char rcsid[] = "$NetBSD: scandir.c,v 1.6 1995/02/25 08:51:42 cgd Exp $";
 #endif
@@ -61,15 +61,15 @@ static char rcsid[] = "$NetBSD: scandir.c,v 1.6 1995/02/25 08:51:42 cgd Exp $";
  * (dp->d_namlen + 1), rounded up to a 4 byte boundary.
  */
 #undef DIRSIZ
-#define DIRSIZ(dp)                                                      \
-	((sizeof(struct dirent) - sizeof(dp)->d_name) +                 \
+#define DIRSIZ(dp)							\
+	((sizeof(struct dirent) - sizeof(dp)->d_name) +			\
 	    (((dp)->d_namlen + 1 + 3) &~ 3))
 
 int
 scandir(dirname, namelist, select, dcomp)
 	const char *dirname;
 	struct dirent ***namelist;
-	int (*select) __P((const struct dirent *));
+	int (*select) __P((struct dirent *));
 	int (*dcomp) __P((const void *, const void *));
 {
 	register struct dirent *d, *p, **names;
@@ -92,7 +92,7 @@ scandir(dirname, namelist, select, dcomp)
 	nitems = 0;
 	while ((d = readdir(dirp)) != NULL) {
 		if (select != NULL && !(*select)(d))
-			continue;       /* just selected names */
+			continue;	/* just selected names */
 		/*
 		 * Make a minimum size copy of the data
 		 */
@@ -101,7 +101,6 @@ scandir(dirname, namelist, select, dcomp)
 			return(-1);
 		p->d_ino = d->d_ino;
 		p->d_reclen = d->d_reclen;
-		p->d_type = d->d_type;
 		p->d_namlen = d->d_namlen;
 		bcopy(d->d_name, p->d_name, p->d_namlen + 1);
 		/*

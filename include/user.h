@@ -124,7 +124,7 @@ struct vfork_msg {
  */
 
 /* default size */
-#define A4_POINTERS 1000
+#define A4_POINTERS 100
 
 /* NB: a list of pointers for shared libraries is allocated *before*
    the start of this struct! So the struct is actually larger, but
@@ -418,22 +418,6 @@ struct user {
         short                   u_segment_no;   /* segment number (0-2) */
         long                    u_segment_ptr;
 	struct ixnode		u_detached_node;
-	FILE                    *u_net_fp;      /* File pointer to network file */
-	char                    *u_net_line;
-	struct netent            u_net;
-	char                   **u_net_aliases;
-	int                      u_net_stayopen; 
-	void			        *u_sdata_ptr;
-	void                   (*u_oexcept_code)();
-	u_long                   u_oexcept_sigs;
-	char                     u_getpass_buf[_PASSWORD_LEN + 1];
-	void 			        *u_wbmsg; 
-	APTR                     u_ouser;
-	APTR                     u_poolheader;
-	struct user *            u_parent_userdata;
-	APTR                     u_poolsema;
-	void *                   u_tc_userdata;
-	char                     u_use_amiga_paths;
 };
 
 /* flag codes */
@@ -462,7 +446,6 @@ struct user {
 #define	SSEL	0x0400000	/* selecting; wakeup/waiting danger */
 #define	SLOGIN	0x0800000	/* a login process (legit child of init) */
 #define SUSAGE  0x1000000	/* we already reported the stack usage */
-#define EXECVECLOSE     0x10000000      /* flag to handle execve() + atexit stdio */
 
 /* stat codes */
 #define	SSLEEP	1		/* awaiting an event */

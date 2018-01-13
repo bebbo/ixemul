@@ -1,8 +1,8 @@
-/*      $NetBSD: hash_buf.c,v 1.6 1996/05/03 21:43:51 cgd Exp $ */
+/*	$NetBSD: hash_buf.c,v 1.6 1996/05/03 21:43:51 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Margo Seltzer.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)hash_buf.c  8.5 (Berkeley) 7/15/94";
+static char sccsid[] = "@(#)hash_buf.c	8.5 (Berkeley) 7/15/94";
 #else
 static char rcsid[] = "$NetBSD: hash_buf.c,v 1.6 1996/05/03 21:43:51 cgd Exp $";
 #endif
@@ -48,16 +48,16 @@ static char rcsid[] = "$NetBSD: hash_buf.c,v 1.6 1996/05/03 21:43:51 cgd Exp $";
  * PACKAGE: hash
  *
  * DESCRIPTION:
- *      Contains buffer management
+ *	Contains buffer management
  *
  * ROUTINES:
  * External
- *      __buf_init
- *      __get_buf
- *      __buf_free
- *      __reclaim_buf
+ *	__buf_init
+ *	__get_buf
+ *	__buf_free
+ *	__reclaim_buf
  * Internal
- *      newbuf
+ *	newbuf
  */
 
 #include <sys/param.h>
@@ -92,11 +92,11 @@ static BUFHEAD *newbuf __P((HTAB *, u_int32_t, BUFHEAD *));
 	(B)->next->prev = (B); \
 }
 
-#define MRU     hashp->bufhead.next
-#define LRU     hashp->bufhead.prev
+#define	MRU	hashp->bufhead.next
+#define	LRU	hashp->bufhead.prev
 
-#define MRU_INSERT(B)   BUF_INSERT((B), &hashp->bufhead)
-#define LRU_INSERT(B)   BUF_INSERT((B), LRU)
+#define MRU_INSERT(B)	BUF_INSERT((B), &hashp->bufhead)
+#define LRU_INSERT(B)	BUF_INSERT((B), LRU)
 
 /*
  * We are looking for a buffer with address "addr".  If prev_bp is NULL, then
@@ -112,7 +112,7 @@ __get_buf(hashp, addr, prev_bp, newpage)
 	HTAB *hashp;
 	u_int32_t addr;
 	BUFHEAD *prev_bp;
-	int newpage;    /* If prev_bp set, indicates a new overflow page. */
+	int newpage;	/* If prev_bp set, indicates a new overflow page. */
 {
 	register BUFHEAD *bp;
 	register u_int32_t is_disk_mask;
@@ -168,8 +168,8 @@ newbuf(hashp, addr, prev_bp)
 	u_int32_t addr;
 	BUFHEAD *prev_bp;
 {
-	register BUFHEAD *bp;           /* The buffer we're going to use */
-	register BUFHEAD *xbp;          /* Temp pointer */
+	register BUFHEAD *bp;		/* The buffer we're going to use */
+	register BUFHEAD *xbp;		/* Temp pointer */
 	register BUFHEAD *next_xbp;
 	SEGMENT segp;
 	int segment_ndx;

@@ -40,7 +40,7 @@ isatty(int fd)
   if (fd >= 0 && fd < NOFILE && f)
     {
       if (f->f_type == DTYPE_FILE)
-	result = IsInteractive(CTOBPTR(f->f_fh)) ? 1 : 0;
+        result = IsInteractive(CTOBPTR(f->f_fh)) ? 1 : 0;
     }
   
   return result;

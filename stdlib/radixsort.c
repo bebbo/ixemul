@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)radixsort.c 5.7 (Berkeley) 2/23/91";
+static char sccsid[] = "@(#)radixsort.c	5.7 (Berkeley) 2/23/91";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
@@ -46,7 +46,7 @@ static char sccsid[] = "@(#)radixsort.c 5.7 (Berkeley) 2/23/91";
  * of a shellsort.  If it changes check __rsshell_increments.  Both of
  * these are exported, as the best values are data dependent.
  */
-#define NPARTITION      40
+#define	NPARTITION	40
 int __rspartition = NPARTITION;
 int __rsshell_increments[] = { 4, 1, 0, 0, 0, 0, 0, 0 };
 
@@ -59,7 +59,7 @@ int __rsshell_increments[] = { 4, 1, 0, 0, 0, 0, 0, 0 };
  * pushed on the stack last contains the rest of the elements.  In this case,
  * stack growth is bounded by:
  *
- *      limit = (nelements / (npartitions + 1)) - 1;
+ *	limit = (nelements / (npartitions + 1)) - 1;
  *
  * This is a very large number, 52,377,648 for the maximum 32-bit signed int.
  *
@@ -68,29 +68,29 @@ int __rsshell_increments[] = { 4, 1, 0, 0, 0, 0, 0, 0 };
  * with the remaining elements split equally between the first and last
  * buckets pushed on the stack.  In this case, stack growth is bounded when:
  *
- *      for (partition_cnt = 0; nelements > npartitions; ++partition_cnt)
- *              nelements =
- *                  (nelements - (npartitions + 1) * (nbuckets - 2)) / 2;
+ *	for (partition_cnt = 0; nelements > npartitions; ++partition_cnt)
+ *		nelements =
+ *		    (nelements - (npartitions + 1) * (nbuckets - 2)) / 2;
  * The bound is:
  *
- *      limit = partition_cnt * (nbuckets - 1);
+ *	limit = partition_cnt * (nbuckets - 1);
  *
  * This is a much smaller number, 4590 for the maximum 32-bit signed int.
  */
-#define NBUCKETS        (UCHAR_MAX + 1)
+#define	NBUCKETS	(UCHAR_MAX + 1)
 
 typedef struct _stack {
 	const u_char **bot;
 	int indx, nmemb;
 } CONTEXT;
 
-#define STACKPUSH { \
+#define	STACKPUSH { \
 	stackp->bot = p; \
 	stackp->nmemb = nmemb; \
 	stackp->indx = indx; \
 	++stackp; \
 }
-#define STACKPOP { \
+#define	STACKPOP { \
 	if (stackp == stack) \
 		break; \
 	--stackp; \
@@ -98,8 +98,6 @@ typedef struct _stack {
 	nmemb = stackp->nmemb; \
 	indx = stackp->indx; \
 }
-
-static void shellsort();
 
 /*
  * A variant of MSD radix sorting; see Knuth Vol. 3, page 177, and 5.2.5,
@@ -115,7 +113,7 @@ static void shellsort();
  * the number of bytes in the strings.
  */
 int radixsort(const unsigned char **l1, int nmemb, const unsigned char *tab,
-	      unsigned endbyte)
+              unsigned endbyte)
 {
 	register int i, indx, t1, t2;
 	register const u_char **l2;
@@ -125,6 +123,7 @@ int radixsort(const unsigned char **l1, int nmemb, const unsigned char *tab,
 	CONTEXT *stack, *stackp;
 	int c[NBUCKETS + 1], max;
 	u_char ltab[NBUCKETS];
+	static void shellsort();
 
 	if (nmemb <= 1)
 		return(0);

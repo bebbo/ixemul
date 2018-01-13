@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,22 +30,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)struct.h    5.2 (Berkeley) 4/3/91
+ *	@(#)struct.h	5.2 (Berkeley) 4/3/91
  */
 
 #ifndef _STRUCT_H_
-#define _STRUCT_H_
+#define	_STRUCT_H_
 
 /* Offset of the field in the structure. */
-#define fldoff(name, field) \
+#define	fldoff(name, field) \
 	((int)&(((struct name *)0)->field))
 
 /* Size of the field in the structure. */
-#define fldsiz(name, field) \
+#define	fldsiz(name, field) \
 	(sizeof(((struct name *)0)->field))
 
 /* Address of the structure from a field. */
-#define strbase(name, addr, field) \
+#define	strbase(name, addr, field) \
 	((struct name *)((char *)(addr) - fldoff(name, field)))
 
 #endif /* !_STRUCT_H_ */

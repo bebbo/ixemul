@@ -6,6 +6,6 @@
 #include <float.h>
 #include <limits.h>
 
-#endif  /* _VALUES_H */
+#endif	/* _VALUES_H */
 
 

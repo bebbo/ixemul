@@ -47,7 +47,7 @@
 	.globl	_vector_nop
 
 	| struct offsets are determined by create_defines
-#include "ix_internals_backup.h"
+#include "ix_internals.h"
 
 	| This is the trap processing function for the mc68000.
 	| Things are quite easy here, just save the general purpose registers

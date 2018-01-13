@@ -17,7 +17,24 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: kern_sig.c,v 1.1.1.1 2005/03/15 15:57:08 laire Exp $
+ *  $Id: kern_sig.c,v 1.6 1994/07/11 00:32:56 rluebbert Exp $
+ *
+ *  $Log: kern_sig.c,v $
+ *  Revision 1.6  1994/07/11  00:32:56  rluebbert
+ *  Put issig back in.
+ *
+ *  Revision 1.5  1994/07/11  00:27:37  rluebbert
+ *  Commented out unused issig
+ *
+ *  Revision 1.4  1994/06/19  15:13:35  rluebbert
+ *  *** empty log message ***
+ *
+ *  Revision 1.2  1992/07/04  19:19:51  mwild
+ *  change to new ix_sleep() semantics
+ *
+ * Revision 1.1  1992/05/14  19:55:40  mwild
+ * Initial revision
+ *
  *
  *  Since the code originated from Berkeley, the following copyright
  *  header applies as well. The code has been changed, it's not the
@@ -43,21 +60,21 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *      @(#)kern_sig.c  7.23 (Berkeley) 6/28/90
+ *	@(#)kern_sig.c	7.23 (Berkeley) 6/28/90
  */
 
 #define _KERNEL
 #include "ixemul.h"
 #include "kprintf.h"
-#define KPRINTF //kprintf 
+
 #include <stdio.h>
 #include <string.h>
 
 #include <wait.h>
 
-#define ttystopsigmask  (sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU))
-#define stopsigmask     (sigmask(SIGSTOP)|ttystopsigmask)
-#define defaultignmask  (sigmask(SIGCONT)|sigmask(SIGIO)|sigmask(SIGURG)| \
+#define	ttystopsigmask	(sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU))
+#define	stopsigmask	(sigmask(SIGSTOP)|ttystopsigmask)
+#define defaultignmask	(sigmask(SIGCONT)|sigmask(SIGIO)|sigmask(SIGURG)| \
 			sigmask(SIGCHLD)|sigmask(SIGWINCH)|sigmask(SIGINFO)|sigmask(SIGMSG))
 
 void setsigvec (int sig, struct sigaction *sa);
@@ -77,8 +94,6 @@ sigaction (int sig, const struct sigaction *nsa, struct sigaction *osa)
   register struct sigaction *sa;
   int bit;
   usetup;
-
-  KPRINTF(("sigaction(%ld, %lx)\n", sig, nsa ? nsa->sa_handler : NULL));
 
   if (sig <= 0 || sig >= NSIG || sig == SIGKILL || sig == SIGSTOP)
     {
@@ -111,43 +126,9 @@ sigaction (int sig, const struct sigaction *nsa, struct sigaction *osa)
       *sa = *nsa;
       setsigvec(sig, sa);
     }
-
+  
   return (0);
 }
-
-#ifdef NATIVE_MORPHOS
-int
-_trampoline_sigaction(void)
-{
-  int *p = (int *)REG_A7;
-  int sig = p[1];
-  struct sigaction *nsa = (void *)p[2];
-  struct sigaction *osa = (void *)p[3];
-  struct sigaction my_nsa;
-  int r;
-
-  if (nsa && nsa->sa_handler != SIG_IGN &&
-      nsa->sa_handler != SIG_DFL && nsa->sa_handler != SIG_ERR)
-    {
-      my_nsa = *nsa;
-
-      *(int*)&my_nsa.sa_handler ^= 1;
-      nsa = &my_nsa;
-    }
-
-  r = sigaction(sig, nsa, osa);
-
-  if (osa && osa->sa_handler != SIG_IGN &&
-      osa->sa_handler != SIG_DFL && osa->sa_handler != SIG_ERR)
-    *(int *)osa->sa_handler ^= 1;
-
-  return r;
-}
-
-struct EmulLibEntry _gate_sigaction = {
-  TRAP_LIB, 0, (void(*)())_trampoline_sigaction
-};
-#endif
 
 void
 setsigvec (int sig, struct sigaction *sa)
@@ -155,7 +136,6 @@ setsigvec (int sig, struct sigaction *sa)
   register int bit;
   usetup;
 
-  KPRINTF(("setsigvec(%ld, %lx)\n", sig, sa ? sa->sa_handler : NULL));
   bit = sigmask(sig);
   /*
    * Change setting atomically.
@@ -175,7 +155,7 @@ setsigvec (int sig, struct sigaction *sa)
   else
     u.u_sigonstack &= ~bit;
 
-  if (sig == SIGCHLD)
+  if (sig == SIGCHLD) 
     {
       if (sa->sa_flags & SA_NOCLDSTOP)
 	u.p_flag |= SNOCLDSTOP;
@@ -190,14 +170,14 @@ setsigvec (int sig, struct sigaction *sa)
    * as we have to restart the process.
    */
   if (sa->sa_handler == SIG_IGN ||
-      (bit & defaultignmask && sa->sa_handler == SIG_DFL))
+      (bit & defaultignmask && sa->sa_handler == SIG_DFL)) 
     {
-      u.p_sig &= ~bit;          /* never to be seen again */
+      u.p_sig &= ~bit;		/* never to be seen again */
       if (sig != SIGCONT)
-	u.p_sigignore |= bit;   /* easier in _psignal */
+	u.p_sigignore |= bit;	/* easier in _psignal */
       u.p_sigcatch &= ~bit;
     }
-  else
+  else 
     {
       u.p_sigignore &= ~bit;
       if (sa->sa_handler == SIG_DFL)
@@ -218,6 +198,7 @@ int
 sigprocmask (int how, const sigset_t *mask, sigset_t *omask)
 {
   usetup;
+
   if (omask)
     *omask = u.p_sigmask;
 
@@ -225,31 +206,31 @@ sigprocmask (int how, const sigset_t *mask, sigset_t *omask)
     {
       Forbid();
 
-      switch (how)
-	{
-	case SIG_BLOCK:
+      switch (how) 
+        {
+        case SIG_BLOCK:
 	  u.p_sigmask |= *mask &~ sigcantmask;
 	  break;
 
-	case SIG_UNBLOCK:
+        case SIG_UNBLOCK:
 	  u.p_sigmask &= ~*mask;
 	  break;
 
-	case SIG_SETMASK:
+        case SIG_SETMASK:
 	  u.p_sigmask = *mask &~ sigcantmask;
 	  break;
-
-	default:
+	
+        default:
 	  errno = EINVAL;
 	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 	  goto err_ret;
-	}
+        }
 
       Permit();
     }
 
   if (CURSIG (&u))
-    setrun (SysBase->ThisTask);
+    setrun (FindTask (0));
 
   return 0;
 
@@ -262,6 +243,7 @@ int
 sigpending (sigset_t *sigs)
 {
   usetup;
+
   *sigs = u.p_sig;
   return 0;
 }
@@ -281,8 +263,6 @@ sigvec(int sig, struct sigvec *nsv, struct sigvec *osv)
   struct user *p = &u;
   int bit;
 
-  KPRINTF(("sigvec(%ld, %lx)\n", sig, nsv ? nsv->sv_handler : NULL));
-
   if (sig <= 0 || sig >= NSIG || sig == SIGKILL || sig == SIGSTOP)
     {
       *p->u_errno = EINVAL;
@@ -291,7 +271,7 @@ sigvec(int sig, struct sigvec *nsv, struct sigvec *osv)
     }
 
   sv = &vec;
-  if (osv)
+  if (osv) 
     {
       *(sig_t *)&sv->sv_handler = p->u_signal[sig];
       sv->sv_mask = p->u_sigmask[sig];
@@ -306,54 +286,22 @@ sigvec(int sig, struct sigvec *nsv, struct sigvec *osv)
       *osv = *sv;
     }
 
-  if (nsv)
+  if (nsv) 
     {
       *sv = *nsv;
-      sv->sv_flags ^= SA_RESTART;       /* opposite of SV_INTERRUPT */
+      sv->sv_flags ^= SA_RESTART;	/* opposite of SV_INTERRUPT */
       setsigvec(sig, (struct sigaction *)sv);
     }
 
   return (0);
 }
 
-#ifdef NATIVE_MORPHOS
-int
-_trampoline_sigvec(void)
-{
-  int *p = (int *)REG_A7;
-  int sig = p[1];
-  struct sigvec *nsv = (void *)p[2];
-  struct sigvec *osv = (void *)p[3];
-  struct sigvec my_nsv;
-  int r;
-
-  if (nsv && nsv->sv_handler != SIG_IGN &&
-      nsv->sv_handler != SIG_DFL && nsv->sv_handler != SIG_ERR)
-    {
-      my_nsv = *nsv;
-      *(int*)&my_nsv.sv_handler ^= 1;
-      nsv = &my_nsv;
-    }
-
-  r = sigvec(sig, nsv, osv);
-
-  if (osv && osv->sv_handler != SIG_IGN &&
-      osv->sv_handler != SIG_DFL && osv->sv_handler != SIG_ERR)
-    *(int *)osv->sv_handler ^= 1;
-
-  return r;
-}
-
-struct EmulLibEntry _gate_sigvec = {
-  TRAP_LIB, 0, (void(*)())_trampoline_sigvec
-};
-#endif
-
 int
 sigblock (int mask)
 {
   int result;
   usetup;
+
   Forbid();
   result = u.p_sigmask;
   u.p_sigmask |= mask &~ sigcantmask;
@@ -368,21 +316,21 @@ sigsetmask(int mask)
   int result;
   usetup;
   struct user *p = &u;
+
   Forbid();
-  /* KPRINTF(("sigsetmask(%lx), old = %lx\n", mask, u.p_sigmask)); */
   result = u.p_sigmask;
   u.p_sigmask = mask &~ sigcantmask;
   Permit();
 
   if (CURSIG (p))
-    setrun (SysBase->ThisTask);
+    setrun (FindTask (0));
 
   return result;
 }
 
 /*
  * Suspend process until signal, providing mask to be set
- * in the meantime.
+ * in the meantime. 
  */
 /* ARGSUSED */
 int
@@ -390,7 +338,7 @@ sigsuspend (const sigset_t *mask)
 {
   usetup;
   struct user *p = &u;
-int i;
+
   /*
    * When returning from sigpause, we want
    * the old mask to be restored after the
@@ -398,8 +346,7 @@ int i;
    * save it here and mark the proc structure
    * to indicate this (should be in u.).
    */
-KPRINTF("sigsuspend(%08lx)\n", mask);
-KPRINTF("handling sigs 0. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, SysBase->IDNestCnt);
+
   Forbid();
   p->u_oldmask = p->p_sigmask;
   p->p_flag |= SOMASK;
@@ -409,30 +356,20 @@ KPRINTF("handling sigs 0. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCn
   /* NOTE: we have to specify SIGBREAKF_CTRL_C here, as the OS doesn't seem
    *       to reschedule our task, if it receives a signal it isn't waiting
    *       for. If SIGINT is ignored, then this will jump back into the Wait,
-   *       if not, we're leaving correctly, since we waited for a signal
-   *       that now occured (lucky we, the OS tests the Recvd-field before
-   *       tc_Launch has a chance to reset it ;-))
+   *	   if not, we're leaving correctly, since we waited for a signal
+   *	   that now occured (lucky we, the OS tests the Recvd-field before
+   *	   tc_Launch has a chance to reset it ;-))
    */
 
   while (ix_sleep ((caddr_t)p, "sigsuspend") == 0);
   Permit();
-//Delay(2);
-KPRINTF("handling sigs 1. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, SysBase->IDNestCnt);
-  setrun (SysBase->ThisTask);
-//Delay(1);
-//while(i=CURSIG(p))
-//    psig(p, i);
+
+  setrun (FindTask (0));
 
   p->p_sigmask = p->u_oldmask;
 
-KPRINTF("handling sigs 2. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, SysBase->IDNestCnt);
   if (CURSIG (p))
-    setrun (SysBase->ThisTask);
-//Delay(1);
-//while(i=CURSIG(p))
-//    psig(p, i);
-
-KPRINTF("handled sigs. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, SysBase->IDNestCnt);
+    setrun (FindTask (0));
 
   /* always return EINTR rather than ERESTART... */
   errno = EINTR;
@@ -443,7 +380,7 @@ KPRINTF("handled sigs. TDNestCnt = %ld, IDNestCnt = %ld\n", SysBase->TDNestCnt, 
 
 int
 sigpause (int mask)
-{ //Delay(1);
+{
   return sigsuspend (&mask);
 }
 
@@ -453,6 +390,7 @@ int
 sigstack(const struct sigstack *nss, struct sigstack *oss)
 {
   usetup;
+
   if (oss) *oss = u.u_sigstack;
   if (nss) u.u_sigstack = *nss;
 
@@ -479,6 +417,7 @@ pfind (pid_t p)
 {
   struct Task *t;
   usetup;
+  
   if (p && !(p & 1))
     {
       /* have to check if the task really exists */
@@ -489,36 +428,36 @@ pfind (pid_t p)
       Disable();
       exectasklist = &(SysBase->TaskWait);
       for (execnode = exectasklist->lh_Head; execnode->ln_Succ;
-	   execnode = execnode->ln_Succ)
-	{
-	  if ((pid_t)execnode == p)
-	    break;
-	}
+           execnode = execnode->ln_Succ)
+        {
+          if ((pid_t)execnode == p)
+            break;
+        }
       if (execnode == NULL)
-	{
-	  exectasklist = &(SysBase->TaskReady);
-	  for (execnode = exectasklist->lh_Head; execnode->ln_Succ;
-	       execnode = execnode->ln_Succ)
-	    {
-	      if ((pid_t)execnode == p)
-		break;
-	    }
-	}
+        {
+          exectasklist = &(SysBase->TaskReady);
+          for (execnode = exectasklist->lh_Head; execnode->ln_Succ;
+               execnode = execnode->ln_Succ)
+            {
+              if ((pid_t)execnode == p)
+                break;
+            }
+        }
       Enable();
       if (execnode == NULL)
-	return 0;
+        return 0;
       t = (struct Task *) p;
       if (t->tc_Node.ln_Type == NT_TASK ||
-	  t->tc_Node.ln_Type == NT_PROCESS)
-	{
-	  struct user *tu = getuser(t);
+          t->tc_Node.ln_Type == NT_PROCESS)
+        {
+          struct user *tu = getuser(t);
 
-	  if (tu && !((int)getuser(t) & 1) && tu->u_ixbase == u.u_ixbase)
+          if (tu && !((int)getuser(t) & 1) && tu->u_ixbase == u.u_ixbase)
 	    return t;
 	}
     }
   else if (! p)
-    return SysBase->ThisTask;
+    return FindTask (0);
 
   return 0;
 }
@@ -529,22 +468,21 @@ kill(pid_t pid, int signo)
 {
   register struct Task *t;
   usetup;
-  
-KPRINTF(("kill(%lx, %ld)\n", pid, signo));
+
   if ((unsigned) signo >= NSIG)
     {
       errno = EINVAL;
       KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
       return -1;
     }
-  
+
   if (pid >= 0)
     {
       /* kill single process */
       t = pfind(pid);
 
       if (t == 0)
-	{
+        {
 	  /* there is a small chance, if pid == 0, that we may send the signal
 	   * as well. If signo == SIGINT, and pid refers to a valid Task, we send
 	   * it a SIGBREAKF_CTRL_C */
@@ -552,25 +490,25 @@ KPRINTF(("kill(%lx, %ld)\n", pid, signo));
 	    {
 	      t = (struct Task *) pid;
 	      if (t->tc_Node.ln_Type == NT_TASK ||
-		  t->tc_Node.ln_Type == NT_PROCESS)
-		{
+	          t->tc_Node.ln_Type == NT_PROCESS)
+	        {
 		  Signal (t, SIGBREAKF_CTRL_C);
 		  return 0;
 		}
 	    }
 
-	  errno = ESRCH;
+          errno = ESRCH;
 	  KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
-	  return -1;
-	}
+          return -1;
+        }
 
       if (signo)
 	_psignal(t, signo);
-KPRINTF(("kill: done.\n"));
+
       return (0);
     }
 
-  /* signalling process groups is not (yet) implemented */
+  /* signalling process groups is not (yet) implemented */  
   errno = ESRCH;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
   return -1;
@@ -581,13 +519,14 @@ int
 killpg(int pgid, int signo)
 {
   usetup;
+
   if ((unsigned) signo >= NSIG)
     errno = EINVAL;
   else
     errno = ESRCH;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));
 
-  /* signalling process groups is not (yet) implemented */
+  /* signalling process groups is not (yet) implemented */  
   return -1;
 }
 
@@ -600,6 +539,7 @@ void trapsignal(struct Task *t, int sig, unsigned code, void *addr)
 {
   int mask;
   usetup;
+
   mask = sigmask(sig);
   if ((u.p_flag & STRC) == 0 && (u.p_sigcatch & mask) != 0 &&
       (u.p_sigmask & mask) == 0)
@@ -611,7 +551,7 @@ void trapsignal(struct Task *t, int sig, unsigned code, void *addr)
     }
   else
     {
-      u.u_code = code;  /* XXX for core dump/debugger */
+      u.u_code = code;	/* XXX for core dump/debugger */
       _psignal(t, sig);
     }
 }
@@ -639,23 +579,22 @@ int core(void)
  * Other ignored signals are discarded immediately.
  */
 void
-_psignal(struct Task *t, int sig)       /* MAY be called in Supervisor/Interrupt  !*/
+_psignal(struct Task *t, int sig)	/* MAY be called in Supervisor/Interrupt  !*/
 {
   register sig_t action;
   /* may be another process, so don't use u. here ! */
   struct user *p = getuser(t);
   int mask;
 
-  mask = sigmask(sig);
 
-  KPRINTF(("_psignal(%lx, %ld), mask = %lx, ignore = %lx\n", t, sig, p->p_sigmask, p->p_sigignore));
+  mask = sigmask(sig);
 
   /*
    * If proc is traced, always give parent a chance.
    */
   if (p->p_flag & STRC)
     action = SIG_DFL;
-  else
+  else 
     {
 
       /* NOTE AMIGA !
@@ -665,7 +604,7 @@ _psignal(struct Task *t, int sig)       /* MAY be called in Supervisor/Interrupt
        * in a SIGILL, masked in, not ignored, not caught, that's it.
        */
       if (((mask & p->p_sigignore) || (mask & p->p_sigmask))
-	  && (sig == SIGILL  || sig == SIGBUS || sig == SIGFPE ||
+	  && (sig == SIGILL  || sig == SIGBUS || sig == SIGFPE || 
 	      sig == SIGTRAP || sig == SIGEMT))
 	{
 	  sig = SIGILL;
@@ -694,7 +633,7 @@ _psignal(struct Task *t, int sig)       /* MAY be called in Supervisor/Interrupt
 	action = SIG_DFL;
     }
 
-  switch (sig)
+  switch (sig) 
     {
     case SIGTERM:
       if ((p->p_flag&STRC) || action != SIG_DFL)
@@ -730,6 +669,7 @@ _psignal(struct Task *t, int sig)       /* MAY be called in Supervisor/Interrupt
    */
   if (p->p_stat == SSTOP && (p->p_flag & STRC))
     return;
+
   setrun(t);
 }
 
@@ -739,8 +679,9 @@ void stopped_process_handler (void)
      (in the view of other ixemul.library processes) a stopped process.
      We got here from the stop_process_glue routine.  */
 
-  struct Task *task = SysBase->ThisTask;
+  struct Task *task = FindTask(0);
   struct user *p = getuser(task);
+
   Forbid();
   _psignal((struct Task *)p->p_pptr, SIGCHLD);
   stop (p);
@@ -764,37 +705,27 @@ void stopped_process_handler (void)
  * calling issig by checking the pending signal masks.)
  */
 int
-issig(struct user *p)   /* called in SUPERVISOR */
+issig(struct user *p)	/* called in SUPERVISOR */
 {
   register int sig, mask;
   u_int sr;
   usetup;
-  KPRINTF(("issig()\n"));
 
-#ifdef NATIVE_MORPHOS
-  sr = 0;
-#else
-/*#ifdef MORPHOS
-  if (has_morphos)
-    sr = 0;
-  else
-#endif*/
-    {
-      asm volatile (" \n\
-	movel a5,a0 \n\
-	lea   Lget_sr,a5 \n\
-	movel 4:w,a6 \n\
-	jsr   a6@(-0x1e) \n\
-	movel a1,%0 \n\
-	bra   Lskip \n\
-    Lget_sr: \n\
-	movew sp@,a1        | get sr register from the calling function \n\
-	rte \n\
-    Lskip: \n\
-	movel a0,a5 \n\
-	    " : "=g" (sr) : : "a0", "a1", "a6");
-    }
-#endif
+  KPRINTF(("issig(task=%lx)\n", FindTask(0)));
+
+  asm volatile (" 
+    movel a5,a0
+    lea	  Lget_sr,a5
+    movel 4:w,a6
+    jsr	  a6@(-0x1e)
+    movel a1,%0
+    bra	  Lskip
+Lget_sr:
+    movew sp@,a1	| get sr register from the calling function
+    rte
+Lskip:
+    movel a0,a5
+	" : "=g" (sr) : : "a0", "a1", "a6");
 
   if (p->u_mask_state)
     {
@@ -808,7 +739,7 @@ issig(struct user *p)   /* called in SUPERVISOR */
       if (p->p_flag & SVFORK)
 	mask &= ~stopsigmask;
 
-      if (mask == 0)            /* no signal to send */
+      if (mask == 0)	 	/* no signal to send */
 	return 0;
 
       sig = ffs((long)mask);
@@ -817,16 +748,16 @@ issig(struct user *p)   /* called in SUPERVISOR */
        * We should see pending but ignored signals
        * only if STRC was on when they were posted.
        */
-      if ((mask & p->p_sigignore) && (p->p_flag & STRC) == 0)
-	{
-	  p->p_sig &= ~mask;
+      if ((mask & p->p_sigignore) && (p->p_flag & STRC) == 0) 
+        {
+          p->p_sig &= ~mask;
 	  continue;
 	}
 
       /* Don't do this while waiting in inet.library. */
       if (p->p_stat != SWAIT && (p->p_flag & STRC)
-	  && (p->p_flag & SVFORK) == 0)
-	{
+	  && (p->p_flag & SVFORK) == 0) 
+        {
 	  /*
 	   * If traced, always stop, and stay
 	   * stopped until released by the parent.
@@ -869,7 +800,7 @@ restart:
 	   * then it will leave it in p->p_xstat;
 	   * otherwise we just look for signals again.
 	   */
-	  p->p_sig &= ~mask;    /* clear the old signal */
+	  p->p_sig &= ~mask;	/* clear the old signal */
 	  sig = p->p_xstat;
 	  if (sig == 0)
 	    continue;
@@ -889,16 +820,15 @@ restart:
        * Return the signal's number, or fall through
        * to clear it from the pending mask.
        */
-	  int temp1 = p->u_signal[sig];
-      switch (((int)p->u_signal[sig]))
-	{
-	case (int)SIG_DFL:
+      switch ((int)p->u_signal[sig]) 
+        {
+	case SIG_DFL:
 #if notyet
 	  /*
 	   * Don't take default actions on system processes.
 	   */
 	  if (p->p_ppid == 0)
-	    break;              /* == ignore */
+	    break;		/* == ignore */
 #endif
 	  /*
 	   * If there is a pending stop signal to process
@@ -907,12 +837,12 @@ restart:
 	   * if process is member of an orphaned
 	   * process group, ignore tty stop signals.
 	   */
-	  if (mask & stopsigmask)
+	  if (mask & stopsigmask) 
 	    {
 #if notyet
 	      if (p->p_flag&STRC ||
 		  (p->p_pgru.pg_jobc == 0 && mask & ttystopsigmask))
-		break;  /* == ignore */
+		break;	/* == ignore */
 	      u.p_xstat = sig;
 	      stop(p);
 	      if ((u.p_pptr->p_flag & SNOCLDSTOP) == 0)
@@ -920,20 +850,20 @@ restart:
 	      swtch();
 #endif
 	      break;
-	    }
-	  else if (mask & defaultignmask)
+	    } 
+          else if (mask & defaultignmask)
 	    {
 	      /*
 	       * Except for SIGCONT, shouldn't get here.
 	       * Default action is to ignore; drop it.
 	       */
-	      break;            /* == ignore */
+	      break;		/* == ignore */
 	    }
 	  else
 	    return (sig);
 	  /*NOTREACHED*/
 
-	case (int)SIG_IGN:
+	case SIG_IGN:
 	  /*
 	   * Masking above should prevent us ever trying
 	   * to take action on an ignored signal other
@@ -943,7 +873,7 @@ restart:
 	  if (sig != SIGCONT && (u.p_flag&STRC) == 0)
 	    printf("issig\n");
 #endif
-	  break;                /* == ignore */
+	  break;		/* == ignore */
 
 	default:
 	  /*
@@ -952,7 +882,7 @@ restart:
 	   */
 	  return (sig);
 	}
-      u.p_sig &= ~mask;         /* take the signal! */
+      u.p_sig &= ~mask;		/* take the signal! */
     }
   /* NOTREACHED */
 }
@@ -973,31 +903,31 @@ void stop(struct user *p)
 /*
  * Perform the action specified by the current signal.
  * The usual sequence is:
- *      if (sig = CURSIG(p))
- *              psig(p, sig);
+ *	if (sig = CURSIG(p))
+ *		psig(p, sig);
  */
 void
-psig(struct user *p, int sig)   /* called in SUPERVISOR */
+psig(struct user *p, int sig)	/* called in SUPERVISOR */
 {
   int code, mask, returnmask;
-  register sig_t action;
-  do
+  register sig_t action; 
+
+  do 
     {
       if (sig == -1)
-	return;
-KPRINTF(("psig(%ld)\n", sig));
+        return;
       mask = sigmask(sig);
       p->p_sig &= ~mask;
       action = p->u_signal[sig];
-      if (action != SIG_DFL)
-	{
+      if (action != SIG_DFL) 
+        {
 	   /*
 	    * Set the new mask value and also defer further
 	    * occurences of this signal.
 	    *
 	    * Special case: user has done a sigpause.  Here the
 	    * current mask is not of interest, but rather the
-	    * mask from before the sigpause is what we want
+ 	    * mask from before the sigpause is what we want
 	    * restored after the signal processing is completed.
 	    */
 	  if (p->p_flag & SOMASK)
@@ -1021,7 +951,7 @@ KPRINTF(("psig(%ld)\n", sig));
 	      code = p->u_code;
 	      p->u_code = 0;
 	    }
-	  KPRINTF(("psig(): calling sendsig()\n"));
+	  KPRINTF(("kern_sig.c:psig(): doing sendsig(p, action, sig, returnmask, code, 0);\n"));
 	  sendsig(p, action, sig, returnmask, code, 0);
 	  continue;
 	}
@@ -1030,8 +960,8 @@ KPRINTF(("psig(%ld)\n", sig));
       p->u_acflag |= AXSIG;
 #endif
 
-      switch (sig)
-	{
+      switch (sig) 
+        {
 	case SIGILL:
 	case SIGIOT:
 	case SIGBUS:
@@ -1047,7 +977,6 @@ KPRINTF(("psig(%ld)\n", sig));
 	}
       /* we can't call exit() when in supervisor mode, have to do this just like
        * it was a signal passed on its own frame */
-	 
       sendsig(p, (sig_t)sig_exit, sig, 0, 0, 0);
   } while ((sig = CURSIG(p)));
 }
@@ -1055,17 +984,18 @@ KPRINTF(("psig(%ld)\n", sig));
 static int sigprocessgrp(struct Process *proc, int pgrp, int signal, int test)
 {
   struct Process *p;
+
   if (test)
     {
       if (getuser(proc) == NULL)
-	return 0;
+        return 0;
       for (p = getuser(proc)->p_cptr; p; p = getuser(p)->p_osptr)
-	{
-	  if (getuser(p) == NULL)
-	    return 0;
-	  if (sigprocessgrp(p, pgrp, signal, test) == 0)
-	    return 0;
-	}
+        {
+          if (getuser(p) == NULL)
+            return 0;
+          if (sigprocessgrp(p, pgrp, signal, test) == 0)
+            return 0;
+        }
       return 1;
     }
   for (p = getuser(proc)->p_cptr; p; p = getuser(p)->p_osptr)
@@ -1081,6 +1011,7 @@ void _psignalgrp(struct Process *proc, int signal)
 {
   struct Process *p;
   struct Process *ok = proc;
+
   if (proc == NULL || getuser(proc) == NULL)
     return;
   p = getuser(proc)->p_pptr;
@@ -1090,7 +1021,7 @@ void _psignalgrp(struct Process *proc, int signal)
     {
       ok = p;
       if (getuser(p) == NULL)
-	return;
+        return;
       p = getuser(p)->p_pptr;
     }
   if (sigprocessgrp(ok, getuser(proc)->p_pgrp, signal, 1))

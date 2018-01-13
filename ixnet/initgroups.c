@@ -58,7 +58,7 @@ initgroups(const char *uname, int agroup)
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
 
     if (p->u_networkprotocol == IX_NETWORK_AMITCP) {
-	return UG_initgroups(uname,agroup);
+        return UG_initgroups(uname,agroup);
     }
 
     /*
@@ -66,28 +66,28 @@ initgroups(const char *uname, int agroup)
      * the first element of groups is the effective gid
      * and will be overwritten when a setgid file is executed.
      */
-	if (agroup >= 0) {
-		groups[ngroups++] = agroup;
-		groups[ngroups++] = agroup;
-	}
-	setgrent();
+        if (agroup >= 0) {
+                groups[ngroups++] = agroup;
+                groups[ngroups++] = agroup;
+        }
+        setgrent();
 	while ((grp = getgrent())) {
-		if (grp->gr_gid == agroup)
-			continue;
-		for (i = 0; grp->gr_mem[i]; i++)
-			if (!strcmp(grp->gr_mem[i], uname)) {
-				if (ngroups == NGROUPS) {
+                if (grp->gr_gid == agroup)
+                        continue;
+                for (i = 0; grp->gr_mem[i]; i++)
+                        if (!strcmp(grp->gr_mem[i], uname)) {
+                                if (ngroups == NGROUPS) {
 fprintf(stderr, "initgroups: %s is in too many groups\n", uname);
-					goto toomany;
-				}
-				groups[ngroups++] = grp->gr_gid;
-			}
-	}
+                                        goto toomany;
+                                }
+                                groups[ngroups++] = grp->gr_gid;
+                        }
+        }
 toomany:
-	endgrent();
-	if (setgroups(ngroups, groups) < 0) {
-		perror("setgroups");
-		return (-1);
-	}
-	return (0);
+        endgrent();
+        if (setgroups(ngroups, groups) < 0) {
+                perror("setgroups");
+                return (-1);
+        }
+        return (0);
 }

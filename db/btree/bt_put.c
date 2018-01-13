@@ -1,8 +1,8 @@
-/*      $NetBSD: bt_put.c,v 1.8 1996/05/03 21:50:51 cgd Exp $   */
+/*	$NetBSD: bt_put.c,v 1.8 1996/05/03 21:50:51 cgd Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993, 1994
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Mike Olson.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)bt_put.c    8.8 (Berkeley) 7/26/94";
+static char sccsid[] = "@(#)bt_put.c	8.8 (Berkeley) 7/26/94";
 #else
 static char rcsid[] = "$NetBSD: bt_put.c,v 1.8 1996/05/03 21:50:51 cgd Exp $";
 #endif
@@ -60,14 +60,14 @@ static EPG *bt_fast __P((BTREE *, const DBT *, const DBT *, int *));
  * __BT_PUT -- Add a btree item to the tree.
  *
  * Parameters:
- *      dbp:    pointer to access method
- *      key:    key
- *      data:   data
- *      flag:   R_NOOVERWRITE
+ *	dbp:	pointer to access method
+ *	key:	key
+ *	data:	data
+ *	flag:	R_NOOVERWRITE
  *
  * Returns:
- *      RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key is already in the
- *      tree and R_NOOVERWRITE specified.
+ *	RET_ERROR, RET_SUCCESS and RET_SPECIAL if the key is already in the
+ *	tree and R_NOOVERWRITE specified.
  */
 int
 __bt_put(dbp, key, data, flags)
@@ -111,7 +111,7 @@ __bt_put(dbp, key, data, flags)
 		 */
 		if (F_ISSET(&t->bt_cursor, CURS_INIT) &&
 		    !F_ISSET(&t->bt_cursor,
-			CURS_ACQUIRE | CURS_AFTER | CURS_BEFORE))
+		        CURS_ACQUIRE | CURS_AFTER | CURS_BEFORE))
 			break;
 		/* FALLTHROUGH */
 	default:
@@ -130,7 +130,7 @@ __bt_put(dbp, key, data, flags)
 	dflags = 0;
 	if (key->size + data->size > t->bt_ovflsize) {
 		if (key->size > t->bt_ovflsize) {
-storekey:               if (__ovfl_put(t, key, &pg) == RET_ERROR)
+storekey:		if (__ovfl_put(t, key, &pg) == RET_ERROR)
 				return (RET_ERROR);
 			tkey.data = kb;
 			tkey.size = NOVFLSIZE;
@@ -193,7 +193,7 @@ storekey:               if (__ovfl_put(t, key, &pg) == RET_ERROR)
 		 * Note, the delete may empty the page, so we need to put a
 		 * new entry into the page immediately.
 		 */
-delete:         if (__bt_dleaf(t, key, h, index) == RET_ERROR) {
+delete:		if (__bt_dleaf(t, key, h, index) == RET_ERROR) {
 			mpool_put(t->bt_mp, h, 0);
 			return (RET_ERROR);
 		}
@@ -229,7 +229,7 @@ delete:         if (__bt_dleaf(t, key, h, index) == RET_ERROR) {
 	    t->bt_cursor.pg.pgno == h->pgno && t->bt_cursor.pg.index >= index)
 		++t->bt_cursor.pg.index;
 
-	if (t->bt_order == NOT) {
+	if (t->bt_order == NOT)
 		if (h->nextpg == P_INVALID) {
 			if (index == NEXTINDEX(h) - 1) {
 				t->bt_order = FORWARD;
@@ -243,7 +243,6 @@ delete:         if (__bt_dleaf(t, key, h, index) == RET_ERROR) {
 				t->bt_last.pgno = h->pgno;
 			}
 		}
-	}
 
 	mpool_put(t->bt_mp, h, MPOOL_DIRTY);
 
@@ -263,11 +262,11 @@ u_long bt_cache_hit, bt_cache_miss;
  * BT_FAST -- Do a quick check for sorted data.
  *
  * Parameters:
- *      t:      tree
- *      key:    key to insert
+ *	t:	tree
+ *	key:	key to insert
  *
  * Returns:
- *      EPG for new record or NULL if not found.
+ * 	EPG for new record or NULL if not found.
  */
 static EPG *
 bt_fast(t, key, data, exactp)

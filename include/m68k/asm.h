@@ -1,4 +1,4 @@
-/*      $NetBSD: asm.h,v 1.10 1995/03/26 17:08:36 briggs Exp $  */
+/*	$NetBSD: asm.h,v 1.10 1995/03/26 17:08:36 briggs Exp $	*/
 
 /*
  * Copyright (c) 1994 Allen Briggs
@@ -22,8 +22,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -45,17 +45,17 @@
 #define _ASM_H_
 
 #ifdef __STDC__
-#define _C_LABEL(name)          _ ## name
+#define _C_LABEL(name)		_ ## name
 #else
-#define _C_LABEL(name)          _/**/name
+#define _C_LABEL(name)		_/**/name
 #endif
-#define _ASM_LABEL(name)        name
+#define	_ASM_LABEL(name)	name
 
 #ifndef _KERNEL
-#define _ENTRY(name) \
+#define	_ENTRY(name) \
 	.text; .even; .globl name; .type name,@function; name:
 #else
-#define _ENTRY(name) \
+#define	_ENTRY(name) \
 	.text; .even; .globl name; name:
 #endif
 
@@ -66,11 +66,11 @@
 #define ALTENTRY(name, rname) \
 	ENTRY(name); jra rname+12
 #else
-#define ENTRY(name)             _ENTRY(_C_LABEL(name))
-#define ALTENTRY(name, rname)   _ENTRY(_C_LABEL(name))
+#define ENTRY(name)		_ENTRY(_C_LABEL(name))
+#define ALTENTRY(name, rname)	_ENTRY(_C_LABEL(name))
 #endif
-#define ASENTRY(name)           _ENTRY(_ASM_LABEL(name))
+#define	ASENTRY(name)		_ENTRY(_ASM_LABEL(name))
 
-#define RCSID(x)                .text; .asciz x
+#define RCSID(x)		.text; .asciz x
 
 #endif /* _ASM_H_ */

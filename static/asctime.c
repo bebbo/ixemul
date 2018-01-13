@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef NOID
-static char     elsieid[] = "@(#)asctime.c      7.8";
+static char	elsieid[] = "@(#)asctime.c	7.8";
 #endif /* !defined NOID */
 #endif /* !defined lint */
 
@@ -20,12 +20,12 @@ static char     elsieid[] = "@(#)asctime.c      7.8";
 
 char *
 asctime(timeptr)
-register const struct tm *      timeptr;
+register const struct tm *	timeptr;
 {
-	static const char       wday_name[][3] = {
+	static const char	wday_name[][3] = {
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 	};
-	static const char       mon_name[][3] = {
+	static const char	mon_name[][3] = {
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
@@ -36,20 +36,20 @@ register const struct tm *      timeptr;
 	** three explicit spaces, two explicit colons, a newline,
 	** and a trailing ASCII nul).
 	*/
-	static char             result[3 * 2 + 5 * INT_STRLEN_MAXIMUM(int) +
+	static char		result[3 * 2 + 5 * INT_STRLEN_MAXIMUM(int) +
 					3 + 2 + 1 + 1];
-	register const char *   wn;
-	register const char *   mn;
+	register const char *	wn;
+	register const char *	mn;
 
 	if (timeptr->tm_wday < 0 || timeptr->tm_wday >= DAYSPERWEEK)
 		wn = "???";
-	else    wn = wday_name[timeptr->tm_wday];
+	else	wn = wday_name[timeptr->tm_wday];
 	if (timeptr->tm_mon < 0 || timeptr->tm_mon >= MONSPERYEAR)
 		mn = "???";
-	else    mn = mon_name[timeptr->tm_mon];
+	else	mn = mon_name[timeptr->tm_mon];
 	/*
 	** The X3J11-suggested format is
-	**      "%.3s %.3s%3d %02.2d:%02.2d:%02.2d %d\n"
+	**	"%.3s %.3s%3d %02.2d:%02.2d:%02.2d %d\n"
 	** Since the .2 in 02.2d is ignored, we drop it.
 	*/
 	(void) sprintf(result, "%.3s %.3s%3d %02d:%02d:%02d %d\n",

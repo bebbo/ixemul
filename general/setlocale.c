@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1991, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Paul Borman at Krystal Technologies.
@@ -15,8 +15,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)setlocale.c 8.1 (Berkeley) 7/4/93";
+static char sccsid[] = "@(#)setlocale.c	8.1 (Berkeley) 7/4/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/localedef.h>
@@ -53,7 +53,7 @@ setlocale(category, locale)
 	if (!locale || !*locale)
 		return "C";
 
-	if (strcmp(locale, "C"))
-		return NULL;
-	return "C";
+        if (strcmp(locale, "C"))
+        	return NULL;
+        return "C";
 }

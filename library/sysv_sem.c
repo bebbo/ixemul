@@ -1,5 +1,5 @@
-/*      $NetBSD: sysv_sem.c,v 1.26 1996/02/09 19:00:25 christos Exp $   */
- 
+/*	$NetBSD: sysv_sem.c,v 1.26 1996/02/09 19:00:25 christos Exp $	*/
+
 /*
  * Implementation of SVID semaphores
  *
@@ -16,31 +16,31 @@
 /*
  * Values in support of System V compatible semaphores.
  */
-static const struct seminfo seminfo = {
-	SEMMAP,         /* # of entries in semaphore map */
-	SEMMNI,         /* # of semaphore identifiers */
-	SEMMNS,         /* # of semaphores in system */
-	SEMMNU,         /* # of undo structures in system */
-	SEMMSL,         /* max # of semaphores per id */
-	SEMOPM,         /* max # of operations per semop call */
-	SEMUME,         /* max # of undo entries per process */
-	SEMUSZ,         /* size in bytes of undo structure */
-	SEMVMX,         /* semaphore maximum value */
-	SEMAEM          /* adjust on exit max value */
+static struct seminfo seminfo = {
+	SEMMAP,		/* # of entries in semaphore map */
+	SEMMNI,		/* # of semaphore identifiers */
+	SEMMNS,		/* # of semaphores in system */
+	SEMMNU,		/* # of undo structures in system */
+	SEMMSL,		/* max # of semaphores per id */
+	SEMOPM,		/* max # of operations per semop call */
+	SEMUME,		/* max # of undo entries per process */
+	SEMUSZ,		/* size in bytes of undo structure */
+	SEMVMX,		/* semaphore maximum value */
+	SEMAEM		/* adjust on exit max value */
 };
 
-static int      semtot = 0;
-static struct   Task *semlock_holder = NULL;
+static int	semtot = 0;
+static struct	Task *semlock_holder = NULL;
 
 void semlock __P((struct Task *));
 struct sem_undo *semu_alloc __P((struct Task *));
 int semundo_adjust __P((struct Task *, struct sem_undo **, int, int, int));
 void semundo_clear __P((int, int));
 
-static struct   semid_ds sema[SEMMNI];                  /* semaphore id pool */
-static struct   sem sem[SEMMNS];                        /* semaphore pool */
-static int      semu[(SEMMNU * SEMUSZ) / sizeof(int)];  /* undo structure pool */
-static struct   sem_undo *semu_list;                    /* list of active undo structures */
+static struct	semid_ds sema[SEMMNI];			/* semaphore id pool */
+static struct	sem sem[SEMMNS];			/* semaphore pool */
+static int	semu[(SEMMNU * SEMUSZ) / sizeof(int)];	/* undo structure pool */
+static struct	sem_undo *semu_list;			/* list of active undo structures */
 
 void
 seminit()
@@ -239,7 +239,7 @@ ix_semctl(int semid, int semnum, int cmd, union semun arg)
 	struct ucred cred;
 	int i, rval, eval;
 	register struct semid_ds *semaptr;
-	struct Task *p = SysBase->ThisTask;
+	struct Task *p = FindTask(0);
 
 	cred.cr_uid = geteuid();
 	cred.cr_gid = getegid();
@@ -369,7 +369,7 @@ ix_semget(key_t key, int nsems, int semflg)
 {
 	int semid, eval;
 	usetup;
-	struct Task *p = SysBase->ThisTask;
+	struct Task *p = FindTask(0);
 	struct ucred cred;
 
 	cred.cr_uid = geteuid();
@@ -444,7 +444,7 @@ ix_semop(int semid, struct sembuf *sops, int nsops)
 	struct sem_undo *suptr = NULL;
 	int i, j, eval;
 	int do_wakeup, do_undos;
-	struct Task *p = SysBase->ThisTask;
+	struct Task *p = FindTask(0);
 	struct ucred cred;
 
 	cred.cr_uid = geteuid();
@@ -452,7 +452,7 @@ ix_semop(int semid, struct sembuf *sops, int nsops)
 
 	semlock(p);
 
-	semid = IPCID_TO_IX(semid);     /* Convert back to zero origin */
+	semid = IPCID_TO_IX(semid);	/* Convert back to zero origin */
 
 	if (semid < 0 || semid >= seminfo.semmsl)
 		errno_return(-1, EINVAL);
@@ -544,7 +544,7 @@ ix_semop(int semid, struct sembuf *sops, int nsops)
 
 		eval = ix_sleep((caddr_t)semaptr, "semlock");
 
-		suptr = NULL;   /* sem_undo may have been reallocated */
+		suptr = NULL;	/* sem_undo may have been reallocated */
 
 		if (eval != 0)
 			errno_return(-1, EINTR);
@@ -821,7 +821,7 @@ semctl(int semid, int semnum, int cmd, union semun arg)
   Forbid();
   if (cmd == SEMLCK)
   {
-    struct Task *p = SysBase->ThisTask;
+    struct Task *p = FindTask(0);
 
     semlock(p);
     semlock_holder = p;

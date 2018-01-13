@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)unvis.c     1.3 (Berkeley) 6/27/90";
+static char sccsid[] = "@(#)unvis.c	1.3 (Berkeley) 6/27/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -30,15 +30,15 @@ static char sccsid[] = "@(#)unvis.c     1.3 (Berkeley) 6/27/90";
 /*
  * decode driven by state machine
  */
-#define S_GROUND        0       /* haven't seen escape char */
-#define S_START         1       /* start decoding special sequence */
-#define S_META          2       /* metachar started (M) */
-#define S_META1         3       /* metachar more, regular char (-) */
-#define S_CTRL          4       /* control char started (^) */
-#define S_OCTAL2        5       /* octal digit 2 */
-#define S_OCTAL3        6       /* octal digit 3 */
+#define	S_GROUND	0	/* haven't seen escape char */
+#define	S_START		1	/* start decoding special sequence */
+#define	S_META		2	/* metachar started (M) */
+#define	S_META1		3	/* metachar more, regular char (-) */
+#define	S_CTRL		4	/* control char started (^) */
+#define	S_OCTAL2	5	/* octal digit 2 */
+#define	S_OCTAL3	6	/* octal digit 3 */
 
-#define isoctal(c)      (((u_char)(c)) >= '0' && ((u_char)(c)) <= '7')
+#define	isoctal(c)	(((u_char)(c)) >= '0' && ((u_char)(c)) <= '7')
 
 /*
  * unvis - decode characters previously encoded by vis
@@ -160,13 +160,13 @@ unvis(char *cp, char c, int *astate, int flag)
 		*astate = S_GROUND;
 		return (UNVIS_VALID);
 
-	case S_OCTAL2:  /* second possible octal digit */
+	case S_OCTAL2:	/* second possible octal digit */
 		if (isoctal(c)) {
 			/* 
 			 * yes - and maybe a third 
 			 */
 			*cp = (*cp << 3) + (c - '0');
-			*astate = S_OCTAL3;     
+			*astate = S_OCTAL3;	
 			return (0);
 		} 
 		/* 
@@ -175,7 +175,7 @@ unvis(char *cp, char c, int *astate, int flag)
 		*astate = S_GROUND;
 		return (UNVIS_VALIDPUSH);
 
-	case S_OCTAL3:  /* third possible octal digit */
+	case S_OCTAL3:	/* third possible octal digit */
 		*astate = S_GROUND;
 		if (isoctal(c)) {
 			*cp = (*cp << 3) + (c - '0');
@@ -186,7 +186,7 @@ unvis(char *cp, char c, int *astate, int flag)
 		 */
 		return (UNVIS_VALIDPUSH);
 			
-	default:        
+	default:	
 		/* 
 		 * decoder in unknown state - (probably uninitialized) 
 		 */
@@ -198,8 +198,8 @@ unvis(char *cp, char c, int *astate, int flag)
 /*
  * strunvis - decode src into dst 
  *
- *      Number of chars decoded into dst is returned, -1 on error.
- *      Dst is null terminated.
+ *	Number of chars decoded into dst is returned, -1 on error.
+ *	Dst is null terminated.
  */
 
 int strunvis(char *dst, const char *src)

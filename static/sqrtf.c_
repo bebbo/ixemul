@@ -1,5 +1,0 @@
-#include <math.h> 
-__inline float sqrtf2(float x)
-{ 
- return sqrt(x);
-}

@@ -1,8 +1,8 @@
-/*      $NetBSD: paths.h,v 1.7 1994/10/26 00:56:12 cgd Exp $    */
+/*	$NetBSD: paths.h,v 1.7 1994/10/26 00:56:12 cgd Exp $	*/
 
 /*
  * Copyright (c) 1989, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,41 +32,41 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)paths.h     8.1 (Berkeley) 6/2/93
+ *	@(#)paths.h	8.1 (Berkeley) 6/2/93
  */
 
 #ifndef _PATHS_H_
-#define _PATHS_H_
+#define	_PATHS_H_
 
 /* Default search path. */
-#define _PATH_DEFPATH   "/usr/bin:/bin:/c"
+#define	_PATH_DEFPATH	"/usr/bin:/bin:/c"
 /* All standard utilities path. */
-#define _PATH_STDPATH \
+#define	_PATH_STDPATH \
 	"/usr/bin:/bin:/usr/sbin:/sbin:/usr/contrib/bin:/usr/old/bin"
 
-#define _PATH_BSHELL    "/gg/bin/sh"
-#define _PATH_CONSOLE   "/console"
-#define _PATH_CSHELL    "/gg/bin/csh"
-#define _PATH_DEVDB     "/gg/var/run/dev.db"
-#define _PATH_DEVNULL   "/dev/null"
-#define _PATH_DRUM      "/dev/null"
-#define _PATH_KMEM      "/dev/null"
-#define _PATH_LOCALE    "/gg/usr/share/locale"
-#define _PATH_MAILDIR   "/gg/var/mail"
-#define _PATH_MAN       "/gg/usr/share/man"
-#define _PATH_MEM       "/dev/null"
-#define _PATH_NOLOGIN   "/gg/etc/nologin"
-#define _PATH_SENDMAIL  "/gg/usr/sbin/sendmail"
-#define _PATH_SHELLS    "/gg/etc/shells"
-#define _PATH_TTY       "/console"
-#define _PATH_UNIX      "/dev/null"
-#define _PATH_VI        "/gg/usr/bin/vi"
+#define	_PATH_BSHELL	"/gg/bin/sh"
+#define	_PATH_CONSOLE	"/console"
+#define	_PATH_CSHELL	"/gg/bin/csh"
+#define	_PATH_DEVDB	"/gg/var/run/dev.db"
+#define	_PATH_DEVNULL	"/dev/null"
+#define	_PATH_DRUM	"/dev/null"
+#define	_PATH_KMEM	"/dev/null"
+#define	_PATH_LOCALE	"/gg/usr/share/locale"
+#define	_PATH_MAILDIR	"/gg/var/mail"
+#define	_PATH_MAN	"/gg/usr/share/man"
+#define	_PATH_MEM	"/dev/null"
+#define	_PATH_NOLOGIN	"/gg/etc/nologin"
+#define	_PATH_SENDMAIL	"/gg/usr/sbin/sendmail"
+#define	_PATH_SHELLS	"/gg/etc/shells"
+#define	_PATH_TTY	"/console"
+#define	_PATH_UNIX	"/dev/null"
+#define	_PATH_VI	"/gg/usr/bin/vi"
 
 /* Provide trailing slash, since mostly used for building pathnames. */
-#define _PATH_DEV       "/dev/"
-#define _PATH_TMP       "/t/"
-#define _PATH_VARDB     "/gg/var/db/"
-#define _PATH_VARRUN    "/gg/var/run/"
-#define _PATH_VARTMP    "/gg/var/tmp/"
+#define	_PATH_DEV	"/dev/"
+#define	_PATH_TMP	"/t/"
+#define	_PATH_VARDB	"/gg/var/db/"
+#define	_PATH_VARRUN	"/gg/var/run/"
+#define	_PATH_VARTMP	"/gg/var/tmp/"
 
 #endif /* !_PATHS_H_ */

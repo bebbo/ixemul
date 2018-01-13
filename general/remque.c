@@ -25,31 +25,12 @@
 
 #include "defs.h"
 
-#ifndef mc68000
-
-struct node2 {
-    struct node2 *next;
-    struct node2 *prev;
-};
-
-void remque(struct node2 *entry)
-{
-  struct node2 *p = entry->next;
-  entry = entry->prev;
-  p->prev = entry;
-  entry->next = p;
-}
-
-#else
-
 ENTRY(remque)
-asm(" \n\
-	movl    sp@(4),a0 \n\
-	movl    a0@,a1 \n\ 
-	movl    a0@(4),a0 \n\
-	movl    a0,a1@(4) \n\
-	movl    a1,a0@ \n\
-	rts \n\
+asm("
+	movl	sp@(4),a0
+	movl	a0@,a1
+	movl	a0@(4),a0
+	movl	a0,a1@(4)
+	movl	a1,a0@
+	rts
 ");
-
-#endif

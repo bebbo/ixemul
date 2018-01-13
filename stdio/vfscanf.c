@@ -1,8 +1,8 @@
-/*      $NetBSD: vfscanf.c,v 1.14 1995/03/22 00:57:02 jtc Exp $ */
+/*	$NetBSD: vfscanf.c,v 1.14 1995/03/22 00:57:02 jtc Exp $	*/
 
 /*-
  * Copyright (c) 1990, 1993
- *      The Regents of the University of California.  All rights reserved.
+ *	The Regents of the University of California.  All rights reserved.
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.
@@ -17,8 +17,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -38,7 +38,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)vfscanf.c   8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)vfscanf.c	8.1 (Berkeley) 6/4/93";
 #endif
 static char rcsid[] = "$NetBSD: vfscanf.c,v 1.14 1995/03/22 00:57:02 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
@@ -49,59 +49,55 @@ static char rcsid[] = "$NetBSD: vfscanf.c,v 1.14 1995/03/22 00:57:02 jtc Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#if __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
 #include "local.h"
-#include "my_varargs.h"
 
 #ifdef FLOATING_POINT
 #include "floatio.h"
 #endif
 
-#ifdef NATIVE_MORPHOS
-#define __svfscanf my___svfscanf
-int __svfscanf(FILE *, const char *, my_va_list);
-#endif
-
-
 #undef BUF
-#define BUF             513     /* Maximum length of numeric string. */
+#define	BUF		513	/* Maximum length of numeric string. */
 
 #undef LONGDBL
 
 /*
  * Flags used during conversion.
  */
-#define LONG            0x01    /* l: long or double */
-#define LONGDBL         0x02    /* L: long double; unimplemented */
-#define SHORT           0x04    /* h: short */
-#define QUAD            0x08    /* q: quad */
-#define SUPPRESS        0x10    /* suppress assignment */
-#define POINTER         0x20    /* weird %p pointer (`fake hex') */
-#define NOSKIP          0x40    /* do not skip blanks */
-
-#define SHORTSHORT      0x800   /* hh: byte */
+#define	LONG		0x01	/* l: long or double */
+#define	LONGDBL		0x02	/* L: long double; unimplemented */
+#define	SHORT		0x04	/* h: short */
+#define QUAD		0x08	/* q: quad */
+#define	SUPPRESS	0x10	/* suppress assignment */
+#define	POINTER		0x20	/* weird %p pointer (`fake hex') */
+#define	NOSKIP		0x40	/* do not skip blanks */
 
 /*
  * The following are used in numeric conversions only:
  * SIGNOK, NDIGITS, DPTOK, and EXPOK are for floating point;
  * SIGNOK, NDIGITS, PFXOK, and NZDIGITS are for integral.
  */
-#define SIGNOK          0x080   /* +/- is (still) legal */
-#define NDIGITS         0x100   /* no digits detected */
+#define	SIGNOK		0x080	/* +/- is (still) legal */
+#define	NDIGITS		0x100	/* no digits detected */
 
-#define DPTOK           0x200   /* (float) decimal point is still legal */
-#define EXPOK           0x400   /* (float) exponent (e+3, etc) still legal */
+#define	DPTOK		0x200	/* (float) decimal point is still legal */
+#define	EXPOK		0x400	/* (float) exponent (e+3, etc) still legal */
 
-#define PFXOK           0x200   /* 0x prefix is (still) legal */
-#define NZDIGITS        0x400   /* no zero digits detected */
+#define	PFXOK		0x200	/* 0x prefix is (still) legal */
+#define	NZDIGITS	0x400	/* no zero digits detected */
 
 /*
  * Conversion types.
  */
-#define CT_CHAR         0       /* %c conversion */
-#define CT_CCL          1       /* %[...] conversion */
-#define CT_STRING       2       /* %s conversion */
-#define CT_INT          3       /* integer, i.e., strtoq or strtouq */
-#define CT_FLOAT        4       /* floating, i.e., strtod */
+#define	CT_CHAR		0	/* %c conversion */
+#define	CT_CCL		1	/* %[...] conversion */
+#define	CT_STRING	2	/* %s conversion */
+#define	CT_INT		3	/* integer, i.e., strtoq or strtouq */
+#define	CT_FLOAT	4	/* floating, i.e., strtod */
 
 #define u_char unsigned char
 #define u_long unsigned long
@@ -115,21 +111,21 @@ int
 __svfscanf(fp, fmt0, ap)
 	register FILE *fp;
 	char const *fmt0;
-	my_va_list ap;
+	_BSD_VA_LIST_ ap;
 {
 	register u_char *fmt = (u_char *)fmt0;
-	register int c;         /* character from format, or conversion */
-	register size_t width;  /* field width, or 0 */
-	register char *p;       /* points into all kinds of strings */
-	register int n;         /* handy integer */
-	register int flags;     /* flags as defined above */
-	register char *p0;      /* saves original value of p when necessary */
-	int nassigned;          /* number of fields assigned */
-	int nread;              /* number of characters consumed from fp */
-	int base;               /* base argument to strtoq/strtouq */
-	u_quad_t (*ccfn)();     /* conversion function (strtoq/strtouq) */
-	char ccltab[256];       /* character class table for %[...] */
-	char buf[BUF];          /* buffer for numeric conversions */
+	register int c;		/* character from format, or conversion */
+	register size_t width;	/* field width, or 0 */
+	register char *p;	/* points into all kinds of strings */
+	register int n;		/* handy integer */
+	register int flags;	/* flags as defined above */
+	register char *p0;	/* saves original value of p when necessary */
+	int nassigned;		/* number of fields assigned */
+	int nread;		/* number of characters consumed from fp */
+	int base;		/* base argument to strtoq/strtouq */
+	u_quad_t (*ccfn)();	/* conversion function (strtoq/strtouq) */
+	char ccltab[256];	/* character class table for %[...] */
+	char buf[BUF];		/* buffer for numeric conversions */
 
 	/* `basefix' is used to avoid `if' tests in the integer scanner */
 	static short basefix[17] =
@@ -137,8 +133,8 @@ __svfscanf(fp, fmt0, ap)
 
 	nassigned = 0;
 	nread = 0;
-	base = 0;               /* XXX just to keep gcc happy */
-	ccfn = NULL;            /* XXX just to keep gcc happy */
+	base = 0;		/* XXX just to keep gcc happy */
+	ccfn = NULL;		/* XXX just to keep gcc happy */
 	for (;;) {
 		c = *fmt++;
 		if (c == 0)
@@ -161,7 +157,7 @@ __svfscanf(fp, fmt0, ap)
 		 * switch on the format.  continue if done;
 		 * break once format type is derived.
 		 */
-again:          c = *fmt++;
+again:		c = *fmt++;
 		switch (c) {
 		case '%':
 literal:
@@ -180,12 +176,7 @@ literal:
 			flags |= LONGDBL;
 			goto again;
 		case 'h':
-			if (*fmt == 'h') {
-				fmt++;
-				flags |= SHORTSHORT;
-			} else {
-				flags |= SHORT;
-			}
+			flags |= SHORT;
 			goto again;
 		case 'l':
 			if (*fmt == 'l') {
@@ -196,12 +187,7 @@ literal:
 			}
 			goto again;
 		case 'q':
-		case 'j':
 			flags |= QUAD;
-			goto again;
-		case 'z':
-		case 't':
-			flags |= LONG;
 			goto again;
 
 		case '0': case '1': case '2': case '3': case '4':
@@ -216,7 +202,7 @@ literal:
 		 * (According to ANSI, E and X formats are supposed
 		 * to the same as e and x.  Sorry about that.)
 		 */
-		case 'D':       /* compat */
+		case 'D':	/* compat */
 			flags |= LONG;
 			/* FALLTHROUGH */
 		case 'd':
@@ -231,7 +217,7 @@ literal:
 			base = 0;
 			break;
 
-		case 'O':       /* compat */
+		case 'O':	/* compat */
 			flags |= LONG;
 			/* FALLTHROUGH */
 		case 'o':
@@ -248,7 +234,7 @@ literal:
 
 		case 'X':
 		case 'x':
-			flags |= PFXOK; /* enable 0x prefixing */
+			flags |= PFXOK;	/* enable 0x prefixing */
 			c = CT_INT;
 			ccfn = strtouq;
 			base = 16;
@@ -279,7 +265,7 @@ literal:
 			c = CT_CHAR;
 			break;
 
-		case 'p':       /* pointer format is like hex */
+		case 'p':	/* pointer format is like hex */
 			flags |= POINTER | PFXOK;
 			c = CT_INT;
 			ccfn = strtouq;
@@ -287,25 +273,23 @@ literal:
 			break;
 
 		case 'n':
-			if (flags & SUPPRESS)   /* ??? */
+			if (flags & SUPPRESS)	/* ??? */
 				continue;
-			if (flags & SHORTSHORT)
-				*my_va_arg(ap, char *) = nread;
-			else if (flags & SHORT)
-				*my_va_arg(ap, short *) = nread;
+			if (flags & SHORT)
+				*va_arg(ap, short *) = nread;
 			else if (flags & LONG)
-				*my_va_arg(ap, long *) = nread;
+				*va_arg(ap, long *) = nread;
 			else
-				*my_va_arg(ap, int *) = nread;
+				*va_arg(ap, int *) = nread;
 			continue;
 
 		/*
-		 * Disgusting backwards compatibility hacks.    XXX
+		 * Disgusting backwards compatibility hacks.	XXX
 		 */
-		case '\0':      /* compat */
+		case '\0':	/* compat */
 			return (EOF);
 
-		default:        /* compat */
+		default:	/* compat */
 			if (isupper(c))
 				flags |= LONG;
 			c = CT_INT;
@@ -369,7 +353,7 @@ literal:
 				}
 				nread += sum;
 			} else {
-				size_t r = fread((void *)my_va_arg(ap, char *), 1,
+				size_t r = fread((void *)va_arg(ap, char *), 1,
 				    width, fp);
 
 				if (r == 0)
@@ -382,7 +366,7 @@ literal:
 		case CT_CCL:
 			/* scan a (nonempty) character class (sets NOSKIP) */
 			if (width == 0)
-				width = ~0;     /* `infinity' */
+				width = ~0;	/* `infinity' */
 			/* take only those things in the class */
 			if (flags & SUPPRESS) {
 				n = 0;
@@ -399,7 +383,7 @@ literal:
 				if (n == 0)
 					goto match_failure;
 			} else {
-				p0 = p = my_va_arg(ap, char *);
+				p0 = p = va_arg(ap, char *);
 				while (ccltab[*fp->_p]) {
 					fp->_r--;
 					*p++ = *fp->_p++;
@@ -435,7 +419,7 @@ literal:
 				}
 				nread += n;
 			} else {
-				p0 = p = my_va_arg(ap, char *);
+				p0 = p = va_arg(ap, char *);
 				while (!isspace(*fp->_p)) {
 					fp->_r--;
 					*p++ = *fp->_p++;
@@ -504,7 +488,7 @@ literal:
 				case '8': case '9':
 					base = basefix[base];
 					if (base <= 8)
-						break;  /* not legal here */
+						break;	/* not legal here */
 					flags &= ~(SIGNOK | PFXOK | NDIGITS);
 					goto ok;
 
@@ -515,7 +499,7 @@ literal:
 				case 'd': case 'e': case 'f':
 					/* no need to fix base here */
 					if (base <= 10)
-						break;  /* not legal here */
+						break;	/* not legal here */
 					flags &= ~(SIGNOK | PFXOK | NDIGITS);
 					goto ok;
 
@@ -530,7 +514,7 @@ literal:
 				/* x ok iff flag still set & 2nd char */
 				case 'x': case 'X':
 					if (flags & PFXOK && p == buf + 1) {
-						base = 16;      /* if %i */
+						base = 16;	/* if %i */
 						flags &= ~PFXOK;
 						goto ok;
 					}
@@ -550,7 +534,7 @@ literal:
 				if (--fp->_r > 0)
 					fp->_p++;
 				else if (__srefill(fp))
-					break;          /* EOF */
+					break;		/* EOF */
 			}
 			/*
 			 * If we had only a sign, it is no good; push
@@ -574,18 +558,16 @@ literal:
 				*p = 0;
 				res = (*ccfn)(buf, (char **)NULL, base);
 				if (flags & POINTER)
-					*my_va_arg(ap, void **) =
+					*va_arg(ap, void **) =
 					    (void *)(long)res;
 				else if (flags & QUAD)
-					*my_va_arg(ap, quad_t *) = res;
+					*va_arg(ap, quad_t *) = res;
 				else if (flags & LONG)
-					*my_va_arg(ap, long *) = res;
+					*va_arg(ap, long *) = res;
 				else if (flags & SHORT)
-					*my_va_arg(ap, short *) = res;
-				else if (flags & SHORTSHORT)
-					*my_va_arg(ap, char *) = res;
+					*va_arg(ap, short *) = res;
 				else
-					*my_va_arg(ap, int *) = res;
+					*va_arg(ap, int *) = res;
 				nassigned++;
 			}
 			nread += p - buf;
@@ -646,7 +628,7 @@ literal:
 				if (--fp->_r > 0)
 					fp->_p++;
 				else if (__srefill(fp))
-					break;  /* EOF */
+					break;	/* EOF */
 			}
 			/*
 			 * If no digits, might be missing exponent digits
@@ -674,11 +656,11 @@ literal:
 				*p = 0;
 				res = strtod(buf, (char **) NULL);
 				if (flags & LONGDBL)
-					*my_va_arg(ap, long double *) = res;
+					*va_arg(ap, long double *) = res;
 				else if (flags & LONG)
-					*my_va_arg(ap, double *) = res;
+					*va_arg(ap, double *) = res;
 				else
-					*my_va_arg(ap, float *) = res;
+					*va_arg(ap, float *) = res;
 				nassigned++;
 			}
 			nread += p - buf;
@@ -706,12 +688,12 @@ __sccl(tab, fmt)
 	register int c, n, v;
 
 	/* first `clear' the whole table */
-	c = *fmt++;             /* first char hat => negated scanset */
+	c = *fmt++;		/* first char hat => negated scanset */
 	if (c == '^') {
-		v = 1;          /* default => accept */
-		c = *fmt++;     /* get new first char */
+		v = 1;		/* default => accept */
+		c = *fmt++;	/* get new first char */
 	} else
-		v = 0;          /* default => reject */
+		v = 0;		/* default => reject */
 	/* should probably use memset here */
 	for (n = 0; n < 256; n++)
 		tab[n] = v;
@@ -727,22 +709,22 @@ __sccl(tab, fmt)
 	 */
 	v = 1 - v;
 	for (;;) {
-		tab[c] = v;             /* take character c */
+		tab[c] = v;		/* take character c */
 doswitch:
-		n = *fmt++;             /* and examine the next */
+		n = *fmt++;		/* and examine the next */
 		switch (n) {
 
-		case 0:                 /* format ended too soon */
+		case 0:			/* format ended too soon */
 			return (fmt - 1);
 
 		case '-':
 			/*
 			 * A scanset of the form
-			 *      [01+-]
+			 *	[01+-]
 			 * is defined as `the digit 0, the digit 1,
 			 * the character +, the character -', but
 			 * the effect of a scanset such as
-			 *      [a-zA-Z0-9]
+			 *	[a-zA-Z0-9]
 			 * is implementation defined.  The V7 Unix
 			 * scanf treats `a-z' as `the letters a through
 			 * z', but treats `a-a' as `the letter a, the
@@ -757,13 +739,13 @@ doswitch:
 			n = *fmt;
 			if (n == ']' || n < c) {
 				c = '-';
-				break;  /* resume the for(;;) */
+				break;	/* resume the for(;;) */
 			}
 			fmt++;
-			do {            /* fill in the range */
+			do {		/* fill in the range */
 				tab[++c] = v;
 			} while (c < n);
-#if 1   /* XXX another disgusting compatibility hack */
+#if 1	/* XXX another disgusting compatibility hack */
 			/*
 			 * Alas, the V7 Unix scanf also treats formats
 			 * such as [a-c-e] as `the letters a through e'.
@@ -779,33 +761,13 @@ doswitch:
 #endif
 			break;
 
-		case ']':               /* end of scanset */
+		case ']':		/* end of scanset */
 			return (fmt);
 
-		default:                /* just another character */
+		default:		/* just another character */
 			c = n;
 			break;
 		}
 	}
 	/* NOTREACHED */
 }
-
-#ifdef NATIVE_MORPHOS
-#undef __svfscanf
-
-int __svfscanf(FILE *fp, const char *fmt, va_list ap)
-{
-	my_va_list ap1;
-	my_va_init_ppc(ap1, ap);
-	return my___svfscanf(fp, fmt, ap1);
-}
-
-int _varargs68k___svfscanf(FILE *fp, const char *fmt, char *ap)
-{
-	my_va_list ap1;
-	my_va_init_68k(ap1, ap);
-	return my___svfscanf(fp, fmt, ap1);
-}
-
-#endif
-

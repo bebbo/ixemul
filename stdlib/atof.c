@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,8 +32,8 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-/*static char *sccsid = "from: @(#)atof.c       5.3 (Berkeley) 1/8/93";*/
-static char *rcsid = "$Id: atof.c,v 1.1.1.1 2005/03/15 15:57:07 laire Exp $";
+/*static char *sccsid = "from: @(#)atof.c	5.3 (Berkeley) 1/8/93";*/
+static char *rcsid = "$Id: atof.c,v 1.6 1995/02/28 01:46:30 jtc Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL

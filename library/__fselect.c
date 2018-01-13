@@ -61,7 +61,7 @@ __fselect (struct file *f, int select_cmd, int io_mode,
 
       /* 10 seconds waittime */
       if (!SELPKT_IN_USE(f))
-	SelSendPacket1(f, __selport, ACTION_WAIT_CHAR, 10 * 1000000);
+        SelSendPacket1(f, __selport, ACTION_WAIT_CHAR, 10 * 1000000);
       return 1 << __selport->mp_SigBit;
     }
   else if (select_cmd == SELCMD_CHECK)
@@ -70,7 +70,7 @@ __fselect (struct file *f, int select_cmd, int io_mode,
       if (io_mode != SELMODE_IN) return 1;
 
       if (SELPKT_IN_USE(f))
-	return 0;
+        return 0;
 
       /* there are two possible answers: error (packet not supported) 
        * and the `real' answer.

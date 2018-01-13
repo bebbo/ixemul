@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -32,7 +32,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)setenv.c    5.6 (Berkeley) 6/4/91";
+static char sccsid[] = "@(#)setenv.c	5.6 (Berkeley) 6/4/91";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -46,38 +46,38 @@ static char sccsid[] = "@(#)setenv.c    5.6 (Berkeley) 6/4/91";
 
 /*
  * setenv --
- *      Set the value of the environmental variable "name" to be
- *      "value".  If rewrite is set, replace any current value.
+ *	Set the value of the environmental variable "name" to be
+ *	"value".  If rewrite is set, replace any current value.
  */
 int setenv(const char *name, const char *value, int rewrite)
 {
-	usetup;
+        usetup;
 	register char *C;
 	int l_value, offset;
-	
-	if (*value == '=')                      /* no `=' in value */
+
+	if (*value == '=')			/* no `=' in value */
 		++value;
 	l_value = strlen(value);
-	if ((C = _findenv(environ, name, &offset))) {   /* find if already exists */
+	if ((C = _findenv(environ, name, &offset))) {	/* find if already exists */
 		if (!rewrite)
 			return (0);
-		if (strlen(C) >= l_value) {     /* old larger; copy over */
+		if (strlen(C) >= l_value) {	/* old larger; copy over */
 			while ((*C++ = *value++)) ;
 			return (0);
 		}
-	} else {                                        /* create new slot */
-		register int    cnt;
-		register char   **P;
+	} else {					/* create new slot */
+		register int	cnt;
+		register char	**P;
 
 		for (P = environ, cnt = 0; *P; ++P, ++cnt);
-		if (u.u_env_alloced) {                  /* just increase size */
+		if (u.u_env_alloced) {			/* just increase size */
 			environ = (char **)realloc((char *)environ,
 			    (size_t)(sizeof(char *) * (cnt + 2)));
 			if (!environ)
 				return (-1);
 		}
-		else {                          /* get new space */
-			u.u_env_alloced = 1;            /* copy old entries into it */
+		else {				/* get new space */
+			u.u_env_alloced = 1;		/* copy old entries into it */
 			P = (char **)malloc((size_t)(sizeof(char *) * (cnt + 2)));
 			if (!P)
 				return (-1);
@@ -87,8 +87,8 @@ int setenv(const char *name, const char *value, int rewrite)
 		environ[cnt + 1] = NULL;
 		offset = cnt;
 	}
-	for (C = (char *)name; *C && *C != '='; ++C);   /* no `=' in name */
-	if (!(environ[offset] =                 /* name + `=' + value */
+	for (C = (char *)name; *C && *C != '='; ++C);	/* no `=' in name */
+	if (!(environ[offset] =			/* name + `=' + value */
 	    malloc((size_t)((int)(C - name) + l_value + 2))))
 		return (-1);
 	for (C = environ[offset]; (*C = *name++) && *C != '='; ++C)
@@ -100,15 +100,15 @@ int setenv(const char *name, const char *value, int rewrite)
 
 /*
  * unsetenv(name) --
- *      Delete environmental variable "name".
+ *	Delete environmental variable "name".
  */
 void unsetenv(const char *name)
 {
-	usetup;
+        usetup;
 	register char **P;
 	int offset;
 
-	while (_findenv(environ, name, &offset))                /* if set multiple times */
+	while (_findenv(environ, name, &offset))		/* if set multiple times */
 		for (P = &environ[offset];; ++P)
 			if (!(*P = *(P + 1)))
 				break;

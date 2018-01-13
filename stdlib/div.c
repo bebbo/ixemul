@@ -21,13 +21,13 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)div.c       5.1 (Berkeley) 5/16/90";
+static char sccsid[] = "@(#)div.c	5.1 (Berkeley) 5/16/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
 #include "ixemul.h"
 
-#include <stdlib.h>             /* div_t */
+#include <stdlib.h>		/* div_t */
 
 /*
  * I AM NOT SURE THIS IS COMPLETELY PORTABLE

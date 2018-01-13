@@ -21,19 +21,12 @@
 #include <ixemul.h>
 #include <stdarg.h>
 #include <proto/intuition.h>
-#include <intuition/intuition.h>
-
-#ifdef __MORPHOS__
-#define GET_VA_ARRAY(x) __va_overflow(x)
-#else
-#define GET_VA_ARRAY(x) x
-#endif
 
 void ix_panic(const char *msg, ...)
 {
   struct IntuitionBase *IntuitionBase;
   u_char old_flags;
-  struct Task *me = SysBase->ThisTask;
+  struct Task *me = FindTask(0);
   va_list ap;
 
   /*
@@ -51,14 +44,14 @@ void ix_panic(const char *msg, ...)
   if ((IntuitionBase = (struct IntuitionBase *)OpenLibrary("intuition.library", 0)))
     {
       struct EasyStruct panic = {
-	sizeof(struct EasyStruct),
-	0,
-	"ixnet.library message",
-	(char *)msg,
-	"Abort"
+        sizeof(struct EasyStruct),
+        0,
+        "ixnet.library message",
+        (char *)msg,
+        "Abort"
       };
-	
-      EasyRequestArgs(NULL, &panic, NULL, GET_VA_ARRAY(ap));
+        
+      EasyRequestArgs(NULL, &panic, NULL, ap);
 
       CloseLibrary ((struct Library *) IntuitionBase);
    }
@@ -66,5 +59,3 @@ void ix_panic(const char *msg, ...)
   me->tc_Flags = old_flags;
   va_end(ap);
 }
-
-

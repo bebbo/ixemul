@@ -39,13 +39,13 @@ readdir (DIR *dp)
 
   if (! dp || dp->dd_fd < 0) return 0;
 
-  if (syscall (SYS_read, dp->dd_fd,
+  if (syscall (SYS_read, dp->dd_fd, 
 	       & dp->dd_ent.d_fileno, 4) <= 0)
     return 0;
-
+    
   if (syscall (SYS_read, dp->dd_fd, &l, 4) <= 0)
     return 0;
-
+  
   dp->dd_ent.d_type = (l ? DT_DIR : DT_REG);
 
   if (syscall (SYS_read, dp->dd_fd, &l, 4) <= 0)
@@ -62,6 +62,6 @@ readdir (DIR *dp)
   if (dp->dd_ent.d_name [l-1])
     dp->dd_ent.d_namlen ++;
   dp->dd_ent.d_reclen = l + 8;
-  dp->dd_ent.d_namlen--;        /* don't count zero pad */
+  dp->dd_ent.d_namlen--;	/* don't count zero pad */
   return & dp->dd_ent;
 }

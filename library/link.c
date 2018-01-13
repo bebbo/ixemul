@@ -45,7 +45,7 @@ link (char *old, char *new)
   omask = syscall (SYS_sigsetmask, ~0);
   if ((lock = __lock (old, ACCESS_READ)))
     {
-      res = __make_link (new, lock, LINK_HARD);
+      res = (__make_link (new, lock, LINK_HARD) == -1) ? 0 : -1;
       __unlock (lock);
     }
   syscall (SYS_sigsetmask, omask);

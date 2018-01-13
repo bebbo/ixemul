@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)user.h      7.19 (Berkeley) 5/4/91
+ *	@(#)user.h	7.19 (Berkeley) 5/4/91
  */
 
 #include <machine/pcb.h>
@@ -46,7 +46,7 @@
 #if 0
 #include <sys/resourcevar.h>
 #include <sys/signalvar.h>
-#include <vm/vm.h>              /* XXX */
+#include <vm/vm.h>		/* XXX */
 #include <sys/kinfo_proc.h>
 
 /*
@@ -56,17 +56,17 @@
  * in all processes.
  */
  
-struct  user {
-	struct  pcb u_pcb;
+struct	user {
+	struct	pcb u_pcb;
 
-	struct  sigacts u_sigacts;      /* p_sigacts points here (use it!) */
-	struct  pstats u_stats;         /* p_stats points here (use it!) */
+	struct	sigacts u_sigacts;	/* p_sigacts points here (use it!) */
+	struct	pstats u_stats;		/* p_stats points here (use it!) */
 
 	/*
 	 * Remaining fields only for core dump and/or ptrace--
 	 * not valid at other times!
 	 */
-	struct  kinfo_proc u_kproc;     /* proc + eproc */
+	struct	kinfo_proc u_kproc;	/* proc + eproc */
 };
 
 /*
@@ -74,20 +74,20 @@ struct  user {
  * This subterfuge brought to you by coredump() and procxmt().
  * These fields are *only* valid at those times!
  */
-#define U_ar0   u_kproc.kp_proc.p_regs  /* copy of curproc->p_regs */
-#define U_tsize u_kproc.kp_eproc.e_vm.vm_tsize
-#define U_dsize u_kproc.kp_eproc.e_vm.vm_dsize
-#define U_ssize u_kproc.kp_eproc.e_vm.vm_ssize
-#define U_sig   u_sigacts.ps_sig
-#define U_code  u_sigacts.ps_code
+#define	U_ar0	u_kproc.kp_proc.p_regs	/* copy of curproc->p_regs */
+#define	U_tsize	u_kproc.kp_eproc.e_vm.vm_tsize
+#define	U_dsize	u_kproc.kp_eproc.e_vm.vm_dsize
+#define	U_ssize	u_kproc.kp_eproc.e_vm.vm_ssize
+#define	U_sig	u_sigacts.ps_sig
+#define	U_code	u_sigacts.ps_code
 
 #ifndef _KERNEL
-#define u_ar0   U_ar0
-#define u_tsize U_tsize
-#define u_dsize U_dsize
-#define u_ssize U_ssize
-#define u_sig   U_sig
-#define u_code  U_code
+#define	u_ar0	U_ar0
+#define	u_tsize	U_tsize
+#define	u_dsize	U_dsize
+#define	u_ssize	U_ssize
+#define	u_sig	U_sig
+#define	u_code	U_code
 #endif /* _KERNEL */
 
 #endif

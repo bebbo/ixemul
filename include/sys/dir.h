@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *      This product includes software developed by the University of
- *      California, Berkeley and its contributors.
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *      @(#)dir.h       7.3 (Berkeley) 2/5/91
+ *	@(#)dir.h	7.3 (Berkeley) 2/5/91
  */
 
 /*
@@ -39,7 +39,7 @@
  */
 
 #ifndef _DIR_H_
-#define _DIR_H_
+#define	_DIR_H_
 
 #include <dirent.h>
 
