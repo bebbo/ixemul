@@ -49,7 +49,7 @@ typedef struct {
 	int gl_matchc;		/* Count of paths matching pattern. */
 	int gl_offs;		/* Reserved at beginning of gl_pathv. */
 	int gl_flags;		/* Copy of flags parameter to glob. */
-	int (*gl_errfunc) __P((const char *, int));
+	__stdargs int (*gl_errfunc) __P((const char *, int));
 	char **gl_pathv;	/* List of paths matching pattern. */
 				/* Copy of errfunc parameter to glob. */
 
@@ -58,11 +58,11 @@ typedef struct {
 	 * versions of closedir(3), readdir(3), opendir(3), stat(2)
 	 * and lstat(2).
 	 */
-	void (*gl_closedir) __P((void *));
-	struct dirent *(*gl_readdir) __P((void *));	
-	void *(*gl_opendir) __P((const char *));
-	int (*gl_lstat) __P((const char *, struct stat *));
-	int (*gl_stat) __P((const char *, struct stat *));
+	__stdargs void (*gl_closedir) __P((void *));
+	__stdargs struct dirent *(*gl_readdir) __P((void *));
+	__stdargs void *(*gl_opendir) __P((const char *));
+	__stdargs int (*gl_lstat) __P((const char *, struct stat *));
+	__stdargs int (*gl_stat) __P((const char *, struct stat *));
 } glob_t;
 
 #define	GLOB_APPEND	0x01	/* append to output from previous call */
@@ -91,8 +91,8 @@ typedef struct {
 #define	GLOB_ABEND	(-2)	/* Unignored error. */
 
 __BEGIN_DECLS
-int	glob __P((const char *, int, int (*)(const char *, int), glob_t *));
-void	globfree __P((glob_t *));
+__stdargs int	glob __P((const char *, int, __stdargs int (*)(const char *, int), glob_t *));
+__stdargs void	globfree __P((glob_t *));
 __END_DECLS
 
 #endif /* !_GLOB_H_ */

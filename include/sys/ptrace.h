@@ -68,27 +68,27 @@ struct ixinfo
   long sigtramp_start;
   long sigtramp_end;
   long ixnet_seglist;
-  void (*install_vector)(void);
-  void (*restore_vector)(void);
+  __stdargs void (*install_vector)(void);
+  __stdargs void (*restore_vector)(void);
 };
 
 #ifdef _KERNEL
 
 struct reg;
 struct fpreg;
-int process_read_regs __P((struct user *p, struct reg *regs));
-int process_write_regs __P((struct user *p, struct reg *regs));
-int process_read_fpregs __P((struct user *p, struct fpreg *regs));
-int process_write_fpregs __P((struct user *p, struct fpreg *regs));
-int process_set_pc __P((struct user *p, caddr_t addr));
-int process_sstep __P((struct user *p, int sstep));
+__stdargs int process_read_regs __P((struct user *p, struct reg *regs));
+__stdargs int process_write_regs __P((struct user *p, struct reg *regs));
+__stdargs int process_read_fpregs __P((struct user *p, struct fpreg *regs));
+__stdargs int process_write_fpregs __P((struct user *p, struct fpreg *regs));
+__stdargs int process_set_pc __P((struct user *p, caddr_t addr));
+__stdargs int process_sstep __P((struct user *p, int sstep));
 
 #else
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	ptrace __P((int _request, pid_t _pid, caddr_t _addr, int _data));
+__stdargs int	ptrace __P((int _request, pid_t _pid, caddr_t _addr, int _data));
 __END_DECLS
 
 #endif

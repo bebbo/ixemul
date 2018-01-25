@@ -100,11 +100,11 @@ struct rlimit {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	getpriority __P((int, int));
-int	getrlimit __P((int, struct rlimit *));
-int	getrusage __P((int, struct rusage *));
-int	setpriority __P((int, int, int));
-int	setrlimit __P((int, const struct rlimit *));
+__stdargs int	getpriority __P((int, int));
+__stdargs int	getrlimit __P((int, struct rlimit *));
+__stdargs int	getrusage __P((int, struct rusage *));
+__stdargs int	setpriority __P((int, int, int));
+__stdargs int	setrlimit __P((int, const struct rlimit *));
 __END_DECLS
 
 #endif	/* !_KERNEL */

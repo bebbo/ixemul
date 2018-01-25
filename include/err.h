@@ -49,21 +49,21 @@
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__dead void	err __P((int, const char *, ...))
+__dead __stdargs void	err __P((int, const char *, ...))
 			__attribute__((noreturn, format (printf, 2, 3)));
-__dead void	verr __P((int, const char *, _BSD_VA_LIST_))
+__dead __stdargs void	verr __P((int, const char *, _BSD_VA_LIST_))
 			__attribute__((noreturn, format (printf, 2, 0)));
-__dead void	errx __P((int, const char *, ...))
+__dead __stdargs void	errx __P((int, const char *, ...))
 			__attribute__((noreturn, format (printf, 2, 3)));
-__dead void	verrx __P((int, const char *, _BSD_VA_LIST_))
+__dead __stdargs void	verrx __P((int, const char *, _BSD_VA_LIST_))
 			__attribute__((noreturn, format (printf, 2, 0)));
-void		warn __P((const char *, ...))
+__stdargs void		warn __P((const char *, ...))
 			__attribute__((format (printf, 1, 2)));
-void		vwarn __P((const char *, _BSD_VA_LIST_))
+__stdargs void		vwarn __P((const char *, _BSD_VA_LIST_))
 			__attribute__((format (printf, 1, 0)));
-void		warnx __P((const char *, ...))
+__stdargs void		warnx __P((const char *, ...))
 			__attribute__((format (printf, 1, 2)));
-void		vwarnx __P((const char *, _BSD_VA_LIST_))
+__stdargs void		vwarnx __P((const char *, _BSD_VA_LIST_))
 			__attribute__((format (printf, 1, 0)));
 __END_DECLS
 

@@ -119,7 +119,7 @@ typedef unsigned int sigset_t;
  * Signal vector "template" used in sigaction call.
  */
 struct	sigaction {
-	void	(*sa_handler)();	/* signal handler */
+   __stdargs void	(*sa_handler)();	/* signal handler */
 	sigset_t sa_mask;		/* signal mask to apply */
 	int	sa_flags;		/* see signal options below */
 };
@@ -145,7 +145,7 @@ struct	sigaction {
 #ifndef _KERNEL
 #include <sys/cdefs.h>
 #endif
-typedef	void (*sig_t) __P((int));	/* type of signal function */
+typedef	__stdargs void (*sig_t) __P((int));	/* type of signal function */
 
 /*
  * Structure used in sigaltstack call.
@@ -165,7 +165,7 @@ struct	sigaltstack {
  * Signal vector "template" used in sigvec call.
  */
 struct	sigvec {
-	void	(*sv_handler)();	/* signal handler */
+  __stdargs void	(*sv_handler)();	/* signal handler */
 	int	sv_mask;		/* signal mask to apply */
 	int	sv_flags;		/* see signal options below */
 };
@@ -226,6 +226,6 @@ struct	sigstack {
  * defined by <sys/signal.h>.
  */
 __BEGIN_DECLS
-void	(*signal __P((int, void (*) __P((int))))) __P((int));
+__stdargs void	(*signal __P((int, __stdargs void (*) __P((int))))) __P((int));
 __END_DECLS
 #endif	/* !_SYS_SIGNAL_H_ */

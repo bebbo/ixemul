@@ -91,7 +91,7 @@ int ipcperm __P((struct ucred *, struct ipc_perm *, int));
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-key_t	ftok __P((const char *, char));
+__stdargs key_t	ftok __P((const char *, char));
 __END_DECLS
 #endif
 #endif /* !_SYS_IPC_H_ */

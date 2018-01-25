@@ -68,7 +68,7 @@ struct buf {
 	daddr_t	b_lblkno;		/* Logical block number. */
 	daddr_t	b_blkno;		/* Underlying physical block number. */
 					/* Function to call upon completion. */
-	void	(*b_iodone) __P((struct buf *));
+	__stdargs void	(*b_iodone) __P((struct buf *));
 	struct	vnode *b_vp;		/* Device vnode. */
 	int	b_dirtyoff;		/* Offset in buffer of dirty region. */
 	int	b_dirtyend;		/* Offset of end of dirty region. */
@@ -159,36 +159,36 @@ struct	buf bswlist;		/* Head of swap I/O buffer headers free list. */
 struct	buf *bclnlist;		/* Head of cleaned page list. */
 
 __BEGIN_DECLS
-void	allocbuf __P((struct buf *, int));
-void	bawrite __P((struct buf *));
-void	bdwrite __P((struct buf *));
-void	biodone __P((struct buf *));
-int	biowait __P((struct buf *));
-int	bread __P((struct vnode *, daddr_t, int,
+__stdargs void	allocbuf __P((struct buf *, int));
+__stdargs void	bawrite __P((struct buf *));
+__stdargs void	bdwrite __P((struct buf *));
+__stdargs void	biodone __P((struct buf *));
+__stdargs int	biowait __P((struct buf *));
+__stdargs int	bread __P((struct vnode *, daddr_t, int,
 		   struct ucred *, struct buf **));
-int	breada __P((struct vnode *, daddr_t, int, daddr_t, int,
+__stdargs int	breada __P((struct vnode *, daddr_t, int, daddr_t, int,
 		    struct ucred *, struct buf **));
-int	breadn __P((struct vnode *, daddr_t, int, daddr_t *, int *, int,
+__stdargs int	breadn __P((struct vnode *, daddr_t, int, daddr_t *, int *, int,
 		    struct ucred *, struct buf **));
-void	brelse __P((struct buf *));
-void	bremfree __P((struct buf *));
-void	bufinit __P((void));
-int	bwrite __P((struct buf *));
-void	cluster_callback __P((struct buf *));
-int	cluster_read __P((struct vnode *, u_quad_t, daddr_t, long,
+__stdargs void	brelse __P((struct buf *));
+__stdargs void	bremfree __P((struct buf *));
+__stdargs void	bufinit __P((void));
+__stdargs int	bwrite __P((struct buf *));
+__stdargs void	cluster_callback __P((struct buf *));
+__stdargs int	cluster_read __P((struct vnode *, u_quad_t, daddr_t, long,
 			  struct ucred *, struct buf **));
-void	cluster_write __P((struct buf *, u_quad_t));
-struct buf *getblk __P((struct vnode *, daddr_t, int, int, int));
-struct buf *geteblk __P((int));
-struct buf *getnewbuf __P((int slpflag, int slptimeo));
-struct buf *incore __P((struct vnode *, daddr_t));
+__stdargs void	cluster_write __P((struct buf *, u_quad_t));
+__stdargs struct buf *getblk __P((struct vnode *, daddr_t, int, int, int));
+__stdargs struct buf *geteblk __P((int));
+__stdargs struct buf *getnewbuf __P((int slpflag, int slptimeo));
+__stdargs struct buf *incore __P((struct vnode *, daddr_t));
 
-void	minphys __P((struct buf *bp));
-int	physio __P((void (*strategy)(struct buf *), struct buf *bp, dev_t dev,
-		    int flags, void (*minphys)(struct buf *), struct uio *uio));
-void  brelvp __P((struct buf *));
-void  reassignbuf __P((struct buf *, struct vnode *));
-void  bgetvp __P((struct vnode *, struct buf *));
+__stdargs void	minphys __P((struct buf *bp));
+__stdargs int	physio __P((__stdargs void (*strategy)(struct buf *), struct buf *bp, dev_t dev,
+		    int flags, __stdargs void (*minphys)(struct buf *), struct uio *uio));
+__stdargs void  brelvp __P((struct buf *));
+__stdargs void  reassignbuf __P((struct buf *, struct vnode *));
+__stdargs void  bgetvp __P((struct vnode *, struct buf *));
 __END_DECLS
 #endif
 #endif /* !_SYS_BUF_H_ */

@@ -58,10 +58,10 @@ struct netgroup {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-void	setnetgrent	__P((const char *));
-int	getnetgrent	__P((const char **, const char **, const char **));
-void	endnetgrent	__P((void));
-int	innetgr		__P((const char *, const char *, const char *,
+__stdargs void	setnetgrent	__P((const char *));
+__stdargs int	getnetgrent	__P((const char **, const char **, const char **));
+__stdargs void	endnetgrent	__P((void));
+__stdargs int	innetgr		__P((const char *, const char *, const char *,
 			     const char *));
 __END_DECLS
 

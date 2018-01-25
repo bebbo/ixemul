@@ -88,111 +88,111 @@ typedef struct {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-void	 abort __P((void));
-int	 abs __P((int));
-int	 atexit __P((void (*)(void)));
-double	 atof __P((const char *));
-int	 atoi __P((const char *));
-long	 atol __P((const char *));
-void	*bsearch __P((const void *, const void *, size_t,
-	    size_t, int (*)(const void *, const void *)));
-void	*calloc __P((size_t, size_t));
-div_t	 div __P((int, int));
-void	 exit __P((int));
-void	 free __P((void *));
-char	*getenv __P((const char *));
-long	 labs __P((long));
-ldiv_t	 ldiv __P((long, long));
-void	*malloc __P((size_t));
-void	 qsort __P((void *, size_t, size_t,
-	    int (*)(const void *, const void *)));
-int	 rand __P((void));
-void	*realloc __P((void *, size_t));
-void	 srand __P((unsigned));
-double	 strtod __P((const char *, char **));
-long	 strtol __P((const char *, char **, int));
-unsigned long
+__stdargs void	 abort __P((void));
+__stdargs int	 abs __P((int));
+__stdargs int	 atexit __P((__stdargs void (*)(void)));
+__stdargs double	 atof __P((const char *));
+__stdargs int	 atoi __P((const char *));
+__stdargs long	 atol __P((const char *));
+__stdargs void	*bsearch __P((const void *, const void *, size_t,
+	    size_t, __stdargs int (*)(const void *, const void *)));
+__stdargs void	*calloc __P((size_t, size_t));
+__stdargs div_t	 div __P((int, int));
+__stdargs void	 exit __P((int));
+__stdargs void	 free __P((void *));
+__stdargs char	*getenv __P((const char *));
+__stdargs long	 labs __P((long));
+__stdargs ldiv_t	 ldiv __P((long, long));
+__stdargs void	*malloc __P((size_t));
+__stdargs void	 qsort __P((void *, size_t, size_t,
+    __stdargs int (*)(const void *, const void *)));
+__stdargs int	 rand __P((void));
+__stdargs void	*realloc __P((void *, size_t));
+__stdargs void	 srand __P((unsigned));
+__stdargs double	 strtod __P((const char *, char **));
+__stdargs long	 strtol __P((const char *, char **, int));
+__stdargs unsigned long
 	 strtoul __P((const char *, char **, int));
-int	 system __P((const char *));
+__stdargs int	 system __P((const char *));
 
 /* these are currently just stubs */
-int	 mblen __P((const char *, size_t));
-size_t	 mbstowcs __P((wchar_t *, const char *, size_t));
-int	 wctomb __P((char *, wchar_t));
-int	 mbtowc __P((wchar_t *, const char *, size_t));
-size_t	 wcstombs __P((char *, const wchar_t *, size_t));
+__stdargs int	 mblen __P((const char *, size_t));
+__stdargs size_t	 mbstowcs __P((wchar_t *, const char *, size_t));
+__stdargs int	 wctomb __P((char *, wchar_t));
+__stdargs int	 mbtowc __P((wchar_t *, const char *, size_t));
+__stdargs size_t	 wcstombs __P((char *, const wchar_t *, size_t));
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 #if defined(alloca) && (alloca == __builtin_alloca) && (__GNUC__ < 2)
-void  *alloca __P((int));     /* built-in for gcc */ 
+__stdargs void  *alloca __P((int));     /* built-in for gcc */
 #else 
-void  *alloca __P((size_t)); 
+__stdargs void  *alloca __P((size_t));
 #endif /* __GNUC__ */ 
 
-char	*getbsize __P((int *, long *));
-char	*cgetcap __P((char *, char *, int));
-int	 cgetclose __P((void));
-int	 cgetent __P((char **, char **, char *));
-int	 cgetfirst __P((char **, char **));
-int	 cgetmatch __P((char *, char *));
-int	 cgetnext __P((char **, char **));
-int	 cgetnum __P((char *, char *, long *));
-int	 cgetset __P((char *));
-int	 cgetstr __P((char *, char *, char **));
-int	 cgetustr __P((char *, char *, char **));
+__stdargs char	*getbsize __P((int *, long *));
+__stdargs char	*cgetcap __P((char *, char *, int));
+__stdargs int	 cgetclose __P((void));
+__stdargs int	 cgetent __P((char **, char **, char *));
+__stdargs int	 cgetfirst __P((char **, char **));
+__stdargs int	 cgetmatch __P((char *, char *));
+__stdargs int	 cgetnext __P((char **, char **));
+__stdargs int	 cgetnum __P((char *, char *, long *));
+__stdargs int	 cgetset __P((char *));
+__stdargs int	 cgetstr __P((char *, char *, char **));
+__stdargs int	 cgetustr __P((char *, char *, char **));
 
-int	 daemon __P((int, int));
-char	*devname __P((int, int));
-int	 getloadavg __P((double [], int));
+__stdargs int	 daemon __P((int, int));
+__stdargs char	*devname __P((int, int));
+__stdargs int	 getloadavg __P((double [], int));
 
-long	 a64l __P((const char *));
-char	*l64a __P((long));
+__stdargs long	 a64l __P((const char *));
+__stdargs char	*l64a __P((long));
 
-void	 cfree __P((void *));
+__stdargs void	 cfree __P((void *));
 
-int	 getopt __P((int, char * const *, const char *));
+__stdargs int	 getopt __P((int, char * const *, const char *));
 extern	 char *optarg;			/* getopt(3) external variables */
 extern	 int opterr;
 extern	 int optind;
 extern	 int optopt;
 extern	 int optreset;
-int	 getsubopt __P((char **, char * const *, char **));
+__stdargs int	 getsubopt __P((char **, char * const *, char **));
 extern	 char *suboptarg;		/* getsubopt(3) external variable */
 
-int	 heapsort __P((void *, size_t, size_t,
-	    int (*)(const void *, const void *)));
-int	 mergesort __P((void *, size_t, size_t,
-	    int (*)(const void *, const void *)));
-int	 radixsort __P((const unsigned char **, int, const unsigned char *,
+__stdargs int	 heapsort __P((void *, size_t, size_t,
+    __stdargs int (*)(const void *, const void *)));
+__stdargs int	 mergesort __P((void *, size_t, size_t,
+    __stdargs int (*)(const void *, const void *)));
+__stdargs int	 radixsort __P((const unsigned char **, int, const unsigned char *,
 	    unsigned));
-int	 sradixsort __P((const unsigned char **, int, const unsigned char *,
+__stdargs int	 sradixsort __P((const unsigned char **, int, const unsigned char *,
 	    unsigned));
 
-char	*initstate __P((unsigned, char *, int));
-long	 random __P((void));
-char	*realpath __P((const char *, char *));
-char	*setstate __P((char *));
-void	 srandom __P((unsigned));
+__stdargs char	*initstate __P((unsigned, char *, int));
+__stdargs long	 random __P((void));
+__stdargs char	*realpath __P((const char *, char *));
+__stdargs char	*setstate __P((char *));
+__stdargs void	 srandom __P((unsigned));
 
-int	 putenv __P((const char *));
-int	 setenv __P((const char *, const char *, int));
-void	 unsetenv __P((const char *));
-void	 setproctitle __P((const char *, ...));
+__stdargs int	 putenv __P((const char *));
+__stdargs int	 setenv __P((const char *, const char *, int));
+__stdargs void	 unsetenv __P((const char *));
+__stdargs void	 setproctitle __P((const char *, ...));
 
-quad_t	 qabs __P((quad_t));
-qdiv_t	 qdiv __P((quad_t, quad_t));
-quad_t	 strtoq __P((const char *, char **, int));
-u_quad_t strtouq __P((const char *, char **, int));
+__stdargs quad_t	 qabs __P((quad_t));
+__stdargs qdiv_t	 qdiv __P((quad_t, quad_t));
+__stdargs quad_t	 strtoq __P((const char *, char **, int));
+__stdargs u_quad_t strtouq __P((const char *, char **, int));
 
-double	 drand48 __P((void));
-double	 erand48 __P((unsigned short[3]));
-long	 jrand48 __P((unsigned short[3]));
-void	 lcong48 __P((unsigned short[7]));
-long	 lrand48 __P((void));
-long	 mrand48 __P((void));
-long	 nrand48 __P((unsigned short[3]));
-unsigned short *seed48 __P((unsigned short[3]));
-void	 srand48 __P((long));
+__stdargs double	 drand48 __P((void));
+__stdargs double	 erand48 __P((unsigned short[3]));
+__stdargs long	 jrand48 __P((unsigned short[3]));
+__stdargs void	 lcong48 __P((unsigned short[7]));
+__stdargs long	 lrand48 __P((void));
+__stdargs long	 mrand48 __P((void));
+__stdargs long	 nrand48 __P((unsigned short[3]));
+__stdargs unsigned short *seed48 __P((unsigned short[3]));
+__stdargs void	 srand48 __P((long));
 #endif /* !_ANSI_SOURCE && !_POSIX_SOURCE */
 
 __END_DECLS

@@ -82,11 +82,11 @@ struct rpcent {
 };
 
 __BEGIN_DECLS
-extern struct rpcent *getrpcbyname	__P((char *));
-extern struct rpcent *getrpcbynumber	__P((int));
-extern struct rpcent *getrpcent		__P((void));
-extern void setrpcent __P((int));
-extern void endrpcent __P((void));
+extern __stdargs struct rpcent *getrpcbyname	__P((char *));
+extern __stdargs struct rpcent *getrpcbynumber	__P((int));
+extern __stdargs struct rpcent *getrpcent		__P((void));
+extern __stdargs void setrpcent __P((int));
+extern __stdargs void endrpcent __P((void));
 __END_DECLS
 
 #endif /* !_RPC_RPC_H */

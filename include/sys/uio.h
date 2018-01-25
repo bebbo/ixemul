@@ -71,8 +71,8 @@ struct uio {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	readv __P((int, const struct iovec *, int));
-int	writev __P((int, const struct iovec *, int));
+__stdargs int	readv __P((int, const struct iovec *, int));
+__stdargs int	writev __P((int, const struct iovec *, int));
 __END_DECLS
 
 

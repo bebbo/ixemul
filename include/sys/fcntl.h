@@ -186,12 +186,12 @@ struct flock {
 
 __BEGIN_DECLS
 #ifndef _KERNEL
-int	open __P((const char *, int, ...));
-int	fcntl __P((int, int, ...));
+__stdargs int	open __P((const char *, int, ...));
+__stdargs int	fcntl __P((int, int, ...));
 #endif
-int	creat __P((const char *, mode_t));
+__stdargs int	creat __P((const char *, mode_t));
 #ifndef _POSIX_SOURCE
-int	flock __P((int, int));
+__stdargs int	flock __P((int, int));
 #endif /* !_POSIX_SOURCE */
 __END_DECLS
 

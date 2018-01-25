@@ -96,13 +96,13 @@ struct passwd {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-struct passwd	*getpwuid __P((uid_t));
-struct passwd	*getpwnam __P((const char *));
+__stdargs struct passwd	*getpwuid __P((uid_t));
+__stdargs struct passwd	*getpwnam __P((const char *));
 #ifndef _POSIX_SOURCE
-struct passwd	*getpwent __P((void));
-int		 setpassent __P((int));
-int		 setpwent __P((void));
-void		 endpwent __P((void));
+__stdargs struct passwd	*getpwent __P((void));
+__stdargs int		 setpassent __P((int));
+__stdargs int		 setpwent __P((void));
+__stdargs void		 endpwent __P((void));
 #endif
 __END_DECLS
 

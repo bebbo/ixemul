@@ -69,9 +69,9 @@ typedef struct MPOOL {
 	u_long	pagesize;		/* file page size */
 	int	fd;			/* file descriptor */
 					/* page in conversion routine */
-	void    (*pgin) __P((void *, pgno_t, void *));
+	__stdargs void    (*pgin) __P((void *, pgno_t, void *));
 					/* page out conversion routine */
-	void    (*pgout) __P((void *, pgno_t, void *));
+	__stdargs void    (*pgout) __P((void *, pgno_t, void *));
 	void	*pgcookie;		/* cookie for page in/out routines */
 #ifdef STATISTICS
 	u_long	cachehit;
@@ -87,15 +87,15 @@ typedef struct MPOOL {
 } MPOOL;
 
 __BEGIN_DECLS
-MPOOL	*mpool_open __P((void *, int, pgno_t, pgno_t));
-void	 mpool_filter __P((MPOOL *, void (*)(void *, pgno_t, void *),
-	    void (*)(void *, pgno_t, void *), void *));
-void	*mpool_new __P((MPOOL *, pgno_t *));
-void	*mpool_get __P((MPOOL *, pgno_t, u_int));
-int	 mpool_put __P((MPOOL *, void *, u_int));
-int	 mpool_sync __P((MPOOL *));
-int	 mpool_close __P((MPOOL *));
+__stdargs MPOOL	*mpool_open __P((void *, int, pgno_t, pgno_t));
+__stdargs void	 mpool_filter __P((MPOOL *, __stdargs void (*)(void *, pgno_t, void *),
+    __stdargs void (*)(void *, pgno_t, void *), void *));
+__stdargs void	*mpool_new __P((MPOOL *, pgno_t *));
+__stdargs void	*mpool_get __P((MPOOL *, pgno_t, u_int));
+__stdargs int	 mpool_put __P((MPOOL *, void *, u_int));
+__stdargs int	 mpool_sync __P((MPOOL *));
+__stdargs int	 mpool_close __P((MPOOL *));
 #ifdef STATISTICS
-void	 mpool_stat __P((MPOOL *));
+__stdargs void	 mpool_stat __P((MPOOL *));
 #endif
 __END_DECLS

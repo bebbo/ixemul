@@ -76,8 +76,8 @@ struct lconv {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-struct lconv	*localeconv __P((void));
-char		*setlocale __P((int, const char *));
+__stdargs struct lconv	*localeconv __P((void));
+__stdargs char		*setlocale __P((int, const char *));
 __END_DECLS
 
 #endif /* _LOCALE_H_ */

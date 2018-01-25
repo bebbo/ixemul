@@ -51,140 +51,140 @@
 #endif
 
 __BEGIN_DECLS
-__dead void	 _exit __P((int)) __attribute__((noreturn));
-int	 access __P((const char *, int));
-unsigned alarm __P((unsigned));
-int	 chdir __P((const char *));
-int	 chown __P((const char *, uid_t, gid_t));
-int	 close __P((int));
-size_t	 confstr __P((int, char *, size_t));
-char	*cuserid __P((char *));
-int	 dup __P((int));
-int	 dup2 __P((int, int));
-int	 execl __P((const char *, const char *, ...));
-int	 execle __P((const char *, const char *, ...));
-int	 execlp __P((const char *, const char *, ...));
-int	 execv __P((const char *, char * const *));
-int	 execve __P((const char *, char * const *, char * const *));
-int	 execvp __P((const char *, char * const *));
-pid_t	 fork __P((void));
-long	 fpathconf __P((int, int));		/* not yet */
-char	*getcwd __P((char *, size_t));
-gid_t	 getegid __P((void));
-uid_t	 geteuid __P((void));
-gid_t	 getgid __P((void));
-int	 getgroups __P((int, int *));
-char	*getlogin __P((void));
-pid_t	 getpgrp __P((void));
-pid_t	 getpid __P((void));
-pid_t	 getppid __P((void));
-uid_t	 getuid __P((void));
-int	 isatty __P((int));
-int	 link __P((const char *, const char *));
-off_t	 lseek __P((int, off_t, int));
-long	 pathconf __P((const char *, int));	/* not yet */
-int	 pause __P((void));
-int	 pipe __P((int *));
-ssize_t	 read __P((int, void *, size_t));
-int	 rmdir __P((const char *));
-int	 setgid __P((gid_t));
-int	 setpgid __P((pid_t, pid_t));
-pid_t	 setsid __P((void));
-int	 setuid __P((uid_t));
-unsigned sleep __P((unsigned));
-long	 sysconf __P((int));			/* not yet */
-pid_t	 tcgetpgrp __P((int));
-int	 tcsetpgrp __P((int, pid_t));
-char	*ttyname __P((int));
-int	 unlink __P((const char *));
-ssize_t	 write __P((int, const void *, size_t));
+__stdargs __dead void	 _exit __P((int)) __attribute__((noreturn));
+__stdargs int	 access __P((const char *, int));
+__stdargs unsigned alarm __P((unsigned));
+__stdargs int	 chdir __P((const char *));
+__stdargs int	 chown __P((const char *, uid_t, gid_t));
+__stdargs int	 close __P((int));
+__stdargs size_t	 confstr __P((int, char *, size_t));
+__stdargs char	*cuserid __P((char *));
+__stdargs int	 dup __P((int));
+__stdargs int	 dup2 __P((int, int));
+__stdargs int	 execl __P((const char *, const char *, ...));
+__stdargs int	 execle __P((const char *, const char *, ...));
+__stdargs int	 execlp __P((const char *, const char *, ...));
+__stdargs int	 execv __P((const char *, char * const *));
+__stdargs int	 execve __P((const char *, char * const *, char * const *));
+__stdargs int	 execvp __P((const char *, char * const *));
+__stdargs pid_t	 fork __P((void));
+__stdargs long	 fpathconf __P((int, int));		/* not yet */
+__stdargs char	*getcwd __P((char *, size_t));
+__stdargs gid_t	 getegid __P((void));
+__stdargs uid_t	 geteuid __P((void));
+__stdargs gid_t	 getgid __P((void));
+__stdargs int	 getgroups __P((int, int *));
+__stdargs char	*getlogin __P((void));
+__stdargs pid_t	 getpgrp __P((void));
+__stdargs pid_t	 getpid __P((void));
+__stdargs pid_t	 getppid __P((void));
+__stdargs uid_t	 getuid __P((void));
+__stdargs int	 isatty __P((int));
+__stdargs int	 link __P((const char *, const char *));
+__stdargs off_t	 lseek __P((int, off_t, int));
+__stdargs long	 pathconf __P((const char *, int));	/* not yet */
+__stdargs int	 pause __P((void));
+__stdargs int	 pipe __P((int *));
+__stdargs ssize_t	 read __P((int, void *, size_t));
+__stdargs int	 rmdir __P((const char *));
+__stdargs int	 setgid __P((gid_t));
+__stdargs int	 setpgid __P((pid_t, pid_t));
+__stdargs pid_t	 setsid __P((void));
+__stdargs int	 setuid __P((uid_t));
+__stdargs unsigned sleep __P((unsigned));
+__stdargs long	 sysconf __P((int));			/* not yet */
+__stdargs pid_t	 tcgetpgrp __P((int));
+__stdargs int	 tcsetpgrp __P((int, pid_t));
+__stdargs char	*ttyname __P((int));
+__stdargs int	 unlink __P((const char *));
+__stdargs ssize_t	 write __P((int, const void *, size_t));
 
 #ifndef	_POSIX_SOURCE
 
 /* structure timeval required for select() */
 #include <sys/time.h>
 
-int	 acct __P((const char *));
-char	*brk __P((const char *));
-int	 chroot __P((const char *));
-char	*crypt __P((const char *, const char *));
-int	 des_cipher __P((const char *, char *, long, int));
-int	 des_setkey __P((const char *key));
-int	 encrypt __P((char *, int));
-void	 endusershell __P((void));
-int	 exect __P((const char *, char * const *, char * const *));
-int	 fchdir __P((int));
-int	 fchown __P((int, uid_t, gid_t));
-int	 fsync __P((int));
-int	 ftruncate __P((int, off_t));
-int	 getdomainname __P((char *, int));
-int	 getdtablesize __P((void));
-long	 gethostid __P((void));
-int	 gethostname __P((char *, int));
-mode_t	 getmode __P((const void *, mode_t));
-int	 getpagesize __P((void));
-char	*getpass __P((const char *));
-char	*getusershell __P((void));
-char	*getwd __P((char *));			/* obsoleted by getcwd() */
-int	 initgroups __P((const char *, int));
-int	 iruserok __P((u_long, int, const char *, const char *));
-int	 mknod __P((const char *, mode_t, dev_t));
-int	 mkstemp __P((char *));
-char	*mktemp __P((char *));
-int	 nfssvc __P((int, void *));
-int	 nice __P((int));
-void	 psignal __P((unsigned int, const char *));
+__stdargs int	 acct __P((const char *));
+__stdargs char	*brk __P((const char *));
+__stdargs int	 chroot __P((const char *));
+__stdargs char	*crypt __P((const char *, const char *));
+__stdargs int	 des_cipher __P((const char *, char *, long, int));
+__stdargs int	 des_setkey __P((const char *key));
+__stdargs int	 encrypt __P((char *, int));
+__stdargs void	 endusershell __P((void));
+__stdargs int	 exect __P((const char *, char * const *, char * const *));
+__stdargs int	 fchdir __P((int));
+__stdargs int	 fchown __P((int, uid_t, gid_t));
+__stdargs int	 fsync __P((int));
+__stdargs int	 ftruncate __P((int, off_t));
+__stdargs int	 getdomainname __P((char *, int));
+__stdargs int	 getdtablesize __P((void));
+__stdargs long	 gethostid __P((void));
+__stdargs int	 gethostname __P((char *, int));
+__stdargs mode_t	 getmode __P((const void *, mode_t));
+__stdargs int	 getpagesize __P((void));
+__stdargs char	*getpass __P((const char *));
+__stdargs char	*getusershell __P((void));
+__stdargs char	*getwd __P((char *));			/* obsoleted by getcwd() */
+__stdargs int	 initgroups __P((const char *, int));
+__stdargs int	 iruserok __P((u_long, int, const char *, const char *));
+__stdargs int	 mknod __P((const char *, mode_t, dev_t));
+__stdargs int	 mkstemp __P((char *));
+__stdargs char	*mktemp __P((char *));
+__stdargs int	 nfssvc __P((int, void *));
+__stdargs int	 nice __P((int));
+__stdargs void	 psignal __P((unsigned int, const char *));
 #ifdef _KERNEL
 extern char *sys_siglist[];
 #else
 extern const char *const sys_siglist[];
 #endif
-int	 profil __P((char *, int, int, int));
-int	 rcmd __P((char **, int, const char *,
+__stdargs int	 profil __P((char *, int, int, int));
+__stdargs int	 rcmd __P((char **, int, const char *,
 		const char *, const char *, int *));
-char	*re_comp __P((const char *));
-int	 re_exec __P((const char *));
-int	 readlink __P((const char *, char *, int));
-int	 reboot __P((int));
-int	 revoke __P((const char *));
-int	 rresvport __P((int *));
-int	 ruserok __P((const char *, int, const char *, const char *));
-char	*sbrk __P((int));
-int	 select __P((int, fd_set *, fd_set *, fd_set *, struct timeval *));
-int	 setdomainname __P((const char *, int));
-int	 setegid __P((gid_t));
-int	 seteuid __P((uid_t));
-int	 setgroups __P((int, const int *));
-void	 sethostid __P((long));
-int	 sethostname __P((const char *, int));
-int	 setkey __P((const char *));
-int	 setlogin __P((const char *));
-void	*setmode __P((const char *));
-int	 setpgrp __P((pid_t pid, pid_t pgrp));	/* obsoleted by setpgid() */
-int	 setregid __P((int, int));
-int	 setreuid __P((int, int));
-int	 setrgid __P((gid_t));
-int	 setruid __P((uid_t));
-void	 setusershell __P((void));
-int	 swapon __P((const char *));
-int	 symlink __P((const char *, const char *));
-void	 sync __P((void));
-int	 syscall __P((int, ...));
-int	 truncate __P((const char *, off_t));
-int	 ttyslot __P((void));
-u_int	 ualarm __P((u_int, u_int));
-int	 undelete __P((const char *));
-void	 usleep __P((u_int));
-void	*valloc __P((size_t));			/* obsoleted by malloc() */
-pid_t	 vfork __P((void));
+__stdargs char	*re_comp __P((const char *));
+__stdargs int	 re_exec __P((const char *));
+__stdargs int	 readlink __P((const char *, char *, int));
+__stdargs int	 reboot __P((int));
+__stdargs int	 revoke __P((const char *));
+__stdargs int	 rresvport __P((int *));
+__stdargs int	 ruserok __P((const char *, int, const char *, const char *));
+__stdargs char	*sbrk __P((int));
+__stdargs int	 select __P((int, fd_set *, fd_set *, fd_set *, struct timeval *));
+__stdargs int	 setdomainname __P((const char *, int));
+__stdargs int	 setegid __P((gid_t));
+__stdargs int	 seteuid __P((uid_t));
+__stdargs int	 setgroups __P((int, const int *));
+__stdargs void	 sethostid __P((long));
+__stdargs int	 sethostname __P((const char *, int));
+__stdargs int	 setkey __P((const char *));
+__stdargs int	 setlogin __P((const char *));
+__stdargs void	*setmode __P((const char *));
+__stdargs int	 setpgrp __P((pid_t pid, pid_t pgrp));	/* obsoleted by setpgid() */
+__stdargs int	 setregid __P((int, int));
+__stdargs int	 setreuid __P((int, int));
+__stdargs int	 setrgid __P((gid_t));
+__stdargs int	 setruid __P((uid_t));
+__stdargs void	 setusershell __P((void));
+__stdargs int	 swapon __P((const char *));
+__stdargs int	 symlink __P((const char *, const char *));
+__stdargs void	 sync __P((void));
+__stdargs int	 syscall __P((int, ...));
+__stdargs int	 truncate __P((const char *, off_t));
+__stdargs int	 ttyslot __P((void));
+__stdargs u_int	 ualarm __P((u_int, u_int));
+__stdargs int	 undelete __P((const char *));
+__stdargs void	 usleep __P((u_int));
+__stdargs void	*valloc __P((size_t));			/* obsoleted by malloc() */
+__stdargs pid_t	 vfork __P((void));
 
-int	 getopt __P((int, char * const *, const char *));
+__stdargs int	 getopt __P((int, char * const *, const char *));
 extern	 char *optarg;			/* getopt(3) external variables */
 extern	 int opterr;
 extern	 int optind;
 extern	 int optopt;
 extern	 int optreset;
-int	 getsubopt __P((char **, char * const *, char **));
+__stdargs int	 getsubopt __P((char **, char * const *, char **));
 extern	 char *suboptarg;		/* getsubopt(3) external variable */
 #endif /* !_POSIX_SOURCE */
 __END_DECLS

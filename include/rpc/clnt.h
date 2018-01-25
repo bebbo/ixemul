@@ -119,21 +119,21 @@ typedef struct __rpc_client {
 	AUTH	*cl_auth;			/* authenticator */
 	struct clnt_ops {
 		/* call remote procedure */
-		enum clnt_stat	(*cl_call) __P((struct __rpc_client *,
+	  __stdargs enum clnt_stat	(*cl_call) __P((struct __rpc_client *,
 				    u_long, xdrproc_t, caddr_t, xdrproc_t,
 				    caddr_t, struct timeval));
 		/* abort a call */
-		void		(*cl_abort) __P((struct __rpc_client *));
+	  __stdargs void		(*cl_abort) __P((struct __rpc_client *));
 		/* get specific error code */
-		void		(*cl_geterr) __P((struct __rpc_client *,
+	  __stdargs void		(*cl_geterr) __P((struct __rpc_client *,
 				    struct rpc_err *));
 		/* frees results */
-		bool_t		(*cl_freeres) __P((struct __rpc_client *,
+	  __stdargs bool_t		(*cl_freeres) __P((struct __rpc_client *,
 				    xdrproc_t, caddr_t));
 		/* destroy this structure */
-		void		(*cl_destroy) __P((struct __rpc_client *));
+	  __stdargs void		(*cl_destroy) __P((struct __rpc_client *));
 		/* the ioctl() of rpc */
-		bool_t          (*cl_control) __P((struct __rpc_client *, u_int,
+	  __stdargs bool_t          (*cl_control) __P((struct __rpc_client *, u_int,
 				    char *));
 	} *cl_ops;
 	caddr_t			cl_private;	/* private stuff */
@@ -254,7 +254,7 @@ typedef struct __rpc_client {
  *	u_long vers;
  */
 __BEGIN_DECLS
-extern CLIENT *clntraw_create	__P((u_long, u_long));
+extern __stdargs CLIENT *clntraw_create	__P((u_long, u_long));
 __END_DECLS
 
 
@@ -268,7 +268,7 @@ __END_DECLS
  *	char *prot;	-- protocol
  */
 __BEGIN_DECLS
-extern CLIENT *clnt_create	__P((char *, u_long, u_long, char *));
+extern __stdargs CLIENT *clnt_create	__P((char *, u_long, u_long, char *));
 __END_DECLS
 
 
@@ -284,7 +284,7 @@ __END_DECLS
  *	u_int recvsz;
  */
 __BEGIN_DECLS
-extern CLIENT *clnttcp_create	__P((struct sockaddr_in *,
+extern __stdargs CLIENT *clnttcp_create	__P((struct sockaddr_in *,
 				     u_long,
 				     u_long,
 				     int *,
@@ -315,12 +315,12 @@ __END_DECLS
  *	u_int recvsz;
  */
 __BEGIN_DECLS
-extern CLIENT *clntudp_create	__P((struct sockaddr_in *,
+extern __stdargs CLIENT *clntudp_create	__P((struct sockaddr_in *,
 				     u_long,
 				     u_long,
 				     struct timeval,
 				     int *));
-extern CLIENT *clntudp_bufcreate __P((struct sockaddr_in *,
+extern __stdargs CLIENT *clntudp_bufcreate __P((struct sockaddr_in *,
 				     u_long,
 				     u_long,
 				     struct timeval,
@@ -334,24 +334,24 @@ __END_DECLS
  * Print why creation failed
  */
 __BEGIN_DECLS
-extern void clnt_pcreateerror	__P((char *));			/* stderr */
-extern char *clnt_spcreateerror	__P((char *));			/* string */
+extern __stdargs void clnt_pcreateerror	__P((char *));			/* stderr */
+extern __stdargs char *clnt_spcreateerror	__P((char *));			/* string */
 __END_DECLS
 
 /*
  * Like clnt_perror(), but is more verbose in its output
  */ 
 __BEGIN_DECLS
-extern void clnt_perrno		__P((enum clnt_stat));		/* stderr */
-extern char *clnt_sperrno	__P((enum clnt_stat));		/* string */
+extern __stdargs void clnt_perrno		__P((enum clnt_stat));		/* stderr */
+extern __stdargs char *clnt_sperrno	__P((enum clnt_stat));		/* string */
 __END_DECLS
 
 /*
  * Print an English error message, given the client error code
  */
 __BEGIN_DECLS
-extern void clnt_perror		__P((CLIENT *, char *)); 	/* stderr */
-extern char *clnt_sperror	__P((CLIENT *, char *));	/* string */
+extern __stdargs void clnt_perror		__P((CLIENT *, char *)); 	/* stderr */
+extern __stdargs char *clnt_sperror	__P((CLIENT *, char *));	/* string */
 __END_DECLS
 
 

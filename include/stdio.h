@@ -106,10 +106,10 @@ typedef	struct __sFILE {
 
 	/* operations */
 	void	*_cookie;	/* cookie passed to io functions */
-	int	(*_close) __P((void *));
-	int	(*_read)  __P((void *, char *, int));
-	fpos_t	(*_seek)  __P((void *, fpos_t, int));
-	int	(*_write) __P((void *, const char *, int));
+	__stdargs int	(*_close) __P((void *));
+	__stdargs int	(*_read)  __P((void *, char *, int));
+	__stdargs fpos_t	(*_seek)  __P((void *, fpos_t, int));
+	__stdargs int	(*_write) __P((void *, const char *, int));
 
 	/* separate buffer for long sequences of ungetc() */
 	struct	__sbuf _ub;	/* ungetc buffer */
@@ -311,10 +311,10 @@ __END_DECLS
  */
 __BEGIN_DECLS
 FILE	*funopen __P((const void *,
-		int (*)(void *, char *, int),
-		int (*)(void *, const char *, int),
-		fpos_t (*)(void *, fpos_t, int),
-		int (*)(void *)));
+    __stdargs int (*)(void *, char *, int),
+    __stdargs int (*)(void *, const char *, int),
+    __stdargs fpos_t (*)(void *, fpos_t, int),
+    __stdargs int (*)(void *)));
 __END_DECLS
 #define	fropen(cookie, fn) funopen(cookie, fn, 0, 0, 0)
 #define	fwopen(cookie, fn) funopen(cookie, 0, fn, 0, 0)

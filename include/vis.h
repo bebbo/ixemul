@@ -74,11 +74,11 @@
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-char	*vis __P((char *, char, int, char));
-int	strvis __P((char *, const char *, int));
-int	strvisx __P((char *, const char *, size_t, int));
-int	strunvis __P((char *, const char *));
-int	unvis __P((char *, char, int *, int));
+__stdargs char	*vis __P((char *, char, int, char));
+__stdargs int	strvis __P((char *, const char *, int));
+__stdargs int	strvisx __P((char *, const char *, size_t, int));
+__stdargs int	strunvis __P((char *, const char *));
+__stdargs int	unvis __P((char *, char, int *, int));
 __END_DECLS
 
 #endif /* !_VIS_H_ */

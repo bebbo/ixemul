@@ -143,24 +143,24 @@ extern struct __res_state _res;
 #define p_time		__p_time
 #define p_type		__p_type
 __BEGIN_DECLS
-int	 __dn_skipname __P((const u_char *, const u_char *));
-void	 __fp_query __P((char *, FILE *));
-char	*__hostalias __P((const char *));
-void	 __putlong __P((u_int32_t, u_char *));
-void	 __putshort __P((u_int16_t, u_char *));
-char	*__p_class __P((int));
-char	*__p_time __P((u_int32_t));
-char	*__p_type __P((int));
+__stdargs int	 __dn_skipname __P((const u_char *, const u_char *));
+__stdargs void	 __fp_query __P((char *, FILE *));
+__stdargs char	*__hostalias __P((const char *));
+__stdargs void	 __putlong __P((u_int32_t, u_char *));
+__stdargs void	 __putshort __P((u_int16_t, u_char *));
+__stdargs char	*__p_class __P((int));
+__stdargs char	*__p_time __P((u_int32_t));
+__stdargs char	*__p_type __P((int));
 
-int	 dn_comp __P((const u_char *, u_char *, int, u_char **, u_char **));
-int	 dn_expand __P((const u_char *, const u_char *, const u_char *,
+__stdargs int	 dn_comp __P((const u_char *, u_char *, int, u_char **, u_char **));
+__stdargs int	 dn_expand __P((const u_char *, const u_char *, const u_char *,
 		u_char *, int));
-int	 res_init __P((void));
-int	 res_query __P((char *, int, int, u_char *, int));
-int	 res_search __P((const char *, int, int, u_char *, int));
-int	 res_mkquery __P((int, const char *, int, int, const char *, int,
+__stdargs int	 res_init __P((void));
+__stdargs int	 res_query __P((char *, int, int, u_char *, int));
+__stdargs int	 res_search __P((const char *, int, int, u_char *, int));
+__stdargs int	 res_mkquery __P((int, const char *, int, int, const char *, int,
 		const char *, char *, int));
-int	 res_send __P((const char *, int, char *, int));
+__stdargs int	 res_send __P((const char *, int, char *, int));
 __END_DECLS
 
 #endif /* !_RESOLV_H_ */

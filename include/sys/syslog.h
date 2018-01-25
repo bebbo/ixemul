@@ -179,23 +179,23 @@ CODE facilitynames[] = {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-void	closelog __P((void));
-void	openlog __P((const char *, int, int));
-int	setlogmask __P((int));
-void	syslog __P((int, const char *, ...))
+__stdargs void	closelog __P((void));
+__stdargs void	openlog __P((const char *, int, int));
+__stdargs int	setlogmask __P((int));
+__stdargs void	syslog __P((int, const char *, ...))
     __attribute__((__format__(__printf__,2,3)));
-void	vsyslog __P((int, const char *, _BSD_VA_LIST_));
+__stdargs void	vsyslog __P((int, const char *, _BSD_VA_LIST_));
 __END_DECLS
 
 #else /* !_KERNEL */
 
-void	logpri __P((int));
+__stdargs void	logpri __P((int));
 #if 0
-void	log __P((int, const char *, ...))
+__stdargs void	log __P((int, const char *, ...))
     __kprintf_attribute__((__format__(__kprintf__,2,3)));
-void	addlog __P((const char *, ...))
+__stdargs void	addlog __P((const char *, ...))
     __kprintf_attribute__((__format__(__kprintf__,1,2)));
 #endif
-void	logwakeup __P((void));
+__stdargs void	logwakeup __P((void));
 
 #endif /* !_KERNEL */

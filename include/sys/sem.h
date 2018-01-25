@@ -173,15 +173,15 @@ int	*semu;			/* undo structure pool */
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int semctl __P((int, int, int, union semun));
-int __semctl __P((int, int, int, union semun *));
-int semget __P((key_t, int, int));
-int semop __P((int, struct sembuf *, u_int));
-int semconfig __P((int));
+__stdargs int semctl __P((int, int, int, union semun));
+__stdargs int __semctl __P((int, int, int, union semun *));
+__stdargs int semget __P((key_t, int, int));
+__stdargs int semop __P((int, struct sembuf *, u_int));
+__stdargs int semconfig __P((int));
 __END_DECLS
 #else
-void seminit __P((void));
-void semexit __P((struct Task *));
+__stdargs void seminit __P((void));
+__stdargs void semexit __P((struct Task *));
 #endif /* !_KERNEL */
 
 #endif /* !_SEM_H_ */

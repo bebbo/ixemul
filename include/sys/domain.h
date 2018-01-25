@@ -39,9 +39,9 @@
 struct	domain {
 	int	dom_family;		/* AF_xxx */
 	char	*dom_name;
-	int	(*dom_init)();		/* initialize domain data structures */
-	int	(*dom_externalize)();	/* externalize access rights */
-	int	(*dom_dispose)();	/* dispose of internalized rights */
+	__stdargs int	(*dom_init)();		/* initialize domain data structures */
+	__stdargs int	(*dom_externalize)();	/* externalize access rights */
+	__stdargs int	(*dom_dispose)();	/* dispose of internalized rights */
 	struct	protosw *dom_protosw, *dom_protoswNPROTOSW;
 	struct	domain *dom_next;
 };

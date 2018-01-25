@@ -149,15 +149,15 @@ struct	stat
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-mode_t	umask __P((mode_t));
-int	chmod __P((const char *, mode_t));
-int	fstat __P((int, struct stat *));
-int	mkdir __P((const char *, mode_t));
-int	mkfifo __P((const char *, mode_t));
-int	stat __P((const char *, struct stat *));
+__stdargs mode_t	umask __P((mode_t));
+__stdargs int	chmod __P((const char *, mode_t));
+__stdargs int	fstat __P((int, struct stat *));
+__stdargs int	mkdir __P((const char *, mode_t));
+__stdargs int	mkfifo __P((const char *, mode_t));
+__stdargs int	stat __P((const char *, struct stat *));
 #ifndef _POSIX_SOURCE
-int	fchmod __P((int, mode_t));
-int	lstat __P((const char *, struct stat *));
+__stdargs int	fchmod __P((int, mode_t));
+__stdargs int	lstat __P((const char *, struct stat *));
 #endif /* not POSIX */
 __END_DECLS
 

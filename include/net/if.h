@@ -63,11 +63,11 @@ struct ifnet {
 		int	ifq_drops;
 	} if_snd;			/* output queue */
 /* procedure handles */
-	int	(*if_init)();		/* init routine */
-	int	(*if_output)();		/* output routine */
-	int	(*if_ioctl)();		/* ioctl routine */
-	int	(*if_reset)();		/* bus reset routine */
-	int	(*if_watchdog)();	/* timer routine */
+	__stdargs int	(*if_init)();		/* init routine */
+	__stdargs int	(*if_output)();		/* output routine */
+	__stdargs int	(*if_ioctl)();		/* ioctl routine */
+	__stdargs int	(*if_reset)();		/* bus reset routine */
+	__stdargs int	(*if_watchdog)();	/* timer routine */
 /* generic interface statistics */
 	int	if_ipackets;		/* packets received on interface */
 	int	if_ierrors;		/* input errors on interface */

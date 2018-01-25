@@ -115,14 +115,14 @@ typedef enum { DB_BTREE, DB_HASH, DB_RECNO } DBTYPE;
 /* Access method description structure. */
 typedef struct __db {
 	DBTYPE type;			/* Underlying db type. */
-	int (*close)	__P((struct __db *));
-	int (*del)	__P((const struct __db *, const DBT *, u_int));
-	int (*get)	__P((const struct __db *, const DBT *, DBT *, u_int));
-	int (*put)	__P((const struct __db *, DBT *, const DBT *, u_int));
-	int (*seq)	__P((const struct __db *, DBT *, DBT *, u_int));
-	int (*sync)	__P((const struct __db *, u_int));
+	__stdargs int (*close)	__P((struct __db *));
+	__stdargs int (*del)	__P((const struct __db *, const DBT *, u_int));
+	__stdargs int (*get)	__P((const struct __db *, const DBT *, DBT *, u_int));
+	__stdargs int (*put)	__P((const struct __db *, DBT *, const DBT *, u_int));
+	__stdargs int (*seq)	__P((const struct __db *, DBT *, DBT *, u_int));
+	__stdargs int (*sync)	__P((const struct __db *, u_int));
 	void *internal;			/* Access method private. */
-	int (*fd)	__P((const struct __db *));
+	__stdargs int (*fd)	__P((const struct __db *));
 } DB;
 
 #define	BTREEMAGIC	0x053162
@@ -136,9 +136,9 @@ typedef struct {
 	int	maxkeypage;	/* maximum keys per page */
 	int	minkeypage;	/* minimum keys per page */
 	u_int	psize;		/* page size */
-	int	(*compare)	/* comparison function */
+	__stdargs int	(*compare)	/* comparison function */
 	    __P((const DBT *, const DBT *));
-	size_t	(*prefix)	/* prefix function */
+	__stdargs size_t	(*prefix)	/* prefix function */
 	    __P((const DBT *, const DBT *));
 	int	lorder;		/* byte order */
 } BTREEINFO;
@@ -152,7 +152,7 @@ typedef struct {
 	u_int	ffactor;	/* fill factor */
 	u_int	nelem;		/* number of elements */
 	u_int	cachesize;	/* bytes to cache */
-	u_int32_t		/* hash function */
+	__stdargs u_int32_t		/* hash function */
 		(*hash) __P((const void *, size_t));
 	int	lorder;		/* byte order */
 } HASHINFO;
@@ -222,13 +222,13 @@ typedef struct {
 #endif
 
 __BEGIN_DECLS
-DB *dbopen __P((const char *, int, int, DBTYPE, const void *));
+__stdargs DB *dbopen __P((const char *, int, int, DBTYPE, const void *));
 
 #ifdef __DBINTERFACE_PRIVATE
-DB	*__bt_open __P((const char *, int, int, const BTREEINFO *, int));
-DB	*__hash_open __P((const char *, int, int, const HASHINFO *, int));
-DB	*__rec_open __P((const char *, int, int, const RECNOINFO *, int));
-void	 __dbpanic __P((DB *dbp));
+__stdargs DB	*__bt_open __P((const char *, int, int, const BTREEINFO *, int));
+__stdargs DB	*__hash_open __P((const char *, int, int, const HASHINFO *, int));
+__stdargs DB	*__rec_open __P((const char *, int, int, const RECNOINFO *, int));
+__stdargs void	 __dbpanic __P((DB *dbp));
 #endif
 __END_DECLS
 #endif /* !_DB_H_ */

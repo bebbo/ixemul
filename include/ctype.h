@@ -60,26 +60,26 @@ extern const char	*_ctype_;
 #endif
 
 __BEGIN_DECLS
-extern int	isalnum __P ((int));
-extern int	isalpha __P ((int));
-extern int	iscntrl __P ((int));
-extern int	isdigit __P ((int));
-extern int	isgraph __P ((int));
-extern int	islower __P ((int));
-extern int	isprint __P ((int));
-extern int	ispunct __P ((int));
-extern int	isspace __P ((int));
-extern int	isupper __P ((int));
-extern int	isxdigit __P ((int));
-extern int	tolower __P ((int));
-extern int	toupper __P ((int));
+extern __stdargs int	isalnum __P ((int));
+extern __stdargs int	isalpha __P ((int));
+extern __stdargs int	iscntrl __P ((int));
+extern __stdargs int	isdigit __P ((int));
+extern __stdargs int	isgraph __P ((int));
+extern __stdargs int	islower __P ((int));
+extern __stdargs int	isprint __P ((int));
+extern __stdargs int	ispunct __P ((int));
+extern __stdargs int	isspace __P ((int));
+extern __stdargs int	isupper __P ((int));
+extern __stdargs int	isxdigit __P ((int));
+extern __stdargs int	tolower __P ((int));
+extern __stdargs int	toupper __P ((int));
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
-extern int	isblank __P ((int));
-extern int	isascii __P ((int));
-extern int	toascii __P ((int));
-extern int	_tolower __P ((int));
-extern int	_toupper __P ((int));
+extern __stdargs int	isblank __P ((int));
+extern __stdargs int	isascii __P ((int));
+extern __stdargs int	toascii __P ((int));
+extern __stdargs int	_tolower __P ((int));
+extern __stdargs int	_toupper __P ((int));
 #endif
 __END_DECLS
 

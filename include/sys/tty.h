@@ -56,8 +56,8 @@ struct tty {
 	struct	clist t_rawq;		/* queues */
 	struct	clist t_canq;
 	struct	clist t_outq;
-	int	(*t_oproc)();		/* device */
-	int	(*t_param)();		/* device */
+	__stdargs int	(*t_oproc)();		/* device */
+	__stdargs int	(*t_param)();		/* device */
 	struct	proc *t_rsel;		/* tty */
 	struct	proc *t_wsel;
 	caddr_t	T_LINEP; 		/* XXX */

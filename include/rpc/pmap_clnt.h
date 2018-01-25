@@ -66,20 +66,20 @@
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-extern bool_t		pmap_set	__P((u_long, u_long, int, int));
-extern bool_t		pmap_unset	__P((u_long, u_long));
-extern struct pmaplist	*pmap_getmaps	__P((struct sockaddr_in *));
-extern enum clnt_stat	pmap_rmtcall	__P((struct sockaddr_in *,
+extern __stdargs bool_t		pmap_set	__P((u_long, u_long, int, int));
+extern __stdargs bool_t		pmap_unset	__P((u_long, u_long));
+extern __stdargs struct pmaplist	*pmap_getmaps	__P((struct sockaddr_in *));
+extern __stdargs enum clnt_stat	pmap_rmtcall	__P((struct sockaddr_in *,
 					     u_long, u_long, u_long,
 					     xdrproc_t, caddr_t,
 					     xdrproc_t, caddr_t,
 					     struct timeval, u_long *));
-extern enum clnt_stat	clnt_broadcast	__P((u_long, u_long, u_long,
+extern __stdargs enum clnt_stat	clnt_broadcast	__P((u_long, u_long, u_long,
 					     xdrproc_t, char *,
 					     xdrproc_t, char *,
-					     bool_t (*) __P((caddr_t,
+					     __stdargs bool_t (*) __P((caddr_t,
 						struct sockaddr_in *))));
-extern u_short		pmap_getport	__P((struct sockaddr_in *,
+extern __stdargs u_short		pmap_getport	__P((struct sockaddr_in *,
 					     u_long, u_long, u_int));
 __END_DECLS
 

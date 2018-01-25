@@ -156,13 +156,13 @@ struct msqid_ds *msqids;	/* MSGMNI msqid_ds struct's */
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int msgctl __P((int, int, struct msqid_ds *));
-int msgget __P((key_t, int));
-int msgsnd __P((int, void *, size_t, int));
-int msgrcv __P((int, void *, size_t, long, int));
+__stdargs int msgctl __P((int, int, struct msqid_ds *));
+__stdargs int msgget __P((key_t, int));
+__stdargs int msgsnd __P((int, void *, size_t, int));
+__stdargs int msgrcv __P((int, void *, size_t, long, int));
 __END_DECLS
 #else
-void msginit __P((void));
+__stdargs void msginit __P((void));
 #endif /* !_KERNEL */
 
 #endif /* !_SYS_MSG_H_ */

@@ -87,9 +87,9 @@ typedef	u_int16_t	uid_t;		/* user id */
 #ifndef _KERNEL
 #include <sys/cdefs.h>
 __BEGIN_DECLS
-off_t	 lseek __P((int, off_t, int));
-int	 ftruncate __P((int, off_t));
-int	 truncate __P((const char *, off_t));
+__stdargs off_t	 lseek __P((int, off_t, int));
+__stdargs int	 ftruncate __P((int, off_t));
+__stdargs int	 truncate __P((const char *, off_t));
 __END_DECLS
 #endif /* !_KERNEL */
 #endif /* !_POSIX_SOURCE */

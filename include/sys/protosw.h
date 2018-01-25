@@ -61,17 +61,17 @@ struct protosw {
 	short	pr_protocol;		/* protocol number */
 	short	pr_flags;		/* see below */
 /* protocol-protocol hooks */
-	int	(*pr_input)();		/* input to protocol (from below) */
-	int	(*pr_output)();		/* output to protocol (from above) */
-	int	(*pr_ctlinput)();	/* control input (from below) */
-	int	(*pr_ctloutput)();	/* control output (from above) */
+	__stdargs int	(*pr_input)();		/* input to protocol (from below) */
+	__stdargs int	(*pr_output)();		/* output to protocol (from above) */
+	__stdargs int	(*pr_ctlinput)();	/* control input (from below) */
+	__stdargs int	(*pr_ctloutput)();	/* control output (from above) */
 /* user-protocol hook */
-	int	(*pr_usrreq)();		/* user request: see list below */
+	__stdargs int	(*pr_usrreq)();		/* user request: see list below */
 /* utility hooks */
-	int	(*pr_init)();		/* initialization hook */
-	int	(*pr_fasttimo)();	/* fast timeout (200ms) */
-	int	(*pr_slowtimo)();	/* slow timeout (500ms) */
-	int	(*pr_drain)();		/* flush any excess space possible */
+	__stdargs int	(*pr_init)();		/* initialization hook */
+	__stdargs int	(*pr_fasttimo)();	/* fast timeout (200ms) */
+	__stdargs int	(*pr_slowtimo)();	/* slow timeout (500ms) */
+	__stdargs int	(*pr_drain)();		/* flush any excess space possible */
 };
 
 #define	PR_SLOWHZ	2		/* 2 slow timeouts per second */

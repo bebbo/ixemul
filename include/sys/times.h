@@ -54,7 +54,7 @@ struct tms {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-clock_t	times __P((struct tms *));
+__stdargs __stdargs clock_t	times __P((struct tms *));
 __END_DECLS
 #endif
 

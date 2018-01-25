@@ -150,23 +150,23 @@ struct nameidata;
 #endif
 
 struct vfsops {
-	int	(*vfs_mount)	__P((struct mount *mp, char *path, caddr_t data,
+  __stdargs int	(*vfs_mount)	__P((struct mount *mp, char *path, caddr_t data,
 				    struct nameidata *ndp, struct proc *p));
-	int	(*vfs_start)	__P((struct mount *mp, int flags,
+  __stdargs int	(*vfs_start)	__P((struct mount *mp, int flags,
 				    struct proc *p));
-	int	(*vfs_unmount)	__P((struct mount *mp, int mntflags,
+  __stdargs int	(*vfs_unmount)	__P((struct mount *mp, int mntflags,
 				    struct proc *p));
-	int	(*vfs_root)	__P((struct mount *mp, struct vnode **vpp));
+  __stdargs int	(*vfs_root)	__P((struct mount *mp, struct vnode **vpp));
 			/* int uid,		should be uid_t */
-	int	(*vfs_quotactl)	__P((struct mount *mp, int cmds, int uid,
+  __stdargs int	(*vfs_quotactl)	__P((struct mount *mp, int cmds, int uid,
 				    caddr_t arg, struct proc *p));
-	int	(*vfs_statfs)	__P((struct mount *mp, struct statfs *sbp,
+  __stdargs int	(*vfs_statfs)	__P((struct mount *mp, struct statfs *sbp,
 				    struct proc *p));
-	int	(*vfs_sync)	__P((struct mount *mp, int waitfor));
-	int	(*vfs_fhtovp)	__P((struct mount *mp, struct fid *fhp,
+  __stdargs int	(*vfs_sync)	__P((struct mount *mp, int waitfor));
+  __stdargs int	(*vfs_fhtovp)	__P((struct mount *mp, struct fid *fhp,
 				    struct vnode **vpp));
-	int	(*vfs_vptofh)	__P((struct vnode *vp, struct fid *fhp));
-	int	(*vfs_init)	__P(());
+  __stdargs int	(*vfs_vptofh)	__P((struct vnode *vp, struct fid *fhp));
+  __stdargs int	(*vfs_init)	__P(());
 };
 
 #define VFS_MOUNT(MP, PATH, DATA, NDP, P) \
@@ -268,10 +268,10 @@ struct nfs_args {
 /*
  * exported vnode operations
  */
-void	vfs_remove __P((struct mount *mp)); /* remove a vfs from mount list */
-int	vfs_lock __P((struct mount *mp));   /* lock a vfs */
-void	vfs_unlock __P((struct mount *mp)); /* unlock a vfs */
-struct	mount *getvfs __P((fsid_t *fsid));  /* return vfs given fsid */
+__stdargs void	vfs_remove __P((struct mount *mp)); /* remove a vfs from mount list */
+__stdargs int	vfs_lock __P((struct mount *mp));   /* lock a vfs */
+__stdargs void	vfs_unlock __P((struct mount *mp)); /* unlock a vfs */
+__stdargs struct	mount *getvfs __P((fsid_t *fsid));  /* return vfs given fsid */
 struct	mount *rootfs;			    /* ptr to root mount structure */
 struct	vfsops *vfssw[];		    /* mount filesystem type table */
 
@@ -280,13 +280,13 @@ struct	vfsops *vfssw[];		    /* mount filesystem type table */
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	fstatfs __P((int, struct statfs *));
-int	getfh __P((const char *, fhandle_t *));
-int	getfsstat __P((struct statfs *, long, int));
-int	getmntinfo __P((struct statfs **, int));
-int	mount __P((int, const char *, int, void *));
-int	statfs __P((const char *, struct statfs *));
-int	unmount __P((const char *, int));
+__stdargs int	fstatfs __P((int, struct statfs *));
+__stdargs int	getfh __P((const char *, fhandle_t *));
+__stdargs int	getfsstat __P((struct statfs *, long, int));
+__stdargs int	getmntinfo __P((struct statfs **, int));
+__stdargs int	mount __P((int, const char *, int, void *));
+__stdargs int	statfs __P((const char *, struct statfs *));
+__stdargs int	unmount __P((const char *, int));
 __END_DECLS
 
 #endif /* _KERNEL */

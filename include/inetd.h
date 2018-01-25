@@ -4,7 +4,7 @@
 /*
  *      Internet daemon interface definitions
  *
- *      Copyright © 1994 AmiTCP/IP Group,
+ *      Copyright ï¿½ 1994 AmiTCP/IP Group,
  *                       Network Solutions Development, Inc.
  *                       All rights reserved.
  */
@@ -15,7 +15,7 @@
  */
 struct DaemonPort {
   struct MsgPort dp_Port;
-  void         (*dp_ExitCode)();
+  __stdargs void         (*dp_ExitCode)();
 };
 
 #define DAEMONPORTNAME "inetd.ipc"

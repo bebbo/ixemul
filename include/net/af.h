@@ -32,8 +32,8 @@
  * values match, 0 otherwise.
  */
 struct afswitch {
-	int	(*af_hash)();
-	int	(*af_netmatch)();
+	__stdargs int	(*af_hash)();
+	__stdargs int	(*af_netmatch)();
 };
 
 struct afhash {

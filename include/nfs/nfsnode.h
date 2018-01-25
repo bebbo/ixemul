@@ -124,18 +124,18 @@ int	nfs_getattr __P((struct vop_getattr_args *));
 int	nfs_setattr __P((struct vop_setattr_args *));
 int	nfs_read __P((struct vop_read_args *));
 int	nfs_write __P((struct vop_write_args *));
-#define	nfs_lease_check ((int (*) __P((struct  vop_lease_args *)))nullop)
+#define	nfs_lease_check ((__stdargs int (*) __P((struct  vop_lease_args *)))nullop)
 int	nfsspec_read __P((struct vop_read_args *));
 int	nfsspec_write __P((struct vop_write_args *));
 #ifdef FIFO
 int	nfsfifo_read __P((struct vop_read_args *));
 int	nfsfifo_write __P((struct vop_write_args *));
 #endif
-#define nfs_ioctl ((int (*) __P((struct  vop_ioctl_args *)))enoioctl)
-#define nfs_select ((int (*) __P((struct  vop_select_args *)))seltrue)
+#define nfs_ioctl ((__stdargs int (*) __P((struct  vop_ioctl_args *)))enoioctl)
+#define nfs_select ((__stdargs int (*) __P((struct  vop_select_args *)))seltrue)
 int	nfs_mmap __P((struct vop_mmap_args *));
 int	nfs_fsync __P((struct vop_fsync_args *));
-#define nfs_seek ((int (*) __P((struct  vop_seek_args *)))nullop)
+#define nfs_seek ((__stdargs int (*) __P((struct  vop_seek_args *)))nullop)
 int	nfs_remove __P((struct vop_remove_args *));
 int	nfs_link __P((struct vop_link_args *));
 int	nfs_rename __P((struct vop_rename_args *));
@@ -159,7 +159,7 @@ int	nfs_blkatoff __P((struct vop_blkatoff_args *));
 int	nfs_vget __P((struct mount *, ino_t, struct vnode **));
 int	nfs_valloc __P((struct vop_valloc_args *));
 #define nfs_reallocblks \
-	((int (*) __P((struct  vop_reallocblks_args *)))eopnotsupp)
+	((__stdargs int (*) __P((struct  vop_reallocblks_args *)))eopnotsupp)
 int	nfs_vfree __P((struct vop_vfree_args *));
 int	nfs_truncate __P((struct vop_truncate_args *));
 int	nfs_update __P((struct vop_update_args *));

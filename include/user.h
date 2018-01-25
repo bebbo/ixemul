@@ -224,7 +224,7 @@ struct user {
 	char			u_getenv_buf[255];
 	
 	UBYTE			u_otask_flags;
-	void			(*u_olaunch)();
+	__stdargs void			(*u_olaunch)();
 	APTR			u_otrap_code;
 	APTR			u_otrap_data;
 	struct Interrupt	u_itimerint;	/* 1 interrupt / task */
@@ -247,7 +247,7 @@ struct user {
 	struct my_seg		*u_segs;	/* execve stores the SegList here */
 	u_long			u_start_pc;     /* start and end addresses */
         u_long                  u_end_pc;       /* of the code hunk */
-	void			(*u_oswitch)();
+        __stdargs void			(*u_oswitch)();
 	
 	/* stdio support comes here */
 	char			u_tmpnam_buf[MAXPATHLEN]; /* quite large.. */

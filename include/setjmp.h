@@ -45,17 +45,17 @@ typedef int jmp_buf[_JBLEN];
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	setjmp __P((jmp_buf));
+__stdargs int	setjmp __P((jmp_buf));
 /* FIXME: Perhaps longjmp should use the gcc attribute to specify a "no return" function. */
-void	longjmp __P((jmp_buf, int));
+__stdargs void	longjmp __P((jmp_buf, int));
 
-int	sigsetjmp __P((sigjmp_buf, int));
-void	volatile siglongjmp __P((sigjmp_buf, int));
+__stdargs int	sigsetjmp __P((sigjmp_buf, int));
+__stdargs void	volatile siglongjmp __P((sigjmp_buf, int));
 
 #if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
-int	_setjmp __P((jmp_buf));
-void	volatile _longjmp __P((jmp_buf, int));
-void	longjmperror __P((void));
+__stdargs int	_setjmp __P((jmp_buf));
+__stdargs void	volatile _longjmp __P((jmp_buf, int));
+__stdargs void	longjmperror __P((void));
 #endif /* neither ANSI nor POSIX */
 __END_DECLS
 

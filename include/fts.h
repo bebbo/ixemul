@@ -47,7 +47,7 @@ typedef struct {
 	int fts_rfd;			/* fd for root */
 	int fts_pathlen;		/* sizeof(path) */
 	int fts_nitems;			/* elements in the sort array */
-	int (*fts_compar)();		/* compare function */
+	__stdargs int (*fts_compar)();		/* compare function */
 
 #define	FTS_COMFOLLOW	0x001		/* follow command line symlinks */
 #define	FTS_LOGICAL	0x002		/* logical walk */
@@ -119,12 +119,12 @@ typedef struct _ftsent {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-FTSENT	*fts_children __P((FTS *, int));
-int	 fts_close __P((FTS *));
-FTS	*fts_open __P((char * const *, int,
-	    int (*)(const FTSENT **, const FTSENT **)));
-FTSENT	*fts_read __P((FTS *));
-int	 fts_set __P((FTS *, FTSENT *, int));
+__stdargs FTSENT	*fts_children __P((FTS *, int));
+__stdargs int	 fts_close __P((FTS *));
+__stdargs FTS	*fts_open __P((char * const *, int,
+    __stdargs int (*)(const FTSENT **, const FTSENT **)));
+__stdargs FTSENT	*fts_read __P((FTS *));
+__stdargs int	 fts_set __P((FTS *, FTSENT *, int));
 __END_DECLS
 
 #endif /* !_FTS_H_ */

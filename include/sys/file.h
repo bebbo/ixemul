@@ -59,11 +59,11 @@ struct file {
       f_type,	     /* can be a file or some amiga..devices */
       f_flags,	     /* see fcntl.h */
       f_count,	     /* open-count, normally 1, higher after dup() */
-      (*f_write)(),    /* functions to perform write,read,etc on this fd */
-      (*f_read)(),
-      (*f_ioctl)(),
-      (*f_select)(),
-      (*f_close)();
+      __stdargs (*f_write)(),    /* functions to perform write,read,etc on this fd */
+      __stdargs (*f_read)(),
+      __stdargs (*f_ioctl)(),
+      __stdargs (*f_select)(),
+      __stdargs (*f_close)();
   union {
     struct FileHandle *fh; /* this is a CPTR to the allocated
 			    * FileHandle */

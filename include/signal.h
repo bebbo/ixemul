@@ -55,28 +55,28 @@ extern const char *const sys_siglist[];
 #endif
 
 __BEGIN_DECLS
-int	raise __P((int));
+__stdargs int	raise __P((int));
 #ifndef	_ANSI_SOURCE
-int	kill __P((pid_t, int));
-int	sigaction __P((int, const struct sigaction *, struct sigaction *));
+__stdargs int	kill __P((pid_t, int));
+__stdargs int	sigaction __P((int, const struct sigaction *, struct sigaction *));
 #if defined(__GNUC__) && defined(__STDC__)
 #ifdef __EXTERN_INLINE__
-int	sigaddset __P((sigset_t *, int));
-int	sigdelset __P((sigset_t *, int));
-int	sigismember __P((const sigset_t *, int));
+__stdargs int	sigaddset __P((sigset_t *, int));
+__stdargs int	sigdelset __P((sigset_t *, int));
+__stdargs int	sigismember __P((const sigset_t *, int));
 #endif
 #endif
-int	sigemptyset __P((sigset_t *));
-int	sigfillset __P((sigset_t *));
-int	sigpending __P((sigset_t *));
-int	sigprocmask __P((int, const sigset_t *, sigset_t *));
-int	sigsuspend __P((const sigset_t *));
+__stdargs int	sigemptyset __P((sigset_t *));
+__stdargs int	sigfillset __P((sigset_t *));
+__stdargs int	sigpending __P((sigset_t *));
+__stdargs int	sigprocmask __P((int, const sigset_t *, sigset_t *));
+__stdargs int	sigsuspend __P((const sigset_t *));
 
 #if defined(__GNUC__) && defined(__STDC__)
 #ifndef __EXTERN_INLINE__
 #define __EXTERN_INLINE__ static inline
 #endif
-__EXTERN_INLINE__ int sigaddset(sigset_t *set, int signo) {
+__stdargs __EXTERN_INLINE__ int sigaddset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -87,7 +87,7 @@ __EXTERN_INLINE__ int sigaddset(sigset_t *set, int signo) {
 	return (0);
 }
 
-__EXTERN_INLINE__ int sigdelset(sigset_t *set, int signo) {
+__stdargs __EXTERN_INLINE__ int sigdelset(sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -98,7 +98,7 @@ __EXTERN_INLINE__ int sigdelset(sigset_t *set, int signo) {
 	return (0);
 }
 
-__EXTERN_INLINE__ int sigismember(const sigset_t *set, int signo) {
+__stdargs __EXTERN_INLINE__ int sigismember(const sigset_t *set, int signo) {
 	extern int errno;
 
 	if (signo <= 0 || signo >= _NSIG) {
@@ -114,15 +114,15 @@ __EXTERN_INLINE__ int sigismember(const sigset_t *set, int signo) {
 #define	sigfillset(set)		(*(set) = ~(sigset_t)0, 0)
 
 #ifndef _POSIX_SOURCE
-int	killpg __P((pid_t, int));
-int	sigblock __P((int));
-int	siginterrupt __P((int, int));
-int	sigpause __P((int));
-void volatile	sigreturn __P((struct sigcontext *));
-int	sigsetmask __P((int));
-int	sigstack __P((const struct sigstack *, struct sigstack *));
-int	sigvec __P((int, struct sigvec *, struct sigvec *));
-void	psignal __P((unsigned int, const char *));
+__stdargs int	killpg __P((pid_t, int));
+__stdargs int	sigblock __P((int));
+__stdargs int	siginterrupt __P((int, int));
+__stdargs int	sigpause __P((int));
+__stdargs void volatile	sigreturn __P((struct sigcontext *));
+__stdargs int	sigsetmask __P((int));
+__stdargs int	sigstack __P((const struct sigstack *, struct sigstack *));
+__stdargs int	sigvec __P((int, struct sigvec *, struct sigvec *));
+__stdargs void	psignal __P((unsigned int, const char *));
 #endif	/* !_POSIX_SOURCE */
 #endif	/* !_ANSI_SOURCE */
 __END_DECLS

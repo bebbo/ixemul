@@ -50,14 +50,14 @@ struct group {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-struct group *getgrgid __P((gid_t));
-struct group *getgrnam __P((const char *));
+__stdargs struct group *getgrgid __P((gid_t));
+__stdargs struct group *getgrnam __P((const char *));
 #ifndef _POSIX_SOURCE
-struct group *getgrent __P((void));
-int setgrent __P((void));
-void endgrent __P((void));
-void setgrfile __P((const char *));
-int setgroupent __P((int));
+__stdargs struct group *getgrent __P((void));
+__stdargs int setgrent __P((void));
+__stdargs void endgrent __P((void));
+__stdargs void setgrfile __P((const char *));
+__stdargs int setgroupent __P((int));
 #endif
 __END_DECLS
 

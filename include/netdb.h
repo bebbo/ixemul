@@ -101,29 +101,29 @@ extern int h_errno;
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-void		endhostent __P((void));
-void		endnetent __P((void));
-void		endprotoent __P((void));
-void		endservent __P((void));
-struct hostent	*gethostbyaddr __P((const char *, int, int));
-struct hostent	*gethostbyname __P((const char *));
-struct hostent	*gethostent __P((void));
-struct netent	*getnetbyaddr __P((long, int)); /* u_long? */
-struct netent	*getnetbyname __P((const char *));
-struct netent	*getnetent __P((void));
-struct protoent	*getprotobyname __P((const char *));
-struct protoent	*getprotobynumber __P((int));
-struct protoent	*getprotoent __P((void));
-struct servent	*getservbyname __P((const char *, const char *));
-struct servent	*getservbyport __P((int, const char *));
-struct servent	*getservent __P((void));
-void		herror __P((const char *));
-char		*hstrerror __P((int));
-void		sethostent __P((int));
-/* void		sethostfile __P((const char *)); */
-void		setnetent __P((int));
-void		setprotoent __P((int));
-void		setservent __P((int));
+__stdargs void		endhostent __P((void));
+__stdargs void		endnetent __P((void));
+__stdargs void		endprotoent __P((void));
+__stdargs void		endservent __P((void));
+__stdargs struct hostent	*gethostbyaddr __P((const char *, int, int));
+__stdargs struct hostent	*gethostbyname __P((const char *));
+__stdargs struct hostent	*gethostent __P((void));
+__stdargs struct netent	*getnetbyaddr __P((long, int)); /* u_long? */
+__stdargs struct netent	*getnetbyname __P((const char *));
+__stdargs struct netent	*getnetent __P((void));
+__stdargs struct protoent	*getprotobyname __P((const char *));
+__stdargs struct protoent	*getprotobynumber __P((int));
+__stdargs struct protoent	*getprotoent __P((void));
+__stdargs struct servent	*getservbyname __P((const char *, const char *));
+__stdargs struct servent	*getservbyport __P((int, const char *));
+__stdargs struct servent	*getservent __P((void));
+__stdargs void		herror __P((const char *));
+__stdargs char		*hstrerror __P((int));
+__stdargs void		sethostent __P((int));
+/* __stdargs void		sethostfile __P((const char *)); */
+__stdargs void		setnetent __P((int));
+__stdargs void		setprotoent __P((int));
+__stdargs void		setservent __P((int));
 __END_DECLS
 
 #endif /* !_NETDB_H_ */

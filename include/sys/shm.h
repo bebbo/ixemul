@@ -80,10 +80,10 @@ struct shm_list
 #endif
 
 __BEGIN_DECLS
-void *shmat __P((int, void *, int));
-int shmctl __P((int, int, struct shmid_ds *));
-int shmdt __P((void *));
-int shmget __P((key_t, int, int));
+__stdargs void *shmat __P((int, void *, int));
+__stdargs int shmctl __P((int, int, struct shmid_ds *));
+__stdargs int shmdt __P((void *));
+__stdargs int shmget __P((key_t, int, int));
 __END_DECLS
 
 #endif /* !_SYS_SHM_H_ */

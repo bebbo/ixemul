@@ -242,20 +242,20 @@ struct termios {
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-speed_t	cfgetispeed __P((const struct termios *));
-speed_t	cfgetospeed __P((const struct termios *));
-int	cfsetispeed __P((struct termios *, speed_t));
-int	cfsetospeed __P((struct termios *, speed_t));
-int	tcgetattr __P((int, struct termios *));
-int	tcsetattr __P((int, int, const struct termios *));
-int	tcdrain __P((int));
-int	tcflow __P((int, int));
-int	tcflush __P((int, int));
-int	tcsendbreak __P((int, int));
+__stdargs speed_t	cfgetispeed __P((const struct termios *));
+__stdargs speed_t	cfgetospeed __P((const struct termios *));
+__stdargs int	cfsetispeed __P((struct termios *, speed_t));
+__stdargs int	cfsetospeed __P((struct termios *, speed_t));
+__stdargs int	tcgetattr __P((int, struct termios *));
+__stdargs int	tcsetattr __P((int, int, const struct termios *));
+__stdargs int	tcdrain __P((int));
+__stdargs int	tcflow __P((int, int));
+__stdargs int	tcflush __P((int, int));
+__stdargs int	tcsendbreak __P((int, int));
 
 #ifndef _POSIX_SOURCE
-void	cfmakeraw __P((struct termios *));
-int	cfsetspeed __P((struct termios *, speed_t));
+__stdargs void	cfmakeraw __P((struct termios *));
+__stdargs int	cfsetspeed __P((struct termios *, speed_t));
 #endif /* !_POSIX_SOURCE */
 __END_DECLS
 
