@@ -87,9 +87,19 @@ typedef struct {
 
 #include <sys/cdefs.h>
 
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+#define __MY_INLINE__ inline
+#else
+#define __MY_INLINE__ extern inline
+#endif
+
 __BEGIN_DECLS
-__stdargs void	 abort __P((void));
+#ifdef __NO_INLINE__
 __stdargs int	 abs __P((int));
+#else
+__MY_INLINE __stdargs int abs(int j) { return j>=0?j:-j; }
+#endif
+__stdargs void	 abort __P((void));
 __stdargs int	 atexit __P((__stdargs void (*)(void)));
 __stdargs double	 atof __P((const char *));
 __stdargs int	 atoi __P((const char *));
