@@ -97,7 +97,7 @@ __BEGIN_DECLS
 #ifdef __NO_INLINE__
 __stdargs int	 abs __P((int));
 #else
-__MY_INLINE __stdargs int abs(int j) { return j>=0?j:-j; }
+__MY_INLINE__ __stdargs int abs(int j) { return j>=0?j:-j; }
 #endif
 __stdargs void	 abort __P((void));
 __stdargs int	 atexit __P((__stdargs void (*)(void)));
